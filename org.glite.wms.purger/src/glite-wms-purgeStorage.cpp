@@ -58,7 +58,9 @@ bool find_directories( const fs::path & from_path,
       if ( fs::is_directory( *itr ) &&
 	   itr->leaf().substr(0,prefix.length()) == prefix ) {
 	path_found.push_back( *itr );
-	if ( recursive && find_directories( *itr, prefix, path_found ) ) return true;
+      }
+      else {
+	if ( recursive && find_directories( *itr, prefix, path_found, true) ) return true;
       }
     } 
     catch( fs::filesystem_error& e)
