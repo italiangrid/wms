@@ -21,9 +21,12 @@
 
 	Revision history:
 	$Log$
+	Revision 1.83  2004/12/15 14:16:01  eronchie
+	Updated
+
 	Revision 1.82  2004/12/09 10:29:26  eronchie
 	Updated brokerinfo dependencies
-
+	
 	Revision 1.81  2004/12/02 13:53:26  eronchie
 	Added dependency
 	
@@ -759,7 +762,7 @@
 		</if>
         </target>
 
-	<target name="purger" unless="setenvonly" depends="envset, boost,classads,globus">
+	<target name="purger" unless="setenvonly" depends="envset, boost,classads,globus, common">
 		<if>
 			<isset property="small.memory" />
 			<then>

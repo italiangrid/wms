@@ -21,9 +21,12 @@
 
 	Revision history:
 	$Log$
+	Revision 1.74  2004/12/15 14:16:01  eronchie
+	Updated
+
 	Revision 1.73  2004/12/09 10:29:26  eronchie
 	Updated brokerinfo dependencies
-
+	
 	Revision 1.72  2004/12/07 18:14:39  eronchie
 	Added
 	
@@ -702,7 +705,7 @@
         </target>
 
 	<!-- purger -->
-        <target name="purger" depends="boost,classads,globus,get.purger.head, get.purger.tag"/>
+        <target name="purger" depends="boost,classads,globus,common,get.purger.head, get.purger.tag"/>
         <target name="get.purger.head" if="purger.head">
             <cvs-co package="org.glite.wms.purger" />
         </target>
