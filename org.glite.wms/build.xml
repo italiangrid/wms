@@ -21,9 +21,13 @@
 
 	Revision history:
 	$Log$
+	Revision 1.84  2005/01/17 18:24:17  eronchie
+	Start adding wmproxy
+	WORK IN PROGRESS
+
 	Revision 1.83  2004/12/15 14:16:01  eronchie
 	Updated
-
+	
 	Revision 1.82  2004/12/09 10:29:26  eronchie
 	Updated brokerinfo dependencies
 	
@@ -858,6 +862,38 @@
                 </if>
         </target>
 
+	<target name="wmproxy-interface" unless="setenvonly" depends="envset">
+                <if>
+                        <isset property="small.memory" />
+                        <then>
+                                <exec dir="${wms.subsystem.dir}.wmproxy-interface" executable="${antExec}" failonerror="${failonerror}">
+                                        <arg line="${target} &quot;-Dsmall.memory=true&quot; &quot;-Dbootstrap=${bootstrap}&quot; &quot;-Dfailonerror=${failonerror}&quot; &quot;-Ddo.cvs.tag=${do.cvs.tag}&quot;"/>
+                                </exec>
+                        </then>
+                        <else>
+                                <ant dir="${wms.subsystem.dir}.wmproxy-interface"
+                                     target="${target}"
+                                     inheritall="false" />
+                        </else>
+                </if>
+        </target>
+
+	<target name="wmproxy-api-java" unless="setenvonly" depends="envset, axis">
+                <if>
+                        <isset property="small.memory" />
+                        <then>
+                                <exec dir="${wms.subsystem.dir}.wmproxy-api-java" executable="${antExec}" failonerror="${failonerror}">
+                                        <arg line="${target} &quot;-Dsmall.memory=true&quot; &quot;-Dbootstrap=${bootstrap}&quot; &quot;-Dfailonerror=${failonerror}&quot; &quot;-Ddo.cvs.tag=${do.cvs.tag}&quot;"/>
+                                </exec>
+                        </then>
+                        <else>
+                                <ant dir="${wms.subsystem.dir}.wmproxy-api-java"
+                                     target="${target}"
+                                     inheritall="false" />
+                        </else>
+                </if>
+        </target>
+
 	<!-- Main proxy -->
 	<target name="buildmodules" depends="envset,
 						 configuration,
@@ -884,6 +920,10 @@
 					     manager-ns-daemon,	
 					     jobsubmission,
 					     ism,
+					     wmproxy,
+					     wmproxy-interface,
+					     wmproxy-api-cpp,
+					     wmproxy-api-java,
 					     manager">
 		<echo append="true" file="${global.project.dir}/cruisecontrol-stub.xml">
 	&lt;project name="${subsystem.name}" type="post-subsystem" packageName="${global.prefix}-${subsystem.prefix}"/&gt;

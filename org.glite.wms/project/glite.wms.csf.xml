@@ -21,9 +21,13 @@
 
 	Revision history:
 	$Log$
+	Revision 1.75  2005/01/17 18:24:18  eronchie
+	Start adding wmproxy
+	WORK IN PROGRESS
+
 	Revision 1.74  2004/12/15 14:16:01  eronchie
 	Updated
-
+	
 	Revision 1.73  2004/12/09 10:29:26  eronchie
 	Updated brokerinfo dependencies
 	
@@ -454,6 +458,14 @@
 		<condition property="configuration.head">
                         <equals arg1="${org.glite.wms.configuration.version}" arg2="HEAD" />
                 </condition>
+
+		<condition property="wmproxy-interface.head">
+                        <equals arg1="${org.glite.wms.wmproxy-interface.version}" arg2="HEAD" />
+                </condition>
+
+		<condition property="wmproxy-api-java.head">
+                        <equals arg1="${org.glite.wms.wmproxy-api-java.version}" arg2="HEAD" />
+                </condition>
     	</target>
 
     	<presetdef name="cvs-co">
@@ -494,7 +506,7 @@
  	<target name="devtools" depends="oscheck,
  					 junitcheck,
 	 				 junit,
-  				     chkstyle,
+  				         chkstyle,
  					 jalopy,
  					 ant-contrib,
  					 cpptasks,
@@ -763,6 +775,26 @@
             <cvs-co package="org.glite.wms.configuration"
                     tag="${org.glite.wms.configuration.version}" />
         </target>
+
+	 <!-- WMPROXY Interface -->
+        <target name="wmproxy-interface" depends="get.wmproxy-interface.head, get.wmproxy-interface.tag"/>
+        <target name="get.wmproxy-interface.head" if="wmproxy-interface.head">
+            <cvs-co package="org.glite.wms.wmproxy-interface" />
+        </target>
+        <target name="get.wmproxy-interface.tag" unless="wmproxy-interface.head">
+            <cvs-co package="org.glite.wms.wmproxy-interface"
+                    tag="${org.glite.wms.wmproxy-interface.version}" />
+        </target>
+
+	<!-- WMPROXY Api Java -->
+        <target name="wmproxy-api-java" depends="axis,get.wmproxy-api-java.head, get.wmproxy-api-java.tag"/>
+        <target name="get.wmproxy-api-java.head" if="wmproxy-api-java.head">
+            <cvs-co package="org.glite.wms.wmproxy-api-java" />
+        </target>
+        <target name="get.wmproxy-api-java.tag" unless="wmproxy-api-java.head">
+            <cvs-co package="org.glite.wms.wmproxy-api-java"
+                    tag="${org.glite.wms.wmproxy-api-java.version}" />
+        </target>
 		
 	<!-- All project modules -->
  	<target name="project" depends="configuration,
@@ -789,6 +821,10 @@
 					manager-ns-daemon,
 					jobsubmission,
 					ism,
+					wmproxy,
+                                        wmproxy-interface,
+                                        wmproxy-api-cpp,
+                                        wmproxy-api-java,
 					manager"/>
 
 
