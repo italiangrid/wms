@@ -21,9 +21,12 @@
 
 	Revision history:
 	$Log$
+	Revision 1.69  2004/10/18 22:59:37  dimeglio
+	Added oscheck to various targets
+
 	Revision 1.68  2004/10/15 15:08:52  eronchie
 	Updated configuration
-
+	
 	Revision 1.67  2004/10/13 22:05:27  eronchie
 	Added ism as manager dependency
 	
@@ -469,9 +472,10 @@
 	<!-- *****************************************************-->
 	
 	<!-- All development tools -->
- 	<target name="devtools" depends="junitcheck,
+ 	<target name="devtools" depends="oscheck,
+ 					 junitcheck,
 	 				 junit,
-  				         chkstyle,
+  				     chkstyle,
  					 jalopy,
  					 ant-contrib,
  					 cpptasks,
@@ -482,7 +486,8 @@
 		 ===================================================== -->
 	
 	<!--  All external libraries -->
- 	<target name="external" depends="log4j"/>
+ 	<target name="external" depends="oscheck,
+ 									 log4j"/>
  	
 	<!-- =====================================================
 		 GLite WMS modules
@@ -762,7 +767,7 @@
 		 ==================================================== -->
 	
 	<!-- All libraries -->
- 	<target name="all" depends="evaluate.cvs.tags,defaultenvchecks,org.glite,org.glite.wms,devtools,external,project" />		
+ 	<target name="all" depends="oscheck,evaluate.cvs.tags,defaultenvchecks,org.glite,org.glite.wms,devtools,external,project" />		
 
 	<!-- ====================================================
 		 Print dependecies to console
