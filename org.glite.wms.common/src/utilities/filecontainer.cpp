@@ -21,8 +21,9 @@
 
 using namespace std;
 
-COMMON_NAMESPACE_BEGIN {
-
+namespace glite {
+namespace wms {
+namespace common {
 namespace utilities {
 
 #ifdef FILELIST_HAS_DEBUG_CODE
@@ -2594,6 +2595,7 @@ FileContainerError::iostatus_t FileContainer::dump_status( const char *filename,
 }
 #endif
 
-}; // Namespace utilities closure
-
-} COMMON_NAMESPACE_END;
+} // utilities namespace
+} // common namespace
+} // wms namespace
+} // glite namespace

@@ -9,8 +9,9 @@
 
 using namespace std;
 
-COMMON_NAMESPACE_BEGIN {
-
+namespace glite {
+namespace wms {
+namespace common {
 namespace utilities {
 
 CannotOpenLockFile::CannotOpenLockFile( int error ) : string( strerror(error) ) {}
@@ -78,7 +79,7 @@ int FileLocker::unlock( void )
   return( answer );
 }
 
-}; // Namespace utilities
-
-} COMMON_NAMESPACE_END;
-
+} // utilities namespace
+} // common namespace
+} // wms namespace
+} // glite namespace

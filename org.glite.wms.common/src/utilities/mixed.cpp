@@ -12,8 +12,9 @@
 
 using namespace std;
 
-COMMON_NAMESPACE_BEGIN {
-
+namespace glite {
+namespace wms {
+namespace common {
 namespace utilities {
 
 bool    Mixed::verbose = false;
@@ -62,7 +63,6 @@ Mixed::~Mixed( void )
 }
 
 using namespace std;
-//  USING_COMMON_NAMESPACE_ADD( misc );
 
 ostream &operator<<( ostream &os, const Mixed &val )
 {
@@ -108,6 +108,7 @@ bool operator==( const Mixed &a, const Mixed &b )
   else return( false );
 }
 
-}; // Namespace closure
-
-} COMMON_NAMESPACE_END;
+} // utilities namespace
+} // common namespace
+} // wms namespace
+} // glite namespace

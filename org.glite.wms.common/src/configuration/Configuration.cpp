@@ -27,8 +27,9 @@
 
 using namespace std;
 
-COMMON_NAMESPACE_BEGIN {
-
+namespace glite {
+namespace wms {
+namespace common {
 namespace configuration {
 
 const Configuration  *Configuration::c_s_instance = NULL;
@@ -212,6 +213,7 @@ classad::ClassAd *Configuration::get_classad( void )
   return total;
 }
 
-}; // configuration namespace end
-
-} COMMON_NAMESPACE_END;
+} // configuration namespace
+} // common namespace
+} // wms namespace
+} // glite namespace

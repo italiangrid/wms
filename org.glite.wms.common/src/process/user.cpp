@@ -7,8 +7,9 @@
 
 using namespace std;
 
-COMMON_NAMESPACE_BEGIN {
-
+namespace glite {
+namespace wms {
+namespace common {
 namespace process {
 
 void User::copy( const struct passwd *pwd )
@@ -96,7 +97,7 @@ User &User::name( const char *name )
   return *this;
 }
 
-
-}; // Namespace process
-
-} COMMON_NAMESPACE_END;
+} // process namespace
+} // common namespace
+} // wms namespace
+} // glite namespace

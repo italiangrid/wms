@@ -1,8 +1,6 @@
 #ifndef GLITE_WMS_COMMON_UTILITIES_EXCEPTION_CODES_H
 #define GLITE_WMS_COMMON_UTILITIES_EXCEPTION_CODES_H
 
-#include "common_namespace.h"
-
 // pure C-style code:
 #define GLITE_WMS_COMMON_ERROR_BASE 900
 #define GLITE_WMS_USERINTERFACE_ERROR_BASE 1000
@@ -15,8 +13,12 @@
 #define GLITE_WMS_CONFIGURATION_ERROR_BASE 1800
 
 #ifdef __cplusplus
-COMMON_NAMESPACE_BEGIN{
-namespace utilities{
+
+namespace glite {
+namespace wms {
+namespace common {
+namespace utilities {
+
 /**
   * The Error Code
 */
@@ -38,8 +40,10 @@ enum {
         WMS_CONFIGURATION_ERROR_BASE = GLITE_WMS_CONFIGURATION_ERROR_BASE
 };
 
-// EWC_END_NAMESPACE ;//Close the NameSpace
-} COMMON_NAMESPACE_END
-}
+} // utilities namespace 
+} // common namespace
+} // wms namespace
+} // glite namespace
+
 #endif   //ifdef c++
 #endif

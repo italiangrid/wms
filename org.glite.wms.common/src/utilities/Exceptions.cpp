@@ -8,8 +8,11 @@
 #include "exception_codes.h"
 #include "utils.h"
 
-COMMON_NAMESPACE_BEGIN{
-     namespace utilities {
+namespace glite {
+namespace wms {
+namespace common {
+namespace utilities {
+
 using namespace std ;
 using namespace glite::wms::common::utilities ;
 pthread_mutex_t METHOD_MUTEX  ;  // This mutex is used in order to lock the file for writing log infornation
@@ -162,6 +165,8 @@ ThreadException::ThreadException(const std::string& file,
     }
     error_message += "pthread Fatal Error thrown for: " + error_message ;
 }
-} COMMON_NAMESPACE_END
-   }
 
+} // utilities namespace
+} // common namespace
+} // wms namespace
+} // glite namespace

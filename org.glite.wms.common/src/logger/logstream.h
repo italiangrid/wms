@@ -6,11 +6,13 @@
 
 #include "logbuf.h"
 
-COMMON_NAMESPACE_BEGIN {
-
+namespace glite {
+namespace wms {
+namespace common {
 namespace logger {
-
-namespace threadsafe { class logstream; };
+namespace threadsafe { 
+  class logstream; 
+} // threadsafe namespace
 
 class logbase_c : public std::ostream {
   friend class threadsafe::logstream;
@@ -73,9 +75,10 @@ extern logstream cedglog;
 
 #define RenameLogStreamNS( log ) namespace log = glite::wms::common::logger
 
-}; // Namespace logger
-
-} COMMON_NAMESPACE_END;
+} // logger namespace
+} // common namespace
+} // wms namespace
+} // glite namespace
 
 #endif /* GLITE_WMS_COMMON_LOGGER_LOGSTREAM_H */
 

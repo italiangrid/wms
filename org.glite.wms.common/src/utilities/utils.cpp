@@ -8,8 +8,11 @@
 #include <stdio.h>
 
 using namespace std;
-COMMON_NAMESPACE_BEGIN{
-     namespace utilities {
+
+namespace glite {
+namespace wms {
+namespace common {
+namespace utilities {
 
 /******************************************************************
  method :   isInt
@@ -242,5 +245,7 @@ replace(string& where, const string& what, const string& with)
   }
 }
 
-} COMMON_NAMESPACE_END
-   }
+} // utilities namespace
+} // common namespace
+} // wms namespace
+} // glite namespace

@@ -2,8 +2,9 @@
 #include "FileListLock.h"
 #include "streamdescriptor.h"
 
-COMMON_NAMESPACE_BEGIN {
-
+namespace glite {
+namespace wms {
+namespace common {
 namespace utilities {
 
 FileListDescriptorMutex::FileListDescriptorMutex( _file_sequence_t &fs ) : fldm_locked( false ), 
@@ -63,6 +64,7 @@ int FileListLock::unlock( void )
   return( res );
 }
 
-}; // Namespace utilities
-
-} COMMON_NAMESPACE_END;
+} // utilities namespace
+} // common namespace
+} // wms namespace
+} // glite namespace

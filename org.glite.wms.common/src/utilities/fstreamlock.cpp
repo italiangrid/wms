@@ -11,8 +11,9 @@
 
 using namespace std;
 
-COMMON_NAMESPACE_BEGIN {
-
+namespace glite {
+namespace wms {
+namespace common {
 namespace utilities {
 
 namespace {
@@ -92,7 +93,7 @@ int DescriptorLock::unlock( void )
   return( res );
 }
 
-};
-
-} COMMON_NAMESPACE_END;
-
+} // utilities namespace
+} // common namespace
+} // wms namespace
+} // glite namespace

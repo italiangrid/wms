@@ -6,7 +6,8 @@
 #include "process/process.h"
 
 using namespace std;
-USING_COMMON_NAMESPACE;
+using glite::wms::common;
+namespace process = glite::wms::common::process;
 
 int main( void )
 {

@@ -8,8 +8,9 @@
 
 namespace classad { class ClassAd; }
 
-COMMON_NAMESPACE_BEGIN {
-
+namespace glite {
+namespace wms {
+namespace common {
 namespace configuration {
 
 // Forward declarations
@@ -57,9 +58,10 @@ private:
   Configuration &operator=( const Configuration &c ); // Not implemented
 };
 
-}; // Namespace configuration
-
-} COMMON_NAMESPACE_END;
+} // configuration namespace
+} // common namespace
+} // wms namespace
+} // glite namespace
 
 #endif /* GLITE_WMS_COMMON_CONFIGURATION_CONFIGURATION_H */
 

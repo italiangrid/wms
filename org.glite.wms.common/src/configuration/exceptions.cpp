@@ -2,8 +2,9 @@
 
 using namespace std;
 
-COMMON_NAMESPACE_BEGIN {
-
+namespace glite {
+namespace wms {
+namespace common {
 namespace configuration {
 
 CannotConfigure::CannotConfigure( void ) : exception(), cc_what() {}
@@ -143,6 +144,7 @@ string ModuleMismatch::reason( void ) const
   return answ;
 }
 
-}; // configuration namespace end
-
-} COMMON_NAMESPACE_END;
+} // configuration namespace
+} // common namespace
+} // wms namespace
+} // glite namespace

@@ -8,9 +8,11 @@
 
 using namespace std;
 
-COMMON_NAMESPACE_BEGIN {
-
-namespace logger { namespace threadsafe {
+namespace glite {
+namespace wms {
+namespace common {
+namespace logger { 
+namespace threadsafe {
 
 logstream   edglog;
 
@@ -222,8 +224,11 @@ logstream &logstream::flush( void )
   return *this;
 }
 
-}}; // namespace logger::threadsafe
+} // namespace threadsafe
+} // logger namespace
+} // common namespace
+} // wms namespace
+} // glite namespace
 
-} COMMON_NAMESPACE_END;
 
 

@@ -3,8 +3,9 @@
 
 #include <exception>
 
-COMMON_NAMESPACE_BEGIN {
-
+namespace glite {
+namespace wms {
+namespace common {
 namespace utilities {
 
 class LineParsingError : public std::exception {
@@ -61,9 +62,10 @@ private:
   int    ian_argn;
 };
 
-}; // Namespace closure
-
-} COMMON_NAMESPACE_END;
+} // utilities namespace
+} // common namespace
+} // wms namespace
+} // glite namespace
 
 inline std::ostream &operator<<( std::ostream &os, const glite::wms::common::utilities::LineParsingError &lpe )
 { lpe.usage( os ); return os; }

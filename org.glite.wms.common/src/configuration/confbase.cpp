@@ -1,15 +1,16 @@
 #include <boost/regex.hpp>
 #include <classad_distribution.h>
 
-#include "../utilities/classad_utils.h"
-#include "../utilities/boost_fs_add.h"
+#include "utilities/classad_utils.h"
+#include "utilities/boost_fs_add.h"
 
 #include "confbase.h"
 
 using namespace std;
 
-COMMON_NAMESPACE_BEGIN {
-
+namespace glite {
+namespace wms {
+namespace common {
 namespace configuration {
 
 string confbase_c::getAndParseString( const char *name, const string &def ) const
@@ -106,6 +107,7 @@ confbase_c::confbase_c( const classad::ClassAd *ad ) : cb_ad( ad )
 confbase_c::~confbase_c( void )
 {}
 
-}; // Namespace configuration
-
-} COMMON_NAMESPACE_END;
+} // configuration namespace
+} // common namespace
+} // wms namespace
+} // glite namespace

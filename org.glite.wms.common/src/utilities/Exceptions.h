@@ -15,9 +15,12 @@
 #include <string>
 #include <exception> // base ancestor
 #include "result_codes.h" //base result codes
-#include "common_namespace.h" // base namespace
-COMMON_NAMESPACE_BEGIN{
-     namespace utilities {
+
+namespace glite {
+namespace wms {
+namespace common {
+namespace utilities {
+
 extern pthread_mutex_t METHOD_MUTEX; //  used in order to store info into a file (rather then syslog)
 #define EDG_STACK_TRY(method_name) std::string METHOD = method_name ; try {
 #define EDG_STACK_CATCH() } catch (glite::wms::common::utilities::Exception &exc){ throw  glite::wms::common::utilities::Exception ( __FILE__ , METHOD , &exc)   ;  }
@@ -155,8 +158,9 @@ public:
 		    int jobNumber);
 };//End CLass   StdException
 
-// EWC_END_NAMESPACE; //Close the NameSpace
-} COMMON_NAMESPACE_END
-}
+} // utilities namespace
+} // common namespace
+} // wms namespace
+} // glite namespace
 
 #endif

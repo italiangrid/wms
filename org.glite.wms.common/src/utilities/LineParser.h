@@ -10,8 +10,9 @@
 
 #include "mixed.h"
 
-COMMON_NAMESPACE_BEGIN {
-
+namespace glite {
+namespace wms {
+namespace common {
 namespace utilities {
 
 typedef  struct option    option_s;
@@ -84,9 +85,10 @@ private:
   static const std::string       lp_s_empty;
 };
 
-}; // Namespace closure
-
-} COMMON_NAMESPACE_END;
+} // utilities namespace
+} // common namespace
+} // wms namespace
+} // glite namespace
 
 #endif /* GLITE_WMS_COMMON_UTILITIES_LINEPARSER_H */
 

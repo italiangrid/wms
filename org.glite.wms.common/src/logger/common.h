@@ -7,10 +7,9 @@
 
 #include <boost/shared_ptr.hpp>
 
-#include "common_namespace.h"
-
-COMMON_NAMESPACE_BEGIN {
-
+namespace glite {
+namespace wms {
+namespace common {
 namespace logger {
 
 class StatePusher;
@@ -175,9 +174,10 @@ private:
   char                         bd_buffer[bd_s_bufsize];
 };
 
-}; // Namespace logger
-
-} COMMON_NAMESPACE_END;
+} // Namespace logger
+} // common namespace
+} // wms namespace
+} // glite namespace
 
 #endif /* GLITE_WMS_COMMON_LOGGER_COMMON_H */
 

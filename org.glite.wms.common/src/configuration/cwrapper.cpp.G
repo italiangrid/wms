@@ -11,7 +11,7 @@
 #include "WMConfiguration.h"
 
 using namespace std;
-USING_COMMON_NAMESPACE;
+using namespace glite::wms::common;
 
 /* Tmpl: wrap class CommonConfiguration */
 /* Tmpl: wrap class JCConfiguration */

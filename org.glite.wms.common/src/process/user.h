@@ -1,12 +1,11 @@
 #ifndef GLITE_WMS_COMMON_PROCESS_USER_H
 #define GLITE_WMS_COMMON_PROCESS_USER_H
 
-#include "../common_namespace.h"
-
 #include <pwd.h>
 
-COMMON_NAMESPACE_BEGIN {
-
+namespace glite {
+namespace wms {
+namespace common {
 namespace process {
 
 class User : private passwd {
@@ -56,9 +55,10 @@ private:
   bool      u_good;
 };
 
-}; // Namespace process
-
-} COMMON_NAMESPACE_END;
+} // Namespace process
+} // common namespace
+} // wms namespace
+} // glite namespace
 
 #endif /*  GLITE_WMS_COMMON_PROCESS_USER_H */
 

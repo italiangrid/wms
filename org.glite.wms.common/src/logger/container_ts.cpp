@@ -2,8 +2,9 @@
 
 using namespace std;
 
-COMMON_NAMESPACE_BEGIN {
-
+namespace glite {
+namespace wms {
+namespace common {
 namespace logger {
 
 DataContainerMulti::data_s::data_s( const DataContainerSingle &dcs ) : d_date( dcs.date() ), d_multiline( dcs.multiline() ),
@@ -157,6 +158,7 @@ const string &DataContainerMulti::multiline_prefix( void )
   return this->dcm_data->d_multiprefix;
 }
 
-}; // Namespace logger
-
-} COMMON_NAMESPACE_END;
+} // logger namespace
+} // common namespace
+} // wms namespace
+} // glite namespace

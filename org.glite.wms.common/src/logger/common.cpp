@@ -5,8 +5,9 @@
 
 using namespace std;
 
-COMMON_NAMESPACE_BEGIN {
-
+namespace glite {
+namespace wms {
+namespace common {
 namespace logger {
 
 const char    *data_c::bd_s_timeFormat = "%d %b, %H:%M:%S";
@@ -174,6 +175,7 @@ void data_c::remove( void )
   return;
 }
 
-}; // Namespace logger
-
-} COMMON_NAMESPACE_END;
+} // logger namespace
+} // common namespace
+} // wms namespace
+} // glite namespace

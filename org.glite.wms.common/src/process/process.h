@@ -8,10 +8,9 @@
 #include <boost/function.hpp>
 #include <boost/shared_ptr.hpp>
 
-#include "../common_namespace.h"
-
-COMMON_NAMESPACE_BEGIN {
-
+namespace glite {
+namespace wms {
+namespace common {
 namespace process {
 
 class Subprocess; // Forward declaration
@@ -58,9 +57,11 @@ private:
   static Process  *p_s_instance;
 };
 
-}; // Namespace process
+} // Namespace process
+} // common namespace
+} // wms namespace
+} // glite namespace
 
-} COMMON_NAMESPACE_END;
 
 #endif /* GLITE_WMS_COMMON_PROCESS_PROCESS_H */
 

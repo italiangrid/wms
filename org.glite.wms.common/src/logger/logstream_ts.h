@@ -17,9 +17,17 @@
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/tss.hpp>
 
-namespace glite { namespace wms { namespace common { namespace logger { namespace threadsafe {
+namespace glite { 
+namespace wms { 
+namespace common { 
+namespace logger { 
+namespace threadsafe {
   class logstream;
-}}}}};
+} // threadsafe namespace
+} // logger namespace
+} // common namespace
+} // wms namespace
+} // glite namespace
 
 #define __log_t   glite::wms::common::logger::threadsafe::logstream
 namespace std {
@@ -27,9 +35,11 @@ namespace std {
 }
 #undef __log_t
 
-COMMON_NAMESPACE_BEGIN {
-
-namespace logger { namespace threadsafe {
+namespace glite {
+namespace wms {
+namespace common {
+namespace logger { 
+namespace threadsafe {
 
 class logstream {
 private:
@@ -106,9 +116,11 @@ logstream &logstream::operator<<( const Type &t )
   return *this;
 }
 
-}}; // closing namespaces
-
-} COMMON_NAMESPACE_END;
+} // threasafe namespace
+} // logger namespace
+} // common namespace
+} // wms namespace
+} // glite namespace
 
 #define __log_t   glite::wms::common::logger::threadsafe::logstream
 namespace std {

@@ -6,12 +6,11 @@
 #include <iostream>
 #include <exception>
 
-#include "common_namespace.h"
-
 #include "ModuleType.h"
 
-COMMON_NAMESPACE_BEGIN {
-
+namespace glite {
+namespace wms {
+namespace common {
 namespace configuration {
 
 class CannotConfigure : public std::exception {
@@ -131,9 +130,10 @@ private:
 
 inline std::ostream &operator<<( std::ostream &os, const CannotConfigure &cc ) { os << cc.reason(); return os; }
 
-}; // configuration namespace end
-
-} COMMON_NAMESPACE_END;
+} // configuration namespace end
+} // common namespace end
+} // wms namespace end
+} // glite namespace end
 
 #endif /* GLITE_WMS_COMMON_CONFIGURATION_EXCEPTIONS_H */
 

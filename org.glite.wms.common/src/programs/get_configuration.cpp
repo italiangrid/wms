@@ -6,7 +6,7 @@
 #include "configuration/Configuration.h"
 #include "configuration/exceptions.h"
 
-USING_COMMON_NAMESPACE;
+using namespace glite::wms::common;
 using namespace std;
 
 int main( int argc, char *argv[] )

@@ -21,8 +21,9 @@
 
 using namespace std;
 
-COMMON_NAMESPACE_BEGIN {
-
+namespace glite {
+namespace wms {
+namespace common {
 namespace logger {
 
 const char   *Logbuf::lb_s_letterLevels = "FCSEWID*VLMHU!";
@@ -383,6 +384,7 @@ int Logbuf::overflow( int ch )
 
 int Logbuf::sync( void ) { return this->internalSync( false ); }
 
-}; // Namespace logger
-
-} COMMON_NAMESPACE_END;
+} // logger namespace
+} // common namespace
+} // wms namespace
+} // glite namespace

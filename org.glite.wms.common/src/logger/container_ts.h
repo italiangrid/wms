@@ -5,8 +5,9 @@
 
 #include "common.h"
 
-COMMON_NAMESPACE_BEGIN {
-
+namespace glite {
+namespace wms {
+namespace common {
 namespace logger {
 
 class DataContainerMulti : public DataContainerImpl {
@@ -54,9 +55,10 @@ private:
   DataContainerSingle                              dcm_single;
 };
 
-}; // Namespace logger
-
-} COMMON_NAMESPACE_END;
+} // logger namespace
+} // common namespace
+} // wms namespace
+} // glite namespace
 
 #endif /* GLITE_WMS_COMMON_LOGGER_CONTAINER_TS_H */
 

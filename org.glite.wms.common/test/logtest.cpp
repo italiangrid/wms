@@ -11,10 +11,11 @@
 #include "logger/edglog.h"
 #include "utilities/streamdescriptor.h"
 
-USING_COMMON_NAMESPACE;
-
+using glite::wms::common;
 using namespace std;
 
+namespace logger = glite::wms::common::logger;
+namespace utilities = glite::wms::common::utilities;
 namespace ts = glite::wms::common::logger::threadsafe;
 
 void cunicolo( logger::logstream &log )

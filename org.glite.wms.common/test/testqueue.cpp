@@ -4,7 +4,8 @@
 #include "utilities/FileList.h"
 
 using namespace std;
-USING_COMMON_NAMESPACE;
+using glite::wms::common;
+namespace utilities = glite::wms::common::utilities;
 
 template <class Type>
 void stampa_coda( utilities::FileList<Type> &filequeue )

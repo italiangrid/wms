@@ -3,10 +3,9 @@
 
 #include <fstream>
 
-#include "common_namespace.h"
-
-COMMON_NAMESPACE_BEGIN {
-
+namespace glite {
+namespace wms {
+namespace common {
 namespace utilities {
 
 class DescriptorLock {
@@ -37,9 +36,10 @@ public:
   inline int descriptor( void ) { return( this->dl_fd ); }
 };
 
-};
-
-} COMMON_NAMESPACE_END;
+} // utilities namespace
+} // common namespace
+} // wms namespace
+} // glite namespace
 
 #endif /* GLITE_WMS_COMMON_UTILITIES_FSTREAMLOCK_H */
 

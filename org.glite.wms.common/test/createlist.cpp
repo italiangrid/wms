@@ -3,8 +3,8 @@
 #include "utilities/FileList.h"
 
 using namespace std;
-
-USING_COMMON_NAMESPACE;
+using glite::wms::common;
+namespace utilities = glite::wms::common::utilities;
 
 //  int main( int argc, char *argv[] )
 //  {

@@ -7,12 +7,11 @@
 
 #include <boost/thread/mutex.hpp>
 
-#include "common_namespace.h"
-
 #include "fstreamlock.h"
 
-COMMON_NAMESPACE_BEGIN {
-
+namespace glite {
+namespace wms {
+namespace common {
 namespace utilities {
 
 class CannotOpenLockFile : public std::string {
@@ -62,9 +61,10 @@ private:
   boost::mutex::scoped_lock   fl_mutexlock;
 };
 
-}; // Namespace utilities
-
-} COMMON_NAMESPACE_END;
+} // utilities namespace
+} // common namespace
+} // wms namespace
+} // glite namespace
 
 #endif /* GLITE_WMS_COMMON_UTILITIES_FILELOCKER_H */
 

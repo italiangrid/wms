@@ -9,7 +9,7 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#include "common_namespace.h"
+
 #ifdef HAVE_STRINGSTREAM
 #include <sstream>
 #else
@@ -24,12 +24,13 @@
 #include <ctime>
 #include <unistd.h>
 
-
-
 #define  CHAR_BUFFER_SIZE 1024
 
-COMMON_NAMESPACE_BEGIN{
-     namespace utilities {
+namespace glite {
+namespace wms {
+namespace common {
+namespace utilities {
+
 /**
  * std:string useful JSUI common utilized methods
  *
@@ -79,7 +80,9 @@ int checkFormat (const std::string& format, const std::string& str);
 void
 replace(std::string& where, const std::string& what, const std::string& with);
 
-//EWC_END_NAMESPACE ;// End NameSpace Definition
-} COMMON_NAMESPACE_END
-   }
+} // utilities namespace
+} // common namespace
+} // wms namespace
+} // glite namespace
+   
 #endif

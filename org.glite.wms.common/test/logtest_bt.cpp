@@ -10,8 +10,8 @@
 #include "logger/manipulators.h"
 #include "logger/edglog.h"
 
-USING_COMMON_NAMESPACE;
-
+using glite::wms::common;
+namespace logger = glite::wms::common::logger;
 namespace ts = glite::wms::common::logger::threadsafe;
 
 using namespace std;

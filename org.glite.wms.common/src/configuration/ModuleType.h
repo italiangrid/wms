@@ -4,10 +4,9 @@
 #include <vector>
 #include <string>
 
-#include "common_namespace.h"
-
-COMMON_NAMESPACE_BEGIN {
-
+namespace glite {
+namespace wms {
+namespace common {
 namespace configuration {
 
 class ModuleType {
@@ -46,9 +45,11 @@ private:
   static std::vector<std::string>    mt_s_names;
 };
 
-}; // Namespace configuration
+} // Namespace configuration
+} // common namespace end
+} // wms namespace end
+} // glite namespace end
 
-} COMMON_NAMESPACE_END;
 
 #endif /* GLITE_WMS_COMMON_CONFIGURATION_MODULETYPE_H */
 

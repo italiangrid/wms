@@ -9,16 +9,15 @@
 #include <vector>
 #include <string>
 
-#include "common_namespace.h"
-
 /*
   Hack to activate wrong filelist dumping...
   Remove when no more needed...
 */
 #define FILELIST_HAS_DEBUG_CODE
 
-COMMON_NAMESPACE_BEGIN {
-
+namespace glite {
+namespace wms {
+namespace common {
 namespace utilities {
 
 class FileIterator {
@@ -263,9 +262,11 @@ void throwErrorAndDumpFile( FileContainer &cont, FileContainerError::iostatus_t 
            throw FileContainerError( (status), (func), (filename).c_str(), (line) )
 #endif
 
-}; // Namespace utilities
+} // utilities namespace
+} // common namespace
+} // wms namespace
+} // glite namespace
 
-} COMMON_NAMESPACE_END;
 
 #endif /* GLITE_WMS_COMMON_UTILITIES_FILECONTAINER_H */
 

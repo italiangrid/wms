@@ -5,8 +5,9 @@
 
 #include "common.h"
 
-COMMON_NAMESPACE_BEGIN {
-
+namespace glite {
+namespace wms {
+namespace common {
 namespace logger {
 
 class Logbuf : public std::streambuf {
@@ -58,9 +59,10 @@ private:
   data_c              lb_data;
 };
 
-}; // Namespace logger
-
-} COMMON_NAMESPACE_END;
+} // logger namespace
+} // common namespace
+} // wms namespace
+} // glite namespace
 
 #endif /* Guard */
 

@@ -2,8 +2,9 @@
 
 using namespace std;
 
-COMMON_NAMESPACE_BEGIN {
-
+namespace glite {
+namespace wms {
+namespace common {
 namespace logger {
 
 logstream cedglog;
@@ -89,6 +90,7 @@ logstream &logstream::attach_to( logstream &ts )
   return *this;
 }
 
-}; // Namespace logger
-
-} COMMON_NAMESPACE_END;
+} // logger namespace
+} // common namespace
+} // wms namespace
+} // glite namespace

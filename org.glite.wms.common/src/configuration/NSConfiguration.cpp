@@ -1,7 +1,8 @@
 #include "NSConfiguration.h"
 
-COMMON_NAMESPACE_BEGIN {
-
+namespace glite {
+namespace wms {
+namespace common {
 namespace configuration {
 
 NSConfiguration::NSConfiguration( const classad::ClassAd *ad ) : confbase_c( ad )
@@ -10,6 +11,8 @@ NSConfiguration::NSConfiguration( const classad::ClassAd *ad ) : confbase_c( ad 
 NSConfiguration::~NSConfiguration( void )
 {}
 
-}; // configuration namespace closure
+} // configuration namespace
+} // common namespace
+} // wms namespace
+} // glite namespace
 
-} COMMON_NAMESPACE_END;

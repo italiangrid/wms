@@ -9,10 +9,9 @@
 #include <vector>
 #include <string>
 
-#include "common_namespace.h"
-
-COMMON_NAMESPACE_BEGIN {
-
+namespace glite {
+namespace wms {
+namespace common {
 namespace utilities {
 
 class Mixed {
@@ -479,9 +478,10 @@ private:
 
 typedef Mixed::mixed_type_t   mixed_type_t;
 
-}; // Namespace closure
-
-} COMMON_NAMESPACE_END;
+} // utilities namespace
+} // common namespace
+} // wms namespace
+} // glite namespace
 
 #endif /* GLITE_WMS_COMMON_UTILITIES_MIXED_H */
 

@@ -2,8 +2,9 @@
 
 using namespace std;
 
-COMMON_NAMESPACE_BEGIN {
-
+namespace glite {
+namespace wms {
+namespace common {
 namespace configuration {
 
 static char      *names[] = { "Unknown Module", "NetworkServer", "WorkloadManager", "JobController", "LogMonitor" };
@@ -80,6 +81,7 @@ ModuleType::module_type ModuleType::module_code( const string &type )
   return( (module_type) i );
 }
 
-}; // Namespace configuration
-
-} COMMON_NAMESPACE_END;
+} // configuration namespace
+} // common namespace
+} // wms namespace
+} // glite namespace

@@ -4,8 +4,9 @@
 
 using namespace std;
 
-COMMON_NAMESPACE_BEGIN {
-
+namespace glite {
+namespace wms {
+namespace common {
 namespace utilities {
 /*
   Private/Protected methods
@@ -357,6 +358,7 @@ void _file_sequence_t::compact( void )
   return;
 }
 
-}; // Namespace utilities
-
-} COMMON_NAMESPACE_END;
+} // utilities namespace
+} // common namespace
+} // wms namespace
+} // glite namespace

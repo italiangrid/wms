@@ -8,8 +8,9 @@
 #include "filecontainer.h"
 #include "FileListIterator.h"
 
-COMMON_NAMESPACE_BEGIN {
-
+namespace glite {
+namespace wms {
+namespace common {
 namespace utilities {
 
 class FileListDescriptorMutex;
@@ -155,9 +156,10 @@ inline FileList<std::string>::iterator FileList<std::string>::insert( const File
 template<>
 inline void FileList<std::string>::remove( const std::string &val ) { this->removeData( val ); }
 
-}; // Namespace utilities
-
-} COMMON_NAMESPACE_END;
+} // utilities namespace
+} // common namespace
+} // wms namespace
+} // glite namespace
 
 #endif /* iGLITE_WMS_COMMON_UTILITIES_FILELIST_H */
 

@@ -6,8 +6,9 @@
 
 using namespace std;
 
-COMMON_NAMESPACE_BEGIN {
-
+namespace glite {
+namespace wms {
+namespace common {
 namespace utilities {
 
 const char *LineParsingError::lpe_s_what = "Line parsing error";
@@ -74,6 +75,7 @@ void InvalidArgNumber::usage( ostream &os ) const
   return;
 }
 
-}; // Namespace closure
-
-} COMMON_NAMESPACE_END;
+} // utilities namespace
+} // common namespace
+} // wms namespace
+} // glite namespace

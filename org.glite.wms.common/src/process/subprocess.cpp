@@ -4,8 +4,9 @@
 #include "subprocess.h"
 #include "process.h"
 
-COMMON_NAMESPACE_BEGIN {
-
+namespace glite {
+namespace wms {
+namespace common {
 namespace process {
 
 Subprocess::Subprocess( pid_t pid ) : s_ended( false ), s_signaled( false ),
@@ -46,6 +47,7 @@ void Subprocess::set_status( int status )
   return;
 }
 
-}; // Namespace process
-
-} COMMON_NAMESPACE_END;
+} // process namespace
+} // common namespace
+} // wms namespace
+} // glite namespace

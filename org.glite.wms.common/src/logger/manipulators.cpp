@@ -3,8 +3,9 @@
 
 using namespace std;
 
-COMMON_NAMESPACE_BEGIN {
-
+namespace glite {
+namespace wms {
+namespace common {
 namespace logger {
 
 #ifndef LOGGER_FUTURE_IMPLEMENTATION
@@ -100,8 +101,9 @@ ostream &operator<<( ostream &os, const logger::setshowseverity &ss )
   return os;
 }
 
-}; // Namespace logger
+} // logger namespace
+} // common namespace
+} // wms namespace
+} // glite namespace
 
-} COMMON_NAMESPACE_END;
-
-USING_COMMON_NAMESPACE;
+using glite::wms::common;

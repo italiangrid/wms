@@ -6,7 +6,7 @@
 #include "exceptions.h"
 
 using namespace std;
-USING_COMMON_NAMESPACE;
+using namespace glite::wms::common;
 
 static bool                                  edg_wlcc_removeConfig = false;
 static const configuration::Configuration   *edg_wlcc_mainConfig = NULL;

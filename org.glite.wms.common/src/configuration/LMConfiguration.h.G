@@ -3,8 +3,9 @@
 
 #include "confbase.h"
 
-COMMON_NAMESPACE_BEGIN {
-
+namespace glite {
+namespace wms {
+namespace common {
 namespace configuration {
 
 class LMConfiguration : public confbase_c {
@@ -16,9 +17,10 @@ public:
   /* Tmpl: partial include class LMConfiguration */
 };
 
-}; // configuration namespace closure
-
-} COMMON_NAMESPACE_END;
+} // configuration namespace
+} // common namespace
+} // wms namespace
+} // glite namespace
 
 #endif /* GLITE_WMS_COMMON_CONFIGURATION_LMCONFIGURATION_H */
 

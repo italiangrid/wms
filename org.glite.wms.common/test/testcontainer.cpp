@@ -3,8 +3,8 @@
 #include "utilities/filecontainer.h"
 
 using namespace std;
-
-USING_COMMON_NAMESPACE;
+using glite::wms::common;
+namespace utilities = glite::wms::common::utilities;
 
 int main( void )
 {

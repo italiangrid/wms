@@ -6,8 +6,9 @@
 
 using namespace std;
 
-COMMON_NAMESPACE_BEGIN {
-
+namespace glite {
+namespace wms {
+namespace common {
 namespace utilities {
 
 const string LineParser::lp_s_empty;
@@ -174,6 +175,7 @@ const LineParser &LineParser::print( ostream &os ) const
   return *this;
 }
 
-}; // Namespace closure
-
-} COMMON_NAMESPACE_END;
+} // utilities namespace
+} // common namespace
+} // wms namespace
+} // glite namespace

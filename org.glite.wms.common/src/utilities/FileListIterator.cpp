@@ -4,8 +4,9 @@
 
 using namespace std;
 
-COMMON_NAMESPACE_BEGIN {
-
+namespace glite {
+namespace wms {
+namespace common {
 namespace utilities {
 
 /*
@@ -134,6 +135,7 @@ const classad::ClassAd &StdConverter<classad::ClassAd>::operator()( const string
   return *this->sc_classad;
 }
 
-}; // Namespace utilities
-
-} COMMON_NAMESPACE_END;
+} // utilities namespace
+} // common namespace
+} // wms namespace
+} // glite namespace

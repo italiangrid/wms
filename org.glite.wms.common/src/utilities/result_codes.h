@@ -2,8 +2,10 @@
 #define GLITE_WMS_COMMON_CLIENT_RESULT_CODES_H
 
 //EWC_BEGIN_NAMESPACE ;// NameSpace Definition
-#include "../common_namespace.h"
-COMMON_NAMESPACE_BEGIN{
+
+namespace glite {
+namespace wms {
+namespace common {
 namespace utilities{
 /*
  * exception_codes.h
@@ -47,7 +49,10 @@ enum ResultCode {
           JOB_NOT_OWNER
 
 };
-//EWC_END_NAMESPACE; //Close the NameSpace
-} COMMON_NAMESPACE_END
-}
+
+} // utilities namespace
+} // common namespace
+} // wms namespace
+} // glite namespace
+
 #endif

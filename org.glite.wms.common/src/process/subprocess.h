@@ -3,10 +3,9 @@
 
 #include <sys/types.h>
 
-#include "common_namespace.h"
-
-COMMON_NAMESPACE_BEGIN {
-
+namespace glite {
+namespace wms {
+namespace common {
 namespace process {
 
 class Functor;
@@ -40,9 +39,10 @@ private:
   pid_t   s_pid;
 };
 
-}; // Namespace process
-
-} COMMON_NAMESPACE_END;
+} // Namespace process
+} // common namespace
+} // wms namespace
+} // glite namespace
 
 #endif /* GLITE_WMS_COMMON_PROCESS_SUBPROCESS_H */
 

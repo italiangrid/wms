@@ -2,8 +2,9 @@
 
 using namespace std;
 
-COMMON_NAMESPACE_BEGIN {
-
+namespace glite {
+namespace wms {
+namespace common {
 namespace configuration {
 
 JCConfiguration::JCConfiguration( const classad::ClassAd *ad ) : confbase_c( ad )
@@ -12,6 +13,7 @@ JCConfiguration::JCConfiguration( const classad::ClassAd *ad ) : confbase_c( ad 
 JCConfiguration::~JCConfiguration( void )
 {}
 
-}; // configuration namespace closure
-
-} COMMON_NAMESPACE_END;
+} // configuration namespace
+} // common namespace
+} // wms namespace
+} // glite namespace

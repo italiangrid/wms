@@ -4,10 +4,9 @@
 #include <list>
 #include <algorithm>
 
-#include "common_namespace.h"
-
-COMMON_NAMESPACE_BEGIN {
-
+namespace glite {
+namespace wms {
+namespace common {
 namespace utilities {
 
 template <class Container>
@@ -94,9 +93,10 @@ void ForwardExtractor<Container>::remove( const value_type &val )
   return;
 }
 
-}; // Namespace utilities
-
-} COMMON_NAMESPACE_END;
+} // utilities namespace
+} // common namespace
+} // wms namespace
+} // glite namespace
 
 #endif /* __EXTRACTOR_H_LOADED */
 

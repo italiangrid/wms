@@ -10,8 +10,9 @@
 
 using namespace std;
 
-COMMON_NAMESPACE_BEGIN {
-
+namespace glite {
+namespace wms {
+namespace common {
 namespace process {
 
 namespace {
@@ -178,6 +179,7 @@ int Process::make_daemon( bool chdir, bool close )
 
 pid_t Process::parent( void ) { return ::getppid(); }
 
-}; // Namespace process
-
-} COMMON_NAMESPACE_END;
+} // process namespace
+} // common namespace
+} // wms namespace
+} // glite namespace

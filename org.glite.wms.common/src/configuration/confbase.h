@@ -4,12 +4,11 @@
 #include <vector>
 #include <string>
 
-#include "common_namespace.h"
-
 namespace classad { class ClassAd; }
 
-COMMON_NAMESPACE_BEGIN {
-
+namespace glite {
+namespace wms {
+namespace common {
 namespace configuration {
 
 class confbase_c {
@@ -37,9 +36,11 @@ private:
   confbase_c &operator=( const confbase_c &cb ); // Not implemented
 };
 
-}; // Namespace configuration
+} // Namespace configuration
+} // common namespace end
+} // wms namespace end
+} // glite namespace end
 
-} COMMON_NAMESPACE_END;
 
 #endif /* GLITE_WMS_COMMON_CONFIGURATION_CONFBASE_H */
 

@@ -3,14 +3,13 @@
 
 #include <fstream>
 
-#include "common_namespace.h"
-
 #if (__GNUC__>=3)
 #include <ext/stdio_filebuf.h>
 #endif
 
-COMMON_NAMESPACE_BEGIN {
-
+namespace glite {
+namespace wms {
+namespace common {
 namespace utilities {
 
 #if (__GNUC__>=3)
@@ -70,9 +69,10 @@ inline void create_file( const char *name ) { return; }
 
 #endif
 
-}; // Namespace utilities
-
-} COMMON_NAMESPACE_END;
+} // utilities namespace
+} // common namespace
+} // wms namespace
+} // glite namespace
 
 #endif /* GLITE_WMS_COMMON_UTILITIES_STREAMDESCRIPTOR_H */
 

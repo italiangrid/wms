@@ -4,12 +4,11 @@
 #include <iostream>
 #include <string>
 
-#include "common_namespace.h"
-
 #include "common.h"
 
-COMMON_NAMESPACE_BEGIN {
-
+namespace glite {
+namespace wms {
+namespace common {
 namespace logger {
 
 class Logbuf;
@@ -120,9 +119,10 @@ threadsafe::logstream &operator<<( threadsafe::logstream &os, const setlevel &sf
 threadsafe::logstream &operator<<( threadsafe::logstream &os, const setcurrent &sf );
 threadsafe::logstream &operator<<( threadsafe::logstream &os, const setmultiline &sf );
 
-}; // Namespace logger
-
-} COMMON_NAMESPACE_END;
+} // Namespace logger
+} // common namespace
+} // wms namespace
+} // glite namespace
 
 #endif /* GLITE_WMS_COMMON_LOGGER_MANIPULATORS_H */
 

@@ -8,8 +8,8 @@
 #include "configuration/exceptions.h"
 
 using namespace std;
-
-USING_COMMON_NAMESPACE;
+using glite::wms::common;
+namespace configuration = glite::wms::common::configuration;
 
 int main( void )
 {

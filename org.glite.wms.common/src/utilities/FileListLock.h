@@ -5,8 +5,9 @@
 
 #include "fstreamlock.h"
 
-COMMON_NAMESPACE_BEGIN {
-
+namespace glite {
+namespace wms {
+namespace common {
 namespace utilities {
 
 class _file_sequence_t;
@@ -53,9 +54,10 @@ private:
   DescriptorLock              fl_filelock;
 };
 
-}; // Namespace utilities
-
-} COMMON_NAMESPACE_END;
+} // utilities namespace
+} // common namespace
+} // wms namespace
+} // glite namespace
 
 #endif /* GLITE_WMS_COMMON_UTILITIES_FILELISTLOCK_H */
 

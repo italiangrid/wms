@@ -10,7 +10,8 @@
 
 using namespace std;
 
-USING_COMMON_NAMESPACE;
+using glite::wms::common;
+namespace utilities = glite::wms::common::utilities;
 
 //template <classad::ClassAd, utilities::StdConverter<classad::ClassAd> >
 template utilities::StdConverter<classad::ClassAd> 

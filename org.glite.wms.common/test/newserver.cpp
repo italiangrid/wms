@@ -2,15 +2,15 @@
 
 #include <iostream>
 
-#include "../src/utilities/FileList.h"
-#include "../src/utilities/FileListLock.h"
-#include "../src/utilities/Extractor.h"
+#include "utilities/FileList.h"
+#include "utilities/FileListLock.h"
+#include "utilities/Extractor.h"
 
 #include "queuecommon.h"
 
 using namespace std;
-
-USING_COMMON_NAMESPACE;
+using glite::wms::common;
+namespace utilities = glite::wms::common::utilities;
 
 typedef  utilities::FileList<string>     list_type;
 

@@ -5,8 +5,9 @@
 
 using namespace std;
 
-COMMON_NAMESPACE_BEGIN {
-
+namespace glite {
+namespace wms {
+namespace common {
 namespace logger {
 
 namespace {
@@ -80,6 +81,7 @@ threadsafe::logstream &operator<<( threadsafe::logstream &ls, const setshowsever
   return ls;
 }
 
-}; // Namespace logger
-
-} COMMON_NAMESPACE_END;
+} // logger namespace
+} // common namespace
+} // wms namespace
+} // glite namespace
