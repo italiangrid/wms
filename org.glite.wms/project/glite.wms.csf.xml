@@ -21,10 +21,14 @@
 
 	Revision history:
 	$Log$
+	Revision 1.78  2005/01/24 18:40:21  eronchie
+	Removed wmproxy
+	WORK IN PROGRESS
+
 	Revision 1.77  2005/01/18 15:35:32  eronchie
 	Start adding wmproxy
 	WORK IN PROGRESS
-
+	
 	Revision 1.76  2005/01/17 18:38:38  eronchie
 	Start adding wmproxy
 	WORK IN PROGRESS
@@ -471,10 +475,6 @@
                         <equals arg1="${org.glite.wms.wmproxy-interface.version}" arg2="HEAD" />
                 </condition>
 
-		<condition property="wmproxy.head">
-                        <equals arg1="${org.glite.wms.wmproxy.version}" arg2="HEAD" />
-                </condition>
-
 		<condition property="wmproxy-api-cpp.head">
                         <equals arg1="${org.glite.wms.wmproxy-api-cpp.version}" arg2="HEAD" />
                 </condition>
@@ -802,16 +802,6 @@
                     tag="${org.glite.wms.wmproxy-interface.version}" />
         </target>
 
-	<!-- WMPROXY -->
-        <target name="wmproxy" depends="get.wmproxy.head, get.wmproxy.tag"/>
-        <target name="get.wmproxy.head" if="wmproxy.head">
-            <cvs-co package="org.glite.wms.wmproxy" />
-        </target>
-        <target name="get.wmproxy.tag" unless="wmproxy.head">
-            <cvs-co package="org.glite.wms.wmproxy"
-                    tag="${org.glite.wms.wmproxy.version}" />
-        </target>
-
 	<!-- WMPROXY Api Cpp -->
         <target name="wmproxy-api-cpp" depends="gsoap,get.wmproxy-api-cpp.head, get.wmproxy-api-cpp.tag"/>
         <target name="get.wmproxy-api-cpp.head" if="wmproxy-api-cpp.head">
@@ -857,7 +847,6 @@
 					manager-ns-daemon,
 					jobsubmission,
 					ism,
-					wmproxy,
                                         wmproxy-interface,
                                         wmproxy-api-cpp,
                                         wmproxy-api-java,
