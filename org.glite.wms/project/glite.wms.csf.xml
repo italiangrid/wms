@@ -21,9 +21,12 @@
 
 	Revision history:
 	$Log$
+	Revision 1.71  2004/12/02 13:53:26  eronchie
+	Added dependency
+
 	Revision 1.70  2004/12/02 13:39:55  eronchie
 	Added new component
-
+	
 	Revision 1.69  2004/10/18 22:59:37  dimeglio
 	Added oscheck to various targets
 	
@@ -563,7 +566,7 @@
     	</target>
 
 	<!-- Brokerinfo Access -->
-        <target name="brokerinfo-access" depends="get.brokerinfo-access.head, get.brokerinfo-access.tag"/>
+        <target name="brokerinfo-access" depends="classads, get.brokerinfo-access.head, get.brokerinfo-access.tag"/>
         <target name="get.brokerinfo-access.head" if="brokerinfo-access.head">
             <cvs-co package="org.glite.wms.brokerinfo-access" />
         </target>

@@ -21,9 +21,12 @@
 
 	Revision history:
 	$Log$
+	Revision 1.81  2004/12/02 13:53:26  eronchie
+	Added dependency
+
 	Revision 1.80  2004/12/02 13:39:55  eronchie
 	Added new component
-
+	
 	Revision 1.79  2004/10/29 22:54:16  dimeglio
 	Use envset target
 	
@@ -545,7 +548,7 @@
 		</if>
         </target>
 
-	 <target name="brokerinfo-access" unless="setenvonly" depends="envset">
+	 <target name="brokerinfo-access" unless="setenvonly" depends="envset, classads">
                 <if>
                         <isset property="small.memory" />
                         <then>
