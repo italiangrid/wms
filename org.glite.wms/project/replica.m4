@@ -5,7 +5,7 @@ dnl - REPLICA_CFLAGS (compiler flags)
 dnl - REPLICA_LIBS (linker flags, stripping and path)
 dnl prerequisites:
 
-AC_DEFUN(AC_RM,
+AC_DEFUN(AC_REPLICA,
 [
     AC_ARG_WITH(replica_prefix, 
 	[  --with-replica-prefix=PFX   prefix where 'replica' is installed.],
