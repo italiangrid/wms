@@ -21,9 +21,12 @@
 
 	Revision history:
 	$Log$
+	Revision 1.62  2004/09/21 13:38:53  eronchie
+	Updated
+
 	Revision 1.61  2004/09/09 21:08:09  dimeglio
 	Moved tag target to targets-common
-
+	
 	Revision 1.60  2004/08/27 03:03:58  dimeglio
 	Preserve original timestamp when copying file and overwrite when new
 	
@@ -524,7 +527,7 @@
 		</if>
         </target>
 
-	<target name="matchmaking" unless="setenvonly" depends="boost,classads,common,classad_plugin">
+	<target name="matchmaking" unless="setenvonly" depends="boost,classads,common,classad_plugin, ism">
 		<if>
 			<isset property="small.memory" />
 			<then>
@@ -716,6 +719,22 @@
 		</if>
         </target>
 
+	<target name="ism" unless="setenvonly" depends="boost,classads">
+                <if>
+                        <isset property="small.memory" />
+                        <then>
+                                <exec dir="${wms.subsystem.dir}.ism" executable="${env.ANT_HOME}/bin/ant" failonerror="${failonerror}">
+                                        <arg line="${target} -Dsmall.memory=true -Dbootstrap=${bootstrap} -Dfailonerror=${failonerror} -Ddo.cvs.tag=${do.cvs.tag}"/>
+                                </exec>
+                        </then>
+                        <else>
+                                <ant dir="${wms.subsystem.dir}.ism"
+                            target="${target}"
+                            inheritall="false" />
+                        </else>
+                </if>
+        </target>
+
 	<target name="manager" unless="setenvonly" depends="boost,classads,globus,expat,ares,common,purger,jdl,helper,jobsubmission">
 		<if>
 			<isset property="small.memory" />
@@ -787,6 +806,7 @@
 					     manager-ns-client,
 					     manager-ns-daemon,	
 					     jobsubmission,
+					     ism,
 					     manager">
 		<echo append="true" file="${global.project.dir}/cruisecontrol-stub.xml">
 	&lt;project name="${subsystem.name}" type="post-subsystem" packageName="${global.prefix}-${subsystem.prefix}"/&gt;

@@ -21,9 +21,12 @@
 
 	Revision history:
 	$Log$
+	Revision 1.58  2004/09/21 13:39:44  eronchie
+	Updated
+
 	Revision 1.57  2004/08/20 10:07:02  eronchie
 	Updated buildmodules
-
+	
 	Revision 1.56  2004/08/16 15:00:04  eronchie
 	Added configuration component
 	
@@ -378,6 +381,10 @@
                         <equals arg1="${org.glite.wms.jobsubmission.version}" arg2="HEAD" />
                 </condition>
 
+		<condition property="ism.head">
+                        <equals arg1="${org.glite.wms.ism.version}" arg2="HEAD" />
+                </condition>
+
 		<condition property="manager.head">
                         <equals arg1="${org.glite.wms.manager.version}" arg2="HEAD" />
                 </condition>
@@ -532,7 +539,7 @@
     	</target>
 
 	<!-- Matchmaking -->
-    	<target name="matchmaking" depends="boost,classads,globus,common,classad_plugin,get.matchmaking.head, get.matchmaking.tag"/>
+    	<target name="matchmaking" depends="boost,classads,globus,common,classad_plugin,ism,get.matchmaking.head, get.matchmaking.tag"/>
     	<target name="get.matchmaking.head" if="matchmaking.head">
             <cvs-co package="org.glite.wms.matchmaking" />
     	</target>
@@ -651,6 +658,16 @@
                     tag="${org.glite.wms.jobsubmission.version}" />
         </target>	
 
+	<!-- ism -->
+        <target name="ism" depends="boost,classads,get.ism.head, get.ism.tag"/>
+        <target name="get.ism.head" if="ism.head">
+            <cvs-co package="org.glite.wms.ism" />
+        </target>
+        <target name="get.ism.tag" unless="ism.head">
+            <cvs-co package="org.glite.wms.ism"
+                    tag="${org.glite.wms.ism.version}" />
+        </target>
+
 	<!-- Manager -->
         <target name="manager" depends="boost,classads,globus,expat,ares,common,jdl,purger,helper,jobsubmission,get.manager.head, get.manager.tag"/>
         <target name="get.manager.head" if="manager.head">
@@ -704,6 +721,7 @@
 					manager-ns-client,
 					manager-ns-daemon,
 					jobsubmission,
+					ism,
 					manager"/>
 
 
