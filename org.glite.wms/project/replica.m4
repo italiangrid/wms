@@ -33,8 +33,7 @@ AC_DEFUN(AC_REPLICA,
   
     REPLICA_MANAGER_LIBS="$REPLICA_MANAGER_LIBS -ledg_replica_manager_client_gcc3_2_2"
 
-    if test ! -f "$with_replica_manager_prefix/$EDG/include/EdgReplicaManager/Re
-plicaManagerImpl.h" ; then
+    if test ! -f "$with_replica_manager_prefix/$EDG/include/EdgReplicaManager/ReplicaManagerImpl.h"; then
         ac_replica_man=no
     else
         ac_replica_man=yes
@@ -92,17 +91,9 @@ plicaManagerImpl.h" ; then
 
     REPLICA_OPTIMIZATION_LIBS="$REPLICA_OPTIMIZATION_LIBS -ledg_replica_optimization_client_gcc3_2_2"
 
-    if test ! -f "$with_replica_optimization_prefix/$EDG/include/EdgReplicaOptimization/ReplicaManagerException.h" ; then
-        ac_replica_opt=no
-    else
-        ac_replica_opt=yes
-    fi
-
     REPLICA_LIBS="$REPLICA_MANAGER_LIBS $REPLICA_LOCATION_LIBS $REPLICA_METADATA_LIBS $REPLICA_OPTIMIZATION_LIBS"
 
-dnl -ledg_local_replica_catalog_client_gcc3_2_2 -ledg_replica_metadata_catalog_client_gcc3_2_2 -ledg_replica_optimization_client_gcc3_2_2 -ledg_gsoap_base_gcc3_2_2"
-
-    if test x$ac_replica_opt = xyes -a x$ac_replica_man = xyes; then
+    if test x$ac_replica_man = xyes; then
 	ifelse([$2], , :, [$2])
     else
 	REPLICA_MANAGER_CFLAGS=""
