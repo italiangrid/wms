@@ -21,9 +21,12 @@
 
 	Revision history:
 	$Log$
+	Revision 1.70  2004/12/02 13:39:55  eronchie
+	Added new component
+
 	Revision 1.69  2004/10/18 22:59:37  dimeglio
 	Added oscheck to various targets
-
+	
 	Revision 1.68  2004/10/15 15:08:52  eronchie
 	Updated configuration
 	
@@ -364,6 +367,10 @@
                         <equals arg1="${org.glite.wms.brokerinfo.version}" arg2="HEAD" />
                 </condition>
 
+		<condition property="brokerinfo-access.head">
+                        <equals arg1="${org.glite.wms.brokerinfo-access.version}" arg2="HEAD" />
+                </condition>
+
 		<condition property="classad_plugin.head">
                         <equals arg1="${org.glite.wms.classad_plugin.version}" arg2="HEAD" />
                 </condition>
@@ -555,6 +562,16 @@
                     tag="${org.glite.wms.brokerinfo.version}" />
     	</target>
 
+	<!-- Brokerinfo Access -->
+        <target name="brokerinfo-access" depends="get.brokerinfo-access.head, get.brokerinfo-access.tag"/>
+        <target name="get.brokerinfo-access.head" if="brokerinfo-access.head">
+            <cvs-co package="org.glite.wms.brokerinfo-access" />
+        </target>
+        <target name="get.brokerinfo-access.tag" unless="brokerinfo-access.head">
+            <cvs-co package="org.glite.wms.brokerinfo-access"
+                    tag="${org.glite.wms.brokerinfo-access.version}" />
+        </target>
+
 	<!-- ClassAdPlugin -->
     	<target name="classad_plugin" depends="boost,classads,globus,common,brokerinfo,get.classad_plugin.head, get.classad_plugin.tag"/>
     	<target name="get.classad_plugin.head" if="classad_plugin.head">
@@ -744,6 +761,7 @@
 					jdl,
  				        jdlj,
 					brokerinfo,
+					brokerinfo-access,
 					classad_plugin,
 					rls,
 					matchmaking,

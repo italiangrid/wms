@@ -21,9 +21,12 @@
 
 	Revision history:
 	$Log$
+	Revision 1.80  2004/12/02 13:39:55  eronchie
+	Added new component
+
 	Revision 1.79  2004/10/29 22:54:16  dimeglio
 	Use envset target
-
+	
 	Revision 1.78  2004/10/28 22:58:53  dimeglio
 	Quoted ant command line parameters
 	
@@ -542,6 +545,22 @@
 		</if>
         </target>
 
+	 <target name="brokerinfo-access" unless="setenvonly" depends="envset">
+                <if>
+                        <isset property="small.memory" />
+                        <then>
+                                <exec dir="${wms.subsystem.dir}.brokerinfo-access" executable="${antExec}" failonerror="${failonerror}">
+                                        <arg line="${target} &quot;-Dsmall.memory=true&quot; &quot;-Dbootstrap=${bootstrap}&quot; &quot;-Dfailonerror=${failonerror}&quot; &quot;-Ddo.cvs.tag=${do.cvs.tag}&quot;"/>
+                                </exec>
+                        </then>
+                        <else>
+                                <ant dir="${wms.subsystem.dir}.brokerinfo-access"
+                                     target="${target}"
+                                     inheritall="false" />
+                        </else>
+                </if>
+        </target>
+
 	<target name="classad_plugin" unless="setenvonly" depends="envset, boost,classads,common,brokerinfo">
 		<if>
 			<isset property="small.memory" />
@@ -840,6 +859,7 @@
 					     jdl,
    					     jdlj,
 					     brokerinfo,
+					     brokerinfo-access,
 					     classad_plugin,
 					     rls,
 					     matchmaking,
