@@ -47,7 +47,8 @@ EXTRA_DIST = JCConfiguration.h.G \
 	cwrapper.cpp.G \
 	Configuration.def
 
-AM_CPPFLAGS = -I$(top_srcdir)/src \
+AM_CPPFLAGS = -I$(top_srcdir)/interface \
+	-I$(top_srcdir)/src \
 	$(BOOST_CFLAGS) \
 	$(CLASSAD_CFLAGS)
 
