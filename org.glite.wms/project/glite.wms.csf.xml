@@ -21,10 +21,13 @@
 
 	Revision history:
 	$Log$
+	Revision 1.86  2005/03/25 09:19:22  eronchie
+	Updated brokerinfo dependency
+
 	Revision 1.85  2005/03/11 16:40:58  eronchie
 	Removed jdlj component
 	It was moved on the jdl subsystem
-
+	
 	Revision 1.84  2005/02/09 18:51:17  eronchie
 	Updated
 	
@@ -611,7 +614,7 @@
     	</target>
 
 	<!-- Brokerinfo -->
-    	<target name="brokerinfo" depends="boost,classads,globus,common,jdl,rls, cgsi-gsoap, gsoap, get.brokerinfo.head, get.brokerinfo.tag"/>
+    	<target name="brokerinfo" depends="boost,classads,globus,common,jdl,rls, cgsi-gsoap, gsoap, ism, get.brokerinfo.head, get.brokerinfo.tag"/>
     	<target name="get.brokerinfo.head" if="brokerinfo.head">
             <cvs-co package="org.glite.wms.brokerinfo" />
     	</target>

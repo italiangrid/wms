@@ -21,10 +21,13 @@
 
 	Revision history:
 	$Log$
+	Revision 1.96  2005/03/25 09:19:22  eronchie
+	Updated brokerinfo dependency
+
 	Revision 1.95  2005/03/11 16:40:57  eronchie
 	Removed jdlj component
 	It was moved on the jdl subsystem
-
+	
 	Revision 1.94  2005/02/10 13:11:46  eronchie
 	Updated
 	Changed fgci in fcgi
@@ -582,7 +585,7 @@
 		</if>
         </target>
 
-	<target name="brokerinfo" unless="setenvonly" depends="envset, boost,classads,common,jdl,rls,cgsi-gsoap, gsoap">
+	<target name="brokerinfo" unless="setenvonly" depends="envset, boost,classads,common,jdl,rls,ism,cgsi-gsoap, gsoap">
 		<if>
 			<isset property="small.memory" />
 			<then>
