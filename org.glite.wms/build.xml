@@ -21,10 +21,14 @@
 
 	Revision history:
 	$Log$
-	Revision 1.84  2005/01/17 18:24:17  eronchie
+	Revision 1.85  2005/01/17 18:38:38  eronchie
 	Start adding wmproxy
 	WORK IN PROGRESS
 
+	Revision 1.84  2005/01/17 18:24:17  eronchie
+	Start adding wmproxy
+	WORK IN PROGRESS
+	
 	Revision 1.83  2004/12/15 14:16:01  eronchie
 	Updated
 	
@@ -872,6 +876,22 @@
                         </then>
                         <else>
                                 <ant dir="${wms.subsystem.dir}.wmproxy-interface"
+                                     target="${target}"
+                                     inheritall="false" />
+                        </else>
+                </if>
+        </target>
+
+	<target name="wmproxy-api-cpp" unless="setenvonly" depends="envset, gsoap">
+                <if>
+                        <isset property="small.memory" />
+                        <then>
+                                <exec dir="${wms.subsystem.dir}.wmproxy-api-cpp" executable="${antExec}" failonerror="${failonerror}">
+                                        <arg line="${target} &quot;-Dsmall.memory=true&quot; &quot;-Dbootstrap=${bootstrap}&quot; &quot;-Dfailonerror=${failonerror}&quot; &quot;-Ddo.cvs.tag=${do.cvs.tag}&quot;"/>
+                                </exec>
+                        </then>
+                        <else>
+                                <ant dir="${wms.subsystem.dir}.wmproxy-api-cpp"
                                      target="${target}"
                                      inheritall="false" />
                         </else>
