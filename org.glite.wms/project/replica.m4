@@ -24,6 +24,41 @@ AC_DEFUN(AC_REPLICA,
   
     REPLICA_MANAGER_LIBS="$REPLICA_MANAGER_LIBS -ledg_replica_manager_client_gcc3_2_2"
 
+    AC_ARG_WITH(replica_metadata_prefix,
+        [  --with-replica-metadata-prefix=PFX   prefix where 'replica metadata' is installed.],
+        [],
+        with_replica_metadata_prefix=${GLITE_LOCATION:-/opt/glite})
+
+    AC_MSG_CHECKING([for RESOURCE METADATA installation at ${with_replica_metadata_prefix}])
+
+    if test -n "$with_replica_metadata_prefix" -a "$with_replica_metadata_prefix" != "/usr" ; then
+        REPLICA_METADATA_CFLAGS="-I$with_replica_metadata_prefix/include"
+        REPLICA_METADATA_LIBS="-L$with_replica_metadata_prefix/lib"
+    else
+        REPLICA_METADATA_CFLAGS=""
+        REPLICA_METADATA_LIBS=""
+    fi
+
+    REPLICA_METADATA_LIBS="$REPLICA_METADATA_LIBS -ledg_replica_metadata_catalog_client_gcc3_2_2"
+
+    AC_ARG_WITH(replica_location_prefix,
+        [  --with-replica-location-prefix=PFX   prefix where 'replica location' is installed.],
+        [],
+        with_replica_location_prefix=${GLITE_LOCATION:-/opt/glite})
+
+    AC_MSG_CHECKING([for RESOURCE LOCATION installation at ${with_replica_location_prefix}])
+
+    if test -n "$with_replica_location_prefix" -a "$with_replica_location_prefix"
+!= "/usr" ; then
+        REPLICA_LOCATION_CFLAGS="-I$with_replica_location_prefix/include"
+        REPLICA_LOCATION_LIBS="-L$with_replica_location_prefix/lib"
+    else
+        REPLICA_LOCATION_CFLAGS=""
+        REPLICA_LOCATION_LIBS=""
+    fi
+
+    REPLICA_LOCATION_LIBS="$REPLICA_LOCATION_LIBS -ledg_local_replica_catalog_client_gcc3_2_2"
+
     AC_ARG_WITH(replica_optimization_prefix,
         [  --with-replica-optimization-prefix=PFX   prefix where 'replica optimization' is installed.],
         [],
@@ -42,14 +77,17 @@ AC_DEFUN(AC_REPLICA,
     REPLICA_OPTIMIZATION_LIBS="$REPLICA_OPTIMIZATION_LIBS -ledg_replica_optimization_client_gcc3_2_2"
 
 
- -ledg_local_replica_catalog_client_gcc3_2_2 -ledg_replica_metadata_catalog_client_gcc3_2_2 -ledg_replica_optimization_client_gcc3_2_2 -ledg_gsoap_base_gcc3_2_2"
-	
+dnl -ledg_local_replica_catalog_client_gcc3_2_2 -ledg_replica_metadata_catalog_client_gcc3_2_2 -ledg_replica_optimization_client_gcc3_2_2 -ledg_gsoap_base_gcc3_2_2"
 
     if test x$ac_cv_replica_valid = xyes ; then
 	ifelse([$2], , :, [$2])
     else
 	REPLICA_MANAGER_CFLAGS=""
 	REPLICA_MANAGER_LIBS=""
+	REPLICA_LOCATION_CFLAGS=""
+        REPLICA_LOCATION_LIBS=""
+	REPLICA_METADATA_CFLAGS=""
+        REPLICA_METADATA_LIBS=""
 	REPLICA_OPTIMIZATION_CFLAGS=""
         REPLICA_OPTIMIZATION_LIBS=""
 	ifelse([$3], , :, [$3])
@@ -57,6 +95,10 @@ AC_DEFUN(AC_REPLICA,
 
     AC_SUBST(REPLICA_MANAGER_CFLAGS)
     AC_SUBST(REPLICA_MANAGER_LIBS)
+    AC_SUBST(REPLICA_LOCATION_CFLAGS)
+    AC_SUBST(REPLICA_LOCATION_LIBS)
+    AC_SUBST(REPLICA_METADATA_CFLAGS)
+    AC_SUBST(REPLICA_METADATA_LIBS)
     AC_SUBST(REPLICA_OPTIMIZATION_CFLAGS)
     AC_SUBST(REPLICA_OPTIMIZATION_LIBS)
 ])
