@@ -7,22 +7,22 @@
  * For license conditions see http://www.eu-datagrid.org/license.html
  */
 
-#include "glite/wms/common/utilities/Exceptions.h"
+#include "glite/wmsutils/exception/Exception.h"
 #include "exception_codes.h"
 
-namespace utilities = glite::wms::common::utilities;
+namespace exception = glite::wmsutils::exception;
 
 namespace glite {  
 namespace wms {
 namespace common {
 namespace ldif2classad {
  
-    class Exception : public utilities::Exception
+    class Exception : public exception::Exception
     {
       protected:
         Exception() {}
         Exception(const std::string& s, const std::string& m, int c, const std::string& n) :
-        utilities::Exception(s, m, c, n) {}
+        exception::Exception(s, m, c, n) {}
     };
  
    struct ConnectionException : ldif2classad::Exception

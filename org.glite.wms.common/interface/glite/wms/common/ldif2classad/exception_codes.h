@@ -7,7 +7,7 @@
  * Contributors are mentioned in the code where appropriate.
  */
 
-#include "glite/wms/common/utilities/exception_codes.h"
+#include "glite/wmsutils/exception/exception_codes.h"
 
 namespace glite {
 namespace wms {
@@ -15,7 +15,7 @@ namespace common {
 namespace ldif2classad {
 
 enum {
-      LDAP_FATAL_ERROR = glite::wms::common::utilities::WMS_LDAP_ERROR_BASE +1 ,
+      LDAP_FATAL_ERROR = glite::wmsutils::exception::WMS_LDAP_ERROR_BASE +1 ,
       LDAP_CONNECTION_ERROR,
       LDAP_QUERY_ERROR,
       LDAP_UNDEFINED_VALUE_ERROR
