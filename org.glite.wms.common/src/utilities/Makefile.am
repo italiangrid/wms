@@ -37,10 +37,6 @@ libglite_wms_globus_ftp_util_la_SOURCES = \
 	globus_ftp_put.cpp \
 	globus_ftp_exists.cpp
 
-libglite_wms_exceptions_la_SOURCES = \
-	Exceptions.cpp \
-	utils.cpp
-
 libglite_wms_util_la_SOURCES = \
 	filecontainer.cpp \
 	fstreamlock.cpp \
@@ -70,7 +66,6 @@ utilitiesinclude_HEADERS = \
 	ii_attr_utils.h \
 	LineParserExceptions.h \
 	quota.h \
-	utils.h \
 	triple.h \
 	scope_guard.h
 
