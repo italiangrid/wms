@@ -21,9 +21,12 @@
 
 	Revision history:
 	$Log$
+	Revision 1.63  2004/09/29 13:18:11  flammer
+	Only updatinf formatting of small.memory lines.
+
 	Revision 1.62  2004/09/21 13:38:53  eronchie
 	Updated
-
+	
 	Revision 1.61  2004/09/09 21:08:09  dimeglio
 	Moved tag target to targets-common
 	
@@ -344,11 +347,11 @@
 		</antcall>
 	</target>
 
-    <target name="stage" depends="localinit">
+    	<target name="stage" depends="localinit">
             <antcall target="buildmodules">
                     <param name="target" value="stage"/>
             </antcall>
-    </target>
+    	</target>
 
 	<target name="dist" depends="localinit">
 		<antcall target="buildmodules">
@@ -409,8 +412,8 @@
 			</then>
 			<else>
 				<ant dir="${wms.subsystem.dir}.thirdparty-bypass"
-	                    target="${target}"
-	                    inheritall="false" />
+	                    	     target="${target}"
+				     inheritall="false" />
 			</else>
 		</if>
 	</target>
@@ -425,8 +428,8 @@
 			</then>
 			<else>
 				<ant dir="${wms.subsystem.dir}.thirdparty-globus_gridftp_server"
-	                    target="${target}"
-	                    inheritall="false" />
+	                    	     target="${target}"
+	                    	     inheritall="false" />
 			</else>
 		</if>
 	</target>
@@ -441,8 +444,8 @@
 			</then>
 			<else>
 				<ant dir="${wms.subsystem.dir}.thirdparty-loki"
-	                    target="${target}"
-	                    inheritall="false" />
+	                    	     target="${target}"
+	                    	     inheritall="false" />
 			</else>
 		</if>
 	</target>
@@ -457,8 +460,8 @@
 			</then>
 			<else>
 				<ant dir="${wms.subsystem.dir}.common"
-	                    target="${target}"
-	                    inheritall="false" />
+	                    	     target="${target}"
+	                    	     inheritall="false" />
 			</else>
 		</if>
 	</target>
@@ -473,8 +476,8 @@
 			</then>
 			<else>
 				<ant dir="${wms.subsystem.dir}.jdl"
-	                    target="${target}"
-	                    inheritall="false" />
+	                    	     target="${target}"
+	                    	     inheritall="false" />
 			</else>
 		</if>
         </target>
@@ -489,8 +492,8 @@
 			</then>
 			<else>
 				<ant dir="${wms.subsystem.dir}.jdlj"
-	                    target="${target}"
-	                    inheritall="false" />
+	                    	     target="${target}"
+	                    	     inheritall="false" />
 			</else>
 		</if>
         </target>
@@ -505,8 +508,8 @@
 			</then>
 			<else>
 				<ant dir="${wms.subsystem.dir}.brokerinfo"
-	                    target="${target}"
-	                    inheritall="false" />
+	                    	     target="${target}"
+	                    	     inheritall="false" />
 			</else>
 		</if>
         </target>
@@ -521,8 +524,8 @@
 			</then>
 			<else>
 				<ant dir="${wms.subsystem.dir}.classad_plugin"
-	                    target="${target}"
-	                    inheritall="false" />
+	                    	     target="${target}"
+	                    	     inheritall="false" />
 			</else>
 		</if>
         </target>
@@ -537,8 +540,8 @@
 			</then>
 			<else>
 				<ant dir="${wms.subsystem.dir}.matchmaking"
-	                    target="${target}"
-	                    inheritall="false" />
+	                    	     target="${target}"
+	                    	     inheritall="false" />
 			</else>
 		</if>
         </target>
@@ -553,8 +556,8 @@
 			</then>
 			<else>
 				<ant dir="${wms.subsystem.dir}.helper"
-	                    target="${target}"
-	                    inheritall="false" />
+	                    	     target="${target}"
+	                    	     inheritall="false" />
 			</else>
 		</if>
         </target>
@@ -569,8 +572,8 @@
 			</then>
 			<else>
 				<ant dir="${wms.subsystem.dir}.broker"
-	                    target="${target}"
-	                    inheritall="false" />
+	                    	     target="${target}"
+	                    	     inheritall="false" />
 			</else>
 		</if>
         </target>
@@ -585,8 +588,8 @@
 			</then>
 			<else>
 				<ant dir="${wms.subsystem.dir}.checkpointing"
-	                    target="${target}"
-	                    inheritall="false" />
+	                    	     target="${target}"
+	                    	     inheritall="false" />
 			</else>
 		</if>
         </target>
@@ -601,8 +604,8 @@
 			</then>
 			<else>
 				<ant dir="${wms.subsystem.dir}.manager-ns-versions"
-	                    target="${target}"
-	                    inheritall="false" />
+	                    	     target="${target}"
+	                    	     inheritall="false" />
 			</else>
 		</if>
         </target>
@@ -617,8 +620,8 @@
 			</then>
 			<else>
 				<ant dir="${wms.subsystem.dir}.manager-ns-common"
-	                    target="${target}"
-	                    inheritall="false" />
+	                    	     target="${target}"
+	                    	     inheritall="false" />
 			</else>
 		</if>
         </target>
@@ -633,8 +636,8 @@
 			</then>
 			<else>
 				<ant dir="${wms.subsystem.dir}.manager-ns-fsm"
-	                    target="${target}"
-	                    inheritall="false" />
+	                    	     target="${target}"
+	                    	     inheritall="false" />
 			</else>
 		</if>
         </target>
@@ -649,8 +652,8 @@
 			</then>
 			<else>
 				<ant dir="${wms.subsystem.dir}.manager-ns-commands"
-	                    target="${target}"
-	                    inheritall="false" />
+	                    	     target="${target}"
+	                    	     inheritall="false" />
 			</else>
 		</if>
         </target>
@@ -665,8 +668,8 @@
 			</then>
 			<else>
 				<ant dir="${wms.subsystem.dir}.manager-ns-client"
-	                    target="${target}"
-	                    inheritall="false" />
+	                    	     target="${target}"
+	                    	     inheritall="false" />
 			</else>
 		</if>
         </target>
@@ -681,8 +684,8 @@
 			</then>
 			<else>
 				<ant dir="${wms.subsystem.dir}.manager-ns-daemon"
-	                    target="${target}"
-	                    inheritall="false" />
+	                    	     target="${target}"
+	                    	     inheritall="false" />
 			</else>
 		</if>
         </target>
@@ -697,8 +700,8 @@
 			</then>
 			<else>
 				<ant dir="${wms.subsystem.dir}.purger"
-	                    target="${target}"
-	                    inheritall="false" />
+	                    	     target="${target}"
+	                    	     inheritall="false" />
 			</else>
 		</if>
         </target>
@@ -713,8 +716,8 @@
 			</then>
 			<else>
 				<ant dir="${wms.subsystem.dir}.jobsubmission"
-	                    target="${target}"
-	                    inheritall="false" />
+	                    	     target="${target}"
+	                    	     inheritall="false" />
 			</else>
 		</if>
         </target>
@@ -729,8 +732,8 @@
                         </then>
                         <else>
                                 <ant dir="${wms.subsystem.dir}.ism"
-                            target="${target}"
-                            inheritall="false" />
+                            	     target="${target}"
+                            	     inheritall="false" />
                         </else>
                 </if>
         </target>
@@ -745,8 +748,8 @@
 			</then>
 			<else>
 				<ant dir="${wms.subsystem.dir}.manager"
-	                    target="${target}"
-	                    inheritall="false" />
+	                    	     target="${target}"
+	                    	     inheritall="false" />
 			</else>
 		</if>
         </target>
@@ -761,8 +764,8 @@
                         </then>
                         <else>
                                 <ant dir="${wms.subsystem.dir}.interactive"
-                            target="${target}"
-                            inheritall="false" />
+                            	     target="${target}"
+                            	     inheritall="false" />
                         </else>
                 </if>
         </target>
@@ -777,8 +780,8 @@
                         </then>
                         <else>
                                 <ant dir="${wms.subsystem.dir}.configuration"
-                            target="${target}"
-                            inheritall="false" />
+                            	     target="${target}"
+                            	     inheritall="false" />
                         </else>
                 </if>
         </target>
