@@ -21,9 +21,12 @@
 
 	Revision history:
 	$Log$
+	Revision 1.72  2004/10/13 22:05:27  eronchie
+	Added ism as manager dependency
+
 	Revision 1.71  2004/10/12 15:34:16  eronchie
 	Removed edg-replica-manager-client-cpp and Leave edg-replica-manager-client
-
+	
 	Revision 1.70  2004/10/12 12:59:45  eronchie
 	Updated
 	
@@ -762,7 +765,7 @@
                 </if>
         </target>
 
-	<target name="manager" unless="setenvonly" depends="boost,classads,globus,expat,ares,common,purger,jdl,helper,jobsubmission">
+	<target name="manager" unless="setenvonly" depends="boost,classads,globus,expat,ares,common,purger,jdl,helper,jobsubmission,ism">
 		<if>
 			<isset property="small.memory" />
 			<then>

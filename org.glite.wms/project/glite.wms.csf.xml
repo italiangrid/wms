@@ -21,9 +21,12 @@
 
 	Revision history:
 	$Log$
+	Revision 1.67  2004/10/13 22:05:27  eronchie
+	Added ism as manager dependency
+
 	Revision 1.66  2004/10/12 15:34:16  eronchie
 	Removed edg-replica-manager-client-cpp and Leave edg-replica-manager-client
-
+	
 	Revision 1.65  2004/10/12 12:59:45  eronchie
 	Updated
 	
@@ -695,7 +698,7 @@
         </target>
 
 	<!-- Manager -->
-        <target name="manager" depends="boost,classads,globus,expat,ares,common,jdl,purger,helper,jobsubmission,get.manager.head, get.manager.tag"/>
+        <target name="manager" depends="boost,classads,globus,expat,ares,common,jdl,purger,helper,jobsubmission,ism,get.manager.head, get.manager.tag"/>
         <target name="get.manager.head" if="manager.head">
             <cvs-co package="org.glite.wms.manager" />
         </target>
