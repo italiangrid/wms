@@ -287,7 +287,7 @@ std::vector<std::string>* insertAttributeInVector(std::vector<std::string>* v, c
     a->GetComponents(reference_expr, name, absolute);
     if(!reference_expr)  {
       reference_expr = a->GetParentScope()->Lookup(name);
-      if (reference_expr) {
+      if (reference_expr && reference_expr != e) {
         insertAttributeInVector(v, reference_expr, exprTrace, predicate);
       }
     } else {
