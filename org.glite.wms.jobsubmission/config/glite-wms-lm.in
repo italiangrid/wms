@@ -63,32 +63,6 @@ do_failure()
     exit 1
 }
 
-create_proxy()
-{
-    local proxy=
-
-    if [ ${SCRIPT_UID} -eq 0 ]; then
-	proxy=`su $GLITE_WMS_USER -s /bin/sh -c "${GLOBUS_LOCATION}/bin/grid-proxy-init -q \
-	    -cert $X509_HOST_CERT \
-	    -key  $X509_HOST_KEY \
-	    -hours 24 \
-	    -out  ${X509_USER_PROXY}.$$ 2>&1"`
-
-	[ $? = 0 ] || do_failure $proxy
-    else
-	proxy=`${GLOBUS_LOCATION}/bin/grid-proxy-init -q \
-	    -cert $X509_HOST_CERT \
-	    -key  $X509_HOST_KEY \
-	    -hours 24 \
-	    -out  ${X509_USER_PROXY}.$$ 2>&1`
-
-	[ $? -eq 0 ] || do_failure $proxy
-    fi
-
-    local move=`mv ${X509_USER_PROXY}.$$ ${X509_USER_PROXY} 2>&1`
-    [ $? -eq 0 ] || do_failure $move
-}
-
 start()
 {
     daemon ${LOGMONITOR} -c ${CONFIGURATION_FILE}
