@@ -5,8 +5,8 @@
 
 // $Id$
 
-#ifndef GLITE_WMS_PLANNING_LOGGER_UTILS_H
-#define GLITE_WMS_PLANNING_LOGGER_UTILS_H
+#ifndef GLITE_WMS_COMMON_LOGGER_LOGGER_UTILS_H
+#define GLITE_WMS_COMMON_LOGGER_LOGGER_UTILS_H
 
 #include <cstdlib>
 #include <boost/lexical_cast.hpp>
