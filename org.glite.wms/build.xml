@@ -21,9 +21,12 @@
 
 	Revision history:
 	$Log$
+	Revision 1.74  2004/10/25 21:00:29  dimeglio
+	Use antExec
+
 	Revision 1.73  2004/10/15 15:08:52  eronchie
 	Updated configuration
-
+	
 	Revision 1.72  2004/10/13 22:05:27  eronchie
 	Added ism as manager dependency
 	
@@ -436,7 +439,7 @@
 		<if>
 			<isset property="small.memory" />
 			<then>
-				<exec dir="${wms.subsystem.dir}.thirdparty-bypass" executable="${env.ANT_HOME}/bin/ant" failonerror="${failonerror}">
+				<exec dir="${wms.subsystem.dir}.thirdparty-bypass" executable="${antExec}" failonerror="${failonerror}">
 					<arg line="${target} -Dsmall.memory=true -Dbootstrap=${bootstrap} -Dfailonerror=${failonerror} -Ddo.cvs.tag=${do.cvs.tag}"/>
 				</exec>
 			</then>
@@ -452,7 +455,7 @@
 		<if>
 			<isset property="small.memory" />
 			<then>
-				<exec dir="${wms.subsystem.dir}.thirdparty-globus_gridftp_server" executable="${env.ANT_HOME}/bin/ant" failonerror="${failonerror}">
+				<exec dir="${wms.subsystem.dir}.thirdparty-globus_gridftp_server" executable="${antExec}" failonerror="${failonerror}">
 					<arg line="${target} -Dsmall.memory=true -Dbootstrap=${bootstrap} -Dfailonerror=${failonerror} -Ddo.cvs.tag=${do.cvs.tag}"/>
 				</exec>
 			</then>
@@ -468,7 +471,7 @@
 		<if>
 			<isset property="small.memory" />
 			<then>
-				<exec dir="${wms.subsystem.dir}.common" executable="${env.ANT_HOME}/bin/ant" failonerror="${failonerror}">
+				<exec dir="${wms.subsystem.dir}.common" executable="${antExec}" failonerror="${failonerror}">
 					<arg line="${target} -Dsmall.memory=true -Dbootstrap=${bootstrap} -Dfailonerror=${failonerror} -Ddo.cvs.tag=${do.cvs.tag}"/>
 				</exec>
 			</then>
@@ -484,7 +487,7 @@
 		<if>
 			<isset property="small.memory" />
 			<then>
-				<exec dir="${wms.subsystem.dir}.jdl" executable="${env.ANT_HOME}/bin/ant" failonerror="${failonerror}">
+				<exec dir="${wms.subsystem.dir}.jdl" executable="${antExec}" failonerror="${failonerror}">
 					<arg line="${target} -Dsmall.memory=true -Dbootstrap=${bootstrap} -Dfailonerror=${failonerror} -Ddo.cvs.tag=${do.cvs.tag}"/>
 				</exec>
 			</then>
@@ -500,7 +503,7 @@
 		<if>
 			<isset property="small.memory" />
 			<then>
-				<exec dir="${wms.subsystem.dir}.jdlj" executable="${env.ANT_HOME}/bin/ant" failonerror="${failonerror}">
+				<exec dir="${wms.subsystem.dir}.jdlj" executable="${antExec}" failonerror="${failonerror}">
 					<arg line="${target} -Dsmall.memory=true -Dbootstrap=${bootstrap} -Dfailonerror=${failonerror} -Ddo.cvs.tag=${do.cvs.tag}"/>
 				</exec>
 			</then>
@@ -516,7 +519,7 @@
 		<if>
 			<isset property="small.memory" />
 			<then>
-				<exec dir="${wms.subsystem.dir}.brokerinfo" executable="${env.ANT_HOME}/bin/ant" failonerror="${failonerror}">
+				<exec dir="${wms.subsystem.dir}.brokerinfo" executable="${antExec}" failonerror="${failonerror}">
 					<arg line="${target} -Dsmall.memory=true -Dbootstrap=${bootstrap} -Dfailonerror=${failonerror} -Ddo.cvs.tag=${do.cvs.tag}"/>
 				</exec>
 			</then>
@@ -532,7 +535,7 @@
 		<if>
 			<isset property="small.memory" />
 			<then>
-				<exec dir="${wms.subsystem.dir}.classad_plugin" executable="${env.ANT_HOME}/bin/ant" failonerror="${failonerror}">
+				<exec dir="${wms.subsystem.dir}.classad_plugin" executable="${antExec}" failonerror="${failonerror}">
 					<arg line="${target} -Dsmall.memory=true -Dbootstrap=${bootstrap} -Dfailonerror=${failonerror} -Ddo.cvs.tag=${do.cvs.tag}"/>
 				</exec>
 			</then>
@@ -548,7 +551,7 @@
 		<if>
 			<isset property="small.memory" />
 			<then>
-				<exec dir="${wms.subsystem.dir}.matchmaking" executable="${env.ANT_HOME}/bin/ant" failonerror="${failonerror}">
+				<exec dir="${wms.subsystem.dir}.matchmaking" executable="${antExec}" failonerror="${failonerror}">
 					<arg line="${target} -Dsmall.memory=true -Dbootstrap=${bootstrap} -Dfailonerror=${failonerror} -Ddo.cvs.tag=${do.cvs.tag}"/>
 				</exec>
 			</then>
@@ -564,7 +567,7 @@
 		<if>
 			<isset property="small.memory" />
 			<then>
-				<exec dir="${wms.subsystem.dir}.helper" executable="${env.ANT_HOME}/bin/ant" failonerror="${failonerror}">
+				<exec dir="${wms.subsystem.dir}.helper" executable="${antExec}" failonerror="${failonerror}">
 					<arg line="${target} -Dsmall.memory=true -Dbootstrap=${bootstrap} -Dfailonerror=${failonerror} -Ddo.cvs.tag=${do.cvs.tag}"/>
 				</exec>
 			</then>
@@ -580,7 +583,7 @@
 		<if>
 			<isset property="small.memory" />
 			<then>
-				<exec dir="${wms.subsystem.dir}.broker" executable="${env.ANT_HOME}/bin/ant" failonerror="${failonerror}">
+				<exec dir="${wms.subsystem.dir}.broker" executable="${antExec}" failonerror="${failonerror}">
 					<arg line="${target} -Dsmall.memory=true -Dbootstrap=${bootstrap} -Dfailonerror=${failonerror} -Ddo.cvs.tag=${do.cvs.tag}"/>
 				</exec>
 			</then>
@@ -596,7 +599,7 @@
 		<if>
 			<isset property="small.memory" />
 			<then>
-				<exec dir="${wms.subsystem.dir}.checkpointing" executable="${env.ANT_HOME}/bin/ant" failonerror="${failonerror}">
+				<exec dir="${wms.subsystem.dir}.checkpointing" executable="${antExec}" failonerror="${failonerror}">
 					<arg line="${target} -Dsmall.memory=true -Dbootstrap=${bootstrap} -Dfailonerror=${failonerror} -Ddo.cvs.tag=${do.cvs.tag}"/>
 				</exec>
 			</then>
@@ -612,7 +615,7 @@
                 <if>
                         <isset property="small.memory" />
                         <then>
-                                <exec dir="${wms.subsystem.dir}.rls" executable="${env.ANT_HOME}/bin/ant" failonerror="${failonerror}">
+                                <exec dir="${wms.subsystem.dir}.rls" executable="${antExec}" failonerror="${failonerror}">
                                         <arg line="${target} -Dsmall.memory=true -Dbootstrap=${bootstrap} -Dfailonerror=${failonerror} -Ddo.cvs.tag=${do.cvs.tag}"/>
                                 </exec>
                         </then>
@@ -628,7 +631,7 @@
 		<if>
 			<isset property="small.memory" />
 			<then>
-				<exec dir="${wms.subsystem.dir}.manager-ns-versions" executable="${env.ANT_HOME}/bin/ant" failonerror="${failonerror}">
+				<exec dir="${wms.subsystem.dir}.manager-ns-versions" executable="${antExec}" failonerror="${failonerror}">
 					<arg line="${target} -Dsmall.memory=true -Dbootstrap=${bootstrap} -Dfailonerror=${failonerror} -Ddo.cvs.tag=${do.cvs.tag}"/>
 				</exec>
 			</then>
@@ -644,7 +647,7 @@
 		<if>
 			<isset property="small.memory" />
 			<then>
-				<exec dir="${wms.subsystem.dir}.manager-ns-common" executable="${env.ANT_HOME}/bin/ant" failonerror="${failonerror}">
+				<exec dir="${wms.subsystem.dir}.manager-ns-common" executable="${antExec}" failonerror="${failonerror}">
 					<arg line="${target} -Dsmall.memory=true -Dbootstrap=${bootstrap} -Dfailonerror=${failonerror} -Ddo.cvs.tag=${do.cvs.tag}"/>
 				</exec>
 			</then>
@@ -660,7 +663,7 @@
 		<if>
 			<isset property="small.memory" />
 			<then>
-				<exec dir="${wms.subsystem.dir}.manager-ns-fsm" executable="${env.ANT_HOME}/bin/ant" failonerror="${failonerror}">
+				<exec dir="${wms.subsystem.dir}.manager-ns-fsm" executable="${antExec}" failonerror="${failonerror}">
 					<arg line="${target} -Dsmall.memory=true -Dbootstrap=${bootstrap} -Dfailonerror=${failonerror} -Ddo.cvs.tag=${do.cvs.tag}"/>
 				</exec>
 			</then>
@@ -676,7 +679,7 @@
 		<if>
 			<isset property="small.memory" />
 			<then>
-				<exec dir="${wms.subsystem.dir}.manager-ns-commands" executable="${env.ANT_HOME}/bin/ant" failonerror="${failonerror}">
+				<exec dir="${wms.subsystem.dir}.manager-ns-commands" executable="${antExec}" failonerror="${failonerror}">
 					<arg line="${target} -Dsmall.memory=true -Dbootstrap=${bootstrap} -Dfailonerror=${failonerror} -Ddo.cvs.tag=${do.cvs.tag}"/>
 				</exec>
 			</then>
@@ -692,7 +695,7 @@
 		<if>
 			<isset property="small.memory" />
 			<then>
-				<exec dir="${wms.subsystem.dir}.manager-ns-client" executable="${env.ANT_HOME}/bin/ant" failonerror="${failonerror}">
+				<exec dir="${wms.subsystem.dir}.manager-ns-client" executable="${antExec}" failonerror="${failonerror}">
 					<arg line="${target} -Dsmall.memory=true -Dbootstrap=${bootstrap} -Dfailonerror=${failonerror} -Ddo.cvs.tag=${do.cvs.tag}"/>
 				</exec>
 			</then>
@@ -708,7 +711,7 @@
 		<if>
 			<isset property="small.memory" />
 			<then>
-				<exec dir="${wms.subsystem.dir}.manager-ns-daemon" executable="${env.ANT_HOME}/bin/ant" failonerror="${failonerror}">
+				<exec dir="${wms.subsystem.dir}.manager-ns-daemon" executable="${antExec}" failonerror="${failonerror}">
 					<arg line="${target} -Dsmall.memory=true -Dbootstrap=${bootstrap} -Dfailonerror=${failonerror} -Ddo.cvs.tag=${do.cvs.tag}"/>
 				</exec>
 			</then>
@@ -724,7 +727,7 @@
 		<if>
 			<isset property="small.memory" />
 			<then>
-				<exec dir="${wms.subsystem.dir}.purger" executable="${env.ANT_HOME}/bin/ant" failonerror="${failonerror}">
+				<exec dir="${wms.subsystem.dir}.purger" executable="${antExec}" failonerror="${failonerror}">
 					<arg line="${target} -Dsmall.memory=true -Dbootstrap=${bootstrap} -Dfailonerror=${failonerror} -Ddo.cvs.tag=${do.cvs.tag}"/>
 				</exec>
 			</then>
@@ -740,7 +743,7 @@
 		<if>
 			<isset property="small.memory" />
 			<then>
-				<exec dir="${wms.subsystem.dir}.jobsubmission" executable="${env.ANT_HOME}/bin/ant" failonerror="${failonerror}">
+				<exec dir="${wms.subsystem.dir}.jobsubmission" executable="${antExec}" failonerror="${failonerror}">
 					<arg line="${target} -Dsmall.memory=true -Dbootstrap=${bootstrap} -Dfailonerror=${failonerror} -Ddo.cvs.tag=${do.cvs.tag}"/>
 				</exec>
 			</then>
@@ -756,7 +759,7 @@
                 <if>
                         <isset property="small.memory" />
                         <then>
-                                <exec dir="${wms.subsystem.dir}.ism" executable="${env.ANT_HOME}/bin/ant" failonerror="${failonerror}">
+                                <exec dir="${wms.subsystem.dir}.ism" executable="${antExec}" failonerror="${failonerror}">
                                         <arg line="${target} -Dsmall.memory=true -Dbootstrap=${bootstrap} -Dfailonerror=${failonerror} -Ddo.cvs.tag=${do.cvs.tag}"/>
                                 </exec>
                         </then>
@@ -772,7 +775,7 @@
 		<if>
 			<isset property="small.memory" />
 			<then>
-				<exec dir="${wms.subsystem.dir}.manager" executable="${env.ANT_HOME}/bin/ant" failonerror="${failonerror}">
+				<exec dir="${wms.subsystem.dir}.manager" executable="${antExec}" failonerror="${failonerror}">
 					<arg line="${target} -Dsmall.memory=true -Dbootstrap=${bootstrap} -Dfailonerror=${failonerror} -Ddo.cvs.tag=${do.cvs.tag}"/>
 				</exec>
 			</then>
@@ -788,7 +791,7 @@
                 <if>
                         <isset property="small.memory" />
                         <then>
-                                <exec dir="${wms.subsystem.dir}.interactive" executable="${env.ANT_HOME}/bin/ant" failonerror="${failonerror}">
+                                <exec dir="${wms.subsystem.dir}.interactive" executable="${antExec}" failonerror="${failonerror}">
                                         <arg line="${target} -Dsmall.memory=true -Dbootstrap=${bootstrap} -Dfailonerror=${failonerror} -Ddo.cvs.tag=${do.cvs.tag}"/>
                                 </exec>
                         </then>
@@ -804,7 +807,7 @@
                 <if>
                         <isset property="small.memory" />
                         <then>
-                                <exec dir="${wms.subsystem.dir}.configuration" executable="${env.ANT_HOME}/bin/ant" failonerror="${failonerror}">
+                                <exec dir="${wms.subsystem.dir}.configuration" executable="${antExec}" failonerror="${failonerror}">
                                         <arg line="${target} -Dsmall.memory=true -Dbootstrap=${bootstrap} -Dfailonerror=${failonerror} -Ddo.cvs.tag=${do.cvs.tag}"/>
                                 </exec>
                         </then>
