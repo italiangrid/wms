@@ -21,9 +21,12 @@
 	
 	Revision history:
 	$Log$
+	Revision 1.7  2004/07/16 14:56:56  flammer
+	Corrected input path of build.properties.
+
 	Revision 1.6  2004/06/14 13:48:11  dimeglio
 	Rolled back to previous
-
+	
 	Revision 1.5  2004/06/14 12:24:08  eronchie
 	Added configure options
 	WARNING::: Work in progress
@@ -43,7 +46,7 @@
 
 	<!-- Include build properties to allow overwriting 
 	     of properties for subsystem                    -->
-	<property file="build.properties" />	
+	<property file="project/build.properties" />	
 
 	<!-- ======================================================
           Define corresponding subsystem properties
