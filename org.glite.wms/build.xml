@@ -21,9 +21,12 @@
 
 	Revision history:
 	$Log$
+	Revision 1.76  2004/10/26 13:24:32  dimeglio
+	Fixed spelling error in envchecks
+
 	Revision 1.75  2004/10/26 13:15:14  dimeglio
 	Added dependency of clean on envchecks
-
+	
 	Revision 1.74  2004/10/25 21:00:29  dimeglio
 	Use antExec
 	
@@ -407,7 +410,7 @@
 		</antcall>
 	</target>
 
-	<target name="clean" depends="envchecks">
+	<target name="clean" depends="envcheck">
 
 		<property name="offline.repository" value="true" />
 		<antcall target="buildmodules">
