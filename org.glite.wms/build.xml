@@ -21,10 +21,14 @@
 
 	Revision history:
 	$Log$
+	Revision 1.95  2005/03/11 16:40:57  eronchie
+	Removed jdlj component
+	It was moved on the jdl subsystem
+
 	Revision 1.94  2005/02/10 13:11:46  eronchie
 	Updated
 	Changed fgci in fcgi
-
+	
 	Revision 1.93  2005/02/09 18:51:16  eronchie
 	Updated
 	
@@ -578,22 +582,6 @@
 		</if>
         </target>
 
-        <target name="jdlj" unless="setenvonly" depends="envset, jclassads">
-		<if>
-			<isset property="small.memory" />
-			<then>
-				<exec dir="${wms.subsystem.dir}.jdlj" executable="${antExec}" failonerror="${failonerror}">
-					<arg line="${target} &quot;-Dsmall.memory=true&quot; &quot;-Dbootstrap=${bootstrap}&quot; &quot;-Dfailonerror=${failonerror}&quot; &quot;-Ddo.cvs.tag=${do.cvs.tag}&quot;"/>
-				</exec>
-			</then>
-			<else>
-				<ant dir="${wms.subsystem.dir}.jdlj"
-	                    	     target="${target}"
-	                    	     inheritall="false" />
-			</else>
-		</if>
-        </target>
-
 	<target name="brokerinfo" unless="setenvonly" depends="envset, boost,classads,common,jdl,rls,cgsi-gsoap, gsoap">
 		<if>
 			<isset property="small.memory" />
@@ -988,7 +976,6 @@ ilonerror}">
 					     interactive,
 					     common,
 					     jdl,
-   					     jdlj,
 					     brokerinfo,
 					     brokerinfo-access,
 					     classad_plugin,

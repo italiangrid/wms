@@ -21,9 +21,13 @@
 
 	Revision history:
 	$Log$
+	Revision 1.85  2005/03/11 16:40:58  eronchie
+	Removed jdlj component
+	It was moved on the jdl subsystem
+
 	Revision 1.84  2005/02/09 18:51:17  eronchie
 	Updated
-
+	
 	Revision 1.83  2005/02/09 15:07:05  eronchie
 	Updated wmproxy dependencies
 	
@@ -407,10 +411,6 @@
                         <equals arg1="${org.glite.wms.jdl.version}" arg2="HEAD" />
                 </condition>
 
-		<condition property="jdlj.head">
-			<equals arg1="${org.glite.wms.jdlj.version}" arg2="HEAD" />
-		</condition>
-
 		<condition property="partitioner.head">
                         <equals arg1="${org.glite.wms.partitioner.version}" arg2="HEAD" />
                 </condition>
@@ -609,16 +609,6 @@
             <cvs-co package="org.glite.wms.jdl"
                     tag="${org.glite.wms.jdl.version}" />
     	</target>
-
-	<!-- Jdlj -->
- 	<target name="jdlj" depends="jclassads,get.jdlj.head, get.jdlj.tag"/>
-	<target name="get.jdlj.head" if="jdlj.head">
-		<cvs-co package="org.glite.wms.jdlj" />
-	</target>
-	<target name="get.jdlj.tag" unless="jdlj.head">
-		<cvs-co package="org.glite.wms.jdlj"
-			tag="${org.glite.wms.jdlj.version}" />
-	</target>
 
 	<!-- Brokerinfo -->
     	<target name="brokerinfo" depends="boost,classads,globus,common,jdl,rls, cgsi-gsoap, gsoap, get.brokerinfo.head, get.brokerinfo.tag"/>
@@ -877,7 +867,6 @@
 					interactive,
 				        common,
 					jdl,
- 				        jdlj,
 					brokerinfo,
 					brokerinfo-access,
 					classad_plugin,
