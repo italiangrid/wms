@@ -145,7 +145,7 @@ void EventGeneric::finalProcess( int cn, const string &message )
       string    edgid( position->edg_id() );
 
       if( retry > maxretries ) {
-	if( this->ei_data->md_isDagLog && (edgid != this->ei_data->md_dagId) ) {
+	if( this->ei_data->md_isDagLog && (edgid != this->ei_data->md_dagId) ) { // Subnode
 	  controller::JobController   controller( *this->ei_data->md_logger );
 
 	  elog::cedglog << logger::setlevel( logger::error )
@@ -168,7 +168,7 @@ void EventGeneric::finalProcess( int cn, const string &message )
 	  controller.cancel( this->ei_data->md_dagId, this->ei_data->md_logfile_name.c_str(), true );
 	  this->ei_data->md_container->update_pointer( dagposition, this->ei_data->md_logger->sequence_code(), ULOG_GENERIC );
 	}
-	else {
+	else { // Normal job or a Dag job (Not subnode)
 	  elog::cedglog << logger::setlevel( logger::severe )
 			<< "Forced cancellation retries exceeded maximum (" << retry << '/' << maxretries << ')' << endl
 			<< "Job will be removed from the queue and aborted." << endl;
@@ -177,14 +177,20 @@ void EventGeneric::finalProcess( int cn, const string &message )
 	  this->ei_data->md_logger->abort_on_error_event( string("Removal retries exceeded.") );
 
 	  jccommon::ProxyUnregistrar( edgid ).unregister();
-	  jccommon::JobFilePurger( this->ei_data->md_dagId, edgid ).do_purge();
-
+	  
+	  if( this->ei_data->md_isDagLog) // it is a Dag job 
+	    jccommon::JobFilePurger( this->ei_data->md_dagId, edgid ).do_purge();
+	  else { // normal job
+	    const glite::wmsutils::jobid::JobId tmp;
+	    jccommon::JobFilePurger( tmp, edgid ).do_purge();	
+	  }
+	  
 	  this->ei_data->md_container->remove( position );
 	  this->ei_data->md_aborted->remove( this->ei_condor );
 	  this->ei_data->md_timer->remove_all_timeouts( this->eg_event->cluster );
 	}
       }
-      else {
+      else { // retry <= maxretries so try again!
 	elog::cedglog << logger::setlevel( logger::info )
 		      << "Attaching force remove timeout to cluster " << this->ei_condor << endl
 		      << logger::setlevel( logger::debug ) << "This is try n. " << (retry + 1) << endl;
