@@ -19,6 +19,9 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.9  2005/02/22 13:36:29  eronchie
+#       Updated version
+#
 #       Revision 1.8  2005/02/22 13:17:21  eronchie
 #       Updated
 #       Increased version due to the change in the glite-wms-parse-configuration.sh.in
@@ -50,7 +53,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.57)
-AC_INIT([GLite WMS Configuration], [1.0.1])
+AC_INIT([GLite WMS Configuration], [1.0.2])
 AC_CONFIG_AUX_DIR([./project])
 AM_INIT_AUTOMAKE([1.6.3 subdir-objects])
 AC_CONFIG_SRCDIR([config/glite_wms.conf])
