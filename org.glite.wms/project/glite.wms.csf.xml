@@ -21,10 +21,15 @@
 
 	Revision history:
 	$Log$
+	Revision 1.79  2005/02/02 20:20:26  eronchie
+	Updated
+	Added partitioner and wmproxy
+	WORK in progress
+
 	Revision 1.78  2005/01/24 18:40:21  eronchie
 	Removed wmproxy
 	WORK IN PROGRESS
-
+	
 	Revision 1.77  2005/01/18 15:35:32  eronchie
 	Start adding wmproxy
 	WORK IN PROGRESS
@@ -391,6 +396,10 @@
 			<equals arg1="${org.glite.wms.jdlj.version}" arg2="HEAD" />
 		</condition>
 
+		<condition property="partitioner.head">
+                        <equals arg1="${org.glite.wms.partitioner.version}" arg2="HEAD" />
+                </condition>
+
 		<condition property="brokerinfo.head">
                         <equals arg1="${org.glite.wms.brokerinfo.version}" arg2="HEAD" />
                 </condition>
@@ -481,6 +490,10 @@
 
 		<condition property="wmproxy-api-java.head">
                         <equals arg1="${org.glite.wms.wmproxy-api-java.version}" arg2="HEAD" />
+                </condition>
+
+		<condition property="wmproxy.head">
+                        <equals arg1="${org.glite.wms.wmproxy.version}" arg2="HEAD" />
                 </condition>
     	</target>
 
@@ -821,7 +834,27 @@
             <cvs-co package="org.glite.wms.wmproxy-api-java"
                     tag="${org.glite.wms.wmproxy-api-java.version}" />
         </target>
+
+	<!-- WMPROXY -->
+        <target name="wmproxy" depends="axis,partitioner,get.wmproxy.head, get.wmproxy.tag"/>
+        <target name="get.wmproxy.head" if="wmproxy.head">
+            <cvs-co package="org.glite.wms.wmproxy" />
+        </target>
+        <target name="get.wmproxy.tag" unless="wmproxy.head">
+            <cvs-co package="org.glite.wms.wmproxy"
+                    tag="${org.glite.wms.wmproxy.version}" />
+        </target>
 		
+	<!-- PARTITIONER -->
+        <target name="partitioner" depends="axis,partitioner,get.partitioner.head, get.partitioner.tag"/>
+        <target name="get.partitioner.head" if="partitioner.head">
+            <cvs-co package="org.glite.wms.partitioner" />
+        </target>
+        <target name="get.partitioner.tag" unless="partitioner.head">
+            <cvs-co package="org.glite.wms.partitioner"
+                    tag="${org.glite.wms.partitioner.version}" />
+        </target>
+
 	<!-- All project modules -->
  	<target name="project" depends="configuration,
   				        thirdparty-globus_gridftp_server,
@@ -847,6 +880,8 @@
 					manager-ns-daemon,
 					jobsubmission,
 					ism,
+					partitioner,
+					wmproxy,
                                         wmproxy-interface,
                                         wmproxy-api-cpp,
                                         wmproxy-api-java,

@@ -21,10 +21,15 @@
 
 	Revision history:
 	$Log$
+	Revision 1.88  2005/02/02 20:20:26  eronchie
+	Updated
+	Added partitioner and wmproxy
+	WORK in progress
+
 	Revision 1.87  2005/01/24 18:40:21  eronchie
 	Removed wmproxy
 	WORK IN PROGRESS
-
+	
 	Revision 1.86  2005/01/18 15:35:32  eronchie
 	Start adding wmproxy
 	WORK IN PROGRESS
@@ -490,6 +495,22 @@
 		</if>
 	</target>
 
+	<target name="partitioner" unless="setenvonly" depends="envset">
+                <if>
+                        <isset property="small.memory" />
+                        <then>
+                                <exec dir="${wms.subsystem.dir}.partitioner" executable="${antExec}" failonerror="${failonerror}">
+                                        <arg line="${target} &quot;-Dsmall.memory=true&quot; &quot;-Dbootstrap=${bootstrap}&quot; &quot;-Dfailonerror=${failonerror}&quot; &quot;-Ddo.cvs.tag=${do.cvs.tag}&quot;"/>
+                                </exec>
+                        </then>
+                        <else>
+                                <ant dir="${wms.subsystem.dir}.partitioner"
+                                     target="${target}"
+                                     inheritall="false" />
+                        </else>
+                </if>
+        </target>
+
 	<target name="thirdparty-globus_gridftp_server" unless="setenvonly" depends="envset, globus">
 		<if>
 			<isset property="small.memory" />
@@ -922,6 +943,24 @@
                 </if>
         </target>
 
+	<target name="wmproxy" unless="setenvonly" depends="envset, partitioner">
+                <if>
+                        <isset property="small.memory" />
+                        <then>
+                                <exec dir="${wms.subsystem.dir}.wmproxy" executable="${antExec}" failonerror="${fa
+ilonerror}">
+                                        <arg line="${target} &quot;-Dsmall.memory=true&quot; &quot;-Dbootstrap=${bootstrap}
+&quot; &quot;-Dfailonerror=${failonerror}&quot; &quot;-Ddo.cvs.tag=${do.cvs.tag}&quot;"/>
+                                </exec>
+                        </then>
+                        <else>
+                                <ant dir="${wms.subsystem.dir}.wmproxy"
+                                     target="${target}"
+                                     inheritall="false" />
+                        </else>
+                </if>
+        </target>
+
 	<!-- Main proxy -->
 	<target name="buildmodules" depends="envset,
 						 configuration,
@@ -948,6 +987,8 @@
 					     manager-ns-daemon,	
 					     jobsubmission,
 					     ism,
+					     partitioner,
+					     wmproxy,
 					     wmproxy-interface,
 					     wmproxy-api-cpp,
 					     wmproxy-api-java,
