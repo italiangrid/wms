@@ -4,7 +4,7 @@
 // $Id$
 
 #include <dlfcn.h>
-#include "dynamic_library.h"
+#include "glite/wms/common/utilities/dynamic_library.h"
 
 namespace glite {
 namespace wms {

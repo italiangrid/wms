@@ -51,7 +51,7 @@ libglite_wms_util_la_SOURCES = \
 	classad_utils.cpp \
 	dynamic_library.cpp
 
-libglite_wms_util_la_LIBADD = -lstdc++
+libglite_wms_util_la_LIBADD = -lstdc++ -ldl
 
 libglite_wms_iiattrutil_la_SOURCES = \
 	ii_attr_utils.cpp
