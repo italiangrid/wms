@@ -311,6 +311,13 @@ class NSConfiguration {
   parameter std::string( II_DN ) section normal;
   parameter std::string( Gris_DN ) section normal;
   parameter std::string( II_Contact ) section normal;
+#
+# If RLS should used for a VO, the following vector determines
+# whether a certain VO uses RLS. Example usage:
+# RLSCatalog = { "lhcb","cms","anotherVo"};
+# Should probably be moved out of NSi config, like the II config above.
+#
+  parameter std::vector<std::string> ( RLSCatalog ) section normal;
 }
 
 class WMConfiguration {
