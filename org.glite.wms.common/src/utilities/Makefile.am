@@ -78,6 +78,6 @@ AM_CPPFLAGS = -I$(top_srcdir)/interface \
 	-DB_THREAD_SAFE
 
 EXTRA_DIST = \
-	triple.h \
+	triple.h 
 
 MAINTAINERCLEANFILES = Makefile.in *.*~
