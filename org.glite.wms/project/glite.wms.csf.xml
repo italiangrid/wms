@@ -21,9 +21,12 @@
 
 	Revision history:
 	$Log$
+	Revision 1.72  2004/12/07 18:14:39  eronchie
+	Added
+
 	Revision 1.71  2004/12/02 13:53:26  eronchie
 	Added dependency
-
+	
 	Revision 1.70  2004/12/02 13:39:55  eronchie
 	Added new component
 	
@@ -556,7 +559,7 @@
 	</target>
 
 	<!-- Brokerinfo -->
-    	<target name="brokerinfo" depends="boost,classads,globus,common,jdl,rls,get.brokerinfo.head, get.brokerinfo.tag"/>
+    	<target name="brokerinfo" depends="boost,classads,globus,common,jdl,rls, cgsi-gsoap, get.brokerinfo.head, get.brokerinfo.tag"/>
     	<target name="get.brokerinfo.head" if="brokerinfo.head">
             <cvs-co package="org.glite.wms.brokerinfo" />
     	</target>
