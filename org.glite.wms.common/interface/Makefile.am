@@ -38,6 +38,7 @@ nobase_commonut_HEADERS = \
 	glite/wms/common/utilities/FileListLock.h \
 	glite/wms/common/utilities/FileLocker.h \
 	glite/wms/common/utilities/FLExtractor.h \
+	glite/wms/common/utilities/FLExtractor.cpp \
 	glite/wms/common/utilities/fstreamlock.h \
 	glite/wms/common/utilities/LineParser.h \
 	glite/wms/common/utilities/mixed.h \

@@ -65,6 +65,6 @@ public:
 } // namespace wms 
 } // namespace glite
 
-#include "FLExtractor.cpp"
+#include "glite/wms/common/utilities/FLExtractor.cpp"
 
 #endif
