@@ -21,9 +21,12 @@
 
 	Revision history:
 	$Log$
+	Revision 1.66  2004/10/12 15:34:16  eronchie
+	Removed edg-replica-manager-client-cpp and Leave edg-replica-manager-client
+
 	Revision 1.65  2004/10/12 12:59:45  eronchie
 	Updated
-
+	
 	Revision 1.64  2004/10/12 11:29:08  eronchie
 	Updated rls dependencies
 	
@@ -592,7 +595,7 @@
         </target>
 
 	<!-- RLS -->
-        <target name="rls" depends="boost, edg-replica-manager-client-cpp, edg-replica-location-client-cpp, edg-replica-optimization-client-cpp, edg-replica-metadata-catalog-client-cpp, edg-gsoap-base, get.rls.head, get.rls.tag"/>
+        <target name="rls" depends="boost, edg-replica-location-client-cpp, edg-replica-optimization-client-cpp, edg-replica-metadata-catalog-client-cpp, edg-gsoap-base, edg-replica-manager-client, get.rls.head, get.rls.tag"/>
         <target name="get.rls.head" if="rls.head">
             <cvs-co package="org.glite.wms.rls" />
         </target>
