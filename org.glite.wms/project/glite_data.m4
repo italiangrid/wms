@@ -7,31 +7,19 @@ dnl prerequisites:
 
 AC_DEFUN(AC_GLITE_DATA,
 [
-    AC_ARG_WITH(data_catalog_storageindex_api_c_prefix, 
-	[  --with-data-catalog-storageindex-api-c-prefix=PFX   prefix where 'replica manager' is installed.],
-	[], 
-	with_data_catalog_storageindex_api_c_prefix=${GLITE_LOCATION:-/opt/glite})
 
-    AC_MSG_CHECKING([for DATA CATALOG STORAGEINDEX API C installation at ${with_data_catalog_storageindex_api_c_prefix}])
+    ac_glite_data_prefix=$GLITE_LOCATION
 
-    ac_data=yes
+    if test -n "ac_glite_data_prefix" ; then
+        dnl
+        dnl
+        dnl
+        ac_glite_data_lib="-L$ac_glite_data_prefix/lib"
 
-    if test -n "$with_data_catalog_storageindex_api_c_prefix" -a "$with_data_catalog_storageindex_api_c_prefix" != "/usr" ; then
-	GLITE_DATA_CFLAGS="-I$with_data_catalog_storageindex_api_c_prefix/include"
-        GLITE_DATA_LIBS="-L$with_data_catalog_storageindex_api_c_prefix/lib"
-    else
-	GLITE_DATA_CFLAGS=""
-        GLITE_DATA_LIBS=""
-	ac_data=no
-    fi
-  
-    GLITE_DATA_LIBS="$GLITE_DATA_LIBS libglite_data_catalog_storageindex_api_c.a"
-
-    if test x$ac_data = xyes; then
+        GLITE_DATA_LIBS="$ac_glite_data_lib libglite_data_catalog_storageindex_api_c.a"
 	ifelse([$2], , :, [$2])
     else
-	GLTIE_DATA_CFLAGS=""
-	GLITE_DATA_LIBS=""
+        GLITE_DATA_LIBS=""
 	ifelse([$3], , :, [$3])
     fi
 
