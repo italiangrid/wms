@@ -293,6 +293,7 @@ class NSConfiguration {
   parameter long( ConnectionTimeout = 120 ) section normal;
 
   parameter std::string( SandboxStagingPath = "${EDG_WL_SANDBOX_DIR}" ) section fileparse;
+  parameter std::string( ListMatchParadise = "${EDG_WL_SANDBOX_DIR}/listmatch" ) section fileparse;
 
   parameter double( MaxInputSandboxSize = 10000000 ) section normal;
   parameter bool( EnableQuotaManagement = false ) section normal; 
