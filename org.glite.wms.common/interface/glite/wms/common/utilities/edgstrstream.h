@@ -12,7 +12,10 @@
 #include <string>
 #endif
 
-namespace glite { namespace wms { namespace common { namespace utilities {
+namespace glite { 
+namespace wms { 
+namespace common { 
+namespace utilities {
 
 #ifdef HAVE_STRINGSTREAM
 typedef std::stringstream   edgstrstream;
