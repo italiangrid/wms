@@ -6,7 +6,7 @@
 ## *
 ## *********************************************************************
 
-commonutdir = $(includedir)/glite/wms/common/utilties
+commonutdir = $(includedir)/glite/wms/common/utilities
 commonut_HEADERS = Exceptions.h \
         result_codes.h
 
