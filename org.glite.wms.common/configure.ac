@@ -75,14 +75,17 @@ AC_CHECK_FUNCS([bzero endpwent ftruncate getmntent memset mkdir pow strerror str
 have_boost=no
 have_classads=no
 have_globus=no
+have_cppunit=no
 
 AC_BOOST([], have_boost=yes, have_boost=no)
 AC_CLASSADS([], have_classads=yes, have_classads=no)
 AC_GLOBUS([], have_globus=yes, have_globus=no)
+AC_CPPUNIT([], have_cppunit=yes, have_cppunit=no)
 
 AC_MSG_RESULT(["CLASSADS found $have_classads"])
 AC_MSG_RESULT(["BOOST found $have_boost"])
 AC_MSG_RESULT(["GLOBUS found $have_globus"])
+AC_MSG_RESULT(["CPPUNIT found $have_cppunit"])
 
 AC_GLITE
 
