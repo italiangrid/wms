@@ -48,7 +48,9 @@ libglite_wms_util_la_SOURCES = \
 	LineParserExceptions.cpp \
 	mixed.cpp \
 	boost_fs_add.cpp \
-	classad_utils.cpp
+	classad_utils.cpp \
+	dynamic_library.cpp
+
 libglite_wms_util_la_LIBADD = -lstdc++
 
 libglite_wms_iiattrutil_la_SOURCES = \
