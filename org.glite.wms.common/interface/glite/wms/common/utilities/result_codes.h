@@ -6,7 +6,7 @@ namespace wms {
 namespace common {
 namespace utilities{
 /*
- * exception_codes.h
+ * result_codes.h
  * Copyright (c) 2001 The European Datagrid Project - IST programme, all rights reserved.
  * Contributors are mentioned in the code where appropriate.
  */

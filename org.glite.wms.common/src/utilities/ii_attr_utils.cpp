@@ -11,7 +11,7 @@
 #include "glite/wms/common/ldif2classad/LDAPSynchConnection.h"
 #include "ldif2classad/LDAPForwardIterator.h"
 
-#include "glite/wms/common/utilities/Exceptions.h"
+#include "glite/wmsutils/exception/Exception.h"
 #include "ii_attr_utils.h"
 
 #include <boost/thread/mutex.hpp>
@@ -72,7 +72,7 @@ std::vector<std::string> getTypes()
     ldap_it.first();
     (*ldap_it).EvaluateAttribute("attributeTypes",attributetypes);
   }
-  catch( glite::wms::common::utilities::Exception& e ) {
+  catch( glite::wmsutils::exception::Exception& e ) {
     cout << e.what() << endl;
   }
   return attributetypes;
