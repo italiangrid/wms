@@ -19,6 +19,9 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.5  2004/10/15 14:41:22  vmedici
+#       start updating configuration according to dev-guide
+#
 #       Revision 1.4  2004/09/22 01:01:01  dimeglio
 #       Fixed missing parenthesis in AC_INIT
 #
@@ -86,6 +89,11 @@ AC_FUNC_VPRINTF
 AC_CHECK_FUNCS([bzero endpwent ftruncate getmntent memset mkdir pow strerror strtol])
 
 AC_GLITE
+
+have_condorg=no
+
+AC_CONDORG(6.7.1, have_condorg=yes, have_condorg=no)
+AC_MSG_RESULT(["CONDORG found $have_condorg"])
 
 # Configuration items
 AC_PREFIX_DEFAULT([/opt/glite])

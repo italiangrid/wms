@@ -13,7 +13,7 @@ if ( $?GLITE_WMS_LOCATION_VAR) then
 endif
 
 if ( $?GLITE_WMS_TMP) then
-  setenv GLITE_WMS_TMP "/var/glitewms"
+  setenv GLITE_WMS_TMP "/tmp/glitewms"
 endif
 
 setenv GLITE_WMS_PATH ${GLITE_WMS_LOCATION}"/bin:"${GLITE_WMS_LOCATION}"/sbin"

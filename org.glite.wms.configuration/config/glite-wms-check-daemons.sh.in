@@ -1,52 +1,53 @@
 #!/bin/sh
 
-SCRIPT_LOCATION=/etc/rc.d/init.d
+SCRIPT_LOCATION=@prefix@/etc/init.d
+WMS_PREFIX=glite-wms
 
-if [ -f ${SCRIPT_LOCATION}/@PACKAGE@-locallogger ]; then
-  ${SCRIPT_LOCATION}/@PACKAGE@-locallogger status >/dev/null
+if [ -f ${SCRIPT_LOCATION}/${WMS_PREFIX}-locallogger ]; then
+  ${SCRIPT_LOCATION}/${WMS_PREFIX}-locallogger status >/dev/null
   if [ $? -ne 0 ]; then
-    ${SCRIPT_LOCATION}/@PACKAGE@-locallogger restart
+    ${SCRIPT_LOCATION}/${WMS_PREFIX}-locallogger restart
   fi
 fi
 
-if [ -f ${SCRIPT_LOCATION}/@PACKAGE@-lbserver ]; then
-  ${SCRIPT_LOCATION}/@PACKAGE@-lbserver status >/dev/null
+if [ -f ${SCRIPT_LOCATION}/${WMS_PREFIX}-lbserver ]; then
+  ${SCRIPT_LOCATION}/${WMS_PREFIX}-lbserver status >/dev/null
   if [ $? -ne 0 ]; then
-    ${SCRIPT_LOCATION}/@PACKAGE@-lbserver restart
+    ${SCRIPT_LOCATION}/${WMS_PREFIX}-lbserver restart
   fi
 fi
 
-if [ -f ${SCRIPT_LOCATION}/@PACKAGE@-proxyrenewal ]; then
-  ${SCRIPT_LOCATION}/@PACKAGE@-proxyrenewal status >/dev/null
+if [ -f ${SCRIPT_LOCATION}/${WMS_PREFIX}-proxyrenewal ]; then
+  ${SCRIPT_LOCATION}/${WMS_PREFIX}-proxyrenewal status >/dev/null
   if [ $? -ne 0 ]; then
-    ${SCRIPT_LOCATION}/@PACKAGE@-proxyrenewal restart
+    ${SCRIPT_LOCATION}/${WMS_PREFIX}-proxyrenewal restart
   fi
 fi
 
-if [ -f ${SCRIPT_LOCATION}/@PACKAGE@-lm ]; then
-  ${SCRIPT_LOCATION}/@PACKAGE@-lm status >/dev/null
+if [ -f ${SCRIPT_LOCATION}/${WMS_PREFIX}-lm ]; then
+  ${SCRIPT_LOCATION}/${WMS_PREFIX}-lm status >/dev/null
   if [ $? -eq 1 ]; then
-    ${SCRIPT_LOCATION}/@PACKAGE@-lm restart
+    ${SCRIPT_LOCATION}/${WMS_PREFIX}-lm restart
   fi
 fi
 
-if [ -f ${SCRIPT_LOCATION}/@PACKAGE@-jc ]; then
-  ${SCRIPT_LOCATION}/@PACKAGE@-jc status >/dev/null
+if [ -f ${SCRIPT_LOCATION}/${WMS_PREFIX}-jc ]; then
+  ${SCRIPT_LOCATION}/${WMS_PREFIX}-jc status >/dev/null
   if [ $? -eq 1 ]; then
-    ${SCRIPT_LOCATION}/@PACKAGE@-jc restart
+    ${SCRIPT_LOCATION}/${WMS_PREFIX}-jc restart
   fi
 fi
 
-if [ -f ${SCRIPT_LOCATION}/@PACKAGE@-ns ]; then
-  ${SCRIPT_LOCATION}/@PACKAGE@-ns status >/dev/null
+if [ -f ${SCRIPT_LOCATION}/${WMS_PREFIX}-ns ]; then
+  ${SCRIPT_LOCATION}/${WMS_PREFIX}-ns status >/dev/null
   if [ $? -eq 1 ]; then
-    ${SCRIPT_LOCATION}/@PACKAGE@-ns restart
+    ${SCRIPT_LOCATION}/${WMS_PREFIX}-ns restart
   fi
 fi
 
-if [ -f ${SCRIPT_LOCATION}/@PACKAGE@-wm ]; then
-  ${SCRIPT_LOCATION}/@PACKAGE@-wm status >/dev/null
+if [ -f ${SCRIPT_LOCATION}/${WMS_PREFIX}-wm ]; then
+  ${SCRIPT_LOCATION}/${WMS_PREFIX}-wm status >/dev/null
   if [ $? -eq 1 ]; then
-    ${SCRIPT_LOCATION}/@PACKAGE@-wm restart
+    ${SCRIPT_LOCATION}/${WMS_PREFIX}-wm restart
   fi
 fi

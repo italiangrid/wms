@@ -21,10 +21,13 @@
 	
 	Revision history:
 	$Log$
+	Revision 1.2  2004/10/15 14:41:22  vmedici
+	start updating configuration according to dev-guide
+
 	Revision 1.1  2004/08/16 14:23:55  eronchie
 	Start adding
 	WARNING: work in progress
-
+	
 	
 -->
 
@@ -61,6 +64,6 @@
 		 Define extra properties here ...
 		 ====================================================== -->
 		 
-	<property name="m4files.list" value="globus.m4 classads.m4 boost.m4 glite.m4 cppunit.m4"/>
+	<property name="m4files.list" value="condor.m4 glite.m4 cppunit.m4"/>
 
 </project>

@@ -2,15 +2,17 @@ if [ -f /etc/sysconfig/glite ]; then
    . /etc/sysconfig/glite
 fi
 
-if [ -z "$X509_USER_CERT" ]; then
-  export X509_HOST_CERT=/etc/grid-security/hostcert.pem
+if [ -z "$GLITE_USER_CERT" ]; then
+  export GLITE_HOST_CERT=/etc/grid-security/hostcert.pem
 else
-  export X509_HOST_CERT=$X509_USER_CERT
+  export GLITE_HOST_CERT=$GLITE_USER_CERT
 fi
 
-if [ -z "$X509_USER_KEY" ]; then
-  export X509_HOST_KEY=/etc/grid-security/hostkey.pem
+
+
+if [ -z "$GLITE_USER_KEY" ]; then
+  export GLITE_HOST_KEY=/etc/grid-security/hostkey.pem
 else
-  export X509_HOST_KEY=$X509_USER_KEY
+  export GLITE_HOST_KEY=$GLITE_USER_KEY
 fi
 

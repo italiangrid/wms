@@ -34,7 +34,7 @@ if [ -z "$GLITE_WMS_LOCATION" ]; then
 fi
 
 if [ "x${GLITE_WMS_CONFIG_DIR}" = "x" \
-   -a \( "${GLITE_WMS_LOCATION}" != "/opt/edg" -o "${GLITE_WMS_LOCATION}" != "/usr/local" \) ]; then
+   -a \( "${GLITE_WMS_LOCATION}" != "/opt/glite" -o "${GLITE_WMS_LOCATION}" != "/usr/local" \) ]; then
    export GLITE_WMS_CONFIG_DIR="${GLITE_WMS_LOCATION}/etc"
 fi
 
