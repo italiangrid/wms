@@ -258,6 +258,7 @@ class LMConfiguration {
   parameter int( JobsPerCondorLog = 1000 ) section normal;
   parameter int( MainLoopDuration = 3 ) section normal;
   parameter int( AbortedJobsTimeout = 600 ) section normal;
+  parameter int( GlobusDownTimeout = 600 ) section normal;
   parameter int( ForceCancellationRetries = 10 ) section normal;
   parameter size_t( ContainersCompactThreshold = 1000 ) section normal;
   parameter std::string( CondorLogDir ) section fileparse;
