@@ -14,12 +14,12 @@
 // $Id$
 
 /** Includes header definitions. */
-#include "LDAPQuery.h"
-#include "LDAPSynchConnection.h"
+#include "glite/wms/common/ldif2classad/LDAPQuery.h"
+#include "glite/wms/common/ldif2classad/LDAPSynchConnection.h"
 
 #ifdef WITH_LDAP_EXCEPTIONS
-#include "exceptions.h"
-#include "utilities/edgstrstream.h"
+#include "glite/wms/common/ldif2classad/exceptions.h"
+#include "glite/wms/common/utilities/edgstrstream.h"
 #endif 
 
 namespace glite {

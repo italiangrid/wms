@@ -1,7 +1,7 @@
 #include <iostream>
 #include <algorithm>
 
-#include "LineParser.h"
+#include "glite/wms/common/utilities/LineParser.h"
 #include "LineParserExceptions.h"
 
 using namespace std;

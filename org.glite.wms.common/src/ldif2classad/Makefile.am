@@ -18,16 +18,8 @@ libglite_wms_LDIF2ClassAd_la_SOURCES = \
 
 ldif2classadincludedir = $(includedir)/glite/wms/common/ldif2classad
 ldif2classadinclude_HEADERS = \
-	FileStreamConnection.h \
-	LDAPConnection.h \
 	LDAPFilterParser.h \
-	LDAPForwardIterator.h \
-	LDAPQuery.h \
-	LDAPSynchConnection.h \
-	LDIF2ClassAd.h \
-	LDIFObject.h \
-	exception_codes.h \
-	exceptions.h 
+	LDAPForwardIterator.h 
 
 AM_CPPFLAGS = -I$(top_srcdir)/interface \
 	-I$(top_srcdir)/src \

@@ -7,7 +7,7 @@
  * Contributors are mentioned in the code where appropriate.
  */
 
-#include "utilities/exception_codes.h"
+#include "glite/wms/common/utilities/exception_codes.h"
 
 namespace glite {
 namespace wms {

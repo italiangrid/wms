@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "utilities/FileList.h"
+#include "glite/wms/common/utilities/FileList.h"
 
 using namespace std;
 using glite::wms::common;

@@ -13,9 +13,9 @@
 // $Id$
 
 /** Includes header definitions. */
-#include "FileStreamConnection.h"
+#include "glite/wms/common/ldif2classad/FileStreamConnection.h"
 #include "LDAPFilterParser.h"
-#include "LDAPQuery.h"
+#include "glite/wms/common/ldif2classad/LDAPQuery.h"
 
 #include <classad_distribution.h>
 

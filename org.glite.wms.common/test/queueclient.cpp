@@ -6,8 +6,8 @@
 
 #include <boost/lexical_cast.hpp>
 
-#include "utilities/FileList.h"
-#include "utilities/FileListLock.h"
+#include "glite/wms/common/utilities/FileList.h"
+#include "glite/wms/common/utilities/FileListLock.h"
 
 #include "queuecommon.h"
 

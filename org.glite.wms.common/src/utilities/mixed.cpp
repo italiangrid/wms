@@ -8,7 +8,7 @@
  *                                                                       *
  *************************************************************************/
 
-#include "mixed.h"
+#include "glite/wms/common/utilities/mixed.h"
 
 using namespace std;
 

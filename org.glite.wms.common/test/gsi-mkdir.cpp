@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
 
-#include "utilities/LineParser.h"
+#include "glite/wms/common/utilities/LineParser.h"
 #include "utilities/LineParserExceptions.h"
 #include "utilities/globus_ftp_utils.h"
 #include "glite/wms/common/logger/edglog.h"

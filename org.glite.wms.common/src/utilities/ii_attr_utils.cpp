@@ -7,8 +7,8 @@
 
 #include "configuration/NSConfiguration.h"
 #include "configuration/Configuration.h"
-#include "ldif2classad/LDAPQuery.h"
-#include "ldif2classad/LDAPSynchConnection.h"
+#include "glite/wms/common/ldif2classad/LDAPQuery.h"
+#include "glite/wms/common/ldif2classad/LDAPSynchConnection.h"
 #include "ldif2classad/LDAPForwardIterator.h"
 
 #include "glite/wms/common/utilities/Exceptions.h"

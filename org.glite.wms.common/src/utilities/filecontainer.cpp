@@ -11,7 +11,7 @@
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
 
-#include "filecontainer.h"
+#include "glite/wms/common/utilities/filecontainer.h"
 #include "streamdescriptor.h"
 
 #ifdef FILELIST_HAS_DEBUG_CODE

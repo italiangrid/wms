@@ -10,7 +10,8 @@
 #include <cctype>
 
 #include <classad_distribution.h>
-#include "LDIFObject.h"
+
+#include "glite/wms/common/ldif2classad/LDIFObject.h"
 
 using namespace std;
 

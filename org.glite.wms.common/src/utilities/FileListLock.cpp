@@ -1,5 +1,5 @@
-#include "FileList.h"
-#include "FileListLock.h"
+#include "glite/wms/common/utilities/FileList.h"
+#include "glite/wms/common/utilities/FileListLock.h"
 #include "streamdescriptor.h"
 
 namespace glite {

@@ -19,7 +19,7 @@
 #include <iostream>
 #include <map>
 #include <string>
-#include "utilities/edgstrstream.h"  // fix 2.95 vs 3.2 pb
+#include "glite/wms/common/utilities/edgstrstream.h"  // fix 2.95 vs 3.2 pb
 #include <vector>
 #include <classad_distribution.h>
 

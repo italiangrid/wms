@@ -21,13 +21,13 @@
 #include <vector>
 #endif
 #ifndef GLITE_WMS_COMMON_UTILITIES_FILELIST_H
-#include "FileList.h"
+#include "glite/wms/common/utilities/FileList.h"
 #endif
 #ifndef GLITE_WMS_COMMON_UTILITIES_FILELISTLOCK_H
-#include "FileListLock.h"
+#include "glite/wms/common/utilities/FileListLock.h"
 #endif
 #ifndef GLITE_WMS_COMMON_UTILITIES_EXTRACTOR_H
-#include "Extractor.h"
+#include "glite/wms/common/utilities/Extractor.h"
 #endif
 
 namespace glite {

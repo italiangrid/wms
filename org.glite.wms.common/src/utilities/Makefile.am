@@ -65,23 +65,11 @@ utilitiesincludedir = $(includedir)/glite/wms/common/utilities
 utilitiesinclude_HEADERS = \
 	boost_fs_add.h \
 	classad_utils.h \
-	edgstrstream.h \
-	exception_codes.h \
-	Extractor.h \
-	filecontainer.h \
-	FileList.h \
-	FileListIterator.h \
-	FileListLock.h \
-	FileLocker.h \
-	FLExtractor.h \
-	fstreamlock.h \
 	streamdescriptor.h \
 	globus_ftp_macros.h \
 	globus_ftp_utils.h \
 	ii_attr_utils.h \
 	LineParserExceptions.h \
-	LineParser.h \
-	mixed.h \
 	quota.h \
 	utils.h \
 	triple.h \
@@ -97,7 +85,6 @@ AM_CPPFLAGS = -I$(top_srcdir)/interface \
 
 EXTRA_DIST = \
 	triple.h \
-	FLExtractor.h \
 	FLExtractor.cpp
 
 MAINTAINERCLEANFILES = Makefile.in *.*~

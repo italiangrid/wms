@@ -16,6 +16,7 @@
 #include <iostream>
 #include <algorithm>
 #include <cctype>
+
 #include "LDAPFilterParser.h"
 
 using namespace std;

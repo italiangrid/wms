@@ -13,9 +13,9 @@
  */
 
 /** This class header file. */
-#include "LDAPQuery.h"
+#include "glite/wms/common/ldif2classad/LDAPQuery.h"
 /** The LDAP Connection header file. */
-#include "LDAPConnection.h"
+#include "glite/wms/common/ldif2classad/LDAPConnection.h"
 
 namespace glite {
 namespace wms {

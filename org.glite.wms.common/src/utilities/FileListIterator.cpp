@@ -1,6 +1,6 @@
 #include <classad_distribution.h>
 
-#include "FileList.h"
+#include "glite/wms/common/utilities/FileList.h"
 
 using namespace std;
 

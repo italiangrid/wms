@@ -5,7 +5,7 @@
 #include <fcntl.h>
 #include <errno.h>
 
-#include "FileLocker.h"
+#include "glite/wms/common/utilities/FileLocker.h"
 
 using namespace std;
 

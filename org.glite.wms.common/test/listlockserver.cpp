@@ -2,9 +2,9 @@
 
 #include <iostream>
 
-#include "utilities/FileList.h"
-#include "utilities/FileListLock.h"
-#include "utilities/Extractor.h"
+#include "glite/wms/common/utilities/FileList.h"
+#include "glite/wms/common/utilities/FileListLock.h"
+#include "glite/wms/common/utilities/Extractor.h"
 
 using namespace std;
 using glite::wms::common;

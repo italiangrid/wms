@@ -16,9 +16,9 @@
 /** This class header file. */
 #include "LDAPForwardIterator.h"
 /** The LDIF header file. */
-#include "LDIFObject.h"
+#include "glite/wms/common/ldif2classad/LDIFObject.h"
 /** The LDAP Connection header file. */
-#include "LDAPConnection.h"
+#include "glite/wms/common/ldif2classad/LDAPConnection.h"
 
 using namespace std;
 

@@ -8,7 +8,7 @@
 #include <unistd.h>
 #include <getopt.h>
 
-#include "mixed.h"
+#include "glite/wms/common/utilities/mixed.h"
 
 namespace glite {
 namespace wms {

@@ -5,7 +5,7 @@
 ***************************************************************************/
 
 #include "glite/wms/common/utilities/Exceptions.h"
-#include "exception_codes.h"
+#include "glite/wms/common/utilities/exception_codes.h"
 #include "utils.h"
 
 namespace glite {

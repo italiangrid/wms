@@ -6,7 +6,7 @@
 #include <iostream>
 #include <fstream>
 
-#include "fstreamlock.h"
+#include "glite/wms/common/utilities/fstreamlock.h"
 #include "streamdescriptor.h"
 
 using namespace std;

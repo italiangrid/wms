@@ -5,8 +5,8 @@
 
 #include <boost/lexical_cast.hpp>
 
-#include "filecontainer.h"
-#include "FileListIterator.h"
+#include "glite/wms/common/utilities/filecontainer.h"
+#include "glite/wms/common/utilities/FileListIterator.h"
 
 namespace glite {
 namespace wms {

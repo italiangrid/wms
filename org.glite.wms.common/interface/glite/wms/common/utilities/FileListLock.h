@@ -3,7 +3,7 @@
 
 #include <boost/thread/mutex.hpp>
 
-#include "fstreamlock.h"
+#include "glite/wms/common/utilities/fstreamlock.h"
 
 namespace glite {
 namespace wms {
