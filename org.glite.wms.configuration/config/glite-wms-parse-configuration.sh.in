@@ -16,10 +16,14 @@ if [ -z "$GLITE_WMS_USER" ] || [ -z "$GLITE_WMS_CONFIG_DIR" ]; then
    . ${GLITE_WMS_LOCATION}/etc/profile.d/glite-wms-config.sh
 fi
 
+if [ -z "$GLITE_WMS_GROUP" ]; then
+   GLITE_WMS_GROUP = GLITE_WMS_USER
+fi
+
 if [ ! -d "$GLITE_WMS_TMP" ] ; then
   mkdir -p $GLITE_WMS_TMP
   chmod +775 $GLITE_WMS_TMP
-  chown -R $GLITE_WMS_USER.$GLITE_WMS_USER $GLITE_WMS_TMP
+  chown -R $GLITE_WMS_USER.$GLITE_WMS_GROUP $GLITE_WMS_TMP
 fi
 
 GET_CONF=${GLITE_WMS_LOCATION}/bin/glite-wms-get-configuration
@@ -35,7 +39,7 @@ if [ -f ${GET_CONF} ]; then
       mkdir -p $location
       file=${location##/*/}
       dir=${location/$file/}
-      chown -R $GLITE_WMS_USER.$GLITE_WMS_USER $dir
+      chown -R $GLITE_WMS_USER.$GLITE_WMS_GROUP $dir
     done
   fi
 
@@ -48,7 +52,7 @@ if [ -f ${GET_CONF} ]; then
       mkdir -p $location
       file=${location##/*/}
       dir=${location/$file/}
-      chown -R $GLITE_WMS_USER.$GLITE_WMS_USER $dir
+      chown -R $GLITE_WMS_USER.$GLITE_WMS_GROUP $dir
     done
   fi
 
@@ -61,7 +65,7 @@ if [ -f ${GET_CONF} ]; then
 
     for location in $dirStaging $dirLogFile $dir; do
       mkdir -p $location
-      chown -R $GLITE_WMS_USER.$GLITE_WMS_USER $location
+      chown -R $GLITE_WMS_USER.$GLITE_WMS_GROUP $location
     done
 
     chmod g+w $dirStaging
@@ -78,7 +82,7 @@ if [ -f ${GET_CONF} ]; then
 
     for location in $dirInput $dirLogFile $dir; do
       mkdir -p $location
-      chown $GLITE_WMS_USER.$GLITE_WMS_USER $location
+      chown $GLITE_WMS_USER.$GLITE_WMS_GROUP $location
     done
   fi
 fi
