@@ -6,6 +6,9 @@
 ## *
 ## *********************************************************************
 
-SUBDIRS = glite
+commonutdir = $(includedir)
+nobase_commonut_HEADERS = \
+	glite/wms/common/utilities/Exceptions.h \
+        glite/wms/common/utilities/result_codes.h
 
 MAINTAINERCLEANFILES = Makefile.in
