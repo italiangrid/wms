@@ -265,7 +265,7 @@ ControllerLoop::ControllerLoop( const utilities::LineParser &options ) : cl_verb
 		  << "* Vax Headroom Enterprises Inc. and INFN are proud to present you... *" << endl
 		  << "* ...the very shiny and groovy brand new JobController !!!           *" << endl
 		  << logger::setlevel( logger::high )
-		  << "* EDG JobController Version. " << cl_s_version << "                                     *" << endl
+		  << "* GLITE JobController Version. " << cl_s_version << "                                     *" << endl
 		  << "* Compiled at " << cl_s_date << ", " << cl_s_time << "                                  *" << endl
 		  << "**********************************************************************" << endl;
 
@@ -345,7 +345,7 @@ try {
 	  bool                                 force( remreq->get_force() );
 	  string                               jobid( remreq->get_jobid() );
 
-	  this->cl_stream << logger::setlevel( logger::info ) << "Got new remove request (EDG ID = " << jobid << ")..." << endl
+	  this->cl_stream << logger::setlevel( logger::info ) << "Got new remove request (JOB ID = " << jobid << ")..." << endl
 			  << "Must " << ( force ? "" : "not " ) << "force job removal !" << endl;
 
 	  this->cl_logger->reset_user_proxy( remreq->get_proxyfile() );

@@ -51,8 +51,8 @@ public:
   virtual int submit( const classad::ClassAd *ad ) = 0;
   /**
    *  Remove a job.
-   *  Remove a job from the queue using its EDG ID.
-   *  \param id The EDG ID of the job.
+   *  Remove a job from the queue using its JOB ID.
+   *  \param id The JOB ID of the job.
    *  \param logfile The file where condor is logging for such job.
    *  \param force Stats wether to use the -f switch of the condor_rm command.
    *  \return \a true if everything went well, \a false otherwise

@@ -65,7 +65,7 @@ bool JobControllerFake::cancel( const glite::wmsutils::jobid::JobId &id, const c
 
   elog::cedglog << logger::setlevel( logger::null )
 		<< "Got request for cancellation of job." << endl
-		<< "EDG Id = " << id.toString() << endl;
+		<< "JOB Id = " << id.toString() << endl;
 
   if( force )
     elog::cedglog << "Must force job removal..." << endl;

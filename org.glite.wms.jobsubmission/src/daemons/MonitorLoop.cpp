@@ -253,7 +253,7 @@ MonitorLoop::MonitorLoop( const utilities::LineParser &options ) : ml_verbose( o
 		  << "* Vax Headroom Enterprises Inc. and INFN are proud to present you... *" << endl
 		  << "* ...the chief of the readers, the brand new LogMonitor !!!          *" << endl
 		  << logger::setlevel( logger::null )
-		  << "* EDG LogMonitor Version. " << ml_s_version << "                                        *" << endl
+		  << "* GLITE LogMonitor Version. " << ml_s_version << "                                        *" << endl
 		  << "* Compiled at " << ml_s_date << ", " << ml_s_time << "                                  *" << endl
 		  << "**********************************************************************" << endl;
 

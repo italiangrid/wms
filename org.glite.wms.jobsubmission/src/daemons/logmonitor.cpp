@@ -98,7 +98,7 @@ int main( int argn, char *argv[] )
     options.parse( argn, argv );
 
     if( options.is_present('V') ) {
-      clog << "European DataGrid LogMonitor daemon v." << daemons::MonitorLoop::version() << endl
+      clog << "GLITE LogMonitor daemon v." << daemons::MonitorLoop::version() << endl
 	   << "Built at " << daemons::MonitorLoop::compile_date() << ", " << daemons::MonitorLoop::compile_time();
 
       if( (daemons::MonitorLoop::build_user() != NULL) && (daemons::MonitorLoop::build_host() != NULL) )

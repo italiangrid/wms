@@ -79,7 +79,7 @@ void JobResubmitter::resubmit( int laststatus, const string &edgid, const string
     case GLOBUS_GRAM_PROTOCOL_ERROR_USER_PROXY_EXPIRED:
       elog::cedglog << logger::setlevel( logger::warning ) << "Job has an expiring proxy." << endl
 		    << logger::setlevel( logger::info ) << "Must not resubmit, but abort." << endl
-		    << "EDG id = " << edgid << endl;
+		    << "Job id = " << edgid << endl;
 
       this->jr_logger->abort_on_error_event( string("Job proxy is expired.") );
 
@@ -110,7 +110,7 @@ void JobResubmitter::resubmit( int laststatus, const string &edgid, const string
     
   default:
     elog::cedglog << logger::setlevel( logger::info ) << "Resubmitting job to WM." << endl
-		  << logger::setlevel( logger::debug ) << "EDG id = " << edgid << endl;
+		  << logger::setlevel( logger::debug ) << "Job id = " << edgid << endl;
     
     command.InsertAttr( "version", string("1.0.0") );
     command.InsertAttr( "command", string("jobresubmit") );

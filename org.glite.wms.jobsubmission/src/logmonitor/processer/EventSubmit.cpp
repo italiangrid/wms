@@ -49,7 +49,7 @@ void EventSubmit::finalProcess( const string &edgid, const string &seqcode )
 
   if( this->ei_data->md_container->insert(edgid, this->ei_condor, seqcode, this->es_event->eventNumber) )
     elog::cedglog << logger::setlevel( logger::warning ) 
-		  << "Error while inserting EDGid<->Condorid correspondance." << endl
+		  << "Error while inserting JobId<->Condorid correspondance." << endl
 		  << "Ignoring cluster " << this->ei_condor << endl;
   else {
     position = this->ei_data->md_container->last_inserted();
@@ -124,7 +124,7 @@ void EventSubmit::process_event( void )
     this->finalProcess( edgid, seqcode );
   }
   else
-    elog::cedglog << logger::setlevel( logger::warning ) << "Cluster " << this->ei_condor << " does not seem an EDG job." << endl
+    elog::cedglog << logger::setlevel( logger::warning ) << "Cluster " << this->ei_condor << " does not seem a GRID job." << endl
 		  << logger::setlevel( logger::info ) << "Event notes = \"" << notes << "\"." << endl;
 
   return;

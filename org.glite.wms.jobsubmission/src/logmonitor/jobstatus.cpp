@@ -30,8 +30,8 @@ RenameLogStreamNS( elog );
 
 utilities::LineOption options[] = {
   { 'c', 1, "condor-id",     "\t\tSelects the job based on its condor id." },
-  { 'd', 1, "dag-id",        "\t\tSets the EDG-Id of the DAG job if known." },
-  { 'e', 1, "edg-id",        "\t\tSelects the job based on its edg id." },
+  { 'd', 1, "dag-id",        "\t\tSets the Job-Id of the DAG job if known." },
+  { 'e', 1, "job-id",        "\t\tSelects the job based on its job id." },
   { 'C', 1, "configuration", "\t\tUse an alternate configuration file." },
 };
 
@@ -53,7 +53,7 @@ int main( int argn, char *argv[] )
   try {
     options.parse( argn, argv );
 
-    conffile.assign( options.is_present('C') ? options['C'].getStringValue() : "edg_wl.conf" );
+    conffile.assign( options.is_present('C') ? options['C'].getStringValue() : "glite_wms.conf" );
     conf.reset( new configuration::Configuration(conffile, "LogMonitor") ); // LogMonitor is the most similar program...
 
     lmconfig = conf->lm();
@@ -67,13 +67,13 @@ int main( int argn, char *argv[] )
 
     if( !options.is_present('c') && !options.is_present('e') ) {
       options.usage( cerr );
-      cerr << "You must specify at least one between --condor-id and --edg-id.\n";
+      cerr << "You must specify at least one between --condor-id and --job-id.\n";
 
       res = 1;
     }
     else if( options.is_present('c') && options.is_present('e') ) {
       options.usage( cerr );
-      cerr << "You cannot specify --condor-id with --edg-id.\n";
+      cerr << "You cannot specify --condor-id with --job-id.\n";
 
       res = 1;
     }
