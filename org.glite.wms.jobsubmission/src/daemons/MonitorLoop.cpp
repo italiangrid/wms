@@ -188,7 +188,7 @@ MonitorLoop::MonitorLoop( const utilities::LineParser &options ) : ml_verbose( o
 {
   const configuration::LMConfiguration       *config = configuration::Configuration::instance()->lm();
   const configuration::CommonConfiguration   *common = configuration::Configuration::instance()->common();
-  const char                    *previous = NULL, *cherr;
+  const char                    *previous = NULL;
   boost::filesystem::path        logname( config->log_file(), boost::filesystem::system_specific );
   boost::filesystem::path        internal( config->monitor_internal_dir(), boost::filesystem::system_specific ), idrep, abrep;
   process::User                  currentUser;
@@ -232,11 +232,8 @@ MonitorLoop::MonitorLoop( const utilities::LineParser &options ) : ml_verbose( o
   }
   logger::StatePusher     pusher( this->ml_stream, "MonitorLoop::MonitorLoop(...)" );
 
-  if( (cherr = jccommon::EventLogger::initialize_SSL()) != NULL )
-    throw CannotStart( cherr );
-
-  if( (cherr = jccommon::EventLogger::initialize_SSL()) != NULL )
-    throw CannotStart( cherr );
+  //if( (cherr = jccommon::EventLogger::initialize_SSL()) != NULL )
+  //  throw CannotStart( cherr );
 	
   try {
     this->ml_logger.reset( this->ml_options.is_present('l') ? new jccommon::EventLogger(NULL) : new jccommon::EventLogger );

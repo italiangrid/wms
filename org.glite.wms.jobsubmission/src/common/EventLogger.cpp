@@ -20,7 +20,7 @@
 #include "glite/wms/common/logger/manipulators.h"
 #include "glite/wms/common/logger/edglog.h"
 
-#include "glite/wmsutils/tls/ssl_helpers/ssl_inits.h"
+//#include "glite/wmsutils/tls/ssl_helpers/ssl_inits.h"
 
 #include "../jobcontrol_namespace.h"
 
@@ -160,10 +160,10 @@ void EventLogger::testCode( int &code, bool retry )
   return;
 }
 
-const char *EventLogger::initialize_SSL( void )
-{
-  return( (edg_wlc_SSLInitialization() != 0) ? "Failed to initialize SSL libraries." : NULL );
-}
+//const char *EventLogger::initialize_SSL( void )
+//{
+//  return( (edg_wlc_SSLInitialization() != 0) ? "Failed to initialize SSL libraries." : NULL );
+//}
 
 EventLogger::EventLogger( void ) : el_remove( true ),
 #ifdef ENABLE_LOGGING

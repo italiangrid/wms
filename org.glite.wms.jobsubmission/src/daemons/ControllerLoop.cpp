@@ -195,7 +195,7 @@ ControllerLoop::ControllerLoop( const utilities::LineParser &options ) : cl_verb
 {
   const configuration::JCConfiguration       *config = configuration::Configuration::instance()->jc();
   const configuration::CommonConfiguration   *common = configuration::Configuration::instance()->common();
-  const char                    *previous = NULL, *cherr;
+  const char                    *previous = NULL;
   boost::filesystem::path        listname( config->input(), boost::filesystem::system_specific );
   boost::filesystem::path        logname( config->log_file(), boost::filesystem::system_specific );
   process::User                  currentUser;
@@ -244,8 +244,8 @@ ControllerLoop::ControllerLoop( const utilities::LineParser &options ) : cl_verb
   }
   logger::StatePusher      pusher( this->cl_stream, "ControllerLoop::ControllerLoop(...)" );
 
-  if( (cherr = jccommon::EventLogger::initialize_SSL()) != NULL )
-    throw CannotStart( cherr );
+  //if( (cherr = jccommon::EventLogger::initialize_SSL()) != NULL )
+  ///  throw CannotStart( cherr );
 	
   try {
     this->cl_logger.reset( this->cl_options.is_present('l') ? new jccommon::EventLogger(NULL) : new jccommon::EventLogger );
