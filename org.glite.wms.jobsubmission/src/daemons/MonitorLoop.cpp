@@ -232,9 +232,6 @@ MonitorLoop::MonitorLoop( const utilities::LineParser &options ) : ml_verbose( o
   }
   logger::StatePusher     pusher( this->ml_stream, "MonitorLoop::MonitorLoop(...)" );
 
-  //if( (cherr = jccommon::EventLogger::initialize_SSL()) != NULL )
-  //  throw CannotStart( cherr );
-	
   try {
     this->ml_logger.reset( this->ml_options.is_present('l') ? new jccommon::EventLogger(NULL) : new jccommon::EventLogger );
     this->ml_logger->initialize_logmonitor_context();

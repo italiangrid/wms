@@ -20,8 +20,6 @@
 #include "glite/wms/common/logger/manipulators.h"
 #include "glite/wms/common/logger/edglog.h"
 
-//#include "glite/wmsutils/tls/ssl_helpers/ssl_inits.h"
-
 #include "../jobcontrol_namespace.h"
 
 #include "SignalChecker.h"
@@ -160,11 +158,6 @@ void EventLogger::testCode( int &code, bool retry )
   return;
 }
 
-//const char *EventLogger::initialize_SSL( void )
-//{
-//  return( (edg_wlc_SSLInitialization() != 0) ? "Failed to initialize SSL libraries." : NULL );
-//}
-
 EventLogger::EventLogger( void ) : el_remove( true ),
 #ifdef ENABLE_LOGGING
 				   el_flag( EDG_WLL_SEQ_NORMAL ),
@@ -250,7 +243,7 @@ EventLogger &EventLogger::reset_context( const string &jobid, const string &sequ
   if( this->el_context ) {
     edg_wlc_JobIdParse( jobid.c_str(), &id );
     res = edg_wll_SetLoggingJob( *this->el_context, id, sequence.c_str(), flag );
-
+    edg_wlc_JobIdFree( id );	
     if( res != 0 ) throw LoggerException( this->getLoggingError("Cannot reset logging context:") );
   }
 #endif
@@ -299,7 +292,7 @@ EventLogger &EventLogger::reset_context( const string &jobid, const string &sequ
   if( this->el_context ) {
     edg_wlc_JobIdParse( jobid.c_str(), &id );
     res = edg_wll_SetLoggingJob( *this->el_context, id, sequence.c_str(), this->el_flag );
-
+    edg_wlc_JobIdFree( id );
     if( res != 0 ) throw LoggerException( this->getLoggingError("Cannot reset logging context:") );
   }
 #endif

@@ -244,9 +244,6 @@ ControllerLoop::ControllerLoop( const utilities::LineParser &options ) : cl_verb
   }
   logger::StatePusher      pusher( this->cl_stream, "ControllerLoop::ControllerLoop(...)" );
 
-  //if( (cherr = jccommon::EventLogger::initialize_SSL()) != NULL )
-  ///  throw CannotStart( cherr );
-	
   try {
     this->cl_logger.reset( this->cl_options.is_present('l') ? new jccommon::EventLogger(NULL) : new jccommon::EventLogger );
     this->cl_logger->initialize_jobcontroller_context();

@@ -107,7 +107,7 @@ int main( int argn, char *argv[] )
       clog << endl << endl;
     }
     else {
-      conffile.assign( options.is_present('c') ? options['c'].getStringValue() : "edg_wl_jc.conf" );
+      conffile.assign( options.is_present('c') ? options['c'].getStringValue() : "glite_wms_jc.conf" );
 
       do {
 	res = run_instance( conffile, options, lockfile, code );

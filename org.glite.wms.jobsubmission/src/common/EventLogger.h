@@ -108,8 +108,6 @@ public:
   inline static void set_lb_retries( unsigned int r ) { el_s_retries = r; return; }
   inline static void set_lb_interval( unsigned int sec ) { el_s_sleep = sec; return; }
 
-  static const char *initialize_SSL( void );
-
 private:
   inline void startLogging( void ) { this->el_count = 0; this->el_hostProxy = false; }
 
