@@ -21,9 +21,12 @@
 
 	Revision history:
 	$Log$
+	Revision 1.66  2004/10/12 07:29:46  eronchie
+	.....
+
 	Revision 1.65  2004/10/08 13:01:52  eronchie
 	Updated helper
-
+	
 	Revision 1.64  2004/10/06 10:40:55  eronchie
 	Start adding rls
 	
@@ -584,7 +587,7 @@
 		</if>
         </target>
 
-	<target name="rls" unless="setenvonly" depends="boost">
+	<target name="rls" unless="setenvonly" depends="boost, edg-replica-manager-client">
                 <if>
                         <isset property="small.memory" />
                         <then>

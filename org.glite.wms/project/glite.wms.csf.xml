@@ -21,9 +21,12 @@
 
 	Revision history:
 	$Log$
+	Revision 1.61  2004/10/12 07:29:46  eronchie
+	.....
+
 	Revision 1.60  2004/10/08 13:01:52  eronchie
 	Updated helper
-
+	
 	Revision 1.59  2004/10/06 10:39:19  eronchie
 	Updated helper file
 	Removed loki
@@ -577,7 +580,7 @@
         </target>
 
 	<!-- RLS -->
-        <target name="rls" depends="boost, get.rls.head, get.rls.tag"/>
+        <target name="rls" depends="boost, edg-replica-manager-client, get.rls.head, get.rls.tag"/>
         <target name="get.rls.head" if="rls.head">
             <cvs-co package="org.glite.wms.rls" />
         </target>
