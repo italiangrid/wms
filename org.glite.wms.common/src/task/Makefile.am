@@ -8,4 +8,8 @@
 
 EXTRA_DIST = Task.h
 
+taskdir = $(includedir)/glite/wms/common/task
+task_HEADERS = \
+	Task.h
+
 MAINTAINERCLEANFILES = Makefile.in
