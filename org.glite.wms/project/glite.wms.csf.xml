@@ -21,10 +21,14 @@
 
 	Revision history:
 	$Log$
-	Revision 1.76  2005/01/17 18:38:38  eronchie
+	Revision 1.77  2005/01/18 15:35:32  eronchie
 	Start adding wmproxy
 	WORK IN PROGRESS
 
+	Revision 1.76  2005/01/17 18:38:38  eronchie
+	Start adding wmproxy
+	WORK IN PROGRESS
+	
 	Revision 1.75  2005/01/17 18:24:18  eronchie
 	Start adding wmproxy
 	WORK IN PROGRESS
@@ -467,6 +471,10 @@
                         <equals arg1="${org.glite.wms.wmproxy-interface.version}" arg2="HEAD" />
                 </condition>
 
+		<condition property="wmproxy.head">
+                        <equals arg1="${org.glite.wms.wmproxy.version}" arg2="HEAD" />
+                </condition>
+
 		<condition property="wmproxy-api-cpp.head">
                         <equals arg1="${org.glite.wms.wmproxy-api-cpp.version}" arg2="HEAD" />
                 </condition>
@@ -792,6 +800,16 @@
         <target name="get.wmproxy-interface.tag" unless="wmproxy-interface.head">
             <cvs-co package="org.glite.wms.wmproxy-interface"
                     tag="${org.glite.wms.wmproxy-interface.version}" />
+        </target>
+
+	<!-- WMPROXY -->
+        <target name="wmproxy" depends="get.wmproxy.head, get.wmproxy.tag"/>
+        <target name="get.wmproxy.head" if="wmproxy.head">
+            <cvs-co package="org.glite.wms.wmproxy" />
+        </target>
+        <target name="get.wmproxy.tag" unless="wmproxy.head">
+            <cvs-co package="org.glite.wms.wmproxy"
+                    tag="${org.glite.wms.wmproxy.version}" />
         </target>
 
 	<!-- WMPROXY Api Cpp -->
