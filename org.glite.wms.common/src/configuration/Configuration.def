@@ -289,6 +289,7 @@ class NSConfiguration {
   parameter int( ListeningPort ) section normal;
   parameter int( MasterThreads ) section normal;
   parameter int( DispatcherThreads ) section normal;
+  parameter long( ConnectionTimeout = 120 ) section normal;
 
   parameter std::string( SandboxStagingPath = "${EDG_WL_SANDBOX_DIR}" ) section fileparse;
 
