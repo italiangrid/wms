@@ -1,7 +1,7 @@
 #ifndef GLITE_WMS_COMMON_CONFIGURATION_LMCONFIGURATION_H
 #define GLITE_WMS_COMMON_CONFIGURATION_LMCONFIGURATION_H
 
-#include "confbase.h"
+#include "glite/wms/common/configuration/confbase.h"
 
 namespace glite {
 namespace wms {

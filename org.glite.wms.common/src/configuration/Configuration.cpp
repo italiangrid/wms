@@ -15,13 +15,13 @@
 #include "glite/wms/common/utilities/classad_utils.h"
 #include "utilities/boost_fs_add.h"
 
-#include "Configuration.h"
+#include "glite/wms/common/configuration/Configuration.h"
 #include "JCConfiguration.h"
 #include "LMConfiguration.h"
 #include "NSConfiguration.h"
 #include "WMConfiguration.h"
 #include "CommonConfiguration.h"
-#include "exceptions.h"
+#include "glite/wms/common/configuration/exceptions.h"
 
 #define create_path( string ) (boost::filesystem::path(string, boost::filesystem::system_specific))
 

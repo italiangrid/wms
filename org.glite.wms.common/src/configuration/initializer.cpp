@@ -1,9 +1,9 @@
 #include <memory>
 #include <string>
 
-#include "Configuration.h"
-#include "initializer.h"
-#include "exceptions.h"
+#include "glite/wms/common/configuration/Configuration.h"
+#include "glite/wms/common/configuration/initializer.h"
+#include "glite/wms/common/configuration/exceptions.h"
 
 using namespace std;
 using namespace glite::wms::common;

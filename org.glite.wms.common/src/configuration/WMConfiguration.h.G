@@ -9,7 +9,7 @@
 #define GLITE_WMS_COMMON_CONFIGURATION_WMCONFIGURATION_H
 
 #ifndef GLITE_WMS_COMMON_CONFIGURATION_CONFBASE_H
-#include "confbase.h"
+#include "glite/wms/common/configuration/confbase.h"
 #endif
 
 namespace classad {

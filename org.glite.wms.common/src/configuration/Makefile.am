@@ -27,14 +27,9 @@ libglite_wms_conf_wrapper_la_SOURCES = \
 configurationincludedir = $(includedir)/glite/wms/common/configuration
 configurationinclude_HEADERS = \
 	CommonConfiguration.h \
-	confbase.h \
-	Configuration.h \
 	cwrapper.h \
-	exceptions.h \
-	initializer.h \
 	JCConfiguration.h \
 	LMConfiguration.h \
-	ModuleType.h \
 	NSConfiguration.h \
 	WMConfiguration.h
 

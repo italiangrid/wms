@@ -2,8 +2,8 @@
 
 #include <string>
 
-#include "initializer.h"
-#include "Configuration.h"
+#include "glite/wms/common/configuration/initializer.h"
+#include "glite/wms/common/configuration/Configuration.h"
 #include "CommonConfiguration.h"
 #include "JCConfiguration.h"
 #include "LMConfiguration.h"

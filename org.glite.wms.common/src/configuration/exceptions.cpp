@@ -1,4 +1,4 @@
-#include "exceptions.h"
+#include "glite/wms/common/configuration/exceptions.h"
 
 using namespace std;
 

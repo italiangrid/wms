@@ -3,8 +3,8 @@
 
 #include <classad_distribution.h>
 
-#include "configuration/Configuration.h"
-#include "configuration/exceptions.h"
+#include "glite/wms/common/configuration/Configuration.h"
+#include "glite/wms/common/configuration/exceptions.h"
 
 using namespace glite::wms::common;
 using namespace std;

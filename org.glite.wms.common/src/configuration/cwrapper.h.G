@@ -1,7 +1,7 @@
 #ifndef GLITE_WMS_COMMON_CONFIGURATION_CWRAPPER_H
 #define GLITE_WMS_COMMON_CONFIGURATION_CWRAPPER_H
 
-#include "initializer.h"
+#include "glite/wms/common/configuration/initializer.h"
 
 /* Tmpl: wrap class CommonConfiguration */
 /* Tmpl: wrap class JCConfiguration */

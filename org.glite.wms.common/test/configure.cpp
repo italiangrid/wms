@@ -2,10 +2,10 @@
 
 #include <iostream>
 
-#include "configuration/Configuration.h"
+#include "glite/wms/common/configuration/Configuration.h"
 #include "configuration/NSConfiguration.h"
 #include "configuration/JCConfiguration.h"
-#include "configuration/exceptions.h"
+#include "glite/wms/common/configuration/exceptions.h"
 
 using namespace std;
 using glite::wms::common;

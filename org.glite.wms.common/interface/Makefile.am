@@ -8,6 +8,11 @@
 
 commonutdir = $(includedir)
 nobase_commonut_HEADERS = \
+	glite/wms/common/configuration/confbase.h \
+	glite/wms/common/configuration/Configuration.h \
+	glite/wms/common/configuration/exceptions.h \
+	glite/wms/common/configuration/initializer.h \
+	glite/wms/common/configuration/ModuleType.h \
 	glite/wms/common/ldif2classad/exception_codes.h \
 	glite/wms/common/ldif2classad/exceptions.h \
 	glite/wms/common/ldif2classad/FileStreamConnection.h \

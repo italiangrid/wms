@@ -10,7 +10,7 @@
 #include <string>
 
 #include "classad_distribution.h"
-#include "configuration/Configuration.h"
+#include "glite/wms/common/configuration/Configuration.h"
 #include "configuration/NSConfiguration.h"
 
 #ifdef HAVE_CONFIG_H

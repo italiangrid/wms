@@ -4,7 +4,7 @@
 #include "glite/wms/common/utilities/classad_utils.h"
 #include "utilities/boost_fs_add.h"
 
-#include "confbase.h"
+#include "glite/wms/common/configuration/confbase.h"
 
 using namespace std;
 

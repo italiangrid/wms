@@ -1,4 +1,4 @@
-#include "ModuleType.h"
+#include "glite/wms/common/configuration/ModuleType.h"
 
 using namespace std;
 
