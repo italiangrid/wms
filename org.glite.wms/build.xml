@@ -21,9 +21,12 @@
 
 	Revision history:
 	$Log$
+	Revision 1.77  2004/10/28 18:29:35  dimeglio
+	Added envcheck to individual components
+
 	Revision 1.76  2004/10/26 13:24:32  dimeglio
 	Fixed spelling error in envchecks
-
+	
 	Revision 1.75  2004/10/26 13:15:14  dimeglio
 	Added dependency of clean on envchecks
 	
@@ -437,7 +440,7 @@
 
 	<!-- component targets definitions tag = do not remove = -->
 
-	<target name="thirdparty-bypass" unless="setenvonly">
+	<target name="thirdparty-bypass" unless="setenvonly" depends="envcheck">
 		<if>
 			<isset property="small.memory" />
 			<then>
@@ -453,7 +456,7 @@
 		</if>
 	</target>
 
-	<target name="thirdparty-globus_gridftp_server" unless="setenvonly" depends="globus">
+	<target name="thirdparty-globus_gridftp_server" unless="setenvonly" depends="envcheck, globus">
 		<if>
 			<isset property="small.memory" />
 			<then>
@@ -469,7 +472,7 @@
 		</if>
 	</target>
 
-	<target name="common" unless="setenvonly" depends="boost,classads,globus,cppunit">
+	<target name="common" unless="setenvonly" depends="envcheck, boost,classads,globus,cppunit">
 		<if>
 			<isset property="small.memory" />
 			<then>
@@ -485,7 +488,7 @@
 		</if>
 	</target>
 
-	<target name="jdl" unless="setenvonly" depends="boost,classads,globus,common">
+	<target name="jdl" unless="setenvonly" depends="envcheck, boost,classads,globus,common">
 		<if>
 			<isset property="small.memory" />
 			<then>
@@ -501,7 +504,7 @@
 		</if>
         </target>
 
-        <target name="jdlj" unless="setenvonly" depends="jclassads">
+        <target name="jdlj" unless="setenvonly" depends="envcheck, jclassads">
 		<if>
 			<isset property="small.memory" />
 			<then>
@@ -517,7 +520,7 @@
 		</if>
         </target>
 
-	<target name="brokerinfo" unless="setenvonly" depends="boost,classads,common,jdl,rls">
+	<target name="brokerinfo" unless="setenvonly" depends="envcheck, boost,classads,common,jdl,rls">
 		<if>
 			<isset property="small.memory" />
 			<then>
@@ -533,7 +536,7 @@
 		</if>
         </target>
 
-	<target name="classad_plugin" unless="setenvonly" depends="boost,classads,common,brokerinfo">
+	<target name="classad_plugin" unless="setenvonly" depends="envcheck, boost,classads,common,brokerinfo">
 		<if>
 			<isset property="small.memory" />
 			<then>
@@ -549,7 +552,7 @@
 		</if>
         </target>
 
-	<target name="matchmaking" unless="setenvonly" depends="boost,classads,common,classad_plugin, ism">
+	<target name="matchmaking" unless="setenvonly" depends="envcheck, boost,classads,common,classad_plugin, ism">
 		<if>
 			<isset property="small.memory" />
 			<then>
@@ -565,7 +568,7 @@
 		</if>
         </target>
 
-	<target name="helper" unless="setenvonly" depends="boost,classads,common,jdl,matchmaking,broker">
+	<target name="helper" unless="setenvonly" depends="envcheck, boost,classads,common,jdl,matchmaking,broker">
 		<if>
 			<isset property="small.memory" />
 			<then>
@@ -581,7 +584,7 @@
 		</if>
         </target>
 
-	<target name="broker" unless="setenvonly" depends="boost,classads,common,jdl,rls">
+	<target name="broker" unless="setenvonly" depends="envcheck, boost,classads,common,jdl,rls">
 		<if>
 			<isset property="small.memory" />
 			<then>
@@ -597,7 +600,7 @@
 		</if>
         </target>
 
-	<target name="checkpointing" unless="setenvonly" depends="boost,classads,common">
+	<target name="checkpointing" unless="setenvonly" depends="envcheck, boost,classads,common">
 		<if>
 			<isset property="small.memory" />
 			<then>
@@ -613,7 +616,7 @@
 		</if>
         </target>
 
-	<target name="rls" unless="setenvonly" depends="boost, edg-replica-location-client-cpp, edg-replica-optimization-client-cpp, edg-replica-metadata-catalog-client-cpp, edg-replica-manager-client, edg-gsoap-base">
+	<target name="rls" unless="setenvonly" depends="envcheck, boost, edg-replica-location-client-cpp, edg-replica-optimization-client-cpp, edg-replica-metadata-catalog-client-cpp, edg-replica-manager-client, edg-gsoap-base">
                 <if>
                         <isset property="small.memory" />
                         <then>
@@ -629,7 +632,7 @@
                 </if>
         </target>
 
-	<target name="manager-ns-versions" unless="setenvonly">
+	<target name="manager-ns-versions" unless="setenvonly" depends="envcheck">
 		<if>
 			<isset property="small.memory" />
 			<then>
@@ -645,7 +648,7 @@
 		</if>
         </target>
 
-	<target name="manager-ns-common" unless="setenvonly">
+	<target name="manager-ns-common" unless="setenvonly" depends="envcheck">
 		<if>
 			<isset property="small.memory" />
 			<then>
@@ -661,7 +664,7 @@
 		</if>
         </target>
 
-	<target name="manager-ns-fsm" unless="setenvonly" depends="boost,classads,globus">
+	<target name="manager-ns-fsm" unless="setenvonly" depends="envcheck, boost,classads,globus">
 		<if>
 			<isset property="small.memory" />
 			<then>
@@ -677,7 +680,7 @@
 		</if>
         </target>
 
-	<target name="manager-ns-commands" unless="setenvonly" depends="boost,classads,common,manager-ns-fsm,manager-ns-versions,manager-ns-common,purger,broker">
+	<target name="manager-ns-commands" unless="setenvonly" depends="envcheck, boost,classads,common,manager-ns-fsm,manager-ns-versions,manager-ns-common,purger,broker">
 		<if>
 			<isset property="small.memory" />
 			<then>
@@ -693,7 +696,7 @@
 		</if>
         </target>
 
-	<target name="manager-ns-client" unless="setenvonly" depends="boost,classads,common, manager-ns-commands">
+	<target name="manager-ns-client" unless="setenvonly" depends="envcheck, boost,classads,common, manager-ns-commands">
 		<if>
 			<isset property="small.memory" />
 			<then>
@@ -709,7 +712,7 @@
 		</if>
         </target>
 
-	<target name="manager-ns-daemon" unless="setenvonly" depends="boost,classads,common, manager-ns-commands, configuration">
+	<target name="manager-ns-daemon" unless="setenvonly" depends="envcheck, boost,classads,common, manager-ns-commands, configuration">
 		<if>
 			<isset property="small.memory" />
 			<then>
@@ -725,7 +728,7 @@
 		</if>
         </target>
 
-	<target name="purger" unless="setenvonly" depends="boost,classads,globus">
+	<target name="purger" unless="setenvonly" depends="envcheck, boost,classads,globus">
 		<if>
 			<isset property="small.memory" />
 			<then>
@@ -741,7 +744,7 @@
 		</if>
         </target>
 
-	<target name="jobsubmission" unless="setenvonly" depends="boost,classads,condor,globus,common,purger,jdl,configuration">
+	<target name="jobsubmission" unless="setenvonly" depends="envcheck, boost,classads,condor,globus,common,purger,jdl,configuration">
 		<if>
 			<isset property="small.memory" />
 			<then>
@@ -757,7 +760,7 @@
 		</if>
         </target>
 
-	<target name="ism" unless="setenvonly" depends="boost,classads">
+	<target name="ism" unless="setenvonly" depends="envcheck, boost,classads">
                 <if>
                         <isset property="small.memory" />
                         <then>
@@ -773,7 +776,7 @@
                 </if>
         </target>
 
-	<target name="manager" unless="setenvonly" depends="boost,classads,globus,expat,ares,common,purger,jdl,helper,jobsubmission,ism,configuration">
+	<target name="manager" unless="setenvonly" depends="envcheck, boost,classads,globus,expat,ares,common,purger,jdl,helper,jobsubmission,ism,configuration">
 		<if>
 			<isset property="small.memory" />
 			<then>
@@ -789,7 +792,7 @@
 		</if>
         </target>
 
-	<target name="interactive" unless="setenvonly" depends="globus,thirdparty-bypass">
+	<target name="interactive" unless="setenvonly" depends="envcheck, globus,thirdparty-bypass">
                 <if>
                         <isset property="small.memory" />
                         <then>
@@ -805,7 +808,7 @@
                 </if>
         </target>
 
-	<target name="configuration" unless="setenvonly" depends="globus">
+	<target name="configuration" unless="setenvonly" depends="envcheck, globus">
                 <if>
                         <isset property="small.memory" />
                         <then>
@@ -822,7 +825,8 @@
         </target>
 
 	<!-- Main proxy -->
-	<target name="buildmodules" depends="configuration,
+	<target name="buildmodules" depends="envcheck,
+						 configuration,
    					     thirdparty-globus_gridftp_server,
 					     thirdparty-bypass,
 					     interactive,
