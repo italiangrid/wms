@@ -1,26 +1,28 @@
 #!/bin/sh
 
-SCRIPT_LOCATION=@prefix@/etc/init.d
+SCRIPT_LOCATION=${GLITE_LOCATION}/etc/init.d
 WMS_PREFIX=glite-wms
+LB_PREFIX=glite-lb
+PROXY_PREFIX=glite-proxy
 
-if [ -f ${SCRIPT_LOCATION}/${WMS_PREFIX}-locallogger ]; then
-  ${SCRIPT_LOCATION}/${WMS_PREFIX}-locallogger status >/dev/null
+if [ -f ${SCRIPT_LOCATION}/${LB_PREFIX}-locallogger ]; then
+  ${SCRIPT_LOCATION}/${LB_PREFIX}-locallogger status >/dev/null
   if [ $? -ne 0 ]; then
-    ${SCRIPT_LOCATION}/${WMS_PREFIX}-locallogger restart
+    ${SCRIPT_LOCATION}/${LB_PREFIX}-locallogger restart
   fi
 fi
 
-if [ -f ${SCRIPT_LOCATION}/${WMS_PREFIX}-lbserver ]; then
-  ${SCRIPT_LOCATION}/${WMS_PREFIX}-lbserver status >/dev/null
+if [ -f ${SCRIPT_LOCATION}/${LB_PREFIX}-bkserverd ]; then
+  ${SCRIPT_LOCATION}/${LB_PREFIX}-bkserverd status >/dev/null
   if [ $? -ne 0 ]; then
-    ${SCRIPT_LOCATION}/${WMS_PREFIX}-lbserver restart
+    ${SCRIPT_LOCATION}/${LB_PREFIX}-bkserverd restart
   fi
 fi
 
-if [ -f ${SCRIPT_LOCATION}/${WMS_PREFIX}-proxyrenewal ]; then
-  ${SCRIPT_LOCATION}/${WMS_PREFIX}-proxyrenewal status >/dev/null
+if [ -f ${SCRIPT_LOCATION}/${PROXY_PREFIX}-proxy-renewd ]; then
+  ${SCRIPT_LOCATION}/${PROXY_PREFIX}-proxy-renewd status >/dev/null
   if [ $? -ne 0 ]; then
-    ${SCRIPT_LOCATION}/${WMS_PREFIX}-proxyrenewal restart
+    ${SCRIPT_LOCATION}/${PROXY_PREFIX}-proxy-renewd restart
   fi
 fi
 
