@@ -17,6 +17,9 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.9  2004/07/23 07:47:55  eronchie
+#       Removed test in SUBDIRS
+#
 #       Revision 1.8  2004/06/18 12:12:42  eronchie
 #       Start handling interface
 #
@@ -40,7 +43,7 @@
 ## Process this file with automake to produce Makefile.in
 
 ## Subdirectories list
-SUBDIRS = interface src test
+SUBDIRS = interface src 
 
 ## Default flags to run aclocal
 ACLOCAL_AMFLAGS = -I project
