@@ -5,7 +5,7 @@ if ( ! $?GLOBUS_LOCATION) then
 endif
 
 if ( $?GLITE_WMS_USER) then
-  setenv GLITE_WMS_USER gliteuser
+  setenv GLITE_WMS_USER glite
 endif
 
 if ( $?GLITE_WMS_LOCATION_VAR) then
