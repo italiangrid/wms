@@ -39,9 +39,6 @@ AC_REVISION([$Revision$])
 WORKDIR=`pwd`
 AC_SUBST(WORKDIR)
 
-DISTBIN=$WORKDIR/../../dist
-AC_SUBST(DISTBIN)
-
 # Checks for programs.
 AC_PROG_CC
 AC_PROG_CPP
@@ -86,6 +83,8 @@ AC_GLOBUS([], have_globus=yes, have_globus=no)
 AC_MSG_RESULT(["CLASSADS found $have_classads"])
 AC_MSG_RESULT(["BOOST found $have_boost"])
 AC_MSG_RESULT(["GLOBUS found $have_globus"])
+
+AC_GLITE
 
 # Configuration items
 AC_PREFIX_DEFAULT([/opt/glite])
