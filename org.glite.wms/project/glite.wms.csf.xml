@@ -21,11 +21,14 @@
 
 	Revision history:
 	$Log$
+	Revision 1.60  2004/10/08 13:01:52  eronchie
+	Updated helper
+
 	Revision 1.59  2004/10/06 10:39:19  eronchie
 	Updated helper file
 	Removed loki
 	Start adding rls
-
+	
 	Revision 1.58  2004/09/21 13:39:44  eronchie
 	Updated
 	
@@ -544,7 +547,7 @@
     	</target>
 
 	<!-- Helper -->
-    	<target name="helper" depends="boost,classads,globus,common,jdl,get.helper.head, get.helper.tag"/>
+    	<target name="helper" depends="boost,classads,globus,common,jdl,matchmaking,broker,get.helper.head, get.helper.tag"/>
     	<target name="get.helper.head" if="helper.head">
             <cvs-co package="org.glite.wms.helper" />
     	</target>

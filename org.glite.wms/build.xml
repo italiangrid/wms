@@ -21,9 +21,12 @@
 
 	Revision history:
 	$Log$
+	Revision 1.65  2004/10/08 13:01:52  eronchie
+	Updated helper
+
 	Revision 1.64  2004/10/06 10:40:55  eronchie
 	Start adding rls
-
+	
 	Revision 1.63  2004/09/29 13:18:11  flammer
 	Only updatinf formatting of small.memory lines.
 	
@@ -533,7 +536,7 @@
 		</if>
         </target>
 
-	<target name="helper" unless="setenvonly" depends="boost,classads,common,jdl">
+	<target name="helper" unless="setenvonly" depends="boost,classads,common,jdl,matchmaking,broker">
 		<if>
 			<isset property="small.memory" />
 			<then>
