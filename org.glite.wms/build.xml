@@ -21,11 +21,14 @@
 
 	Revision history:
 	$Log$
+	Revision 1.89  2005/02/09 14:37:36  eronchie
+	Update partitioner dependencies
+
 	Revision 1.88  2005/02/02 20:20:26  eronchie
 	Updated
 	Added partitioner and wmproxy
 	WORK in progress
-
+	
 	Revision 1.87  2005/01/24 18:40:21  eronchie
 	Removed wmproxy
 	WORK IN PROGRESS
@@ -495,7 +498,7 @@
 		</if>
 	</target>
 
-	<target name="partitioner" unless="setenvonly" depends="envset">
+	<target name="partitioner" unless="setenvonly" depends="envset, boost, classads">
                 <if>
                         <isset property="small.memory" />
                         <then>
