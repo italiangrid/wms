@@ -14,7 +14,7 @@ enum generic_event_t {
 };
 
 enum job_statuses_t {
-  undefined_status = -1,
+  undefined_status = -2,
   no_resubmission
 };
 
