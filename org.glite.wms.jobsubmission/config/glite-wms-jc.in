@@ -1,61 +1,59 @@
 #!/bin/bash
 #
-# edg-wl-jc:      Starts the JobController daemon(s)
+# glite-wms-jc:      Starts the JobController daemon(s)
 #
-# Version:        @(#) /etc/rc.d/init.d/edg-wl-jc   2.0
+# Version:        @(#) /etc/rc.d/init.d/glite-wms-jc   2.0
 #
 # chkconfig: 345 95 06 
-# description: Starts, stops and checks the European DataGrid \
+# description: Starts, stops and checks the EGEE \
 #              JobController daemon. It also starts the CondorG \
 #              thinghie.
 #
-# processname: edg-wl-job_controller condor_master condor_schedd
-# config: /opt/edg/etc/edg_wl.conf
+# processname: glite-wms-job_controller condor_master condor_schedd
+# config: /opt/glite/etc/glite_wms.conf
 # hide: false
 
 # Source function library
 . /etc/rc.d/init.d/functions
 
-EDG_WL_LOCATION=${EDG_WL_LOCATION:-@prefix@}
+GLITE_LOCATION=${GLITE_LOCATION:-@prefix@}
 
-. ${EDG_WL_LOCATION}/etc/edg-wl-vars.sh
-. ${EDG_WL_LOCATION}/etc/profile.d/edg-wl.sh
-. ${EDG_WL_LOCATION}/etc/profile.d/edg-wl-config.sh
+. ${GLITE_LOCATION}/etc/glite-wms-vars.sh
+. ${GLITE_LOCATION}/etc/profile.d/glite-wms.sh
+. ${GLITE_LOCATION}/etc/profile.d/glite-wms-config.sh
 
 init_variables()
 {
 # All these things must go in some centralized place...
-    EDG_WL_BIN_DIR=${EDG_WL_LOCATION}/bin
+    GLITE_WMS_BIN_DIR=${GLITE_LOCATION}/bin
 
 # All these things should stay there
-    CONFIGURATION_FILE=edg_wl.conf
+    CONFIGURATION_FILE=glite_wms.conf
 
-#    EDG_WL_USER=`${EDG_WL_BIN_DIR}/edg-wl-get-configuration Common.DGUser` || do_failure "Cannot determine username"
-
-    CONTROLLERBASE=edg-wl-job_controller
+    CONTROLLERBASE=glite-wms-job_controller
     MASTERBASE=condor_master
 
-    edguid=`id -u ${EDG_WL_USER} 2>&1` || do_failure $edguid
-    edggid=`id -g ${EDG_WL_USER} 2>&1` || do_failure $edggid
-    export CONDOR_IDS="$edguid.$edggid"
+    gliteuid=`id -u ${GLITE_WMS_USER} 2>&1` || do_failure $gliteuid
+    glitegid=`id -g ${GLITE_WMS_USER} 2>&1` || do_failure $glitegid
+    export CONDOR_IDS="$gliteuid.$glitegid"
 
     CONDOR_MASTER=${CONDORG_INSTALL_PATH}/sbin/${MASTERBASE}
     CONDOR_OFF=${CONDORG_INSTALL_PATH}/sbin/condor_off
     CONDOR_SCHEDD=${CONDORG_INSTALL_PATH}/sbin/condor_schedd
-    JOBCONTROLLER=${EDG_WL_BIN_DIR}/${CONTROLLERBASE}
+    JOBCONTROLLER=${GLITE_WMS_BIN_DIR}/${CONTROLLERBASE}
 
-    LOCKFILE=`${EDG_WL_BIN_DIR}/edg-wl-get-configuration JobController.LockFile`
+    LOCKFILE=`${GLITE_WMS_BIN_DIR}/glite-wms-get-configuration JobController.LockFile`
     SCRIPT_UID=`/usr/bin/id -u`
 
-    EDGUSER_HOME=`eval echo ~${EDG_WL_USER}`
-    [ -d ${EDGUSER_HOME} ] || do_failure "Missing user directory ${EDGUSER_HOME}"
+    GLITEUSER_HOME=`eval echo ~${GLITE_WMS_USER}`
+    [ -d ${GLITEUSER_HOME} ] || do_failure "Missing user directory ${GLITEUSER_HOME}"
 }
 
 create_dirs() 
 {
-  CONFIGURATION_FILE=edg_wl.conf
+  CONFIGURATION_FILE=glite_wms.conf
   
-  . ${EDG_WL_LOCATION}/libexec/edg-wl-parse-configuration.sh ${CONFIGURATION_FILE} JobController
+  . ${GLITE_WMS_LOCATION}/libexec/glite-wms-parse-configuration.sh ${CONFIGURATION_FILE} JobController
 }
 do_failure()
 {
@@ -79,7 +77,7 @@ create_proxy()
     local proxy=
 
     if [ ${SCRIPT_UID} -eq 0 ]; then
-	proxy=`su $EDG_WL_USER -s /bin/sh -c "${GLOBUS_LOCATION}/bin/grid-proxy-init -q \
+	proxy=`su $GLITE_WMS_USER -s /bin/sh -c "${GLOBUS_LOCATION}/bin/grid-proxy-init -q \
 	    -cert $X509_HOST_CERT \
 	    -key  $X509_HOST_KEY \
 	    -hours 24 \
@@ -126,7 +124,7 @@ start()
     if [ "x$1" = "xCondorG" -o "x$1" = "x" ]; then
 	echo -ne "\tStarting CondorG..."
 	ulimit -n 16384
-	daemon --user ${EDG_WL_USER} ${CONDOR_MASTER}
+	daemon --user ${GLITE_WMS_USER} ${CONDOR_MASTER}
 	echo ""
 
 	if [ ${SCRIPT_UID} -eq 0 ]; then
@@ -265,12 +263,6 @@ status()
     if [ "x$1" = "xJobController" -o "x$1" = "x" ]; then
 	pid=`pidofproc ${JOBCONTROLLER}`
 
-#	if [ -n "$pid" ]; then
-#	    echo "JobController running in pid: ${pid}"
-#	else
-#	    echo "JobController not running"
-#	fi
-
         if [ -n "$pid" ]; then
            echo "JobController running in pid: ${pid}"
         elif [ -f "${LOCKFILE}" ]; then
@@ -284,12 +276,6 @@ status()
 
     if [ "x$1" = "xJobController" -o "x$1" = "x" ]; then
 	pid=`pidofproc ${CONDOR_MASTER}`
-
-#	if [ -n "$pid" ]; then
-#	    echo "CondorG master running in pid: $pid"
-#	else
-#	    echo "CondorG master not running"
-#	fi
 
         if [ -n "$pid" ]; then
            echo "CondorG master running in pid: ${pid}"
