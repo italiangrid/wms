@@ -33,7 +33,7 @@ AC_DEFUN(AC_REPLICA,
   
     REPLICA_MANAGER_LIBS="$REPLICA_MANAGER_LIBS -ledg_replica_manager_client_gcc3_2_2"
 
-    if test ! -f "$with_replica_manager_prefix/$EDG/include/EdgReplicaManager/ReplicaManagerImpl.h"; then
+    if test ! -f "$with_replica_manager_prefix/include/EdgReplicaManager/ReplicaManagerImpl.h"; then
         ac_replica_man=no
     else
         ac_replica_man=yes
