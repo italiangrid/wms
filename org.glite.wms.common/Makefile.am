@@ -17,6 +17,9 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.10  2004/10/11 15:12:36  eronchie
+#       Added LICENSE handling
+#
 #       Revision 1.9  2004/07/23 07:47:55  eronchie
 #       Removed test in SUBDIRS
 #
@@ -31,16 +34,13 @@
 #       Added licence boilerplate
 #
 #
-                                                                                                                                                             
-## *********************************************************************
-## *
-## * Copyright (c) 2002 CERN and INFN on behalf of the EU DataGrid.
-## * For license conditions see LICENSE file or
-## * http://www.edg.org/license.html
-## *
-## *********************************************************************
 
 ## Process this file with automake to produce Makefile.in
+
+EXTRA_DIST = LICENSE
+
+docdir = $(datadir)/doc/@PACKAGE@-@VERSION@
+doc_DATA = LICENSE
 
 ## Subdirectories list
 SUBDIRS = interface src 
