@@ -21,9 +21,12 @@
 	
 	Revision history:
 	$Log$
+	Revision 1.9  2004/08/04 07:36:11  eronchie
+	Added cppunit among m4files.list
+
 	Revision 1.8  2004/07/28 09:46:51  eronchie
 	Added m4files.list property
-
+	
 	Revision 1.7  2004/07/16 14:56:56  flammer
 	Corrected input path of build.properties.
 	
@@ -78,6 +81,6 @@
 		 Define extra properties here ...
 		 ====================================================== -->
 		 
-	<property name="m4files.list" value="globus.m4 classads.m4 boost.m4 glite.m4"/>
+	<property name="m4files.list" value="globus.m4 classads.m4 boost.m4 glite.m4 cppunit.m4"/>
 
 </project>
