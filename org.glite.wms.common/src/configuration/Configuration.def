@@ -318,6 +318,10 @@ class NSConfiguration {
 # Should probably be moved out of NSi config, like the II config above.
 #
   parameter std::vector<std::string> ( RLSCatalog ) section normal;
+
+# Remote catalog connection and IO timeout
+  parameter int ( DLI_SI_CatalogTimeout ) section normal;
+
 }
 
 class WMConfiguration {
