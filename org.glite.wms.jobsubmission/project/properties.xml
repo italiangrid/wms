@@ -20,10 +20,13 @@
 	
 	Revision history:
 	$Log$
+	Revision 1.5  2004/10/08 09:38:23  pandreet
+	LICENSE in rpm; defined summary and description
+
 	Revision 1.4  2004/08/12 17:20:31  eronchie
 	Changed renewal in security
 	Changed NOTHR_RENEWAL_LIBS in RENEWAL_NOTHR_LIBS
-
+	
 	Revision 1.3  2004/07/28 14:38:58  pandreet
 	Proxyrenewal dependencies fixed
 	
@@ -72,6 +75,10 @@
 	      Define extra properties here ...
 	     ====================================================== -->
 	
+        <property name="build.package.summary" value="WMS job submission module" />
+                                                                                                                          
+        <property name="build.package.description" value="WMS job submission: component used to submit job via condor and to monitor condor logs" />
+                                                                                                                          
 	<property name="m4files.list" value="globus.m4 classads.m4 boost.m4 expat.m4 ares.m4 condorg.m4 glite.m4 glite_lb.m4 glite_wmsutils.m4 glite_wms_common.m4 glite_wms_jdl.m4 glite_security.m4"/>
 	
 </project>

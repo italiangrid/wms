@@ -17,6 +17,9 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.3  2004/10/08 09:38:23  pandreet
+#       LICENSE in rpm; defined summary and description
+#
 #       Revision 1.2  2004/08/27 13:19:40  eronchie
 #       Added handling of config directory
 #       Added start up script files
@@ -26,6 +29,11 @@
 #
 
 ## Process this file with automake to produce Makefile.in
+
+EXTRA_DIST = LICENSE
+
+docdir = $(datadir)/doc/@PACKAGE@-@VERSION@
+doc_DATA = LICENSE
 
 ## Subdirectories list
 SUBDIRS = config src test 
