@@ -68,7 +68,7 @@ if [ -f ${GET_CONF} ]; then
       chown -R $GLITE_WMS_USER.$GLITE_WMS_GROUP $location
     done
 
-    chmod g+w $dirStaging
+    chmod o+wx $dirStaging
   fi
 
   if [ $DaemonName = $wm ]; then
