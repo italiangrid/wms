@@ -21,11 +21,14 @@
 
 	Revision history:
 	$Log$
+	Revision 1.80  2005/02/07 11:01:31  vmedici
+	removed circular dependency bug (partitioner depending on partitioner)
+
 	Revision 1.79  2005/02/02 20:20:26  eronchie
 	Updated
 	Added partitioner and wmproxy
 	WORK in progress
-
+	
 	Revision 1.78  2005/01/24 18:40:21  eronchie
 	Removed wmproxy
 	WORK IN PROGRESS
@@ -846,7 +849,7 @@
         </target>
 		
 	<!-- PARTITIONER -->
-        <target name="partitioner" depends="axis,partitioner,get.partitioner.head, get.partitioner.tag"/>
+        <target name="partitioner" depends="boost,classads,get.partitioner.head, get.partitioner.tag"/>
         <target name="get.partitioner.head" if="partitioner.head">
             <cvs-co package="org.glite.wms.partitioner" />
         </target>
