@@ -10,19 +10,19 @@
 #include "glite/wmsutils/exception/Exception.h"
 #include "exception_codes.h"
 
-namespace exception = glite::wmsutils::exception;
+namespace excep = glite::wmsutils::exception;
 
 namespace glite {  
 namespace wms {
 namespace common {
 namespace ldif2classad {
  
-    class Exception : public exception::Exception
+    class Exception : public excep::Exception
     {
       protected:
         Exception() {}
         Exception(const std::string& s, const std::string& m, int c, const std::string& n) :
-        exception::Exception(s, m, c, n) {}
+        excep::Exception(s, m, c, n) {}
     };
  
    struct ConnectionException : ldif2classad::Exception

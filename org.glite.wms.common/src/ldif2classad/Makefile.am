@@ -23,6 +23,7 @@ ldif2classadinclude_HEADERS = \
 
 AM_CPPFLAGS = -I$(top_srcdir)/interface \
 	-I$(top_srcdir)/src \
+	$(GLITE_CFLAGS) \
 	$(CLASSAD_CFLAGS) \
 	$(GLOBUS_THR_CFLAGS) \
 	-DWITH_LDAP_EXCEPTIONS \
