@@ -21,9 +21,12 @@
 
 	Revision history:
 	$Log$
+	Revision 1.64  2004/10/06 10:40:55  eronchie
+	Start adding rls
+
 	Revision 1.63  2004/09/29 13:18:11  flammer
 	Only updatinf formatting of small.memory lines.
-
+	
 	Revision 1.62  2004/09/21 13:38:53  eronchie
 	Updated
 	
@@ -434,22 +437,6 @@
 		</if>
 	</target>
 
-	<target name="thirdparty-loki" unless="setenvonly">
-		<if>
-			<isset property="small.memory" />
-			<then>
-				<exec dir="${wms.subsystem.dir}.thirdparty-loki" executable="${env.ANT_HOME}/bin/ant" failonerror="${failonerror}">
-					<arg line="${target} -Dsmall.memory=true -Dbootstrap=${bootstrap} -Dfailonerror=${failonerror} -Ddo.cvs.tag=${do.cvs.tag}"/>
-				</exec>
-			</then>
-			<else>
-				<ant dir="${wms.subsystem.dir}.thirdparty-loki"
-	                    	     target="${target}"
-	                    	     inheritall="false" />
-			</else>
-		</if>
-	</target>
-
 	<target name="common" unless="setenvonly" depends="boost,classads,globus,cppunit">
 		<if>
 			<isset property="small.memory" />
@@ -592,6 +579,22 @@
 	                    	     inheritall="false" />
 			</else>
 		</if>
+        </target>
+
+	<target name="rls" unless="setenvonly" depends="boost">
+                <if>
+                        <isset property="small.memory" />
+                        <then>
+                                <exec dir="${wms.subsystem.dir}.rls" executable="${env.ANT_HOME}/bin/ant" failonerror="${failonerror}">
+                                        <arg line="${target} -Dsmall.memory=true -Dbootstrap=${bootstrap} -Dfailonerror=${failonerror} -Ddo.cvs.tag=${do.cvs.tag}"/>
+                                </exec>
+                        </then>
+                        <else>
+                                <ant dir="${wms.subsystem.dir}.rls"
+                                     target="${target}"
+                                     inheritall="false" />
+                        </else>
+                </if>
         </target>
 
 	<target name="manager-ns-versions" unless="setenvonly">
@@ -789,7 +792,6 @@
 	<!-- Main proxy -->
 	<target name="buildmodules" depends="configuration,
    					     thirdparty-globus_gridftp_server,
- 					     thirdparty-loki,
 					     thirdparty-bypass,
 					     interactive,
 					     common,
@@ -797,6 +799,7 @@
    					     jdlj,
 					     brokerinfo,
 					     classad_plugin,
+					     rls,
 					     matchmaking,
 					     broker,
 					     helper,
