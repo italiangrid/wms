@@ -21,9 +21,12 @@
 
 	Revision history:
 	$Log$
+	Revision 1.78  2004/10/28 22:58:53  dimeglio
+	Quoted ant command line parameters
+
 	Revision 1.77  2004/10/28 18:29:35  dimeglio
 	Added envcheck to individual components
-
+	
 	Revision 1.76  2004/10/26 13:24:32  dimeglio
 	Fixed spelling error in envchecks
 	
@@ -445,7 +448,7 @@
 			<isset property="small.memory" />
 			<then>
 				<exec dir="${wms.subsystem.dir}.thirdparty-bypass" executable="${antExec}" failonerror="${failonerror}">
-					<arg line="${target} -Dsmall.memory=true -Dbootstrap=${bootstrap} -Dfailonerror=${failonerror} -Ddo.cvs.tag=${do.cvs.tag}"/>
+					<arg line="${target} &quot;-Dsmall.memory=true&quot; &quot;-Dbootstrap=${bootstrap}&quot; &quot;-Dfailonerror=${failonerror}&quot; &quot;-Ddo.cvs.tag=${do.cvs.tag}&quot;"/>
 				</exec>
 			</then>
 			<else>
@@ -461,7 +464,7 @@
 			<isset property="small.memory" />
 			<then>
 				<exec dir="${wms.subsystem.dir}.thirdparty-globus_gridftp_server" executable="${antExec}" failonerror="${failonerror}">
-					<arg line="${target} -Dsmall.memory=true -Dbootstrap=${bootstrap} -Dfailonerror=${failonerror} -Ddo.cvs.tag=${do.cvs.tag}"/>
+					<arg line="${target} &quot;-Dsmall.memory=true&quot; &quot;-Dbootstrap=${bootstrap}&quot; &quot;-Dfailonerror=${failonerror}&quot; &quot;-Ddo.cvs.tag=${do.cvs.tag}&quot;"/>
 				</exec>
 			</then>
 			<else>
@@ -477,7 +480,7 @@
 			<isset property="small.memory" />
 			<then>
 				<exec dir="${wms.subsystem.dir}.common" executable="${antExec}" failonerror="${failonerror}">
-					<arg line="${target} -Dsmall.memory=true -Dbootstrap=${bootstrap} -Dfailonerror=${failonerror} -Ddo.cvs.tag=${do.cvs.tag}"/>
+					<arg line="${target} &quot;-Dsmall.memory=true&quot; &quot;-Dbootstrap=${bootstrap}&quot; &quot;-Dfailonerror=${failonerror}&quot; &quot;-Ddo.cvs.tag=${do.cvs.tag}&quot;"/>
 				</exec>
 			</then>
 			<else>
@@ -493,7 +496,7 @@
 			<isset property="small.memory" />
 			<then>
 				<exec dir="${wms.subsystem.dir}.jdl" executable="${antExec}" failonerror="${failonerror}">
-					<arg line="${target} -Dsmall.memory=true -Dbootstrap=${bootstrap} -Dfailonerror=${failonerror} -Ddo.cvs.tag=${do.cvs.tag}"/>
+					<arg line="${target} &quot;-Dsmall.memory=true&quot; &quot;-Dbootstrap=${bootstrap}&quot; &quot;-Dfailonerror=${failonerror}&quot; &quot;-Ddo.cvs.tag=${do.cvs.tag}&quot;"/>
 				</exec>
 			</then>
 			<else>
@@ -509,7 +512,7 @@
 			<isset property="small.memory" />
 			<then>
 				<exec dir="${wms.subsystem.dir}.jdlj" executable="${antExec}" failonerror="${failonerror}">
-					<arg line="${target} -Dsmall.memory=true -Dbootstrap=${bootstrap} -Dfailonerror=${failonerror} -Ddo.cvs.tag=${do.cvs.tag}"/>
+					<arg line="${target} &quot;-Dsmall.memory=true&quot; &quot;-Dbootstrap=${bootstrap}&quot; &quot;-Dfailonerror=${failonerror}&quot; &quot;-Ddo.cvs.tag=${do.cvs.tag}&quot;"/>
 				</exec>
 			</then>
 			<else>
@@ -525,7 +528,7 @@
 			<isset property="small.memory" />
 			<then>
 				<exec dir="${wms.subsystem.dir}.brokerinfo" executable="${antExec}" failonerror="${failonerror}">
-					<arg line="${target} -Dsmall.memory=true -Dbootstrap=${bootstrap} -Dfailonerror=${failonerror} -Ddo.cvs.tag=${do.cvs.tag}"/>
+					<arg line="${target} &quot;-Dsmall.memory=true&quot; &quot;-Dbootstrap=${bootstrap}&quot; &quot;-Dfailonerror=${failonerror}&quot; &quot;-Ddo.cvs.tag=${do.cvs.tag}&quot;"/>
 				</exec>
 			</then>
 			<else>
@@ -541,7 +544,7 @@
 			<isset property="small.memory" />
 			<then>
 				<exec dir="${wms.subsystem.dir}.classad_plugin" executable="${antExec}" failonerror="${failonerror}">
-					<arg line="${target} -Dsmall.memory=true -Dbootstrap=${bootstrap} -Dfailonerror=${failonerror} -Ddo.cvs.tag=${do.cvs.tag}"/>
+					<arg line="${target} &quot;-Dsmall.memory=true&quot; &quot;-Dbootstrap=${bootstrap}&quot; &quot;-Dfailonerror=${failonerror}&quot; &quot;-Ddo.cvs.tag=${do.cvs.tag}&quot;"/>
 				</exec>
 			</then>
 			<else>
@@ -557,7 +560,7 @@
 			<isset property="small.memory" />
 			<then>
 				<exec dir="${wms.subsystem.dir}.matchmaking" executable="${antExec}" failonerror="${failonerror}">
-					<arg line="${target} -Dsmall.memory=true -Dbootstrap=${bootstrap} -Dfailonerror=${failonerror} -Ddo.cvs.tag=${do.cvs.tag}"/>
+					<arg line="${target} &quot;-Dsmall.memory=true&quot; &quot;-Dbootstrap=${bootstrap}&quot; &quot;-Dfailonerror=${failonerror}&quot; &quot;-Ddo.cvs.tag=${do.cvs.tag}&quot;"/>
 				</exec>
 			</then>
 			<else>
@@ -573,7 +576,7 @@
 			<isset property="small.memory" />
 			<then>
 				<exec dir="${wms.subsystem.dir}.helper" executable="${antExec}" failonerror="${failonerror}">
-					<arg line="${target} -Dsmall.memory=true -Dbootstrap=${bootstrap} -Dfailonerror=${failonerror} -Ddo.cvs.tag=${do.cvs.tag}"/>
+					<arg line="${target} &quot;-Dsmall.memory=true&quot; &quot;-Dbootstrap=${bootstrap}&quot; &quot;-Dfailonerror=${failonerror}&quot; &quot;-Ddo.cvs.tag=${do.cvs.tag}&quot;"/>
 				</exec>
 			</then>
 			<else>
@@ -589,7 +592,7 @@
 			<isset property="small.memory" />
 			<then>
 				<exec dir="${wms.subsystem.dir}.broker" executable="${antExec}" failonerror="${failonerror}">
-					<arg line="${target} -Dsmall.memory=true -Dbootstrap=${bootstrap} -Dfailonerror=${failonerror} -Ddo.cvs.tag=${do.cvs.tag}"/>
+					<arg line="${target} &quot;-Dsmall.memory=true&quot; &quot;-Dbootstrap=${bootstrap}&quot; &quot;-Dfailonerror=${failonerror}&quot; &quot;-Ddo.cvs.tag=${do.cvs.tag}&quot;"/>
 				</exec>
 			</then>
 			<else>
@@ -605,7 +608,7 @@
 			<isset property="small.memory" />
 			<then>
 				<exec dir="${wms.subsystem.dir}.checkpointing" executable="${antExec}" failonerror="${failonerror}">
-					<arg line="${target} -Dsmall.memory=true -Dbootstrap=${bootstrap} -Dfailonerror=${failonerror} -Ddo.cvs.tag=${do.cvs.tag}"/>
+					<arg line="${target} &quot;-Dsmall.memory=true&quot; &quot;-Dbootstrap=${bootstrap}&quot; &quot;-Dfailonerror=${failonerror}&quot; &quot;-Ddo.cvs.tag=${do.cvs.tag}&quot;"/>
 				</exec>
 			</then>
 			<else>
@@ -621,7 +624,7 @@
                         <isset property="small.memory" />
                         <then>
                                 <exec dir="${wms.subsystem.dir}.rls" executable="${antExec}" failonerror="${failonerror}">
-                                        <arg line="${target} -Dsmall.memory=true -Dbootstrap=${bootstrap} -Dfailonerror=${failonerror} -Ddo.cvs.tag=${do.cvs.tag}"/>
+                                        <arg line="${target} &quot;-Dsmall.memory=true&quot; &quot;-Dbootstrap=${bootstrap}&quot; &quot;-Dfailonerror=${failonerror}&quot; &quot;-Ddo.cvs.tag=${do.cvs.tag}&quot;"/>
                                 </exec>
                         </then>
                         <else>
@@ -637,7 +640,7 @@
 			<isset property="small.memory" />
 			<then>
 				<exec dir="${wms.subsystem.dir}.manager-ns-versions" executable="${antExec}" failonerror="${failonerror}">
-					<arg line="${target} -Dsmall.memory=true -Dbootstrap=${bootstrap} -Dfailonerror=${failonerror} -Ddo.cvs.tag=${do.cvs.tag}"/>
+					<arg line="${target} &quot;-Dsmall.memory=true&quot; &quot;-Dbootstrap=${bootstrap}&quot; &quot;-Dfailonerror=${failonerror}&quot; &quot;-Ddo.cvs.tag=${do.cvs.tag}&quot;"/>
 				</exec>
 			</then>
 			<else>
@@ -653,7 +656,7 @@
 			<isset property="small.memory" />
 			<then>
 				<exec dir="${wms.subsystem.dir}.manager-ns-common" executable="${antExec}" failonerror="${failonerror}">
-					<arg line="${target} -Dsmall.memory=true -Dbootstrap=${bootstrap} -Dfailonerror=${failonerror} -Ddo.cvs.tag=${do.cvs.tag}"/>
+					<arg line="${target} &quot;-Dsmall.memory=true&quot; &quot;-Dbootstrap=${bootstrap}&quot; &quot;-Dfailonerror=${failonerror}&quot; &quot;-Ddo.cvs.tag=${do.cvs.tag}&quot;"/>
 				</exec>
 			</then>
 			<else>
@@ -669,7 +672,7 @@
 			<isset property="small.memory" />
 			<then>
 				<exec dir="${wms.subsystem.dir}.manager-ns-fsm" executable="${antExec}" failonerror="${failonerror}">
-					<arg line="${target} -Dsmall.memory=true -Dbootstrap=${bootstrap} -Dfailonerror=${failonerror} -Ddo.cvs.tag=${do.cvs.tag}"/>
+					<arg line="${target} &quot;-Dsmall.memory=true&quot; &quot;-Dbootstrap=${bootstrap}&quot; &quot;-Dfailonerror=${failonerror}&quot; &quot;-Ddo.cvs.tag=${do.cvs.tag}&quot;"/>
 				</exec>
 			</then>
 			<else>
@@ -685,7 +688,7 @@
 			<isset property="small.memory" />
 			<then>
 				<exec dir="${wms.subsystem.dir}.manager-ns-commands" executable="${antExec}" failonerror="${failonerror}">
-					<arg line="${target} -Dsmall.memory=true -Dbootstrap=${bootstrap} -Dfailonerror=${failonerror} -Ddo.cvs.tag=${do.cvs.tag}"/>
+					<arg line="${target} &quot;-Dsmall.memory=true&quot; &quot;-Dbootstrap=${bootstrap}&quot; &quot;-Dfailonerror=${failonerror}&quot; &quot;-Ddo.cvs.tag=${do.cvs.tag}&quot;"/>
 				</exec>
 			</then>
 			<else>
@@ -701,7 +704,7 @@
 			<isset property="small.memory" />
 			<then>
 				<exec dir="${wms.subsystem.dir}.manager-ns-client" executable="${antExec}" failonerror="${failonerror}">
-					<arg line="${target} -Dsmall.memory=true -Dbootstrap=${bootstrap} -Dfailonerror=${failonerror} -Ddo.cvs.tag=${do.cvs.tag}"/>
+					<arg line="${target} &quot;-Dsmall.memory=true&quot; &quot;-Dbootstrap=${bootstrap}&quot; &quot;-Dfailonerror=${failonerror}&quot; &quot;-Ddo.cvs.tag=${do.cvs.tag}&quot;"/>
 				</exec>
 			</then>
 			<else>
@@ -717,7 +720,7 @@
 			<isset property="small.memory" />
 			<then>
 				<exec dir="${wms.subsystem.dir}.manager-ns-daemon" executable="${antExec}" failonerror="${failonerror}">
-					<arg line="${target} -Dsmall.memory=true -Dbootstrap=${bootstrap} -Dfailonerror=${failonerror} -Ddo.cvs.tag=${do.cvs.tag}"/>
+					<arg line="${target} &quot;-Dsmall.memory=true&quot; &quot;-Dbootstrap=${bootstrap}&quot; &quot;-Dfailonerror=${failonerror}&quot; &quot;-Ddo.cvs.tag=${do.cvs.tag}&quot;"/>
 				</exec>
 			</then>
 			<else>
@@ -733,7 +736,7 @@
 			<isset property="small.memory" />
 			<then>
 				<exec dir="${wms.subsystem.dir}.purger" executable="${antExec}" failonerror="${failonerror}">
-					<arg line="${target} -Dsmall.memory=true -Dbootstrap=${bootstrap} -Dfailonerror=${failonerror} -Ddo.cvs.tag=${do.cvs.tag}"/>
+					<arg line="${target} &quot;-Dsmall.memory=true&quot; &quot;-Dbootstrap=${bootstrap}&quot; &quot;-Dfailonerror=${failonerror}&quot; &quot;-Ddo.cvs.tag=${do.cvs.tag}&quot;"/>
 				</exec>
 			</then>
 			<else>
@@ -749,7 +752,7 @@
 			<isset property="small.memory" />
 			<then>
 				<exec dir="${wms.subsystem.dir}.jobsubmission" executable="${antExec}" failonerror="${failonerror}">
-					<arg line="${target} -Dsmall.memory=true -Dbootstrap=${bootstrap} -Dfailonerror=${failonerror} -Ddo.cvs.tag=${do.cvs.tag}"/>
+					<arg line="${target} &quot;-Dsmall.memory=true&quot; &quot;-Dbootstrap=${bootstrap}&quot; &quot;-Dfailonerror=${failonerror}&quot; &quot;-Ddo.cvs.tag=${do.cvs.tag}&quot;"/>
 				</exec>
 			</then>
 			<else>
@@ -765,7 +768,7 @@
                         <isset property="small.memory" />
                         <then>
                                 <exec dir="${wms.subsystem.dir}.ism" executable="${antExec}" failonerror="${failonerror}">
-                                        <arg line="${target} -Dsmall.memory=true -Dbootstrap=${bootstrap} -Dfailonerror=${failonerror} -Ddo.cvs.tag=${do.cvs.tag}"/>
+                                        <arg line="${target} &quot;-Dsmall.memory=true&quot; &quot;-Dbootstrap=${bootstrap}&quot; &quot;-Dfailonerror=${failonerror}&quot; &quot;-Ddo.cvs.tag=${do.cvs.tag}&quot;"/>
                                 </exec>
                         </then>
                         <else>
@@ -781,7 +784,7 @@
 			<isset property="small.memory" />
 			<then>
 				<exec dir="${wms.subsystem.dir}.manager" executable="${antExec}" failonerror="${failonerror}">
-					<arg line="${target} -Dsmall.memory=true -Dbootstrap=${bootstrap} -Dfailonerror=${failonerror} -Ddo.cvs.tag=${do.cvs.tag}"/>
+					<arg line="${target} &quot;-Dsmall.memory=true&quot; &quot;-Dbootstrap=${bootstrap}&quot; &quot;-Dfailonerror=${failonerror}&quot; &quot;-Ddo.cvs.tag=${do.cvs.tag}&quot;"/>
 				</exec>
 			</then>
 			<else>
@@ -797,7 +800,7 @@
                         <isset property="small.memory" />
                         <then>
                                 <exec dir="${wms.subsystem.dir}.interactive" executable="${antExec}" failonerror="${failonerror}">
-                                        <arg line="${target} -Dsmall.memory=true -Dbootstrap=${bootstrap} -Dfailonerror=${failonerror} -Ddo.cvs.tag=${do.cvs.tag}"/>
+                                        <arg line="${target} &quot;-Dsmall.memory=true&quot; &quot;-Dbootstrap=${bootstrap}&quot; &quot;-Dfailonerror=${failonerror}&quot; &quot;-Ddo.cvs.tag=${do.cvs.tag}&quot;"/>
                                 </exec>
                         </then>
                         <else>
@@ -813,7 +816,7 @@
                         <isset property="small.memory" />
                         <then>
                                 <exec dir="${wms.subsystem.dir}.configuration" executable="${antExec}" failonerror="${failonerror}">
-                                        <arg line="${target} -Dsmall.memory=true -Dbootstrap=${bootstrap} -Dfailonerror=${failonerror} -Ddo.cvs.tag=${do.cvs.tag}"/>
+                                        <arg line="${target} &quot;-Dsmall.memory=true&quot; &quot;-Dbootstrap=${bootstrap}&quot; &quot;-Dfailonerror=${failonerror}&quot; &quot;-Ddo.cvs.tag=${do.cvs.tag}&quot;"/>
                                 </exec>
                         </then>
                         <else>
