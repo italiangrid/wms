@@ -21,9 +21,12 @@
 
 	Revision history:
 	$Log$
+	Revision 1.82  2004/12/09 10:29:26  eronchie
+	Updated brokerinfo dependencies
+
 	Revision 1.81  2004/12/02 13:53:26  eronchie
 	Added dependency
-
+	
 	Revision 1.80  2004/12/02 13:39:55  eronchie
 	Added new component
 	
@@ -532,7 +535,7 @@
 		</if>
         </target>
 
-	<target name="brokerinfo" unless="setenvonly" depends="envset, boost,classads,common,jdl,rls">
+	<target name="brokerinfo" unless="setenvonly" depends="envset, boost,classads,common,jdl,rls,cgsi-gsoap, gsoap">
 		<if>
 			<isset property="small.memory" />
 			<then>
