@@ -14,7 +14,7 @@ dnl prerequisites:
 
 AC_DEFUN(AC_REPLICA,
 [
-    EDG=/opt/edg
+    EDG=opt/edg
 
     AC_ARG_WITH(replica_manager_prefix, 
 	[  --with-replica-manager-prefix=PFX   prefix where 'replica manager' is installed.],
@@ -63,8 +63,7 @@ AC_DEFUN(AC_REPLICA,
 
     AC_MSG_CHECKING([for RESOURCE LOCATION installation at ${with_replica_location_prefix}])
 
-    if test -n "$with_replica_location_prefix" -a "$with_replica_location_prefix"
-!= "/usr" ; then
+    if test -n "$with_replica_location_prefix" -a "$with_replica_location_prefix" != "/usr" ; then
         REPLICA_LOCATION_CFLAGS="-I$with_replica_location_prefix/$EDG/include"
         REPLICA_LOCATION_LIBS="-L$with_replica_location_prefix/$EDG/lib"
     else
