@@ -21,9 +21,12 @@
 
 	Revision history:
 	$Log$
+	Revision 1.84  2005/02/09 18:51:17  eronchie
+	Updated
+
 	Revision 1.83  2005/02/09 15:07:05  eronchie
 	Updated wmproxy dependencies
-
+	
 	Revision 1.82  2005/02/09 14:50:35  eronchie
 	Updated partitioner dependencies
 	
@@ -848,7 +851,7 @@
         </target>
 
 	<!-- WMPROXY -->
-        <target name="wmproxy" depends="axis,boost,fcgi,gsoap,partitioner,get.wmproxy.head, get.wmproxy.tag"/>
+        <target name="wmproxy" depends="axis,boost,fcgi,gsoap,partitioner,wmproxy-interface, get.wmproxy.head, get.wmproxy.tag"/>
         <target name="get.wmproxy.head" if="wmproxy.head">
             <cvs-co package="org.glite.wms.wmproxy" />
         </target>

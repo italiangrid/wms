@@ -21,9 +21,12 @@
 
 	Revision history:
 	$Log$
+	Revision 1.93  2005/02/09 18:51:16  eronchie
+	Updated
+
 	Revision 1.92  2005/02/09 15:07:05  eronchie
 	Updated wmproxy dependencies
-
+	
 	Revision 1.91  2005/02/09 14:50:35  eronchie
 	Updated partitioner dependencies
 	
@@ -955,7 +958,7 @@
                 </if>
         </target>
 
-	<target name="wmproxy" unless="setenvonly" depends="envset, boost, axis, fgci, gsoap, partitioner">
+	<target name="wmproxy" unless="setenvonly" depends="envset, boost, axis, fgci, gsoap, partitioner, wmproxy-interface">
                 <if>
                         <isset property="small.memory" />
                         <then>
