@@ -21,9 +21,12 @@
 
 	Revision history:
 	$Log$
+	Revision 1.67  2004/10/12 11:05:42  eronchie
+	Updated rls dependencies
+
 	Revision 1.66  2004/10/12 07:29:46  eronchie
 	.....
-
+	
 	Revision 1.65  2004/10/08 13:01:52  eronchie
 	Updated helper
 	
@@ -587,7 +590,7 @@
 		</if>
         </target>
 
-	<target name="rls" unless="setenvonly" depends="boost, edg-replica-manager-client">
+	<target name="rls" unless="setenvonly" depends="boost, edg-replica-manager-client-cpp, edg-replica-optimization-client-cpp">
                 <if>
                         <isset property="small.memory" />
                         <then>
