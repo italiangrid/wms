@@ -129,7 +129,8 @@ bool put(const std::string& src, const std::string& dst)
 
     globus_ftp_client_handle_destroy(&handle);
 //    globus_module_deactivate_all();
-
+    fclose(fd);
+    		
     return result == GLOBUS_SUCCESS;
 }
 } // globus namespace closure
