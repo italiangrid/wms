@@ -4,7 +4,7 @@
 
 #include "utilities/FileList.h"
 #include "utilities/FileListLock.h"
-#include "common/utilities/Extractor.h"
+#include "utilities/Extractor.h"
 
 using namespace std;
 USING_COMMON_NAMESPACE;
