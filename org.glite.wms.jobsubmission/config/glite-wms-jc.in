@@ -53,7 +53,7 @@ create_dirs()
 {
   CONFIGURATION_FILE=glite_wms.conf
   
-  . ${GLITE_WMS_LOCATION}/libexec/glite-wms-parse-configuration.sh ${CONFIGURATION_FILE} JobController
+  . ${GLITE_LOCATION}/libexec/glite-wms-parse-configuration.sh ${CONFIGURATION_FILE} JobController
 }
 do_failure()
 {
