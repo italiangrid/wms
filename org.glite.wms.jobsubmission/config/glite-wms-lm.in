@@ -15,16 +15,16 @@
 # Source function library
 . /etc/rc.d/init.d/functions
 
-GLITE_WMS_LOCATION=${GLITE_WMS_LOCATION:-@prefix@}
+GLITE_LOCATION=${GLITE_LOCATION:-@prefix@}
 
-. ${GLITE_WMS_LOCATION}/etc/glite-wms-vars.sh
-. ${GLITE_WMS_LOCATION}/etc/profile.d/glite-wms.sh
-. ${GLITE_WMS_LOCATION}/etc/profile.d/glite-wms-config.sh
+. ${GLITE_LOCATION}/etc/glite-wms-vars.sh
+. ${GLITE_LOCATION}/etc/profile.d/glite-wms.sh
+. ${GLITE_LOCATION}/etc/profile.d/glite-wms-config.sh
 
 init_variables()
 {
     # All these things must go in some centralized place...
-    GLITE_WMS_BIN_DIR=${GLITE_WMS_LOCATION}/bin
+    GLITE_WMS_BIN_DIR=${GLITE_LOCATION}/bin
 
     # All these things should stay there
     CONFIGURATION_FILE=glite_wms.conf
@@ -43,7 +43,7 @@ create_dirs()
 {
   CONFIGURATION_FILE=glite_wms.conf
 
-  . ${GLITE_WMS_LOCATION}/libexec/glite-wms-parse-configuration.sh ${CONFIGURATION_FILE} LogMonitor
+  . ${GLITE_LOCATION}/libexec/glite-wms-parse-configuration.sh ${CONFIGURATION_FILE} LogMonitor
 }
 
 remove_lockfile()
