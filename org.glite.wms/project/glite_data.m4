@@ -1,11 +1,11 @@
 dnl Usage:
-dnl AC_DATA(MINIMUM-VERSION, [ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND]]])
+dnl AC_GLITE_DATA(MINIMUM-VERSION, [ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND]]])
 dnl Test for rm, and defines
-dnl - DATA_CFLAGS (compiler flags)
-dnl - DATA_LIBS (linker flags, stripping and path)
+dnl - GLITE_DATA_CFLAGS (compiler flags)
+dnl - GLITE_DATA_LIBS (linker flags, stripping and path)
 dnl prerequisites:
 
-AC_DEFUN(AC_DATA,
+AC_DEFUN(AC_GLITE_DATA,
 [
     AC_ARG_WITH(data_catalog_storageindex_api_c_prefix, 
 	[  --with-data-catalog-storageindex-api-c-prefix=PFX   prefix where 'replica manager' is installed.],
@@ -17,25 +17,25 @@ AC_DEFUN(AC_DATA,
     ac_data=yes
 
     if test -n "$with_data_catalog_storageindex_api_c_prefix" -a "$with_data_catalog_storageindex_api_c_prefix" != "/usr" ; then
-	DATA_CFLAGS="-I$with_data_catalog_storageindex_api_c_prefix/include"
-        DATA_LIBS="-L$with_data_catalog_storageindex_api_c_prefix/lib"
+	GLITE_DATA_CFLAGS="-I$with_data_catalog_storageindex_api_c_prefix/include"
+        GLITE_DATA_LIBS="-L$with_data_catalog_storageindex_api_c_prefix/lib"
     else
-	DATA_CFLAGS=""
-        DATA_LIBS=""
+	GLITE_DATA_CFLAGS=""
+        GLITE_DATA_LIBS=""
 	ac_data=no
     fi
   
-    DATA_LIBS="$REPLICA_MANAGER_LIBS libglite_data_catalog_storageindex_api_c.a"
+    GLITE_DATA_LIBS="$GLITE_DATA_LIBS libglite_data_catalog_storageindex_api_c.a"
 
     if test x$ac_data = xyes; then
 	ifelse([$2], , :, [$2])
     else
-	DATA_CFLAGS=""
-	DATA_LIBS=""
+	GLTIE_DATA_CFLAGS=""
+	GLITE_DATA_LIBS=""
 	ifelse([$3], , :, [$3])
     fi
 
-    AC_SUBST(DATA_CFLAGS)
-    AC_SUBST(DATA_LIBS)
+    AC_SUBST(GLITE_DATA_CFLAGS)
+    AC_SUBST(GLITE_DATA_LIBS)
 ])
 
