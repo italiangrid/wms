@@ -21,9 +21,14 @@
 
 	Revision history:
 	$Log$
+	Revision 1.59  2004/10/06 10:39:19  eronchie
+	Updated helper file
+	Removed loki
+	Start adding rls
+
 	Revision 1.58  2004/09/21 13:39:44  eronchie
 	Updated
-
+	
 	Revision 1.57  2004/08/20 10:07:02  eronchie
 	Updated buildmodules
 	
@@ -309,10 +314,6 @@
 			<equals arg1="${org.glite.wms.thirdparty-globus_gridftp_server.version}" arg2="HEAD" />
 		</condition>
 
-		<condition property="thirdparty-loki.head">
-			<equals arg1="${org.glite.wms.thirdparty-loki.version}" arg2="HEAD" />
-		</condition>
-
 		<condition property="thirdparty-bypass.head">
 			<equals arg1="${org.glite.wms.thirdparty-bypass.version}" arg2="HEAD" />
 		</condition>
@@ -351,6 +352,10 @@
 
 		<condition property="checkpointing.head">
                         <equals arg1="${org.glite.wms.checkpointing.version}" arg2="HEAD" />
+                </condition>
+
+		<condition property="rls.head">
+                        <equals arg1="${org.glite.wms.rls.version}" arg2="HEAD" />
                 </condition>
 
 		<condition property="manager-ns-fsm.head">
@@ -478,16 +483,6 @@
 			tag="${org.glite.wms.thirdparty-globus_gridftp_server.version}" />
 	</target>
 
-	<!-- Loki -->
- 	<target name="thirdparty-loki" depends="get.thirdparty-loki.head, get.thirdparty-loki.tag"/>
-	<target name="get.thirdparty-loki.head" if="thirdparty-loki.head">
-		<cvs-co package="org.glite.wms.thirdparty-loki" />
-	</target>
-	<target name="get.thirdparty-loki.tag" unless="thirdparty-loki.head">
-		<cvs-co package="org.glite.wms.thirdparty-loki"
-			tag="${org.glite.wms.thirdparty-loki.version}" />
-	</target>
-
 	<!-- Common -->
  	<target name="common" depends="boost,classads,globus,cppunit,get.common.head, get.common.tag"/>
 	<target name="get.common.head" if="common.head">
@@ -576,6 +571,16 @@
         <target name="get.checkpointing.tag" unless="checkpointing.head">
             <cvs-co package="org.glite.wms.checkpointing"
                     tag="${org.glite.wms.checkpointing.version}" />
+        </target>
+
+	<!-- RLS -->
+        <target name="rls" depends="boost, get.rls.head, get.rls.tag"/>
+        <target name="get.rls.head" if="rls.head">
+            <cvs-co package="org.glite.wms.rls" />
+        </target>
+        <target name="get.rls.tag" unless="rls.head">
+            <cvs-co package="org.glite.wms.rls"
+                    tag="${org.glite.wms.rls.version}" />
         </target>
 
         <!-- Manager NS Client -->
@@ -701,7 +706,6 @@
 	<!-- All project modules -->
  	<target name="project" depends="configuration,
   				        thirdparty-globus_gridftp_server,
-  				        thirdparty-loki,
 					thirdparty-bypass,
 					interactive,
 				        common,
@@ -709,6 +713,7 @@
  				        jdlj,
 					brokerinfo,
 					classad_plugin,
+					rls,
 					matchmaking,
 					broker,
 					helper,
