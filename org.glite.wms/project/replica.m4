@@ -9,6 +9,7 @@ dnl - REPLICA_METADATA_CFLAGS
 dnl - REPLICA_METADATA_LIBS
 dnl - REPLICA_OPTIMIZATION_CFLAGS
 dnl - REPLICA_OPTIMIZATION_LIBS
+dnl - REPLICA_LIBS
 dnl prerequisites:
 
 AC_DEFUN(AC_REPLICA,
@@ -35,10 +36,8 @@ AC_DEFUN(AC_REPLICA,
     if test ! -f "$with_replica_manager_prefix/$EDG/include/EdgReplicaManager/Re
 plicaManagerImpl.h" ; then
         ac_replica_man=no
-        AC_MSG_RESULT([no])
     else
         ac_replica_man=yes
-        AC_MSG_RESULT([yes])
     fi
 
     AC_ARG_WITH(replica_metadata_prefix,
@@ -95,11 +94,11 @@ plicaManagerImpl.h" ; then
 
     if test ! -f "$with_replica_optimization_prefix/$EDG/include/EdgReplicaOptimization/ReplicaManagerException.h" ; then
         ac_replica_opt=no
-        AC_MSG_RESULT([no])
     else
         ac_replica_opt=yes
-        AC_MSG_RESULT([yes])
     fi
+
+    REPLICA_LIBS="$REPLICA_MANAGER_LIBS $REPLICA_LOCATION_LIBS $REPLICA_METADATA_LIBS $REPLICA_OPTIMIZATION_LIBS"
 
 dnl -ledg_local_replica_catalog_client_gcc3_2_2 -ledg_replica_metadata_catalog_client_gcc3_2_2 -ledg_replica_optimization_client_gcc3_2_2 -ledg_gsoap_base_gcc3_2_2"
 
@@ -114,6 +113,7 @@ dnl -ledg_local_replica_catalog_client_gcc3_2_2 -ledg_replica_metadata_catalog_c
         REPLICA_METADATA_LIBS=""
 	REPLICA_OPTIMIZATION_CFLAGS=""
         REPLICA_OPTIMIZATION_LIBS=""
+	REPLICA_LIBS=""
 	ifelse([$3], , :, [$3])
     fi
 
@@ -125,5 +125,6 @@ dnl -ledg_local_replica_catalog_client_gcc3_2_2 -ledg_replica_metadata_catalog_c
     AC_SUBST(REPLICA_METADATA_LIBS)
     AC_SUBST(REPLICA_OPTIMIZATION_CFLAGS)
     AC_SUBST(REPLICA_OPTIMIZATION_LIBS)
+    AC_SUBST(REPLICA_LIBS)
 ])
 

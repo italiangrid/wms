@@ -21,9 +21,12 @@
 
 	Revision history:
 	$Log$
+	Revision 1.70  2004/10/12 12:59:45  eronchie
+	Updated
+
 	Revision 1.69  2004/10/12 11:29:08  eronchie
 	Updated rls dependencies
-
+	
 	Revision 1.68  2004/10/12 11:15:37  eronchie
 	Added rls as brokerinfo and broker internal dependency
 	
@@ -596,7 +599,7 @@
 		</if>
         </target>
 
-	<target name="rls" unless="setenvonly" depends="boost, edg-replica-manager-client-cpp, edg-replica-location-client-cpp, edg-replica-optimization-client-cpp, edg-replica-manager-config, edg-replica-manager-interface, edg-replica-metadata-catalog-client-cpp, edg-gsoap-base">
+	<target name="rls" unless="setenvonly" depends="boost, edg-replica-manager-client-cpp, edg-replica-location-client-cpp, edg-replica-optimization-client-cpp, edg-replica-metadata-catalog-client-cpp, edg-gsoap-base">
                 <if>
                         <isset property="small.memory" />
                         <then>
