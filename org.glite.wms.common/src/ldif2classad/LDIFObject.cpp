@@ -235,7 +235,7 @@ void LDIFObject::ParseValue(const string& v, utilities::edgstrstream& s) const
    string  lower_v(v);
    transform (lower_v.begin(), lower_v.end(), lower_v.begin(), ::tolower);
    
-   if( lower_v == "true" || lower_v == "false" ) {
+   if( lower_v == "true" || lower_v == "false" || lower_v == "undefined" ) {
 	s << lower_v;
     }
     else {
