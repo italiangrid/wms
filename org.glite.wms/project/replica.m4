@@ -24,8 +24,8 @@ AC_DEFUN(AC_REPLICA,
     AC_MSG_CHECKING([for RESOURCE MANAGER installation at ${with_replica_manager_prefix}])
 
     if test -n "$with_replica_manager_prefix" -a "$with_replica_manager_prefix" != "/usr" ; then
-	REPLICA_MANAGER_CFLAGS="-I$with_replica_manager_prefix/$EDG/include"
-        REPLICA_MANAGER_LIBS="-L$with_replica_manager_prefix/$EDG/lib"
+	REPLICA_MANAGER_CFLAGS="-I$with_replica_manager_prefix/include"
+        REPLICA_MANAGER_LIBS="-L$with_replica_manager_prefix/lib"
     else
 	REPLICA_MANAGER_CFLAGS=""
         REPLICA_MANAGER_LIBS=""
