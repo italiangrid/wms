@@ -71,7 +71,7 @@ utilitiesinclude_HEADERS = \
 
 AM_CPPFLAGS = -I$(top_srcdir)/interface \
 	-I$(top_srcdir)/src \
-	-I$(top_srcdir)/src/logger \
+	$(GLITE_CFLAGS) \
 	$(GLOBUS_THR_CFLAGS) \
 	$(BOOST_CFLAGS) \
 	$(CLASSAD_CFLAGS) \
