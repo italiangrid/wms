@@ -21,9 +21,12 @@
 
 	Revision history:
 	$Log$
+	Revision 1.73  2004/10/15 15:08:52  eronchie
+	Updated configuration
+
 	Revision 1.72  2004/10/13 22:05:27  eronchie
 	Added ism as manager dependency
-
+	
 	Revision 1.71  2004/10/12 15:34:16  eronchie
 	Removed edg-replica-manager-client-cpp and Leave edg-replica-manager-client
 	
@@ -701,7 +704,7 @@
 		</if>
         </target>
 
-	<target name="manager-ns-daemon" unless="setenvonly" depends="boost,classads,common, manager-ns-commands">
+	<target name="manager-ns-daemon" unless="setenvonly" depends="boost,classads,common, manager-ns-commands, configuration">
 		<if>
 			<isset property="small.memory" />
 			<then>
@@ -733,7 +736,7 @@
 		</if>
         </target>
 
-	<target name="jobsubmission" unless="setenvonly" depends="boost,classads,condor,globus,common,purger,jdl">
+	<target name="jobsubmission" unless="setenvonly" depends="boost,classads,condor,globus,common,purger,jdl,configuration">
 		<if>
 			<isset property="small.memory" />
 			<then>
@@ -765,7 +768,7 @@
                 </if>
         </target>
 
-	<target name="manager" unless="setenvonly" depends="boost,classads,globus,expat,ares,common,purger,jdl,helper,jobsubmission,ism">
+	<target name="manager" unless="setenvonly" depends="boost,classads,globus,expat,ares,common,purger,jdl,helper,jobsubmission,ism,configuration">
 		<if>
 			<isset property="small.memory" />
 			<then>

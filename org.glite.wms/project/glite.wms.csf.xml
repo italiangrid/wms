@@ -21,9 +21,12 @@
 
 	Revision history:
 	$Log$
+	Revision 1.68  2004/10/15 15:08:52  eronchie
+	Updated configuration
+
 	Revision 1.67  2004/10/13 22:05:27  eronchie
 	Added ism as manager dependency
-
+	
 	Revision 1.66  2004/10/12 15:34:16  eronchie
 	Removed edg-replica-manager-client-cpp and Leave edg-replica-manager-client
 	
@@ -638,7 +641,7 @@
         </target>
 
 	<!-- Manager NS Daemon -->
-        <target name="manager-ns-daemon" depends="boost, classads, globus, manager-ns-commands, get.manager-ns-daemon.head, get.manager-ns-daemon.tag"/>
+        <target name="manager-ns-daemon" depends="boost, classads, globus, manager-ns-commands, configuration, get.manager-ns-daemon.head, get.manager-ns-daemon.tag"/>
         <target name="get.manager-ns-daemon.head" if="manager-ns-daemon.head">
             <cvs-co package="org.glite.wms.manager-ns-daemon" />
         </target>
@@ -678,7 +681,7 @@
         </target>
 
 	<!-- JobSubmission -->
-        <target name="jobsubmission" depends="boost,classads,globus,condor,common,jdl,purger,get.jobsubmission.head, get.jobsubmission.tag"/>
+        <target name="jobsubmission" depends="boost,classads,globus,condor,common,jdl,purger,configuration,get.jobsubmission.head, get.jobsubmission.tag"/>
         <target name="get.jobsubmission.head" if="jobsubmission.head">
             <cvs-co package="org.glite.wms.jobsubmission" />
         </target>
@@ -698,7 +701,7 @@
         </target>
 
 	<!-- Manager -->
-        <target name="manager" depends="boost,classads,globus,expat,ares,common,jdl,purger,helper,jobsubmission,ism,get.manager.head, get.manager.tag"/>
+        <target name="manager" depends="boost,classads,globus,expat,ares,common,jdl,purger,helper,jobsubmission,ism,configuration,get.manager.head, get.manager.tag"/>
         <target name="get.manager.head" if="manager.head">
             <cvs-co package="org.glite.wms.manager" />
         </target>
