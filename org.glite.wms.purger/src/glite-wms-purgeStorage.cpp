@@ -83,9 +83,9 @@ int main( int argc, char* argv[])
     if (options.is_present('p')) staging_path.assign ( options['p'].getStringValue() );
     else {
     	char* env_var;
-	if ((env_var=getenv("EDG_WL_TMP"))) staging_path.assign( string(env_var) );
+	if ((env_var=getenv("GLITE_WMS_TMP"))) staging_path.assign( string(env_var) );
 	else {
-		cerr << "Unable to set sandbox dir from the environment: EDG_WL_TMP not defined..." << endl;
+		cerr << "Unable to set sandbox dir from the environment: GLITE_WMS_TMP not defined..." << endl;
 		return 0;
 	}
     }
@@ -109,9 +109,9 @@ int main( int argc, char* argv[])
     if( !options.is_present('l') && options.is_present('e') ) {
 	char* env_var;
 	string log_path;
-	if ((env_var=getenv("EDG_WL_TMP"))) log_path.assign( string(env_var) );
+	if ((env_var=getenv("GLITE_WMS_TMP"))) log_path.assign( string(env_var) );
 	else {
-		cerr << "Unable to set logfile path from the environment: EDG_WL_TMP not defined..." << endl;
+		cerr << "Unable to set logfile path from the environment: GLITE_WMS_TMP not defined..." << endl;
 		return 0;
 	}
 	char str_time [64];	

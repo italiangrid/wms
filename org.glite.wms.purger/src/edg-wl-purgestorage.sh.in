@@ -8,7 +8,7 @@ if [ "$1" == "hourly" ] ; then
   # Execute the "purger" command at every day except on Sunday with a frequency
   # of one hour if and only if the percentage of allocated blocks is greater 
   #than 40%
-  $GLITE_WMS_LOCATION/sbin/glite-wms-purgeStorage -l $EDG_WL_LOCATION_VAR/log/glite-wms-purgeStorage.log -t 604800 -a 40 -p $GLITE_WMS_TMP/SandboxDir
+  $GLITE_WMS_LOCATION/sbin/glite-wms-purgeStorage -l $GLITE_WMS_LOCATION_VAR/log/glite-wms-purgeStorage.log -t 604800 -a 40 -p $GLITE_WMS_TMP/SandboxDir
 elif [ "$1" == "weekly" ] ; then
   # Execute the "purger" command at 4:00 AM, 8:00 AM, 12:00 noon, 4:00 PM,
   # and 8:00 PM (0 */4) on each Sunday (sun).
