@@ -16,7 +16,7 @@ AC_DEFUN(AC_GLITE_DATA,
         dnl
         ac_glite_data_lib="-L$ac_glite_data_prefix/lib"
 
-        GLITE_DATA_LIBS="$ac_glite_data_lib libglite_data_catalog_storageindex_api_c.a"
+        GLITE_DATA_LIBS="$ac_glite_data_prefix/lib/libglite_data_catalog_storageindex_api_c.a"
 	ifelse([$2], , :, [$2])
     else
         GLITE_DATA_LIBS=""
