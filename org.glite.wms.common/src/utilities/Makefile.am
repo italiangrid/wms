@@ -79,6 +79,5 @@ AM_CPPFLAGS = -I$(top_srcdir)/interface \
 
 EXTRA_DIST = \
 	triple.h \
-	FLExtractor.cpp
 
 MAINTAINERCLEANFILES = Makefile.in *.*~
