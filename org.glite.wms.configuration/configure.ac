@@ -19,6 +19,9 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.6  2004/10/19 12:01:15  eronchie
+#       Removed config.h handling
+#
 #       Revision 1.5  2004/10/15 14:41:22  vmedici
 #       start updating configuration according to dev-guide
 #
@@ -97,7 +100,6 @@ AC_MSG_RESULT(["CONDORG found $have_condorg"])
 
 # Configuration items
 AC_PREFIX_DEFAULT([/opt/glite])
-AM_CONFIG_HEADER([src/autogen/config.h])
 AC_CONFIG_FILES([Makefile])
 AC_CONFIG_FILES([config/Makefile])
 AC_CONFIG_FILES([config/glite-wms-check-daemons.sh])
