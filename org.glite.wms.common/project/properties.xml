@@ -21,9 +21,12 @@
 	
 	Revision history:
 	$Log$
+	Revision 1.8  2004/07/28 09:46:51  eronchie
+	Added m4files.list property
+
 	Revision 1.7  2004/07/16 14:56:56  flammer
 	Corrected input path of build.properties.
-
+	
 	Revision 1.6  2004/06/14 13:48:11  dimeglio
 	Rolled back to previous
 	
@@ -75,5 +78,6 @@
 		 Define extra properties here ...
 		 ====================================================== -->
 		 
-		 						
+	<property name="m4files.list" value="globus.m4 classads.m4 boost.m4 glite.m4"/>
+
 </project>
