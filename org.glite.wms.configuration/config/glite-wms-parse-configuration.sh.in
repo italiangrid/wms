@@ -17,7 +17,7 @@ if [ -z "$GLITE_WMS_USER" ] || [ -z "$GLITE_WMS_CONFIG_DIR" ]; then
 fi
 
 if [ -z "$GLITE_WMS_GROUP" ]; then
-   GLITE_WMS_GROUP = $GLITE_WMS_USER
+   export GLITE_WMS_GROUP = $GLITE_WMS_USER
 fi
 
 if [ ! -d "$GLITE_WMS_TMP" ] ; then
