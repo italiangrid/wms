@@ -6,9 +6,9 @@
 
 #include <boost/thread/thread.hpp>
 
-#include "logger/logstream_ts.h"
-#include "logger/manipulators.h"
-#include "logger/edglog.h"
+#include "glite/wms/common/logger/logstream_ts.h"
+#include "glite/wms/common/logger/manipulators.h"
+#include "glite/wms/common/logger/edglog.h"
 
 using glite::wms::common;
 namespace logger = glite::wms::common::logger;

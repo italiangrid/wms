@@ -1,4 +1,4 @@
-#include "container_ts.h"
+#include "glite/wms/common/logger/container_ts.h"
 
 using namespace std;
 

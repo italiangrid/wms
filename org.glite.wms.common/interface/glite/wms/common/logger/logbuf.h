@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-#include "common.h"
+#include "glite/wms/common/logger/common.h"
 
 namespace glite {
 namespace wms {

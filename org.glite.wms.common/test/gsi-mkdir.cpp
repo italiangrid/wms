@@ -4,7 +4,7 @@
 #include "utilities/LineParser.h"
 #include "utilities/LineParserExceptions.h"
 #include "utilities/globus_ftp_utils.h"
-#include "logger/edglog.h"
+#include "glite/wms/common/logger/edglog.h"
 
 namespace utilities     = glite::wms::common::utilities;
 namespace logger        = glite::wms::common::logger::threadsafe;

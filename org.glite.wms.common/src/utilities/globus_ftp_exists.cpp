@@ -10,8 +10,8 @@
 #include <string>
 #include "globus_ftp_client.h"
 
-#include "../logger/edglog.h"
-#include "../logger/manipulators.h"
+#include "glite/wms/common/logger/edglog.h"
+#include "glite/wms/common/logger/manipulators.h"
 #include "globus_ftp_macros.h"
 
 namespace glite {

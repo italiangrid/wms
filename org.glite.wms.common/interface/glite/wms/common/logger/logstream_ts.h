@@ -11,8 +11,8 @@
 #include <strstream>
 #endif
 
-#include "logstream.h"
-#include "container_ts.h"
+#include "glite/wms/common/logger/logstream.h"
+#include "glite/wms/common/logger/container_ts.h"
 
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/tss.hpp>

@@ -1,7 +1,7 @@
 #include <cstdio>
 #include <cstdlib>
 
-#include "common.h"
+#include "glite/wms/common/logger/common.h"
 
 using namespace std;
 

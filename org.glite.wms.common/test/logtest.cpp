@@ -6,9 +6,9 @@
 
 #include <boost/thread/tss.hpp>
 
-#include "logger/logstream.h"
-#include "logger/manipulators.h"
-#include "logger/edglog.h"
+#include "glite/wms/common/logger/logstream.h"
+#include "glite/wms/common/logger/manipulators.h"
+#include "glite/wms/common/logger/edglog.h"
 #include "utilities/streamdescriptor.h"
 
 using glite::wms::common;

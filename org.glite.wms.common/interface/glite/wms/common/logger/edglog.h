@@ -1,7 +1,7 @@
 #ifndef GLITE_WMS_COMMON_LOGGER_EDGLOG_H
 #define GLITE_WMS_COMMON_LOGGER_EDGLOG_H
 
-#include "logstream_ts.h"
+#include "glite/wms/common/logger/logstream_ts.h"
 
 namespace glite {
 namespace wms {

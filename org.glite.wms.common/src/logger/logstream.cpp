@@ -1,4 +1,4 @@
-#include "logstream.h"
+#include "glite/wms/common/logger/logstream.h"
 
 using namespace std;
 

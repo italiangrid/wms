@@ -1,7 +1,7 @@
 #include <iostream>
 
-#include "manipulators.h"
-#include "logstream_ts.h"
+#include "glite/wms/common/logger/manipulators.h"
+#include "glite/wms/common/logger/logstream_ts.h"
 
 using namespace std;
 

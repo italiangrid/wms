@@ -4,7 +4,7 @@
 #include <iostream>
 #include <string>
 
-#include "logstream_ts.h"
+#include "glite/wms/common/logger/logstream_ts.h"
 
 using namespace std;
 

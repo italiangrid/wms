@@ -4,7 +4,7 @@
 #include <iostream>
 #include <string>
 
-#include "logbuf.h"
+#include "glite/wms/common/logger/logbuf.h"
 
 namespace glite {
 namespace wms {

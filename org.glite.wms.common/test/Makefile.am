@@ -213,7 +213,8 @@ sftpput_LDADD   = \
 	$(GLOBUS_FTP_CLIENT_NOTHR_LIBS) \
         $(BOOST_LIBS)
 
-AM_CPPFLAGS = -I$(top_srcdir)/src \
+AM_CPPFLAGS = -I$(top_srcdir)/interface \
+	-I$(top_srcdir)/src \
 	$(BOOST_CFLAGS) \
 	$(CLASSAD_CFLAGS) \
 	$(GLOBUS_THR_CFLAGS)

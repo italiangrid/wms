@@ -17,7 +17,7 @@
 
 #include "utilities/streamdescriptor.h"
 
-#include "logbuf.h"
+#include "glite/wms/common/logger/logbuf.h"
 
 using namespace std;
 

@@ -9,8 +9,8 @@
 #include <iostream>
 #include <globus_ftp_client.h>
 
-#include "logger/edglog.h"
-#include "logger/manipulators.h"
+#include "glite/wms/common/logger/edglog.h"
+#include "glite/wms/common/logger/manipulators.h"
 #include "utilities/globus_ftp_macros.h"
 
 #define MAX_BUFFER_SIZE 2048
