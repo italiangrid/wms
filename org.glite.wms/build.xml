@@ -21,9 +21,12 @@
 
 	Revision history:
 	$Log$
+	Revision 1.68  2004/10/12 11:15:37  eronchie
+	Added rls as brokerinfo and broker internal dependency
+
 	Revision 1.67  2004/10/12 11:05:42  eronchie
 	Updated rls dependencies
-
+	
 	Revision 1.66  2004/10/12 07:29:46  eronchie
 	.....
 	
@@ -494,7 +497,7 @@
 		</if>
         </target>
 
-	<target name="brokerinfo" unless="setenvonly" depends="boost,classads,common,jdl">
+	<target name="brokerinfo" unless="setenvonly" depends="boost,classads,common,jdl,rls">
 		<if>
 			<isset property="small.memory" />
 			<then>
@@ -558,7 +561,7 @@
 		</if>
         </target>
 
-	<target name="broker" unless="setenvonly" depends="boost,classads,common,jdl">
+	<target name="broker" unless="setenvonly" depends="boost,classads,common,jdl,rls">
 		<if>
 			<isset property="small.memory" />
 			<then>

@@ -21,9 +21,12 @@
 
 	Revision history:
 	$Log$
+	Revision 1.63  2004/10/12 11:15:37  eronchie
+	Added rls as brokerinfo and broker internal dependency
+
 	Revision 1.62  2004/10/12 11:05:43  eronchie
 	Updated rls dependencies
-
+	
 	Revision 1.61  2004/10/12 07:29:46  eronchie
 	.....
 	
@@ -523,7 +526,7 @@
 	</target>
 
 	<!-- Brokerinfo -->
-    	<target name="brokerinfo" depends="boost,classads,globus,common,jdl,get.brokerinfo.head, get.brokerinfo.tag"/>
+    	<target name="brokerinfo" depends="boost,classads,globus,common,jdl,rls,get.brokerinfo.head, get.brokerinfo.tag"/>
     	<target name="get.brokerinfo.head" if="brokerinfo.head">
             <cvs-co package="org.glite.wms.brokerinfo" />
     	</target>
@@ -563,7 +566,7 @@
     	</target>
 
 	<!-- Broker -->
-    	<target name="broker" depends="boost,classads,globus,common,jdl,get.broker.head, get.broker.tag"/>
+    	<target name="broker" depends="boost,classads,globus,common,jdl,rls,get.broker.head, get.broker.tag"/>
     	<target name="get.broker.head" if="broker.head">
             <cvs-co package="org.glite.wms.broker" />
     	</target>
