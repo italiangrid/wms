@@ -27,7 +27,7 @@ AC_PREREQ(2.57)
 AC_INIT([GLite WMS Common], [0.0.0])
 AC_CONFIG_AUX_DIR([./project])
 AM_INIT_AUTOMAKE([1.6.3 subdir-objects])
-AC_CONFIG_SRCDIR([src/common_namespace.h])
+AC_CONFIG_SRCDIR([src/configuration/confbase.h])
 
 # Notices.
 AC_COPYRIGHT([Copyright (c) 2004 The EU EGEE Project
@@ -90,6 +90,11 @@ AC_GLITE
 AC_PREFIX_DEFAULT([/opt/glite])
 AM_CONFIG_HEADER([src/autogen/config.h])
 AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([interface/Makefile])
+AC_CONFIG_FILES([interface/glite/Makefile])
+AC_CONFIG_FILES([interface/glite/wms/Makefile])
+AC_CONFIG_FILES([interface/glite/wms/common/Makefile])
+AC_CONFIG_FILES([interface/glite/wms/common/utilities/Makefile])
 AC_CONFIG_FILES([src/Makefile])
 AC_CONFIG_FILES([src/scripts/Makefile])
 AC_CONFIG_FILES([src/configuration/Makefile])

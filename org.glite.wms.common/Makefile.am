@@ -17,6 +17,9 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.8  2004/06/18 12:12:42  eronchie
+#       Start handling interface
+#
 #       Revision 1.7  2004/06/16 15:51:36  eronchie
 #       Added configure options
 #       WARNING: work in progress
@@ -37,7 +40,7 @@
 ## Process this file with automake to produce Makefile.in
 
 ## Subdirectories list
-SUBDIRS = src test
+SUBDIRS = interface src test
 
 ## Default flags to run aclocal
 ACLOCAL_AMFLAGS = -I project

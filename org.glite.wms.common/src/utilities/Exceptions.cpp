@@ -4,7 +4,7 @@
 *  copyright : (C) 2002 by DATAMAT
 ***************************************************************************/
 
-#include "Exceptions.h"
+#include "glite/wms/common/utilities/Exceptions.h"
 #include "exception_codes.h"
 #include "utils.h"
 

@@ -1,8 +1,6 @@
 #ifndef GLITE_WMS_COMMON_CLIENT_RESULT_CODES_H
 #define GLITE_WMS_COMMON_CLIENT_RESULT_CODES_H
 
-//EWC_BEGIN_NAMESPACE ;// NameSpace Definition
-
 namespace glite {
 namespace wms {
 namespace common {

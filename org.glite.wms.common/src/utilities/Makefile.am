@@ -67,7 +67,6 @@ utilitiesinclude_HEADERS = \
 	classad_utils.h \
 	edgstrstream.h \
 	exception_codes.h \
-	Exceptions.h \
 	Extractor.h \
 	filecontainer.h \
 	FileList.h \
@@ -84,12 +83,12 @@ utilitiesinclude_HEADERS = \
 	LineParser.h \
 	mixed.h \
 	quota.h \
-	result_codes.h \
 	utils.h \
 	triple.h \
 	scope_guard.h
 
-AM_CPPFLAGS = -I$(top_srcdir)/src \
+AM_CPPFLAGS = -I$(top_srcdir)/interface \
+	-I$(top_srcdir)/src \
 	-I$(top_srcdir)/src/logger \
 	$(GLOBUS_THR_CFLAGS) \
 	$(BOOST_CFLAGS) \

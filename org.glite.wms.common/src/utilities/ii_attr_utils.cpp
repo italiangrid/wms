@@ -11,7 +11,7 @@
 #include "ldif2classad/LDAPSynchConnection.h"
 #include "ldif2classad/LDAPForwardIterator.h"
 
-#include "Exceptions.h"
+#include "glite/wms/common/utilities/Exceptions.h"
 #include "ii_attr_utils.h"
 
 #include <boost/thread/mutex.hpp>

@@ -14,7 +14,8 @@
 #include <errno.h> // list the exception codes
 #include <string>
 #include <exception> // base ancestor
-#include "result_codes.h" //base result codes
+
+#include "glite/wms/common/utilities/result_codes.h" //base result codes
 
 namespace glite {
 namespace wms {
