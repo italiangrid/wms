@@ -32,7 +32,7 @@ LOG( \
    )
 #define Info(message) \
 LOG( \
-		glite::wms:common::logger::info, \
+		glite::wms::common::logger::info, \
 		std::string("[Info] ") + MESSAGE(message) \
    )
 #define Warning(message) \
