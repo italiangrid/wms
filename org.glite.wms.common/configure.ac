@@ -24,7 +24,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.57)
-AC_INIT([GLite WMS Common], [1.0.1])
+AC_INIT([GLite WMS Common], [1.0.2])
 AC_CONFIG_AUX_DIR([./project])
 AM_INIT_AUTOMAKE([1.6.3 subdir-objects])
 AC_CONFIG_SRCDIR([src/ldif2classad/LDAPForwardIterator.h])
@@ -86,6 +86,8 @@ AC_MSG_RESULT(["CLASSADS found $have_classads"])
 AC_MSG_RESULT(["BOOST found $have_boost"])
 AC_MSG_RESULT(["GLOBUS found $have_globus"])
 AC_MSG_RESULT(["CPPUNIT found $have_cppunit"])
+
+AC_OPTIMIZE
 
 AC_GLITE
 

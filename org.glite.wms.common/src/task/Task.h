@@ -8,12 +8,14 @@
 #ifndef GLITE_WMS_COMMON_TASK_TASK_H
 #define GLITE_WMS_COMMON_TASK_TASK_H
 
-#include <deque>
+#include <queue>
 #include <cassert>
 #include <boost/function.hpp>
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/condition.hpp>
 #include <boost/thread/thread.hpp>
+#include <boost/utility.hpp>
+#include <boost/shared_ptr.hpp>
 
 namespace glite {
 namespace wms {
@@ -26,46 +28,33 @@ struct SigPipe {};
 struct Empty {};
 struct Full {};
 
-template<typename T> class Pipe;
+template<typename T, typename Q> class Pipe;
 
-template<typename T>
+template<typename T, typename Q = std::queue<T> >
 class PipeReadEnd {
 
-  friend class Pipe<T>;
+  typedef Pipe<T, Q> parent_type;
 
-  Pipe<T>* m_parent;
+  parent_type* m_parent;
 
 public:
-  PipeReadEnd(Pipe<T>* parent = 0): m_parent(parent) {}
-  PipeReadEnd(const PipeReadEnd<T>& rhs) : m_parent(rhs.m_parent) {}
-  PipeReadEnd<T>& operator=(const PipeReadEnd<T>& rhs)
-  {
-    m_parent = rhs.m_parent;
-    return *this;
-  }
-  ~PipeReadEnd() {}
+  PipeReadEnd(parent_type* parent = 0): m_parent(parent) {}
+
   T read() { return m_parent->read(); }
   T try_read() { return m_parent->try_read(); }
   void open() { m_parent->open_read_end(); }
   void close() { m_parent->close_read_end(); }
 };
 
-template<typename T>
+template<typename T, typename Q = std::queue<T> >
 class PipeWriteEnd {
 
-  friend class Pipe<T>;
+  typedef Pipe<T, Q> parent_type;
 
-  Pipe<T>* m_parent;
+  parent_type* m_parent;
 
 public:
-  PipeWriteEnd(Pipe<T>* parent = 0): m_parent(parent) {}
-  PipeWriteEnd(const PipeWriteEnd& rhs): m_parent(rhs.m_parent) {}
-  PipeWriteEnd& operator=(const PipeWriteEnd& rhs)
-  {
-    m_parent = rhs.m_parent;
-    return *this;
-  }
-  ~PipeWriteEnd() {}
+  PipeWriteEnd(parent_type* parent = 0): m_parent(parent) {}
 
   void write(T obj) { m_parent->write(obj); }
   void try_write(T obj) { m_parent->try_write(obj); }
@@ -77,11 +66,12 @@ public:
 // although there are no readers and writers at that moment
 // a pipe end (read or write) becomes closed when all the threads who had
 // previously opened it have then closed it
-template<typename T>
-class Pipe {
+template<typename T, typename Q = std::queue<T> >
+class Pipe: boost::noncopyable
+{
 
   boost::mutex m_mutex;       // control any access to the pipe
-  std::deque<T> m_queue;
+  Q m_queue;
   size_t m_max_size;
   boost::condition m_not_full; // sync access to the queue
   boost::condition m_not_empty; // sync access to the queue
@@ -92,9 +82,9 @@ class Pipe {
   bool m_write_end_is_closed;
   bool m_read_end_is_closed;
 
-  // non-copyable
-  Pipe(const Pipe& rhs);
-  Pipe& operator=(const Pipe& rhs);
+public:
+  typedef PipeReadEnd<T, Q> read_end_type;
+  typedef PipeWriteEnd<T, Q> write_end_type;
 
 public:
   Pipe(size_t max_size = 10)
@@ -102,10 +92,9 @@ public:
       m_write_end_is_closed(false), m_read_end_is_closed(false)
   {
   }
-  ~Pipe() {}
 
-  PipeReadEnd<T> read_end() { return PipeReadEnd<T>(this); }
-  PipeWriteEnd<T> write_end() { return PipeWriteEnd<T>(this); }
+  read_end_type read_end() { return read_end_type(this); }
+  write_end_type write_end() { return write_end_type(this); }
 
   // before the first read is done m_num_writers > 0
   T read()
@@ -119,7 +108,7 @@ public:
       m_not_empty.wait(lock);
     }
     T result = m_queue.front();
-    m_queue.pop_front();
+    m_queue.pop();
     m_not_full.notify_one();
 
     return result;
@@ -138,7 +127,7 @@ public:
     }
 
     T result = m_queue.front();
-    m_queue.pop_front();
+    m_queue.pop();
     m_not_full.notify_one();
 
     return result;
@@ -158,7 +147,7 @@ public:
         throw SigPipe();
       }
     }
-    m_queue.push_back(obj);
+    m_queue.push(obj);
     m_not_empty.notify_one();
   }
 
@@ -172,7 +161,7 @@ public:
       throw Full();
     }
 
-    m_queue.push_back(obj);
+    m_queue.push(obj);
     m_not_empty.notify_one();
   }
 
@@ -227,217 +216,160 @@ public:
 
 };
 
-template<typename T_IN>
+template<typename T>
+void close_pipe_end(T* t)
+{
+  if (t) {
+    t->close();
+  }
+}
+
+template<typename T_IN, typename Q = std::queue<T_IN> >
 class PipeReader
 {
-  PipeReadEnd<T_IN> m_read_end;
+  typedef PipeReadEnd<T_IN, Q> read_end_type;
 
-  friend class Task;
-  void read_from(const PipeReadEnd<T_IN>& from) { m_read_end = from; }
-
-protected:
-  PipeReader() {}
-  PipeReadEnd<T_IN>& read_end() { return m_read_end; }
+  boost::shared_ptr<read_end_type> m_read_end;
 
 public:
-  virtual ~PipeReader() {}
-  virtual void run() = 0;
+  void read_from(read_end_type const& from)
+  {
+    m_read_end.reset(new read_end_type(from), close_pipe_end<read_end_type>);
+    m_read_end->open();
+  }
+
+protected:
+  read_end_type& read_end() const { return *m_read_end; }
+  ~PipeReader() {}
 };
 
-
-template<typename T_OUT>
+template<typename T_OUT, typename Q = std::queue<T_OUT> >
 class PipeWriter
 {
-  PipeWriteEnd<T_OUT> m_write_end;
+  typedef PipeWriteEnd<T_OUT, Q> write_end_type;
 
-  friend class Task;
-  void write_to(const PipeWriteEnd<T_OUT>& to) { m_write_end = to; }
+  boost::shared_ptr<write_end_type> m_write_end;
+public:
+  void write_to(write_end_type const& to)
+  {
+    m_write_end.reset(new write_end_type(to), close_pipe_end<write_end_type>);
+    m_write_end->open();
+  }
 
 protected:
-  PipeWriter() {}
-  PipeWriteEnd<T_OUT>& write_end() { return m_write_end; }
-
-public:
-  virtual ~PipeWriter() {}
-  virtual void run() = 0;
+  write_end_type& write_end() const { return *m_write_end; }
+  ~PipeWriter() {}
 };
 
-template<typename T_IN, typename T_OUT>
+template<
+  typename T_IN,
+  typename T_OUT,
+  typename Q_IN = std::queue<T_IN>,
+  typename Q_OUT = std::queue<T_OUT>
+>
 class PipeForwarder
 {
-  PipeReadEnd<T_IN> m_read_end;
-  PipeWriteEnd<T_OUT> m_write_end;
+  typedef PipeReadEnd<T_IN, Q_IN> read_end_type;
+  typedef PipeWriteEnd<T_OUT, Q_OUT> write_end_type;
 
-  friend class Task;
-  void read_from(const PipeReadEnd<T_IN>& from) { m_read_end = from; }
-  void write_to(const PipeWriteEnd<T_OUT>& to) { m_write_end = to; }
+  boost::shared_ptr<read_end_type> m_read_end;
+  boost::shared_ptr<write_end_type> m_write_end;
+
+public:
+  void read_from(read_end_type const& from)
+  {
+    m_read_end.reset(new read_end_type(from), close_pipe_end<read_end_type>);
+    m_read_end->open();
+  }
+  void write_to(write_end_type const& to)
+  {
+    m_write_end.reset(new write_end_type(to), close_pipe_end<write_end_type>);
+    m_write_end->open();
+  }
 
 protected:
-  PipeForwarder() {}
-  PipeReadEnd<T_IN>& read_end() { return m_read_end; }
-  PipeWriteEnd<T_OUT>& write_end() { return m_write_end; }
-
-public:
-  virtual ~PipeForwarder() {}
-  virtual void run() = 0;
+  read_end_type& read_end() const { return *m_read_end; }
+  write_end_type& write_end() const { return *m_write_end; }
+  ~PipeForwarder() {}
 };
 
-// aux class for "Resource acquisition is initialization"
-template<typename E>
-struct Access
+template<typename R, typename T, typename Q>
+void init_task(
+  R r,
+  Pipe<T, Q>& pipe,
+  int num_threads,
+  boost::thread_group& g,
+  PipeWriter<T, Q> const&
+)
 {
-  E& m_e;
-  Access(E& e): m_e(e) { m_e.open(); }
-  ~Access() { m_e.close(); }
-};
- 
-// aux class to guarantee to close a pipe end at the end of the thread function
-template<typename E>
-struct CloseOnExit
-{
-  E& m_e;
-  CloseOnExit(E& e): m_e(e) {}
-  ~CloseOnExit() { m_e.close(); }
-};
- 
-template<typename T_IN>
-class ReaderFunctor
-{
-  PipeReader<T_IN>& m_runner;
-  PipeReadEnd<T_IN> m_read_end;
-
-public:
-  ReaderFunctor(PipeReader<T_IN>& runner, PipeReadEnd<T_IN> end)
-    : m_runner(runner), m_read_end(end)
-  {}
-
-  void operator()()
-  {
-    CloseOnExit< PipeReadEnd<T_IN> > a(m_read_end);
-
-    m_runner.run();
+  r.write_to(pipe.write_end());
+  while (num_threads--) {
+    g.create_thread(r);
   }
-};
+}
 
-template<typename T_OUT>
-class WriterFunctor
+template<typename R, typename T, typename Q>
+void init_task(
+  R r,
+  Pipe<T, Q>& pipe,
+  int num_threads,
+  boost::thread_group& g,
+  PipeReader<T, Q> const&
+)
 {
-  PipeWriter<T_OUT>& m_runner;
-  PipeWriteEnd<T_OUT> m_write_end;
-
-public:
-  WriterFunctor(PipeWriter<T_OUT>& runner, PipeWriteEnd<T_OUT> end)
-    : m_runner(runner), m_write_end(end)
-  {}
-
-  void operator()()
-  {
-    CloseOnExit< PipeWriteEnd<T_OUT> > a(m_write_end);
-
-    m_runner.run();
+  r.read_from(pipe.read_end());
+  while (num_threads--) {
+    g.create_thread(r);
   }
-};
+}
 
-template<typename T_IN, typename T_OUT>
-class ForwarderFunctor
+class Task: boost::noncopyable
 {
-  PipeForwarder<T_IN, T_OUT>& m_runner;
-  PipeReadEnd<T_IN> m_read_end;
-  PipeWriteEnd<T_OUT> m_write_end;
-
-public:
-  ForwarderFunctor(PipeForwarder<T_IN, T_OUT>& runner,
-                   PipeReadEnd<T_IN> read_end,
-                   PipeWriteEnd<T_OUT> write_end)
-    : m_runner(runner), m_read_end(read_end), m_write_end(write_end)
-  {}
-
-  void operator()()
-  {
-    CloseOnExit< PipeReadEnd<T_IN> > r(m_read_end);
-    CloseOnExit< PipeWriteEnd<T_OUT> > w(m_write_end);
-
-    m_runner.run();
-  }
-};
-
-class Task
-{
-  boost::thread_group* m_group;
-
-  // non-copyable
-  Task(const Task& rhs);
-  Task& operator=(const Task& rhs);
+  boost::thread_group m_group;
 
 public:
 
-  Task(const boost::function0<void>& fun, int num_threads = 1)
-    : m_group(new boost::thread_group)
+  Task(boost::function<void()> const& fun, int num_threads = 1)
   {
     assert(num_threads > 0);
 
     while (num_threads--) {
-      m_group->create_thread(fun);
+      m_group.create_thread(fun);
     }
   }
 
-  template<typename T>
-  Task(PipeReader<T>& runner, Pipe<T>& pipe, int num_threads = 1)
-    : m_group(new boost::thread_group)
+  template<typename R, typename T, typename Q>
+  Task(R const& r, Pipe<T, Q>& pipe, int num_threads = 1)
   {
     assert(num_threads > 0);
 
-    runner.read_from(pipe.read_end());
-    ReaderFunctor<T> f(runner, pipe.read_end());
-    pipe.open_read_end(num_threads);
-    while (num_threads--) {
-      m_group->create_thread(f);
-    }
+    init_task(r, pipe, num_threads, m_group, r);
   }
 
-  template<typename T>
-  Task(PipeWriter<T>& runner, Pipe<T>& pipe, int num_threads = 1)
-    : m_group(new boost::thread_group)
+  template<typename R, typename T_IN, typename T_OUT, typename Q_IN, typename Q_OUT>
+  Task(
+    R r,
+    Pipe<T_IN, Q_IN>& pipe_in,
+    Pipe<T_OUT, Q_OUT>& pipe_out,
+    int num_threads = 1
+  )
   {
     assert(num_threads > 0);
 
-    runner.write_to(pipe.write_end());
-    WriterFunctor<T> f(runner, pipe.write_end());
-    pipe.open_write_end(num_threads);
+    r.read_from(pipe_in.read_end());
+    r.write_to(pipe_out.write_end());
     while (num_threads--) {
-      m_group->create_thread(f);
+      m_group.create_thread(r);
     }
-  }
-
-  template<typename T_IN, typename T_OUT>
-  Task(PipeForwarder<T_IN, T_OUT>& runner,
-       Pipe<T_IN>& pipe_in, Pipe<T_OUT>& pipe_out,
-       int num_threads = 1)
-    : m_group(new boost::thread_group)
-  {
-    assert(num_threads > 0);
-
-    runner.read_from(pipe_in.read_end());
-    pipe_in.open_read_end(num_threads);
-    runner.write_to(pipe_out.write_end());
-    pipe_out.open_write_end(num_threads);
-    ForwarderFunctor<T_IN, T_OUT> f(runner, pipe_in.read_end(), pipe_out.write_end());
-    while (num_threads--) {
-      m_group->create_thread(f);
-    }      
   }
 
   ~Task()
   {
-    m_group->join_all();
-    delete m_group;
+    m_group.join_all();
   }
 
 };
 
-} // namespace task
-} // namespace common
-} // namespace wms
-} // namespace glite
+}}}} // glite::wms::common::task
 
 #endif // GLITE_WMS_COMMON_TASK_TASK_H
