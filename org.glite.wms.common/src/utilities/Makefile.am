@@ -64,7 +64,6 @@ libglite_wms_quota_la_SOURCES = \
 utilitiesincludedir = $(includedir)/glite/wms/common/utilities
 utilitiesinclude_HEADERS = \
 	boost_fs_add.h \
-	classad_utils.h \
 	streamdescriptor.h \
 	globus_ftp_macros.h \
 	globus_ftp_utils.h \

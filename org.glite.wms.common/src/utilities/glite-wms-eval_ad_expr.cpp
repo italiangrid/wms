@@ -11,7 +11,8 @@
 #include <boost/scoped_ptr.hpp>
 #include <classad_distribution.h>
 #include <value.h>
-#include "classad_utils.h"
+
+#include "glite/wms/common/utilities/classad_utils.h"
 
 namespace utilities = glite::wms::common::utilities;
 

@@ -5,7 +5,7 @@
 
 // $Id$
 
-#include "classad_utils.h"
+#include "glite/wms/common/utilities/classad_utils.h"
 
 namespace glite {
 namespace wms {
