@@ -21,9 +21,12 @@
 
 	Revision history:
 	$Log$
+	Revision 1.75  2004/10/26 13:15:14  dimeglio
+	Added dependency of clean on envchecks
+
 	Revision 1.74  2004/10/25 21:00:29  dimeglio
 	Use antExec
-
+	
 	Revision 1.73  2004/10/15 15:08:52  eronchie
 	Updated configuration
 	
@@ -404,7 +407,7 @@
 		</antcall>
 	</target>
 
-	<target name="clean">
+	<target name="clean" depends="envchecks">
 
 		<property name="offline.repository" value="true" />
 		<antcall target="buildmodules">
@@ -419,11 +422,7 @@
 
 	</target>
 
-	<target name="cleanAll" depends="localinit">
-		<antcall target="buildmodules">
-			<param name="target" value="cleanAll"/>
-		</antcall>
-	</target>
+	<target name="cleanAll" depends="clean"/>
 
 	<!-- ===============================================
 		 Private targets
