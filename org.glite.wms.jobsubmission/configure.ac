@@ -17,6 +17,12 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.13  2004/09/22 01:04:17  dimeglio
+#       Fixed missing parenthesis in AC_INIT
+#
+#       Revision 1.12  2004/09/21 19:25:48  glbuild
+#       modified module.version
+#
 #       Revision 1.11  2004/08/27 13:19:40  eronchie
 #       Added handling of config directory
 #       Added start up script files
@@ -57,7 +63,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.57)
-AC_INIT([GLite WMS jobsubmission], [0.0.0])
+AC_INIT([GLite WMS jobsubmission], [0.1.0])
 AC_CONFIG_AUX_DIR([./project])
 AM_INIT_AUTOMAKE([1.6.3 subdir-objects])
 AC_CONFIG_SRCDIR([src/common/constants.h])
@@ -159,3 +165,4 @@ AC_CONFIG_FILES([src/daemons/Makefile])
 AC_CONFIG_FILES([test/Makefile])
 
 AC_OUTPUT
+
