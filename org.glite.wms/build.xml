@@ -21,9 +21,13 @@
 
 	Revision history:
 	$Log$
+	Revision 1.94  2005/02/10 13:11:46  eronchie
+	Updated
+	Changed fgci in fcgi
+
 	Revision 1.93  2005/02/09 18:51:16  eronchie
 	Updated
-
+	
 	Revision 1.92  2005/02/09 15:07:05  eronchie
 	Updated wmproxy dependencies
 	
@@ -958,7 +962,7 @@
                 </if>
         </target>
 
-	<target name="wmproxy" unless="setenvonly" depends="envset, boost, axis, fgci, gsoap, partitioner, wmproxy-interface">
+	<target name="wmproxy" unless="setenvonly" depends="envset, boost, axis, fcgi, gsoap, partitioner, wmproxy-interface">
                 <if>
                         <isset property="small.memory" />
                         <then>
