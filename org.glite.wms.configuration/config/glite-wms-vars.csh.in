@@ -8,6 +8,10 @@ if ( $?GLITE_WMS_USER) then
   setenv GLITE_WMS_USER glite
 endif
 
+if ( $?GLITE_WMS_GROUP) then
+  setenv GLITE_WMS_GROUP glite
+endif
+
 if ( $?GLITE_WMS_LOCATION_VAR) then
   setenv GLITE_WMS_LOCATION_VAR ${GLITE_WMS_LOCATION}"/var"
 endif
