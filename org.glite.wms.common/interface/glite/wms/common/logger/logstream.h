@@ -39,8 +39,8 @@ public:
   void open( const std::string &name, level_t lev = medium, const char *format = data_c::bd_s_timeFormat );
   void open( std::ostream &name, level_t lev = medium, const char *format = data_c::bd_s_timeFormat );
 
-  inline void activate_log_rotation( std::streamsize maxsize, const std::string &basename, unsigned int maxfiles )
-  { this->lb_buffer.activate_log_rotation( maxsize, basename, maxfiles ); }
+  inline bool activate_log_rotation( std::streamsize maxsize, const std::string &basename, unsigned int maxfiles )
+  { this->lb_buffer.activate_log_rotation( maxsize, basename, maxfiles ); return this->lb_buffer.bad_file(); }
   inline void deactivate_log_rotation( void ) { this->lb_buffer.deactivate_log_rotation(); }
   inline void log_rotate( void ) { this->lb_buffer.log_rotate(); }
 

@@ -30,19 +30,16 @@ const char   *Logbuf::lb_s_letterLevels = "FCSEWID*VLMHU!";
 
 bool Logbuf::checkRotationBuffer( void )
 {
-  bool         res = false;
-  long int     flags;
-  filebuf     *buffer = dynamic_cast<filebuf *>( this->lb_buffer );
-
-  if( buffer ) {
+bool         res = false;
+long int     flags;
+filebuf     *buffer = dynamic_cast<filebuf *>( this->lb_buffer );
+if(buffer && !lb_bad_file) {
     int   fd = utilities::bufferdescriptor( *buffer );
-
     if( fd > 2 ) { // Avoid truncation on stdout/stderr (cout/cerr have a filebuf as buffer !!!)
       flags = fcntl( fd, F_GETFL ) & O_ACCMODE;
       res = (flags == O_RDWR) || (flags == O_RDONLY);
     }
   }
-
   return res;
 }
 
@@ -162,7 +159,7 @@ Logbuf::Logbuf( void ) : streambuf(), lb_remove( false ), lb_rotate( false ), lb
 			 lb_current( 0 ), lb_maxsize( 0 ),
 			 lb_buffer( cout.rdbuf() ),
 			 lb_basename(),
-			 lb_data()
+			 lb_data(), lb_bad_file( false )
 {
   this->setp( this->lb_data.buffer_base(), this->lb_data.buffer_base() + this->lb_data.buffer_size() );
 }
@@ -170,9 +167,9 @@ Logbuf::Logbuf( void ) : streambuf(), lb_remove( false ), lb_rotate( false ), lb
 Logbuf::Logbuf( const char *name, level_t lev, const char *format ) : streambuf(), lb_remove( true ), lb_rotate( false ),
 								      lb_maxfiles( 0 ), lb_current( 0 ), lb_maxsize( 0 ),
 								      lb_buffer( new filebuf ), lb_basename(),
-								      lb_data( name, lev, format )
+								      lb_data( name, lev, format ), lb_bad_file( false )
 {
-  utilities::create_file( name ); // GCC 3.x has a strange behaviour with non existent files...
+  if ( utilities::create_file( name ) ) lb_bad_file=true;
 
   if( dynamic_cast<filebuf *>(this->lb_buffer)->open(name, ios::ate | ios::out | ios::in) ) this->lb_data.bad( false );
 
@@ -183,7 +180,8 @@ Logbuf::Logbuf( const char *name, level_t lev, const char *format ) : streambuf(
 
 Logbuf::Logbuf( streambuf *buffer, level_t lev, const char *format ) : streambuf(), lb_remove( false ), lb_rotate( false ),
 								       lb_maxfiles( 0 ), lb_current( 0 ), lb_maxsize( 0 ),
-								       lb_buffer( buffer ), lb_data( "", lev, format )
+								       lb_buffer( buffer ), lb_data( "", lev, format ),
+								       lb_bad_file( false )
 {
   this->lb_data.bad( false );
 
@@ -207,7 +205,9 @@ Logbuf *Logbuf::open( const char *name, level_t lev, const char *format )
 
   this->lb_remove = true;
 
-  utilities::create_file( name ); // GCC 3.x has a strange behaviour with non existent files...
+  if (utilities::create_file( name ) ) lb_bad_file=true;
+     
+
   if( dynamic_cast<filebuf *>(this->lb_buffer)->open(name, ios::ate | ios::out | ios::in) ) {
     this->lb_data.reset( name, lev, format );
 

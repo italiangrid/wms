@@ -34,6 +34,7 @@ public:
   inline void clear_function( void ) { this->lb_data.clear_function(); }
   inline void reset_container( DataContainerImpl *dc ) { this->lb_data.reset_container( dc ); }
   inline bool bad( void ) { return this->lb_data.bad(); }
+  inline bool bad_file( void ) { return lb_bad_file; }
   inline DataContainerImpl *container( void ) { return this->lb_data.container(); }
 
 protected:
@@ -51,7 +52,7 @@ private:
 
   static const char  *lb_s_letterLevels;
 
-  bool                lb_remove, lb_rotate;
+  bool                lb_remove, lb_rotate, lb_bad_file;
   unsigned int        lb_maxfiles;
   std::streamsize     lb_current, lb_maxsize;
   std::streambuf     *lb_buffer;

@@ -74,7 +74,7 @@ public:
   void open( std::ostream &ostr, level_t lev = medium, const char *format = data_c::bd_s_timeFormat );
   void close( void );
   void unsafe_attach( logger::logstream &ls );
-  void activate_log_rotation( std::streamsize maxsize, const std::string &basename, unsigned int maxfiles );
+  bool activate_log_rotation( std::streamsize maxsize, const std::string &basename, unsigned int maxfiles );
   void deactivate_log_rotation( void );
   void log_rotate( void );
   logstream &endl( void );

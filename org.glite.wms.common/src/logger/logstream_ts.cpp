@@ -106,13 +106,11 @@ void logstream::unsafe_attach( logger::logstream &ls )
   return;
 }
 
-void logstream::activate_log_rotation( streamsize maxsize, const string &basename, unsigned int maxfile )
+bool logstream::activate_log_rotation( streamsize maxsize, const string &basename, unsigned int maxfile )
 {
   boost::mutex::scoped_lock   lock( this->tl_mutex );
 
-  this->tl_stream.activate_log_rotation( maxsize, basename, maxfile );
-
-  return;
+  return this->tl_stream.activate_log_rotation( maxsize, basename, maxfile );
 }
 
 void logstream::deactivate_log_rotation( void )

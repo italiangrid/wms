@@ -2,6 +2,8 @@
 #define GLITE_WMS_COMMON_UTILITIES_STREAMDESCRIPTOR_H
 
 #include <fstream>
+#include <iostream.h>
+
 
 #if (__GNUC__>=3)
 #include <ext/stdio_filebuf.h>
@@ -34,13 +36,10 @@ inline int bufferdescriptor( const std::filebuf &fb )
   return static_cast<__gnu_cxx::stdio_filebuf<char> *>( const_cast<std::filebuf *>(&fb) )->fd();
 }
 
-inline void create_file( const char *name )
+inline bool create_file( const char *name )
 {
-  std::fstream    fs( name, std::ios::in );
-
-  if( !fs.good() ) std::ofstream( name, std::ios::out );
-
-  return;
+  if( !std::fstream(name , std::ios::in).good() ) return (!std::ofstream( name, std::ios::out ).good())  ;
+  else return false;
 }
 
 #else
@@ -65,7 +64,7 @@ inline int bufferdescriptor( const std::filebuf &fb )
   return fb.fd();
 }
 
-inline void create_file( const char *name ) { return; }
+inline bool create_file( const char *name ) { return false; }
 
 #endif
 
