@@ -320,7 +320,7 @@ class NSConfiguration {
   parameter std::vector<std::string> ( RLSCatalog ) section normal;
 
 # Remote catalog connection and IO timeout
-  parameter int ( DLI_SI_CatalogTimeout ) section normal;
+  parameter int ( DLI_SI_CatalogTimeout = 0 ) section normal;
 
 }
 
