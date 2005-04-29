@@ -351,7 +351,7 @@ class WMConfiguration {
   parameter int(WorkerThreads = 1) section normal;
   parameter int(InputIterations = 1) section normal;
   parameter int(MaxRetryCount = 10) section normal;
-  parameter std::string(Input = "${EDG_WL_TMP}/workload_manager/input.fl") section fileparse;
+  parameter std::string(Input = "${GLITE_WMS_TMP}/workload_manager/input.fl") section fileparse;
   parameter std::string(DispatcherType = "filelist") section normal;
   parameter std::vector<std::string>(CeMonitorServices) section normal;
 
