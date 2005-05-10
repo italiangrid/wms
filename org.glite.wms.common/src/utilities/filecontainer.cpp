@@ -1,3 +1,5 @@
+// $Id:
+
 #include <cmath>
 #include <ctime>
 #include <cstdio>
@@ -1080,7 +1082,7 @@ FileContainerError::iostatus_t FileContainer::writeDataHere( const FileIterator 
 #ifdef FILELIST_HAS_DEBUG_CODE
   StackPusher       stack_pusher( this->fc_callStack, 
 				  "writeDataHere( it = (%d, %d, %d), lit = (%d, %d, %d), data = \"%s\", status = %d )",
-				  cast_iterator(it), cast_iterator(lit), data.c_str(), static_cast<int>(status) );
+				  cast_iterator(it), cast_iterator(lit), data.substr(0,BUFSIZ).c_str(), static_cast<int>(status) );
 #endif
 
   if( data.size() > 0 ) {
@@ -1115,7 +1117,7 @@ FileContainerError::iostatus_t FileContainer::addDataAtBegin( const string &data
 #ifdef FILELIST_HAS_DEBUG_CODE
   StackPusher       stack_pusher( this->fc_callStack, 
 				  "addDataAtBegin( data = \"%s\", it = (%d, %d, %d), end = %d )",
-				  data.c_str(), cast_iterator(it), static_cast<int>(end) );
+				  data.substr(0,BUFSIZ).c_str(), cast_iterator(it), static_cast<int>(end) );
 #endif
 
   answer = this->readIterator( next, temp );
@@ -1160,7 +1162,7 @@ FileContainerError::iostatus_t FileContainer::addDataAtEnd( const string &data, 
 #ifdef FILELIST_HAS_DEBUG_CODE
   StackPusher       stack_pusher( this->fc_callStack, 
 				  "addDataAtEnd( data = \"%s\", it = (%d, %d, %d), end = %d )",
-				  data.c_str(), cast_iterator(it), static_cast<int>(end) );
+				  data.substr(0,BUFSIZ).c_str(), cast_iterator(it), static_cast<int>(end) );
 #endif
 
   if( this->fc_limits.get_next() == end ) prev = 0;
@@ -1206,7 +1208,7 @@ FileContainerError::iostatus_t FileContainer::addDataInMiddle( const string &dat
 #ifdef FILELIST_HAS_DEBUG_CODE
   StackPusher       stack_pusher( this->fc_callStack, 
 				  "addDataAtInMiddle( data = \"%s\", it = (%d, %d, %d), where = %d, end = %d )",
-				  data.c_str(), cast_iterator(it), static_cast<int>(where), static_cast<int>(end) );
+				  data.substr(0,BUFSIZ).c_str(), cast_iterator(it), static_cast<int>(where), static_cast<int>(end) );
 #endif
 
   answer = this->readIterator( where, temp1 );
@@ -1805,7 +1807,7 @@ FileContainerError::iostatus_t FileContainer::add_data( const std::string &data,
   const char     *function = "FileContainer::add_data(...)";
   this->fc_callStack.clear();
   StackPusher       stack_pusher( this->fc_callStack, "add_data( data = \"%s\",\n\t\twhere = %d, it = (%d, %d, %d) )",
-				  data.c_str(), static_cast<int>(where), cast_iterator(it) );
+				  data.substr(0,BUFSIZ).c_str(), static_cast<int>(where), cast_iterator(it) );
 #endif
 
   if( !this->fc_initialized ) answer = this->initContainer();
