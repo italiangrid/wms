@@ -54,19 +54,16 @@ bool find_directories( const fs::path & from_path,
   for ( fs::directory_iterator itr( from_path );
         itr != end_itr;
         ++itr ) {
+    if (fs::exists(*itr))
     try { 	
-      if ( fs::is_directory( *itr ) &&
-	   itr->leaf().substr(0,prefix.length()) == prefix ) {
-	path_found.push_back( *itr );
-      }
-      else {
-	if ( recursive && find_directories( *itr, prefix, path_found, true) ) return true;
+      if (fs::is_directory( *itr )) { 
+	   if (itr->leaf().substr(0,prefix.length()) == prefix) path_found.push_back( *itr );
+	   else if (recursive && find_directories( *itr, prefix, path_found )) return true;
       }
     } 
-    catch( fs::filesystem_error& e)
-      {
+    catch( fs::filesystem_error& e) {
 	std::cerr << e.what() << std::endl;
-      }	
+    }	
   }
   return false;
 }
