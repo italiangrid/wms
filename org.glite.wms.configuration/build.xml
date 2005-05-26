@@ -21,10 +21,13 @@
 
 	Revision history:
 	$Log$
+	Revision 1.2  2005/05/26 15:20:08  zurek
+	inserted module.build.file
+
 	Revision 1.1  2004/08/16 14:23:55  eronchie
 	Start adding
 	WARNING: work in progress
-
+	
 	
 -->
 
@@ -84,6 +87,7 @@
 		 Load version file 
 	     ========================================= -->
 	<property file="${module.version.file}"/>
+	<property file="${module.build.file}"/>
 		
 	<!-- ==============================================
 		 Local private targets
