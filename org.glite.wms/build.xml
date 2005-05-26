@@ -21,9 +21,12 @@
 
 	Revision history:
 	$Log$
+	Revision 1.97  2005/05/26 15:19:30  zurek
+	inserted module.build.file
+
 	Revision 1.96  2005/03/25 09:19:22  eronchie
 	Updated brokerinfo dependency
-
+	
 	Revision 1.95  2005/03/11 16:40:57  eronchie
 	Removed jdlj component
 	It was moved on the jdl subsystem
@@ -393,6 +396,7 @@
 		 Load version file 
 	     ========================================= -->
 	<property file="${module.version.file}"/>
+	<property file="${module.build.file}"/>
 	
 	<!-- ===============================================
 		  Public common targets
