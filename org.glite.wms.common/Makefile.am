@@ -17,6 +17,9 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.11  2005/06/10 15:07:21  giaco
+#       - exclude test from SUBDIRS, it doesn't build
+#
 #       Revision 1.10  2004/10/11 15:12:36  eronchie
 #       Added LICENSE handling
 #
@@ -43,7 +46,7 @@ docdir = $(datadir)/doc/@PACKAGE@-@VERSION@
 doc_DATA = LICENSE
 
 ## Subdirectories list
-SUBDIRS = interface src 
+SUBDIRS = interface src
 
 ## Default flags to run aclocal
 ACLOCAL_AMFLAGS = -I project
@@ -95,4 +98,4 @@ distbin:
 	$(AMTAR) -zcf $(DISTTAR)/$(distdir)_bin.tar.gz .; \
 	popd; \
 	rm -rf $$tmpdistbin
-	
+
