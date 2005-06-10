@@ -39,58 +39,34 @@ string normalize_path( const string &fpath )
 void create_parents( const path &dpath )
 {
   string     err( "create_parent(): " );
-  path       branch( dpath.branch() );
+  path       branch( dpath.branch_path() );
+  string     who("create_parents");
 
-  if( dpath.is_null() ) {
+  if( dpath.empty() ) {
     err.append( "cannot create an empty path." );
 
-    throw filesystem_error( err );
+    throw filesystem_error( who, err );
   }
   else if( !exists(dpath) ) {
-    if( branch.is_null() ) create_directory( dpath );
+    if( branch.empty() ) create_directory( dpath );
     else if( !exists(branch) ) {
       create_parents( branch );
       create_directory( dpath );
     }
     else if( is_directory(branch) ) create_directory( dpath );
     else {
-      err.append( branch.file_path() ); err.append( " is not a directory." );
+      err.append( branch.native_file_string() ); err.append( " is not a directory." );
 
-      throw filesystem_error( err );
+      throw filesystem_error( who, err );
     }
   }
   else if( !is_directory(dpath) ) {
-    err.append( dpath.file_path() ); err.append( " is not a directory." );
+    err.append( dpath.native_file_string() ); err.append( " is not a directory." );
 
-    throw filesystem_error( err );
+    throw filesystem_error( err, who );
   }
 
   return;
-}
-
-streampos file_size( const path &file )
-{
-  bool               exist = true;
-  streampos          size = 0;
-  string             err( "file_size(): " );
-  auto_ptr<fstream>  fs;
-
-  if( (exist = exists(file)) && !is_directory(file) ) {
-    fs.reset( new fstream(file.file_path().c_str(), ios::in) );
-
-    fs->seekg( 0, ios::end );
-    size = fs->tellg();
-  }
-  else {
-    err.append( file.file_path() );
-
-    if( exist ) err.append( " is a directory." );
-    else err.append( " does not exist." );
-
-    throw filesystem_error( err );
-  }
-
-  return size;
 }
 
 }};

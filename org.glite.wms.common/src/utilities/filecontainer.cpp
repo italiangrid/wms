@@ -22,6 +22,7 @@
 #endif
 
 using namespace std;
+namespace fs = boost::filesystem;
 
 namespace glite {
 namespace wms {
@@ -1753,7 +1754,7 @@ FileContainer::~FileContainer( void )
 FileContainerError::iostatus_t FileContainer::open( const char *filename )
 {
   iostatus_t                answer;
-  boost::filesystem::path   container( filename, boost::filesystem::system_specific );
+  fs::path   container(filename, fs::native);
 #ifdef FILELIST_HAS_DEBUG_CODE
   this->fc_callStack.clear();
   StackPusher       stack_pusher( this->fc_callStack, "open( filename = \"%s\" )", filename );
@@ -1763,7 +1764,7 @@ FileContainerError::iostatus_t FileContainer::open( const char *filename )
 
   if( fc_s_stampSize == 0 ) staticInitialize();
 
-  if( boost::filesystem::exists(container) ) {
+  if( fs::exists(container) ) {
     this->fc_initialized = false;
     answer = this->openFile();
   }

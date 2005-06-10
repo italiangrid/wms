@@ -19,6 +19,7 @@
 
 #include "glite/wms/common/logger/logbuf.h"
 
+namespace fs = boost::filesystem;
 using namespace std;
 
 namespace glite {
@@ -292,23 +293,23 @@ try {
       char                     buf[BUFSIZ];
       string                   name1, name2;
       ofstream                 ofs;
-      boost::filesystem::path  path1, path2;
+      fs::path  path1, path2;
 
       for( file = (this->lb_maxfiles - 1); file >= 1; --file ) {
 	name1.assign( this->lb_basename ); name2.assign( this->lb_basename );
 	name1.append( 1, '.' ); name1.append( boost::lexical_cast<string>(file) );
 	name2.append( 1, '.' ); name2.append( boost::lexical_cast<string>(file + 1) );
 
-	path1 = boost::filesystem::path( name1, boost::filesystem::system_specific );
-	path2 = boost::filesystem::path( name2, boost::filesystem::system_specific );
+	path1 = fs::path(name1, fs::native);
+	path2 = fs::path(name2, fs::native);
 
-	if( boost::filesystem::exists(path1) ) {
-	  if( boost::filesystem::exists(path2) ) boost::filesystem::remove( path2 );
-	  boost::filesystem::rename( path1, path2 );
+	if( fs::exists(path1) ) {
+	  if( fs::exists(path2) ) fs::remove( path2 );
+	  fs::rename( path1, path2 );
 	}
       }
 
-      ofs.open( path1.file_path().c_str(), ios::out ); // Open the copy file...
+      ofs.open( path1.native_file_string().c_str(), ios::out ); // Open the copy file...
 
       while( (nread = this->lb_buffer->sgetn(buf, (BUFSIZ - 1))) != 0 )
 	ofs.write( buf, nread );
@@ -346,7 +347,7 @@ try {
 
   return res;
 }
-catch( boost::filesystem::filesystem_error &err ) {
+catch( fs::filesystem_error &err ) {
   int res;
   string      error( "****Error got: \"" );
 

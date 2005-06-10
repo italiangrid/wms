@@ -25,8 +25,7 @@
 #include "CommonConfiguration.h"
 #include "glite/wms/common/configuration/exceptions.h"
 
-#define create_path( string ) (boost::filesystem::path(string, boost::filesystem::system_specific))
-
+namespace fs = boost::filesystem;
 using namespace std;
 
 namespace glite {
@@ -155,27 +154,28 @@ try {
   char                        *value;
   vector<string>               spaths;
   vector<string>::iterator     pathIt;
-  boost::filesystem::path      complete, name( filename );
+  fs::path      complete, name( filename );
 
   if( (value = getenv("GLITE_WMS_CONFIG_DIR")) != NULL )
-    spaths.push_back( boost::filesystem::normalize_path(value) );
+    spaths.push_back( fs::normalize_path(value) );
 
   spaths.insert( spaths.end(), c_s_paths, c_s_paths + (sizeof(c_s_paths) / sizeof(char *)) );
 
-  for( pathIt = spaths.begin(); pathIt != spaths.end(); ++pathIt ) {
-    complete = create_path( *pathIt ) << name;
+  for (pathIt = spaths.begin(); pathIt != spaths.end(); ++pathIt) {
+    complete = fs::path(*pathIt, fs::native) / name;
 
-    if( boost::filesystem::exists(complete) )
+    if (fs::exists(complete)) {
       break;
+    }
   }
 
   if( pathIt == spaths.end() ) throw CannotFindFile( filename, spaths );
 
-  this->loadFile( complete.file_path().c_str() );
+  this->loadFile( complete.native_file_string().c_str() );
 
   return;
 }
-catch( boost::filesystem::filesystem_error &err ) {
+catch( fs::filesystem_error &err ) {
   throw OtherErrors( err.what() );
 }
 

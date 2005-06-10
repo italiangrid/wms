@@ -28,7 +28,8 @@ glite_wms_quota_adjust_SOURCES = glite_wms_quota_adjust.cpp
 glite_wms_quota_adjust_LDADD = \
         $(CONF) \
         ./libglite_wms_util.la \
-        $(BOOST_LIBS) \
+        $(BOOST_FS_LIBS) -lpthread \
+        $(BOOST_REGEX_LIBS) \
 	$(CLASSAD_LIBS)
 glite_wms_quota_adjust_LDFLAGS = -all-static
 

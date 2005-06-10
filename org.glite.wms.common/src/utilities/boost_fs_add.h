@@ -14,7 +14,6 @@ namespace boost { namespace filesystem {
 class path;
 
 void create_parents( const path &dpath );
-std::streampos file_size( const path &file );
 std::string normalize_path( const std::string &fpath );
 
 }};

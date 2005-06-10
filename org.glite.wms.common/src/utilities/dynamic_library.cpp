@@ -67,39 +67,17 @@ CannotLookupSymbol::error() const
   return m_impl->error;
 }
 
-namespace {
-
-std::string const prefix("lib");
-std::string const suffix(".so");
-
-std::string to_filename(std::string const& name, std::string const& version)
-{
-  std::string result = prefix + name + suffix;
-  if (!version.empty()) {
-    result += '.';
-    result += version;
-  }
-
-  return result;
-}
-
-}
-
 struct DynamicLibrary::Implementation
 {
   void* handle;
 };
 
-DynamicLibrary::DynamicLibrary(
-  std::string const& name,
-  std::string const& version
-)
+DynamicLibrary::DynamicLibrary(std::string const& filename)
   : m_impl(new Implementation)
 {
-  std::string filename(to_filename(name, version));
   m_impl->handle = ::dlopen(filename.c_str(), RTLD_NOW | RTLD_GLOBAL);
   if (!m_impl->handle) {
-    throw CannotLoadDynamicLibrary(filename.c_str(), ::dlerror());
+    throw CannotLoadDynamicLibrary(filename, ::dlerror());
   }
 }
 
@@ -110,6 +88,24 @@ DynamicLibrary::lookup(std::string const& symbol) const
   if (!result) {
     throw CannotLookupSymbol(symbol, ::dlerror());
   }
+  return result;
+}
+
+namespace {
+
+std::string const lib_prefix("lib");
+std::string const so_suffix(".so");
+
+}
+
+std::string
+dynamic_library_filename(std::string const& name, std::string const& version)
+{
+  std::string result = lib_prefix + name + so_suffix;
+  if (!version.empty()) {
+    result += '.' + version;
+  }
+
   return result;
 }
 

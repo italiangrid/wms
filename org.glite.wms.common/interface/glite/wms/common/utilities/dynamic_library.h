@@ -60,18 +60,22 @@ class DynamicLibrary
   boost::shared_ptr<Implementation> m_impl;
 
 public:
-  // load a dynamic library, given its logical name and an optional version
-  // the actual file name is system dependent
+  // load a dynamic library with the given filename
   // throw CannotLoadDynamicLibrary if the operation fails
-  DynamicLibrary(
-    std::string const& name,
-    std::string const& version = std::string()
-  );
+  DynamicLibrary(std::string const& filename);
 
   // lookup a symbol in the dynamic library
   // throw CannotLookupSymbol if the operation fails
   void* lookup(std::string const& symbol) const;
 };
+
+// returns the actual file name, which is system-dependent, of a dynamic
+// library, given its logical name and an optional version
+std::string
+dynamic_library_filename(
+  std::string const& name,
+  std::string const& version = std::string()
+);
 
 // lookup a symbol in the dynamic library in a type-safe manner
 // throw CannotLookupSymbol if the operation fails
