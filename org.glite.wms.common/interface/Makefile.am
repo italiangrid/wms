@@ -42,6 +42,7 @@ nobase_commonut_HEADERS = \
 	glite/wms/common/utilities/fstreamlock.h \
 	glite/wms/common/utilities/LineParser.h \
 	glite/wms/common/utilities/mixed.h \
-        glite/wms/common/utilities/result_codes.h
+        glite/wms/common/utilities/result_codes.h \
+        glite/wms/common/utilities/wm_commands.h
 
 MAINTAINERCLEANFILES = Makefile.in

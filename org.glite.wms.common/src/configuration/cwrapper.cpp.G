@@ -9,6 +9,8 @@
 #include "LMConfiguration.h"
 #include "NSConfiguration.h"
 #include "WMConfiguration.h"
+#include "WMCConfiguration.h"
+#include "WMPConfiguration.h"
 
 using namespace std;
 using namespace glite::wms::common;
@@ -18,6 +20,8 @@ using namespace glite::wms::common;
 /* Tmpl: wrap class LMConfiguration */
 /* Tmpl: wrap class NSConfiguration */
 /* Tmpl: wrap class WMConfiguration */
+/* Tmpl: wrap class WMCConfiguration */
+/* Tmpl: wrap class WMPConfiguration */
 
 // Local Variables:
 // mode: c++

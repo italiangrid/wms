@@ -35,6 +35,7 @@ glite_wms_quota_adjust_LDFLAGS = -all-static
 libglite_wms_globus_ftp_util_la_SOURCES = \
 	globus_ftp_mkdir.cpp \
 	globus_ftp_put.cpp \
+        globus_ftp_get.cpp \
 	globus_ftp_exists.cpp
 
 libglite_wms_util_la_SOURCES = \
@@ -49,9 +50,9 @@ libglite_wms_util_la_SOURCES = \
 	mixed.cpp \
 	boost_fs_add.cpp \
 	classad_utils.cpp \
-	dynamic_library.cpp
+	wm_commands.cpp
 
-libglite_wms_util_la_LIBADD = -lstdc++ -ldl
+libglite_wms_util_la_LIBADD = -lstdc++
 
 libglite_wms_iiattrutil_la_SOURCES = \
 	ii_attr_utils.cpp

@@ -16,6 +16,8 @@ public:
 		     workload_manager,
 		     job_controller,
 		     log_monitor,
+		     wms_client,
+                     workload_manager_proxy,
 		     last_module
   };
 

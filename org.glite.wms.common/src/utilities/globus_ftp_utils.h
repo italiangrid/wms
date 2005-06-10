@@ -17,6 +17,7 @@ namespace globus {
 extern bool mkdir(const std::string& dst);
 extern bool exists(const std::string& dst);
 extern bool put  (const std::string& src, const std::string& dst);
+extern bool get  (const std::string& src, const std::string& dst);
 
 }
 }

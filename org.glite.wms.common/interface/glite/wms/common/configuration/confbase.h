@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 
-namespace classad { class ClassAd; }
+namespace classad { class ClassAd; class ExprTree;}
 
 namespace glite {
 namespace wms {
@@ -28,7 +28,7 @@ protected:
   std::string getAndParseString( const char *name, const std::string &def ) const;
   std::string getAndParseFileName( const char *name, const std::string &def ) const;
   std::vector<std::string> getVector( const char *name ) const;
-
+  classad::ExprTree* getExpression(const char *name) const;
   const classad::ClassAd        *cb_ad;
 
 private:

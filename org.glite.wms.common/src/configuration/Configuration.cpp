@@ -20,6 +20,8 @@
 #include "LMConfiguration.h"
 #include "NSConfiguration.h"
 #include "WMConfiguration.h"
+#include "WMCConfiguration.h"
+#include "WMPConfiguration.h"
 #include "CommonConfiguration.h"
 #include "glite/wms/common/configuration/exceptions.h"
 
@@ -132,6 +134,14 @@ void Configuration::loadFile( const char *filename )
       this->c_lm.reset( new LMConfiguration(part) );
 
       break;
+    case ModuleType::wms_client:
+      this->c_wc.reset( new WMCConfiguration(part) );
+
+      break;
+    case ModuleType::workload_manager_proxy:
+      this->c_wp.reset( new WMPConfiguration(part) );
+      
+      break;
     default:
       break;
     }
@@ -169,7 +179,7 @@ catch( boost::filesystem::filesystem_error &err ) {
   throw OtherErrors( err.what() );
 }
 
-Configuration::Configuration( const string &filename, const ModuleType &type ) : c_jc(), c_lm(), c_ns(), c_wm(), c_common(),
+Configuration::Configuration( const string &filename, const ModuleType &type ) : c_jc(), c_lm(), c_ns(), c_wm(), c_wc(), c_wp(), c_common(),
 										 c_read(), c_mtype( type )
 {
   if( this->c_mtype.get_codetype() == ModuleType::unknown ) throw ModuleMismatch( this->c_mtype );
@@ -180,7 +190,7 @@ Configuration::Configuration( const string &filename, const ModuleType &type ) :
   }
 }
 
-Configuration::Configuration( const ModuleType &type ) : c_jc(), c_lm(), c_ns(), c_wm(), c_common(),
+Configuration::Configuration( const ModuleType &type ) : c_jc(), c_lm(), c_ns(), c_wm(), c_wc(), c_wp(), c_common(),
 							 c_read(), c_mtype( type )
 {
   char       *filename;
@@ -208,6 +218,8 @@ classad::ClassAd *Configuration::get_classad( void )
   total->Insert( "LogMonitor", parse_and_copy_classad(this->c_lm->get_classad()) );
   total->Insert( "NetworkServer", parse_and_copy_classad(this->c_ns->get_classad()) );
   total->Insert( "WorkloadManager", parse_and_copy_classad(this->c_wm->get_classad()) );
+  total->Insert( "WmsClient", parse_and_copy_classad(this->c_wc->get_classad()) );  
+  total->Insert( "WorkloadManagerProxy", parse_and_copy_classad(this->c_wp->get_classad()) );
   total->Insert( "Common", parse_and_copy_classad(this->c_common->get_classad()) );
 
   return total;

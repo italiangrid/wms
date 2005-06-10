@@ -8,6 +8,8 @@
 /* Tmpl: wrap class LMConfiguration */
 /* Tmpl: wrap class NSConfiguration */
 /* Tmpl: wrap class WMConfiguration */
+/* Tmpl: wrap class WMCConfiguration */
+/* Tmpl: wrap class WMPConfiguration */
 
 #endif /* GLITE_WMS_COMMON_CONFIGURATION_CWRAPPER_H */
 

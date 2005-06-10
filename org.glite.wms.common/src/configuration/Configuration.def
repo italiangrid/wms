@@ -30,6 +30,11 @@ class ConfBase {
     template( std::vector<std::string> )
     inline @ATTRTYPE@ @.@( void ) <const> { return this->getVector(@ATTRNAME@); }
 
+    template( classad::ExprTree* )
+    inline @ATTRTYPE@ @.@( void ) <const> { return this->getExpression( @ATTRNAME@ ); }
+
+
+
     ctemplate( bool -> int, std::streamsize -> long, unsigned int, int, long, size_t, double )
     @ATTRTYPE@ @CLASSPREFIX@@.@( config_error_t *error )
     {
@@ -327,7 +332,6 @@ class NSConfiguration {
   parameter int ( GridFTPPort ) section normal;
   parameter std::string ( LBServer ) section normal;
   parameter std::string ( LBLocalLogger ) section normal;
-
 }
 
 class WMConfiguration {
@@ -351,8 +355,74 @@ class WMConfiguration {
   parameter int(WorkerThreads = 1) section normal;
   parameter int(InputIterations = 1) section normal;
   parameter int(MaxRetryCount = 10) section normal;
-  parameter std::string(Input = "${GLITE_WMS_TMP}/workload_manager/input.fl") section fileparse;
+  parameter std::string(Input = "${EDG_WL_TMP}/workload_manager/input.fl") section fileparse;
+  parameter std::string(IsmDump = "${GLITE_WMS_TMP}/workload_manager/ismdump.fl") section fileparse;
+  parameter bool(EnableIsmDump = true) section normal;
+  parameter int(IsmUpdateRate = 50) section normal;
+  parameter int(IsmDumpRate = 50) section normal;
+  parameter std::vector<std::string>(IsmBlackList) section normal;
   parameter std::string(DispatcherType = "filelist") section normal;
   parameter std::vector<std::string>(CeMonitorServices) section normal;
+  parameter int(CeMonitorAsynchPort = -1) section normal;
+  parameter int(IsmIiPurchasingRate = 240) section normal;
+  parameter int(IsmCEMonPurchasingRate = 120) section normal;
+  parameter int(IsmCEMonAsynchPurchasingRate = 30) section normal;
 
+}
+class WMCConfiguration {
+
+  defaultvalue bool = false;
+  defaultvalue int = 0;
+  defaultvalue std::string = "";
+
+  wrapper {
+    prefix = edg_wlcc_WmsClient_;
+    contexttype = const configuration::WMCConfiguration *;
+    contextfunc = wc;
+  }
+
+  copy ConfBase.normal;
+  copy ConfBase.parse;
+  copy ConfBase.fileparse;
+
+  parameter int(RetryCount = 3) section normal;
+  parameter int(DefaultStatusLevel  = 1) section normal;
+  parameter int(DefaultLoggingLevel = 0) section normal;
+  parameter std::string(VirtualOrganisation) section normal;
+  parameter std::string(ErrorStorage=   "/var/tmp") section normal;
+  parameter std::string(OutputStorage=  "/tmp") section normal;
+  parameter std::string(ListenerStorage="/tmp") section normal;
+  parameter classad::ExprTree*(requirements) section normal;
+  parameter classad::ExprTree*(rank) section normal;  
+  parameter std::string(HLRLocation) section normal;
+  parameter std::string(MyProxyServer) section normal;
+  parameter std::vector<std::string>(WmProxyEndPoints) section normal;
+  parameter std::vector<std::string>(LBEndPoints) section normal;
+
+}
+class WMPConfiguration {
+
+  defaultvalue bool = false;
+  defaultvalue int = 0;
+  defaultvalue std::string = "";
+
+  wrapper {
+    prefix = edg_wlcc_WorkloadManagerProxy_;
+    contexttype = const configuration::WMPConfiguration *;
+    contextfunc = wp;
+  }
+
+  copy ConfBase.normal;
+  copy ConfBase.parse;
+  copy ConfBase.fileparse;
+
+  parameter int ( GridFTPPort ) section normal;
+
+  parameter double ( MaxInputSandboxSize = 10000000 ) section normal;
+  parameter std::string ( SandboxStagingPath = "${GLITE_WMS_TMP}/SandboxDir" ) section fileparse;
+  parameter std::string ( ListMatchRootPath = "/tmp" ) section fileparse;
+
+  parameter bool ( LBProxy = false ) section normal;
+  parameter std::string ( LBServer ) section normal;
+  parameter std::string ( LBLocalLogger ) section normal;
 }

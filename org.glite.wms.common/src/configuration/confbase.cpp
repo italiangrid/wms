@@ -101,6 +101,13 @@ vector<string> confbase_c::getVector( const char *name ) const
   return v;
 }
 
+classad::ExprTree* confbase_c::getExpression( const char *name ) const
+{
+	classad::ExprTree* tree= this->cb_ad->Lookup(name);
+	return tree;
+}
+
+
 confbase_c::confbase_c( const classad::ClassAd *ad ) : cb_ad( ad )
 {}
 
