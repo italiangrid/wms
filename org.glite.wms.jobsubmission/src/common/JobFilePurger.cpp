@@ -4,6 +4,8 @@
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/exception.hpp>
 
+namespace fs = boost::filesystem;
+
 #include "glite/wms/common/configuration/Configuration.h"
 #include "glite/wms/common/configuration/JCConfiguration.h"
 #include "glite/wms/common/configuration/LMConfiguration.h"
@@ -52,31 +54,31 @@ void JobFilePurger::do_purge( bool everything )
 					new Files(this->jfp_jobId) );
 
     try {
-      elog::cedglog << logger::setlevel( logger::info ) << "Removing job directory: " << files->output_directory().file_path() << endl;
-      removed = boost::filesystem::remove_all( files->output_directory() );
+      elog::cedglog << logger::setlevel( logger::info ) << "Removing job directory: " << files->output_directory().native_file_string() << endl;
+      removed = fs::remove_all( files->output_directory() );
       elog::cedglog << logger::setlevel( logger::ugly ) << "Removed " << removed << " files." << endl;
     }
-    catch( boost::filesystem::filesystem_error &err ) {
+    catch( fs::filesystem_error &err ) {
       elog::cedglog << logger::setlevel( logger::null ) << "Failed to remove job directory." << endl
 		    << "Reason: " << err.what() << endl;
     }
 
     try {
-      elog::cedglog << logger::setlevel( logger::info ) << "Removing submit file: " << files->submit_file().file_path() << endl;
-      boost::filesystem::remove( files->submit_file() );
+      elog::cedglog << logger::setlevel( logger::info ) << "Removing submit file: " << files->submit_file().native_file_string() << endl;
+      fs::remove( files->submit_file() );
       elog::cedglog << logger::setlevel( logger::ugly ) << "Removed..." << endl;
     }
-    catch( boost::filesystem::filesystem_error &err ) {
+    catch( fs::filesystem_error &err ) {
       elog::cedglog << logger::setlevel( logger::null ) << "Failed to remove submit file." << endl
 		    << "Reason: " << err.what() << endl;
     }
 
     try {
-      elog::cedglog << logger::setlevel( logger::info ) << "Removing classad file: " << files->classad_file().file_path() << endl;
-      boost::filesystem::remove( files->classad_file() );
+      elog::cedglog << logger::setlevel( logger::info ) << "Removing classad file: " << files->classad_file().native_file_string() << endl;
+      fs::remove( files->classad_file() );
       elog::cedglog << logger::setlevel( logger::ugly ) << "Removed..." << endl;
     }
-    catch( boost::filesystem::filesystem_error &err ) {
+    catch( fs::filesystem_error &err ) {
       elog::cedglog << logger::setlevel( logger::null ) << "Failed to remove classad file." << endl
 		    << "Reason: " << err.what() << endl;
     }
@@ -84,22 +86,22 @@ void JobFilePurger::do_purge( bool everything )
     if( this->jfp_isDag ) {
       try {
 	elog::cedglog << logger::setlevel( logger::info ) << "Removing DAG submit directory: "
-		     << files->dag_submit_directory().file_path() << endl;
-	removed = boost::filesystem::remove_all( files->dag_submit_directory() );
+		     << files->dag_submit_directory().native_file_string() << endl;
+	removed = fs::remove_all( files->dag_submit_directory() );
 	elog::cedglog << logger::setlevel( logger::ugly ) << "Removed " << removed << " files." << endl;
       }
-      catch( boost::filesystem::filesystem_error &err ) {
+      catch( fs::filesystem_error &err ) {
 	elog::cedglog << logger::setlevel( logger::null ) << "Failed to remove DAG submit directory." << endl
 		      << "Reason: " << err.what() << endl;
       }
     }
     else {
       try {
-	elog::cedglog << logger::setlevel( logger::info ) << "Removing wrapper file: " << files->jobwrapper_file().file_path() << endl;
-	boost::filesystem::remove( files->jobwrapper_file() );
+	elog::cedglog << logger::setlevel( logger::info ) << "Removing wrapper file: " << files->jobwrapper_file().native_file_string() << endl;
+	fs::remove( files->jobwrapper_file() );
 	elog::cedglog << logger::setlevel( logger::ugly ) << "Removed..." << endl;
       }
-      catch( boost::filesystem::filesystem_error &err ) {
+      catch( fs::filesystem_error &err ) {
 	elog::cedglog << logger::setlevel( logger::null ) << "Failed to remove wrapper file." << endl
 		      << "Reason: " << err.what() << endl;
       }

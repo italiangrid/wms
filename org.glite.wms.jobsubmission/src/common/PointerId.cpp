@@ -97,7 +97,7 @@ const classad::ClassAd &PointerId::job_ad( void )
   if( !this->pi_jobAd ) {
     classad::ClassAd          *tmp;
     jccommon::Files            files( this->pi_edgId );
-    string                     adfile( files.classad_file().file_path() );
+    string                     adfile( files.classad_file().native_file_string() );
     ifstream                   ifs( adfile.c_str() );
     classad::ClassAdParser     parser;
 

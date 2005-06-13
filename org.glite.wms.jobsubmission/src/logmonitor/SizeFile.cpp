@@ -17,6 +17,8 @@
 
 USING_COMMON_NAMESPACE;
 using namespace std;
+namespace fs = boost::filesystem;
+
 RenameLogStreamNS( elog );
 
 JOBCONTROL_NAMESPACE_BEGIN {
@@ -146,17 +148,17 @@ SizeHeader &SizeHeader::reset( const string &header )
 
 void SizeFile::createDotFile( void )
 {
-  boost::filesystem::path      condorfile( this->sf_filename, boost::filesystem::system_specific );
-  boost::filesystem::path      dotfile( condorfile.branch() );
-  string                       name( condorfile.leaf() );
+  fs::path      condorfile( this->sf_filename, fs::native );
+  fs::path      dotfile( condorfile.branch_path() );
+  string                       name( condorfile.native_file_string() );
 
-  if( !condorfile.is_null() ) {
+  if( !condorfile.empty() ) {
     name.insert( name.begin(), '.' );
     name.append( ".size" );
 
-    dotfile <<= name;
+    dotfile /= name;
 
-    this->sf_filename.assign( dotfile.file_path() );
+    this->sf_filename.assign( dotfile.native_file_string() );
   }
   else this->sf_filename.clear();
 

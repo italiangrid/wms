@@ -116,7 +116,7 @@ JWOP::status_type JobWrapperOutputParser::parse_file( int &retcode, string &erro
 
   elog::cedglog << logger::setlevel( logger::high ) << "Going to parse standard output file." << endl;
 
-  ifs.open( files->standard_output().file_path().c_str() );
+  ifs.open( files->standard_output().native_file_string().c_str() );
   found = this->parseStream( ifs, errors, retcode, stat );
   ifs.close();
   if( !found ) {
@@ -128,7 +128,7 @@ JWOP::status_type JobWrapperOutputParser::parse_file( int &retcode, string &erro
 		    << "Standard output was not useful, passing ball to Maradona..." << endl;
 
       ifs.clear();
-      ifs.open( files->maradona_file().file_path().c_str() );
+      ifs.open( files->maradona_file().native_file_string().c_str() );
       found = this->parseStream( ifs, errors, retcode, stat );
       ifs.close();
       if( found )

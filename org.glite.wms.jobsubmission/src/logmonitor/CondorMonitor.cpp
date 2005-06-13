@@ -32,6 +32,8 @@
 #include "exceptions.h"
 
 using namespace std;
+namespace fs = boost::filesystem;
+
 USING_COMMON_NAMESPACE;
 RenameLogStreamNS( elog );
 
@@ -45,32 +47,32 @@ struct internal_data_s {
   internal_data_s( const string &filename );
 
   auto_ptr<processer::EventFactory>  id_event_factory;
-  boost::filesystem::path            id_logfile_path;
+  fs::path            id_logfile_path;
   ReadUserLog                        id_logfile_parser;
 };
 
 internal_data_s::internal_data_s( const string &filename ) : id_event_factory(),
-							     id_logfile_path( filename, boost::filesystem::system_specific ),
+							     id_logfile_path( filename, fs::native ),
 							     id_logfile_parser()
 {}
 
 void CondorMonitor::doRecycle( void )
 {
-  boost::filesystem::path    recycleDir( cm_s_recycleDirectory, boost::filesystem::system_specific );
-  boost::filesystem::path   &oldfile = this->cm_internal_data->id_logfile_path;
-  boost::filesystem::path    dotfile( this->cm_shared_data->md_sizefile->filename(), boost::filesystem::system_specific ), newfile;
+  fs::path    recycleDir( cm_s_recycleDirectory, fs::native );
+  fs::path   &oldfile = this->cm_internal_data->id_logfile_path;
+  fs::path    dotfile( this->cm_shared_data->md_sizefile->filename(), fs::native ), newfile;
   logger::StatePusher        pusher( elog::cedglog, "CondorMonitor::doRecycle()" );
 
-  newfile = recycleDir << oldfile.leaf();
+  newfile = recycleDir / oldfile.native_file_string();
 
-  boost::filesystem::copy_file( oldfile, newfile );
+  fs::copy_file( oldfile, newfile );
   elog::cedglog << logger::setlevel( logger::info ) << "Old log file (" << this->cm_shared_data->md_logfile_name
-		<< ") copied to recycle file \"" << newfile.file_path() << "\"" << endl;
+		<< ") copied to recycle file \"" << newfile.native_file_string() << "\"" << endl;
 
-  boost::filesystem::remove( oldfile );
+  fs::remove( oldfile );
   elog::cedglog << logger::setlevel( logger::debug ) << "Successfully removed old file." << endl;
 
-  boost::filesystem::remove( dotfile );
+  fs::remove( dotfile );
   elog::cedglog << logger::setlevel( logger::debug ) << "Successfully removed size file." << endl;
 
   return;
@@ -159,15 +161,15 @@ CondorMonitor::CondorMonitor( const string &filename, MonitorData &data ) :
 
   FILE                                           *fp;
   string                                         &logfile_name = this->cm_shared_data->md_logfile_name;
-  boost::filesystem::path                        &logfile_path = this->cm_internal_data->id_logfile_path;
-  string                                          dagId, error, logfile_nopath( logfile_path.leaf() );
+  fs::path                        &logfile_path = this->cm_internal_data->id_logfile_path;
+  string                                          dagId, error, logfile_nopath( logfile_path.native_file_string() );
   boost::match_results<string::const_iterator>    match_pieces;
-  boost::filesystem::path                         timer_path( conf->monitor_internal_dir(), boost::filesystem::system_specific );
+  fs::path                         timer_path( conf->monitor_internal_dir(), fs::native );
   logger::StatePusher                             pusher( elog::cedglog, "CondorMonitor::CondorMonitor()" );
 
   static boost::regex   dagid_expression( ".*DagId = ([^\\s]+).*" );
 
-  if( boost::filesystem::exists(logfile_path) ) { 
+  if( fs::exists(logfile_path) ) { 
     this->cm_shared_data->md_sizefile.reset( new SizeFile(logfile_name.c_str()) );
 
     elog::cedglog << logger::setlevel( logger::info ) << "Opened old log position file." << endl;
@@ -235,9 +237,9 @@ CondorMonitor::CondorMonitor( const string &filename, MonitorData &data ) :
 		  << "Entering DAG mode..." << endl;
 
   logfile_nopath.append( ".timer" );
-  timer_path <<= logfile_nopath;
+  timer_path /= logfile_nopath;
 
-  this->cm_shared_data->md_timer.reset( new Timer(timer_path.file_path()) );
+  this->cm_shared_data->md_timer.reset( new Timer(timer_path.native_file_string()) );
 
   this->cm_internal_data->id_event_factory.reset( new processer::EventFactory(this->cm_shared_data) );
 }
@@ -248,22 +250,22 @@ CondorMonitor::~CondorMonitor( void )
 
   if( this->cm_internal_data.unique() && this->cm_shared_data->md_sizefile->completed() ) {
     try {
-      boost::filesystem::path   timerfile( this->cm_shared_data->md_timer->filename(), boost::filesystem::system_specific );
+      fs::path   timerfile( this->cm_shared_data->md_timer->filename(), fs::native );
       this->cm_shared_data->md_timer.reset(); // Remove the timer and the filelist it was containing before deleting the file...
 
       elog::cedglog << logger::setlevel( logger::info )
-		    << "Removing timer file " << timerfile.file_path() << " from staging directory." << endl;
-      boost::filesystem::remove( timerfile );
+		    << "Removing timer file " << timerfile.native_file_string() << " from staging directory." << endl;
+      fs::remove( timerfile );
       elog::cedglog << logger::setlevel( logger::debug ) << "Successfully removed." << endl;
     }
-    catch( boost::filesystem::filesystem_error &err ) {
+    catch( fs::filesystem_error &err ) {
       elog::cedglog << logger::setlevel( logger::severe )
 		    << "Removing of the timer file failed." << endl
 		    << "Filesystem error catched: \"" << err.what() << "\"." << endl;
     }
 
     try { this->doRecycle(); }
-    catch( boost::filesystem::filesystem_error &err ) {
+    catch( fs::filesystem_error &err ) {
       elog::cedglog << logger::setlevel( logger::severe )
 		    << "Condor log recycling operation failed." << endl
 		    << "Filesystem error catched: \"" << err.what() << "\"." << endl;
@@ -283,15 +285,15 @@ CondorMonitor::status_t CondorMonitor::process_next_event( void )
   ULogEventOutcome                      outcome;
   ULogEvent                            *event = NULL;
   string                               &logfile_name = this->cm_shared_data->md_logfile_name;
-  boost::filesystem::path              &logfile_path = this->cm_internal_data->id_logfile_path;
+  fs::path              &logfile_path = this->cm_internal_data->id_logfile_path;
   auto_ptr<processer::EventInterface>   processor;
   auto_ptr<ULogEvent>                   scoped_event;
   logger::StatePusher                   pusher( elog::cedglog, "CondorMonitor::process_next_event()" );
 
   try {
-    size = boost::filesystem::file_size( logfile_path );
+    size = fs::file_size( logfile_path );
   }
-  catch( boost::filesystem::filesystem_error &err ) {
+  catch( fs::filesystem_error &err ) {
     throw FileSystemError( err.what() );
   }
 

@@ -25,6 +25,8 @@
 USING_COMMON_NAMESPACE;
 USING_JOBCONTROL_NAMESPACE;
 using namespace std;
+namespace fs = boost::filesystem;
+
 RenameLogStreamNS_ts( ts );
 RenameLogStreamNS( elog );
 
@@ -34,8 +36,6 @@ utilities::LineOption options[] = {
   { 'e', 1, "job-id",        "\t\tSelects the job based on its job id." },
   { 'C', 1, "configuration", "\t\tUse an alternate configuration file." },
 };
-
-#define create_path( string ) (boost::filesystem::path((string), boost::filesystem::system_specific))
 
 int main( int argn, char *argv[] )
 {
@@ -47,7 +47,6 @@ int main( int argn, char *argv[] )
   auto_ptr<configuration::Configuration>     conf;
   auto_ptr<logmonitor::JobStatusExtractor>   extractor;
   vector<utilities::LineOption>              optvec( options, options + sizeof(options) / sizeof(utilities::LineOption) );
-  boost::filesystem::path                    logpath;
   utilities::LineParser                      options( optvec, utilities::ParserData::zero_args );
 
   try {
@@ -57,12 +56,12 @@ int main( int argn, char *argv[] )
     conf.reset( new configuration::Configuration(conffile, "LogMonitor") ); // LogMonitor is the most similar program...
 
     lmconfig = conf->lm();
-    logpath = create_path( lmconfig->external_log_file() );
+    fs::path logpath(lmconfig->external_log_file(), fs::native);
 
-    if( !boost::filesystem::exists(logpath) ) {
-      boost::filesystem::create_parents( logpath.branch() );
+    if( !fs::exists(logpath) ) {
+      fs::create_parents( logpath.branch_path() );
 
-      utilities::create_file( logpath.file_path().c_str() ); // GCC 3.x has a strange behaviour with non existsne files...
+      utilities::create_file( logpath.native_file_string().c_str() ); // GCC 3.x has a strange behaviour with non existsne files...
     }
 
     if( !options.is_present('c') && !options.is_present('e') ) {
@@ -78,7 +77,7 @@ int main( int argn, char *argv[] )
       res = 1;
     }
     else {
-      logfile.open( logpath.file_path().c_str(), ios::app );
+      logfile.open( logpath.native_file_string().c_str(), ios::app );
       if( logfile.good() ) {
 	utilities::FstreamLock  loglock( logfile ); // Lock the "external" log file againist other LM-parts
 
@@ -92,7 +91,7 @@ int main( int argn, char *argv[] )
 	cerr << errors << endl;
       }
       else {
-	cerr << "Cannot open output log file \"" << logpath.file_path() << "\", aborting..." << endl;
+	cerr << "Cannot open output log file \"" << logpath.native_file_string() << "\", aborting..." << endl;
 
 	res = 1;
       }
@@ -102,7 +101,7 @@ int main( int argn, char *argv[] )
     cerr << error << endl;
     res = error.return_code();
   }
-  catch( boost::filesystem::filesystem_error &error ) {
+  catch( fs::filesystem_error &error ) {
     cerr << "Got an error during filesystem usage." << endl
 	 << error.what() << endl;
 

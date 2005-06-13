@@ -25,6 +25,8 @@
 #include <boost/regex.hpp>
 #include <boost/filesystem/path.hpp>
 
+namespace fs = boost::filesystem;
+
 #include <classad_distribution.h>
 #include <user_log.c++.h>
 
@@ -125,16 +127,16 @@ void JobControllerReal::readRepository( void )
   const configuration::LMConfiguration   *lmconfig = configuration::Configuration::instance()->lm();
   string                                  repname( lmconfig->id_repository_name() );
   auto_ptr<jccommon::IdContainer>         repository;
-  boost::filesystem::path                 repfile( lmconfig->monitor_internal_dir(), boost::filesystem::system_specific );
+  fs::path                                repfile( lmconfig->monitor_internal_dir(), fs::native );
   logger::StatePusher                     pusher( elog::cedglog, "JobControllerReal::readRepository()" );
 
-  repfile <<= repname;
+  repfile /= repname;
 
   try {
     elog::cedglog << logger::setlevel( logger::medium )
-		  << "Reading repository from LogMonitor file: " << repfile.file_path() << endl;
+		  << "Reading repository from LogMonitor file: " << repfile.native_file_string() << endl;
 
-    repository.reset( new jccommon::IdContainer(repfile.file_path().c_str()) );
+    repository.reset( new jccommon::IdContainer(repfile.native_file_string().c_str()) );
     this->jcr_repository->copy( *repository );
   }
   catch( utilities::FileContainerError &err ) {
@@ -152,13 +154,13 @@ JobControllerReal::JobControllerReal( edg_wll_Context *cont ) : jcr_threshold( 0
   const configuration::JCConfiguration   *jcconfig = configuration::Configuration::instance()->jc();
   string                                  repname( lmconfig->id_repository_name() );
   auto_ptr<jccommon::IdContainer>         repository;
-  boost::filesystem::path                 repfile( lmconfig->monitor_internal_dir(), boost::filesystem::system_specific );
+  fs::path                                repfile( lmconfig->monitor_internal_dir(), fs::native);
   logger::StatePusher                     pusher( elog::cedglog, "JobControllerReal::JobControllerReal()" );
 
-  repfile <<= repname;
+  repfile /= repname;
 
   try {
-    repository.reset( new jccommon::IdContainer(repfile.file_path().c_str()) );
+    repository.reset( new jccommon::IdContainer(repfile.native_file_string().c_str()) );
     this->jcr_repository.reset( new jccommon::RamContainer(*repository) );
   }
   catch( utilities::FileContainerError &err ) {

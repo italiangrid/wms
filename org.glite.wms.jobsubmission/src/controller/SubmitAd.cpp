@@ -12,6 +12,8 @@
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/exception.hpp>
 
+namespace fs = boost::filesystem;
+
 #include "../jobcontrol_namespace.h"
 #include "glite/wms/common/logger/logstream.h"
 #include "glite/wms/common/logger/manipulators.h"
@@ -44,12 +46,12 @@ try {
   const configuration::LMConfiguration   *config = configuration::Configuration::instance()->lm();
   string                      err;
   ifstream                    ifs;
-  boost::filesystem::path     status( config->monitor_internal_dir(), boost::filesystem::system_specific );
+  fs::path     status( config->monitor_internal_dir(), fs::native );
 
-  status <<= "controller.status";
+  status /= "controller.status";
 
-  if( boost::filesystem::exists(status) ) {
-    ifs.open( status.file_path().c_str() );
+  if( fs::exists(status) ) {
+    ifs.open( status.native_file_string().c_str() );
 
     if( ifs.good() ) {
       ifs >> this->sa_lastEpoch >> this->sa_jobperlog;
@@ -57,7 +59,7 @@ try {
       ifs.close();
     }
     else
-      throw CannotOpenStatusFile( status.file_path() );
+      throw CannotOpenStatusFile( status.native_file_string() );
   }
   else {
     this->sa_lastEpoch = time( NULL );
@@ -66,7 +68,7 @@ try {
 
   return;
 }
-catch( boost::filesystem::filesystem_error &err ) {
+catch( fs::filesystem_error &err ) {
   throw FileSystemError( err.what() );
 }
 
@@ -75,18 +77,18 @@ void SubmitAd::saveStatus( void )
   const configuration::LMConfiguration   *config = configuration::Configuration::instance()->lm();
   string                      err;
   ofstream                    ofs;
-  boost::filesystem::path     status( config->monitor_internal_dir(), boost::filesystem::system_specific );
+  fs::path     status( config->monitor_internal_dir(), fs::native );
 
-  status <<= "controller.status";
+  status /= "controller.status";
 
-  ofs.open( status.file_path().c_str() );
+  ofs.open( status.native_file_string().c_str() );
   if( ofs.good() ) {
     ofs << this->sa_lastEpoch << ' ' << this->sa_jobperlog << endl;
 
     ofs.close();
   }
   else
-    throw CannotOpenStatusFile( status.file_path(), 1 );
+    throw CannotOpenStatusFile( status.native_file_string(), 1 );
 
   return;
 }
@@ -124,31 +126,31 @@ void SubmitAd::createFromAd( const classad::ClassAd *pad )
 
       try {
 	dirType = "job directory";
-	buildPath.assign( files->output_directory().file_path() );
+	buildPath.assign( files->output_directory().native_file_string() );
 	elog::cedglog << logger::setlevel( logger::info ) << "Creating " << dirType << " path." << endl
 		      << logger::setlevel( logger::debug ) << "Path = \"" << buildPath << "\"." << endl;
 
-	boost::filesystem::create_parents( files->output_directory() );
+	fs::create_parents( files->output_directory() );
 
-	if( !boost::filesystem::exists(files->submit_file().branch()) ) {
+	if( !fs::exists(files->submit_file().branch_path()) ) {
 	  dirType = "submit file";
-	  buildPath.assign( files->submit_file().branch().file_path() );
+	  buildPath.assign( files->submit_file().branch_path().native_file_string() );
 	  elog::cedglog << logger::setlevel( logger::info ) << "Path for " << dirType << " doesn't exist, creating..." << endl
 			<< logger::setlevel( logger::debug ) << "Path = \"" << buildPath << "\"." << endl;
 
-	  boost::filesystem::create_parents( files->submit_file().branch() );
+	  fs::create_parents( files->submit_file().branch_path() );
 	}
 
-	if( !boost::filesystem::exists(files->classad_file().branch()) ) {
+	if( !fs::exists(files->classad_file().branch_path()) ) {
 	  dirType = "classad file";
-	  buildPath.assign( files->classad_file().branch().file_path() );
+	  buildPath.assign( files->classad_file().branch_path().native_file_string() );
 	  elog::cedglog << logger::setlevel( logger::info ) << "Path for " << dirType << " doesn't exist, creating..." << endl
 			<< logger::setlevel( logger::debug ) << "Path = \"" << buildPath << "\"." << endl;
 
-	  boost::filesystem::create_parents( files->classad_file().branch() );
+	  fs::create_parents( files->classad_file().branch_path() );
 	}
       }
-      catch( boost::filesystem::filesystem_error &err ) {
+      catch( fs::filesystem_error &err ) {
 	elog::cedglog << logger::setlevel( logger::fatal )
 		      << "Failed to create " << dirType << " path \"" << buildPath << "\"." << endl
 		      << "Reason: " << err.what() << endl;
@@ -156,12 +158,12 @@ void SubmitAd::createFromAd( const classad::ClassAd *pad )
 	throw CannotCreateDirectory( dirType, buildPath, err.what() );
       }
 
-      this->sa_submitfile.assign( files->submit_file().file_path() );
-      this->sa_classadfile.assign( files->classad_file().file_path() );
+      this->sa_submitfile.assign( files->submit_file().native_file_string() );
+      this->sa_classadfile.assign( files->classad_file().native_file_string() );
 
       if( this->sa_jobtype == "dag" ) {
 	this->sa_last = false;
-	this->sa_logfile.assign( files->dag_log_file().file_path() );
+	this->sa_logfile.assign( files->dag_log_file().native_file_string() );
 	this->sa_isDag = true;
       }
       else if( this->sa_jobtype == "job" ) {
@@ -185,7 +187,7 @@ void SubmitAd::createFromAd( const classad::ClassAd *pad )
 	}
 	else this->sa_last = false;
 
-	this->sa_logfile.assign( files->log_file(epoch).file_path() );
+	this->sa_logfile.assign( files->log_file(epoch).native_file_string() );
       }
 
       try {

@@ -11,6 +11,8 @@
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
 
+namespace fs = boost::filesystem;
+
 #include "glite/wms/common/utilities/boost_fs_add.h"
 #include "glite/lb/producer.h"
 #include "glite/lb/context.h"
@@ -258,9 +260,9 @@ EventLogger &EventLogger::reset_user_proxy( const string &proxyfile )
   int     res;
 
   if( proxyfile.size() && (proxyfile != this->el_proxy) ) {
-    boost::filesystem::path    pf( boost::filesystem::normalize_path(proxyfile), boost::filesystem::system_specific );
+    fs::path    pf(fs::normalize_path(proxyfile), fs::native);
 
-    if( boost::filesystem::exists(pf) ) {
+    if( fs::exists(pf) ) {
       this->el_proxy.assign( proxyfile );
 
       res = edg_wll_SetParam( *this->el_context, EDG_WLL_PARAM_X509_PROXY, proxyfile.c_str() );

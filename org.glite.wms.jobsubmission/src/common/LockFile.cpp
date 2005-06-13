@@ -23,7 +23,7 @@ namespace jccommon {
 void LockFile::checkLockFile( void )
 {
   if( !fs::exists(*this->lf_file) ) {
-    ofstream   ofs( this->lf_file->file_path().c_str(), ios::out );
+    ofstream   ofs( this->lf_file->native_file_string().c_str(), ios::out );
 
     if( !(this->lf_error = (!ofs.good() || ofs.bad())) ) {
       this->lf_good = true;
@@ -36,7 +36,7 @@ void LockFile::checkLockFile( void )
 }
 
 LockFile::LockFile( const string &filename ) : lf_good( false ), lf_error( false ),
-  lf_file( new fs::path(fs::normalize_path(filename), fs::system_specific) )
+  lf_file( new fs::path(fs::normalize_path(filename), fs::native) )
 {
   this->checkLockFile();
 }
@@ -66,7 +66,7 @@ void LockFile::remove( void ) const
 void LockFile::reset_pid( void )
 {
   if( this->good() ) {
-    ofstream   ofs( this->lf_file->file_path().c_str(), ios::out );
+    ofstream   ofs( this->lf_file->native_file_string().c_str(), ios::out );
 
     if( !(this->lf_error = (!ofs.good() || ofs.bad())) ) {
       this->lf_good = true;

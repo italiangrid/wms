@@ -102,7 +102,7 @@ bool JobControllerProxy::cancel( const glite::wmsutils::jobid::JobId &id, const 
   classad::ClassAdParser        parser;
 
   if( boost::filesystem::exists(cadfile) ) {
-    ifs.open( cadfile.file_path().c_str() );
+    ifs.open( cadfile.native_file_string().c_str() );
     jobad.reset( parser.ParseClassAd(ifs) );
 
     if( jobad.get() != NULL ) {

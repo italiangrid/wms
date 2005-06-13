@@ -19,6 +19,7 @@
 
 USING_COMMON_NAMESPACE;
 using namespace std;
+namespace fs = boost::filesystem;
 
 JOBCONTROL_NAMESPACE_BEGIN {
 
@@ -31,10 +32,10 @@ JobStatusExtractor::JobStatusExtractor( const utilities::LineParser &options ) :
   auto_ptr<jccommon::IdContainer>          container;
 
   if( options.is_present('c') ) {
-    boost::filesystem::path                  idrep( config->monitor_internal_dir(), boost::filesystem::system_specific );
+    fs::path                  idrep( config->monitor_internal_dir(), fs::native );
 
-    idrep <<= config->id_repository_name();
-    container.reset( new jccommon::IdContainer(idrep.file_path()) );
+    idrep /= config->id_repository_name();
+    container.reset( new jccommon::IdContainer(idrep.native_file_string()) );
 
     cid.assign( options['c'].getStringValue() );
     edgid.assign( container->condor_id(cid) );

@@ -49,9 +49,9 @@
 #include "ControllerLoop.h"
 #include "exceptions.h"
 
-#define create_path( string ) (boost::filesystem::path((string), boost::filesystem::system_specific))
-
 using namespace std;
+namespace fs = boost::filesystem;
+
 USING_COMMON_NAMESPACE;
 RenameLogStreamNS_ts( ts );
 RenameLogStreamNS( elog );
@@ -76,31 +76,31 @@ void ControllerLoop::createDirectories( void )
 {
   const configuration::JCConfiguration        *jcconfig = configuration::Configuration::instance()->jc();
   const configuration::LMConfiguration        *lmconfig = configuration::Configuration::instance()->lm();
-  boost::filesystem::path                      partial;
-  vector<boost::filesystem::path>              paths;
-  vector<boost::filesystem::path>::iterator    pathIt;
+  fs::path                      partial;
+  vector<fs::path>              paths;
+  vector<fs::path>::iterator    pathIt;
 
   if( this->cl_verbose ) clog << "Checking for directories..." << endl;
 
   try {
-    paths.push_back( create_path(jcconfig->input()) );
-    paths.push_back( create_path(jcconfig->log_file()) );
-    paths.push_back( create_path(jcconfig->log_rotation_base_file()) );
-    paths.push_back( create_path(jcconfig->submit_file_dir() + "/boh") );
-    paths.push_back( create_path(jcconfig->lock_file()) );
-    paths.push_back( create_path(lmconfig->monitor_internal_dir() + "/boh") );
-    paths.push_back( create_path(lmconfig->condor_log_dir() + "/boh") );
+    paths.push_back(fs::path(jcconfig->input(), fs::native));
+    paths.push_back(fs::path(jcconfig->log_file(), fs::native));
+    paths.push_back(fs::path(jcconfig->log_rotation_base_file(), fs::native));
+    paths.push_back(fs::path(jcconfig->submit_file_dir() + "/boh", fs::native));
+    paths.push_back(fs::path(jcconfig->lock_file(), fs::native));
+    paths.push_back(fs::path(lmconfig->monitor_internal_dir() + "/boh", fs::native));
+    paths.push_back(fs::path(lmconfig->condor_log_dir() + "/boh", fs::native));
 
     for( pathIt = paths.begin(); pathIt != paths.end(); ++pathIt ) {
-      if( (pathIt->file_path().size() != 0) && !boost::filesystem::exists(pathIt->branch()) ) {
-	if( this->cl_verbose ) clog << "\tCreating directory: " << pathIt->branch().directory_path() << "..." << endl;
+      if( (!pathIt->native_file_string().empty()) && !fs::exists(pathIt->branch_path()) ) {
+	if( this->cl_verbose ) clog << "\tCreating directory: " << pathIt->branch_path().native_file_string() << "..." << endl;
 
-	boost::filesystem::create_parents( pathIt->branch() );
+	fs::create_parents( pathIt->branch_path() );
       }
-      else if( this->cl_verbose ) clog << "\tDirectory: " << pathIt->branch().directory_path() << " exists..." << endl;
+      else if( this->cl_verbose ) clog << "\tDirectory: " << pathIt->branch_path().native_file_string() << " exists..." << endl;
     }
   }
-  catch( boost::filesystem::filesystem_error &err ) {
+  catch( fs::filesystem_error &err ) {
     clog << "Filesystem error: \"" << err.what() << "\"." << endl;
 
     throw CannotStart( err.what() );
@@ -196,8 +196,8 @@ ControllerLoop::ControllerLoop( const utilities::LineParser &options ) : cl_verb
   const configuration::JCConfiguration       *config = configuration::Configuration::instance()->jc();
   const configuration::CommonConfiguration   *common = configuration::Configuration::instance()->common();
   const char                    *previous = NULL;
-  boost::filesystem::path        listname( config->input(), boost::filesystem::system_specific );
-  boost::filesystem::path        logname( config->log_file(), boost::filesystem::system_specific );
+  fs::path        listname( config->input(), fs::native );
+  fs::path        logname( config->log_file(), fs::native );
   process::User                  currentUser;
 
   /*
@@ -230,15 +230,15 @@ ControllerLoop::ControllerLoop( const utilities::LineParser &options ) : cl_verb
 
   this->createDirectories();
 
-  this->cl_stream.open( logname.file_path(), (logger::level_t) config->log_level() );
+  this->cl_stream.open( logname.native_file_string(), (logger::level_t) config->log_level() );
   this->cl_stream.activate_log_rotation( config->log_file_max_size(), config->log_rotation_base_file(),
 					 config->log_rotation_max_file_number() );
   if( this->cl_stream.good() ) {
-    if( this->cl_verbose ) clog << "Opened log file: " << logname.file_path() << endl;
+    if( this->cl_verbose ) clog << "Opened log file: " << logname.native_file_string() << endl;
   }
   else {
     string    error( "Cannot open log file \"" );
-    error.append( logname.file_path() ); error.append( "\"" );
+    error.append( logname.native_file_string() ); error.append( "\"" );
 
     throw CannotStart( error );
   }
@@ -276,7 +276,7 @@ ControllerLoop::ControllerLoop( const utilities::LineParser &options ) : cl_verb
     this->cl_stream << logger::setlevel( logger::null ) << previous << endl;
 
   try {
-    this->cl_queuefilename.assign( listname.file_path() );
+    this->cl_queuefilename.assign( listname.native_file_string() );
     this->cl_client.reset( new controller::JobControllerClient() );
   }
   catch( controller::CannotCreate &error ) {
@@ -355,12 +355,12 @@ try {
 	    this->cl_logger->job_cancel_requested_event( configuration::ModuleType::module_name(source) );
 	  
 	  // See lcg2 bug: 3883
-	  boost::filesystem::path        logfile( remreq->get_logfile(), boost::filesystem::system_specific );
+	  fs::path        logfile( remreq->get_logfile(), fs::native );
 	  
 	  this->cl_stream << logger::setlevel( logger::debug ) << "Executing remove request..." << endl;
 
-	  if( !logfile.is_null() )
-	    controller.cancel( glite::wmsutils::jobid::JobId(jobid), logfile.file_path().c_str(), force );
+	  if( !logfile.empty() )
+	    controller.cancel( glite::wmsutils::jobid::JobId(jobid), logfile.native_file_string().c_str(), force );
 	  else
 	    controller.cancel( glite::wmsutils::jobid::JobId(jobid), NULL, force );
 	  
@@ -376,8 +376,8 @@ try {
 			  << logger::setlevel( logger::debug ) << "Executing remove request..." << endl;
 
 	  if( source == configuration::ModuleType::log_monitor ) {
-	    boost::filesystem::path    logfile( cremreq->get_logfile(), boost::filesystem::system_specific );
-	    controller.cancel( condorid, logfile.file_path().c_str(), force );
+	    fs::path    logfile( cremreq->get_logfile(), fs::native );
+	    controller.cancel( condorid, logfile.native_file_string().c_str(), force );
 	  }
 	  else
 	    controller.cancel( condorid, NULL, force );

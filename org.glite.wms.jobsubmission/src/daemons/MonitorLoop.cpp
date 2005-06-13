@@ -43,9 +43,11 @@
 #include "MonitorLoop.h"
 #include "exceptions.h"
 
-#define create_path( string ) (boost::filesystem::path((string), boost::filesystem::system_specific))
+#define create_path( string ) (fs::path((string), fs::system_specific))
 
 using namespace std;
+namespace fs = boost::filesystem;
+
 USING_COMMON_NAMESPACE;
 RenameLogStreamNS_ts( ts );
 RenameLogStreamNS( elog );
@@ -71,31 +73,31 @@ void MonitorLoop::createDirectories( void )
 {
   const configuration::LMConfiguration        *lmconfig = configuration::Configuration::instance()->lm();
   const configuration::WMConfiguration        *wmconfig = configuration::Configuration::instance()->wm();
-  vector<boost::filesystem::path>              paths;
-  vector<boost::filesystem::path>::iterator    pathIt;
+  vector<fs::path>              paths;
+  vector<fs::path>::iterator    pathIt;
 
   if( this->ml_verbose ) clog << "Checking for directories..." << endl;
 
   try {
-    paths.push_back( create_path(lmconfig->monitor_internal_dir() + "/tmp") );
-    paths.push_back( create_path(lmconfig->condor_log_dir() + "/tmp") );
-    paths.push_back( create_path(lmconfig->condor_log_recycle_dir() + "/tmp") );
-    paths.push_back( create_path(lmconfig->log_file()) );
-    paths.push_back( create_path(lmconfig->external_log_file()) );
-    paths.push_back( create_path(lmconfig->log_rotation_base_file()) );
-    paths.push_back( create_path(lmconfig->lock_file()) );
-    paths.push_back( create_path(wmconfig->input()) );
+    paths.push_back(fs::path(lmconfig->monitor_internal_dir() + "/tmp", fs::native));
+    paths.push_back(fs::path(lmconfig->condor_log_dir() + "/tmp", fs::native));
+    paths.push_back(fs::path(lmconfig->condor_log_recycle_dir() + "/tmp", fs::native));
+    paths.push_back(fs::path(lmconfig->log_file(), fs::native));
+    paths.push_back(fs::path(lmconfig->external_log_file(), fs::native));
+    paths.push_back(fs::path(lmconfig->log_rotation_base_file(), fs::native));
+    paths.push_back(fs::path(lmconfig->lock_file(), fs::native));
+    paths.push_back(fs::path(wmconfig->input(), fs::native));
 
     for( pathIt = paths.begin(); pathIt != paths.end(); ++pathIt ) {
-      if( (pathIt->file_path().size() != 0) && !boost::filesystem::exists(pathIt->branch()) ) {
-	if( this->ml_verbose ) clog << "\tCreating directory: " << pathIt->branch().directory_path() << "..." << endl;
+      if( (!pathIt->native_file_string().empty()) && !fs::exists(pathIt->branch_path()) ) {
+	if( this->ml_verbose ) clog << "\tCreating directory: " << pathIt->branch_path().native_file_string() << "..." << endl;
 
-	boost::filesystem::create_parents( pathIt->branch() );
+	fs::create_parents( pathIt->branch_path() );
       }
-      else if( this->ml_verbose ) clog << "\tDirectory: " << pathIt->branch().directory_path() << " exists..." << endl;
+      else if( this->ml_verbose ) clog << "\tDirectory: " << pathIt->branch_path().native_file_string() << " exists..." << endl;
     }
   }
-  catch( boost::filesystem::filesystem_error &err ) {
+  catch( fs::filesystem_error &err ) {
     clog << "Filesystem error: \"" << err.what() << "\"." << endl;
 
     throw CannotStart( err.what() );
@@ -189,8 +191,8 @@ MonitorLoop::MonitorLoop( const utilities::LineParser &options ) : ml_verbose( o
   const configuration::LMConfiguration       *config = configuration::Configuration::instance()->lm();
   const configuration::CommonConfiguration   *common = configuration::Configuration::instance()->common();
   const char                    *previous = NULL;
-  boost::filesystem::path        logname( config->log_file(), boost::filesystem::system_specific );
-  boost::filesystem::path        internal( config->monitor_internal_dir(), boost::filesystem::system_specific ), idrep, abrep;
+  fs::path        logname( config->log_file(), fs::native );
+  fs::path        internal( config->monitor_internal_dir(), fs::native ), idrep, abrep;
   process::User                  currentUser;
 
   if( ml_s_instance ) delete ml_s_instance;
@@ -218,15 +220,15 @@ MonitorLoop::MonitorLoop( const utilities::LineParser &options ) : ml_verbose( o
 
   this->createDirectories();
 
-  this->ml_stream.open( logname.file_path(), (logger::level_t) config->log_level() );
+  this->ml_stream.open( logname.native_file_string(), (logger::level_t) config->log_level() );
   this->ml_stream.activate_log_rotation( config->log_file_max_size(), config->log_rotation_base_file(),
 					 config->log_rotation_max_file_number() );
   if( this->ml_stream.good() ) {
-    if( this->ml_verbose ) clog << "Opened log file: " << logname.file_path() << endl;
+    if( this->ml_verbose ) clog << "Opened log file: " << logname.native_file_string() << endl;
   }
   else {
     string    error( "Cannot open log file \"" );
-    error.append( logname.file_path() ); error.append( "\"" );
+    error.append( logname.native_file_string() ); error.append( "\"" );
 
     throw CannotStart( error );
   }
@@ -261,16 +263,16 @@ MonitorLoop::MonitorLoop( const utilities::LineParser &options ) : ml_verbose( o
     this->ml_stream << logger::setlevel( logger::null ) << previous << endl;
 
   try {
-    idrep = internal << config->id_repository_name();
-    abrep = internal << ml_s_abortedFileName;
+    idrep = internal / config->id_repository_name();
+    abrep = internal / ml_s_abortedFileName;
 
-    this->ml_idContainer.reset( new jccommon::IdContainer(idrep.file_path()) );
+    this->ml_idContainer.reset( new jccommon::IdContainer(idrep.native_file_string()) );
     this->ml_stream << "Successfully created the id repository file." << endl;
 
-    this->ml_abContainer.reset( new logmonitor::AbortedContainer(abrep.file_path()) );
+    this->ml_abContainer.reset( new logmonitor::AbortedContainer(abrep.native_file_string()) );
     this->ml_stream << "Successfully created the aborted job repository file." << endl;
   }
-  catch( boost::filesystem::filesystem_error &err ) {
+  catch( fs::filesystem_error &err ) {
     this->ml_stream << logger::setlevel( logger::fatal )
 		    << "Filesystem error: \"" << err.what() << "\"." << endl;
 
@@ -320,8 +322,8 @@ try {
   vector<MapIterator>                     removables;
   vector<MapIterator>::iterator           remIt;
   boost::timer                            elapser;
-  boost::filesystem::path                 logdir( config->condor_log_dir(), boost::filesystem::system_specific );
-  boost::filesystem::directory_iterator   logIt, logBegin, logEnd;
+  fs::path                 logdir( config->condor_log_dir(), fs::native );
+  fs::directory_iterator   logIt, logBegin, logEnd;
   logmonitor::MonitorData                 data( this->ml_abContainer.get(), this->ml_idContainer.get(),
 						this->ml_resubmitter.get(), this->ml_logger.get() );
   logger::StatePusher                     pusher( this->ml_stream, "MonitorLoop::run()" );
@@ -337,19 +339,19 @@ try {
       elapser.restart();
       found_event = false;
 
-      logBegin = boost::filesystem::directory_iterator( logdir );
+      logBegin = fs::directory_iterator( logdir );
 
       for( logIt = logBegin; logIt != logEnd; ++logIt ) {
-	name.assign( logIt->leaf() );
- 	if ( !boost::filesystem::exists(*logIt) ) // see lcg2 bug 3807
+	name.assign( logIt->native_file_string() );
+ 	if ( !fs::exists(*logIt) ) // see lcg2 bug 3807
  	  ; // ignore
- 	else if( !boost::filesystem::is_directory(*logIt) && !boost::regex_match(name, expr) && (filemap.count(name) == 0) ) {
+ 	else if( !fs::is_directory(*logIt) && !boost::regex_match(name, expr) && (filemap.count(name) == 0) ) {
 	  this->ml_stream << logger::setlevel( logger::low )
-			  << "Adding new condor log file: " << logIt->file_path() << endl;
+			  << "Adding new condor log file: " << logIt->native_file_string() << endl;
           
           try {
-            tmp = new logmonitor::CondorMonitor( logIt->file_path(), data );
-            filemap.insert( map<string, MonitorPtr>::value_type(logIt->leaf(), MonitorPtr(tmp)) );
+            tmp = new logmonitor::CondorMonitor( logIt->native_file_string(), data );
+            filemap.insert( map<string, MonitorPtr>::value_type(logIt->native_file_string(), MonitorPtr(tmp)) );
           } catch( logmonitor::CannotOpenFile &err ) {
             this->ml_stream << logger::setlevel( logger::error )
                             << "Detected an error while reading condor log file: " << endl

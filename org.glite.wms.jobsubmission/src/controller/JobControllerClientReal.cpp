@@ -3,6 +3,9 @@
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/exception.hpp>
+
+namespace fs = boost::filesystem;
+
 #include <classad_distribution.h>
 
 #include "glite/wms/common/configuration/Configuration.h"
@@ -26,11 +29,11 @@ JobControllerClientReal::JobControllerClientReal( void ) : JobControllerClientIm
 							   jccr_queue(), jccr_mutex(), jccr_extractor()
 {
   const configuration::JCConfiguration       *config = configuration::Configuration::instance()->jc();
-  boost::filesystem::path                     listname( config->input(), boost::filesystem::system_specific );
+  fs::path                                    listname( config->input(), fs::native );
   logger::StatePusher                         pusher( clog, "JobControllerClientReal::JobControllerClientReal()" );
 
   try {
-    this->jccr_queue.open( listname.file_path() );
+    this->jccr_queue.open( listname.native_file_string() );
     this->jccr_mutex.reset( new utilities::FileListDescriptorMutex(this->jccr_queue) );
     this->jccr_extractor.reset( this->jccr_queue );
 

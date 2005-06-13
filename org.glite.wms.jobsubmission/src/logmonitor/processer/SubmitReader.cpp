@@ -31,7 +31,7 @@ void SubmitReader::internalRead( const glite::wmsutils::jobid::JobId &edgid )
   elog::cedglog << logger::setlevel( logger::info )
 		<< "Reading condor submit file of job " << edgid.toString() << endl;
 
-  rsl.open( this->sr_files.submit_file().file_path().c_str() );
+  rsl.open( this->sr_files.submit_file().native_file_string().c_str() );
   if( rsl.good() ) {
     this->sr_submit.erase();
 
