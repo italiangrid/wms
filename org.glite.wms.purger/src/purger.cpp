@@ -47,8 +47,8 @@ namespace
 void purgeQuota(const fs::path& p)
 {
   std::string uid;
-  fs::path quotafile(p << ".quid");
-  std::ifstream quidfilestream( quotafile.file_path().c_str() );
+  fs::path quotafile(p / ".quid");
+  std::ifstream quidfilestream( quotafile.native_file_string().c_str() );
   if( quidfilestream ) {
       quidfilestream >> uid;
       std::string cmdline("edg-wl-quota-adjustment -d - ");
@@ -68,11 +68,11 @@ bool purgeStorage(const jobid::JobId& jobid, const std::string& sandboxdir)
 		if( !f_ns_conf ) {
 		  f_ns_conf = configuration::Configuration::instance() -> ns();
 		}
-		p = fs::path(f_ns_conf->sandbox_staging_path(), fs::system_specific);
+		p = fs::path(f_ns_conf->sandbox_staging_path(), fs::native);
 	  }
-	  else p = fs::path(sandboxdir, fs::system_specific);
-	  p <<= jobid::get_reduced_part( jobid );
-	  p <<= jobid::to_filename( jobid );
+	  else p = fs::path(sandboxdir, fs::native);
+	  p /= jobid::get_reduced_part( jobid );
+	  p /= jobid::to_filename( jobid );
   }
   catch( jobid::JobIdException& jide )
   {
@@ -105,8 +105,8 @@ bool purgeStorageEx(const fs::path& p, int purge_threshold, bool fake_rm)
     std::string dg_jobid( jobid.toString() );
     std::string seqcode;
     logger::edglog << dg_jobid << " ->";
-    fs::path     seqfile( p << ".edg_wll_seq" );
-    std::ifstream seqfilestream( seqfile.file_path().c_str() );
+    fs::path     seqfile( p / ".edg_wll_seq" );
+    std::ifstream seqfilestream( seqfile.native_file_string().c_str() );
     if( seqfilestream ) {
       seqfilestream >> seqcode;
     }	

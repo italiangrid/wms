@@ -127,7 +127,7 @@ int main( int argc, char* argv[])
     else logger::threadsafe::edglog.open( std::cout, logger::info ); 
     
     	std::vector<fs::path> found_path;
-    	fs::path from_path( staging_path, fs::system_specific); 
+    	fs::path from_path( staging_path, fs::native); 
     	find_directories(from_path, "https", found_path, true);
 	
     	std::auto_ptr<boost::progress_display> show_progress;
@@ -138,7 +138,7 @@ int main( int argc, char* argv[])
 		bool purge_done = wl::purger::purgeStorageEx( *it, purge_threshold, fake_rm );
 		if( options.is_present('b') && ! purge_done ) {
 		      try {
-			logger::threadsafe::edglog << it -> leaf() << " -> forcing removal" << std::endl;      
+			logger::threadsafe::edglog << it->native_file_string() << " -> forcing removal" << std::endl;      
 			fs::remove_all( *it );
 		      }
 		      catch( fs::filesystem_error& fse )
