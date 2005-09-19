@@ -19,6 +19,30 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.11  2005/09/19 11:00:08  monforte
+#       Merge against  glite-wms-purger_branch_1_0_2
+#
+#       Revision 1.10.2.4.2.5  2005/08/17 14:20:33  eronchie
+#       Increased version
+#
+#       Revision 1.10.2.4.2.4  2005/08/17 14:19:43  eronchie
+#       Added ERROR message that breaks configure
+#
+#       Revision 1.10.2.4.2.3  2005/08/03 14:21:47  monforte
+#       Added hard-coded sequence code
+#
+#       Revision 1.10.2.4.2.2  2005/07/07 11:32:01  fprelz
+#       Increased version: removed ambiguous method.
+#
+#       Revision 1.10.2.4.2.1  2005/06/30 10:57:30  monforte
+#       Fixed a problem in the logic of purgeStorage function return value
+#
+#       Revision 1.10.2.4  2005/05/30 11:21:29  monforte
+#       Merge against glite-wms-purger_branch_1_0_0_RC1_WMProxy
+#
+#       Revision 1.10.4.1  2005/03/18 11:20:44  monforte
+#       Fixed purging of DAG
+#
 #       Revision 1.10  2004/12/10 07:52:20  eronchie
 #       Increased version
 #
@@ -80,7 +104,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.57)
-AC_INIT([GLite WMS Purger], [1.0.0])
+AC_INIT([GLite WMS Purger], [1.0.6])
 AC_CONFIG_AUX_DIR([./project])
 AM_INIT_AUTOMAKE([1.6.3 subdir-objects])
 AC_CONFIG_SRCDIR([src/purger.cpp])
@@ -135,22 +159,66 @@ have_expat=no
 have_ares=no
 
 AC_BOOST([], have_boost=yes, have_boost=no)
-AC_CLASSADS([], have_classads=yes, have_classads=no)
-AC_GLOBUS([], have_globus=yes, have_globus=no)
-AC_EXPAT([], have_expat=yes, have_expat=no)
-AC_ARES([], have_ares=yes, have_ares=no)
-
-AC_MSG_RESULT(["CLASSADS found $have_classads"])
 AC_MSG_RESULT(["BOOST found $have_boost"])
+
+AC_CLASSADS([], have_classads=yes, have_classads=no)
+AC_MSG_RESULT(["CLASSADS found $have_classads"])
+
+AC_GLOBUS([], have_globus=yes, have_globus=no)
 AC_MSG_RESULT(["GLOBUS found $have_globus"])
+
+AC_EXPAT([], have_expat=yes, have_expat=no)
 AC_MSG_RESULT(["EXPAT found $have_expat"])
+
+AC_ARES([], have_ares=yes, have_ares=no)
 AC_MSG_RESULT(["ARES found $have_ares"])
+
+if test "$have_globus" = "no"; then
+  AC_MSG_RESULT(["Please verify GLOBUS package"])
+fi
+
+if test "$have_boost" = "no"; then
+  AC_MSG_RESULT(["Please verify BOOST package"])
+fi
+
+if test "$have_classads" = "no"; then
+  AC_MSG_RESULT(["Please verify CLASSADS package"])
+fi
+
+if test "$have_ares" = "no"; then
+  AC_MSG_RESULT(["Please verify ARES package"])
+fi
+
+if test "$have_expat" = "no"; then
+  AC_MSG_RESULT(["Please verify EXPAT package"])
+fi
+
+if test "$have_globus" = "no"; then
+  AC_MSG_ERROR([Cannot continue building])
+fi
+
+if test "$have_boost" = "no"; then
+  AC_MSG_ERROR([Cannot continue building])
+fi
+
+if test "$have_classads" = "no"; then
+  AC_MSG_ERROR([Cannot continue building])
+fi
+
+if test "$have_ares" = "no"; then
+  AC_MSG_ERROR([Cannot continue building])
+fi
+
+if test "$have_expat" = "no"; then
+  AC_MSG_ERROR([Cannot continue building])
+fi
 
 have_glite_wms_common=no
 have_glite_wmsutils=no
 have_glite_lb=no
 
 AC_GLITE
+AC_OPTIMIZE
 
 AC_GLITE_WMS_COMMON([], have_glite_wms_common=yes, have_glite_wms_common=no)
 AC_MSG_RESULT(["GLITE_WMS_COMMON found $have_glite_wms_common"])
