@@ -39,13 +39,6 @@ init_variables()
     [ -d ${GLITEUSER_HOME} ] || do_failure "Missing user directory ${GLITEUSER_HOME}"
 }
 
-create_dirs()
-{
-  CONFIGURATION_FILE=glite_wms.conf
-
-  . ${GLITE_LOCATION}/libexec/glite-wms-parse-configuration.sh ${CONFIGURATION_FILE} LogMonitor
-}
-
 remove_lockfile()
 {
   if [ -f "${LOCKFILE}" ]; then
@@ -146,6 +139,8 @@ stop()
                 result=1
                 failure $"LogMonitor not running, but lock file found"
                 echo
+		remove_lockfile
+                echo
             fi
         else
             if [ ! -f "${LOCKFILE}" ]; then
@@ -191,6 +186,7 @@ status()
 	exit 1
     else
 	echo "LogMonitor stopped."
+	exit 2
     fi
 }
 
@@ -215,7 +211,6 @@ case $1 in
 	echo -n "Starting LogMonitor..."
 
 	init_variables
-        create_dirs	
 	start
 	RETVAL=$?
     ;;
@@ -230,7 +225,6 @@ case $1 in
 	echo -n "Stopping LogMonitor..."
 
 	init_variables
-	create_dirs
 	stop
 
 	echo -n "Starting LogMonitor..."

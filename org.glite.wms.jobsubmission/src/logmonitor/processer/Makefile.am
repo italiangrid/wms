@@ -17,6 +17,9 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.3  2005/09/20 14:11:37  gianelle
+#       Syncronize the rc1 branch with head.
+#
 #       Revision 1.2  2004/09/07 10:21:22  gianelle
 #       Fixes some LCG2 bugs:
 #       3807 - Log monitor must not crash on bad CondorG log files
@@ -72,5 +75,7 @@ EXTRA_DIST = EventFactory.cpp \
 	MonitorData.cpp \
 	SubmitReader.cpp \
 	JobResubmitter.cpp
+
+AM_CPPFLAGS = -DENABLE_LBPROXY
 
 MAINTAINERCLEANFILES = Makefile.in *~

@@ -51,6 +51,10 @@ public:
 
   EventLogger &reset_user_proxy( const std::string &proxyfile );
 
+#ifdef ENABLE_LBPROXY
+  EventLogger &set_LBProxy_context( const std::string &jobid, const std::string &sequence, const std::string &proxyfile);
+#endif
+
   /*
     LogMonitor events
   */
@@ -66,6 +70,7 @@ public:
   void globus_submit_failed_event( const std::string &rsl, const char *reason, const std::string &logfile );
   void globus_resource_down_event( void );
   void job_held_event( const std::string &reason );
+  void job_really_run_event( const std::string &sc ); 
 
   /*
     ControllerLoop events

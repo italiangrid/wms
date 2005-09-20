@@ -49,12 +49,6 @@ init_variables()
     [ -d ${GLITEUSER_HOME} ] || do_failure "Missing user directory ${GLITEUSER_HOME}"
 }
 
-create_dirs() 
-{
-  CONFIGURATION_FILE=glite_wms.conf
-  
-  . ${GLITE_LOCATION}/libexec/glite-wms-parse-configuration.sh ${CONFIGURATION_FILE} JobController
-}
 do_failure()
 {
     echo -n " $*"
@@ -170,8 +164,10 @@ stop()
                     fi
                 else
                     result=1
-                    failure $"JobController not running, but lock file found"
+                    failure $"JobController not running, but lock file found."
                     echo
+		    remove_lockfile
+		    echo
                 fi
             else
                 if [ ! -f "${LOCKFILE}" ]; then
@@ -213,7 +209,7 @@ stop()
 	    echo -ne "\t\tCondorG not running!\n"
 	else
 	    ${CONDOR_OFF} -master > /dev/null 2>&1
-            sleep 1
+            sleep 3 # hope this is enough for Condor
             if checkpid $pid 2>&1; then
 		killproc ${CONDOR_SCHEDD}
 		killproc ${CONDOR_MASTER}
@@ -244,6 +240,7 @@ status()
            exit 1
         else
            echo "JobController stopped."
+	   exit 2
         fi
 
     fi
@@ -258,6 +255,7 @@ status()
            exit 1
         else
            echo "CondorG master stopped."
+	   exit 2
         fi
 
 	pid=`pidofproc ${CONDOR_SCHEDD}`
@@ -266,6 +264,7 @@ status()
 	    echo "CondorG schedd running in pid: $pid"
 	else
 	    echo "CondorG schedd not running"
+	    exit 2
 	fi
     fi
 }
@@ -291,7 +290,6 @@ case $1 in
 	echo "Starting JobController daemon(s)"
 
 	init_variables
-        create_dirs
 	start $2
 	RETVAL=$?
     ;;
@@ -306,7 +304,6 @@ case $1 in
 	echo "Restarting JobController daemon(s)"
 
 	init_variables
-	create_dirs
 	stop $2
 	start $2
 	RETVAL=$?

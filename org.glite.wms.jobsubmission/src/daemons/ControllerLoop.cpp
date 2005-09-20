@@ -325,8 +325,14 @@ try {
 
 	  this->cl_stream << logger::setlevel( logger::info ) << "Got new submit request..." << endl; 
 
+#ifdef ENABLE_LBPROXY
+          this->cl_logger->set_LBProxy_context(glite::wms::jdl::get_edg_jobid(*jobad),
+                                               glite::wms::jdl::get_lb_sequence_code(*jobad),
+                                               glite::wms::jdl::get_x509_user_proxy(*jobad) );
+#else
 	  this->cl_logger->reset_user_proxy( glite::wms::jdl::get_x509_user_proxy(*jobad) );
 	  this->cl_logger->reset_context( glite::wms::jdl::get_edg_jobid(*jobad), glite::wms::jdl::get_lb_sequence_code(*jobad) );
+#endif
 
 	  this->cl_logger->job_dequeued_event( this->cl_queuefilename );
 
@@ -348,8 +354,12 @@ try {
 	  this->cl_stream << logger::setlevel( logger::info ) << "Got new remove request (JOB ID = " << jobid << ")..." << endl
 			  << "Must " << ( force ? "" : "not " ) << "force job removal !" << endl;
 
+#ifdef ENABLE_LBPROXY
+          this->cl_logger->set_LBProxy_context( jobid, remreq->get_sequence_code(), remreq->get_proxyfile() );
+#else 
 	  this->cl_logger->reset_user_proxy( remreq->get_proxyfile() );
 	  this->cl_logger->reset_context( jobid, remreq->get_sequence_code() );
+#endif
 
 	  if( source == configuration::ModuleType::workload_manager )
 	    this->cl_logger->job_cancel_requested_event( configuration::ModuleType::module_name(source) );

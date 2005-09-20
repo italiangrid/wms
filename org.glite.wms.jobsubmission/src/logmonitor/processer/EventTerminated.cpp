@@ -41,7 +41,7 @@ EventTerminated::~EventTerminated( void )
 void EventTerminated::processNormalJob( jccommon::IdContainer::iterator &position )
 {
   int                     retcode, stat;
-  string                  errors;
+  string                  errors, sc;
   JobWrapperOutputParser  parser( position->edg_id() );
   logger::StatePusher     pusher( elog::cedglog, "EventTerminated::processNormalJob(...)" );
 
@@ -59,7 +59,11 @@ void EventTerminated::processNormalJob( jccommon::IdContainer::iterator &positio
 
     this->ei_data->md_aborted->remove( this->ei_condor );
 
+#ifdef ENABLE_LBPROXY
+    this->ei_data->md_logger->set_LBProxy_context( position->edg_id(), position->sequence_code(), position->proxy_file() );
+#else
     this->ei_data->md_logger->reset_user_proxy( position->proxy_file() ).reset_context( position->edg_id(), position->sequence_code() );
+#endif  
     this->ei_data->md_logger->failed_on_error_event( ei_s_joberror );
 
     jccommon::JobFilePurger( position->edg_id() ).do_purge();
@@ -67,10 +71,18 @@ void EventTerminated::processNormalJob( jccommon::IdContainer::iterator &positio
 
     this->ei_data->md_container->update_pointer( position, this->ei_data->md_logger->sequence_code(), this->et_event->eventNumber );
   }
-  else if( (stat = parser.parse_file(retcode, errors)) == JWOP::good ) { // Job terminated successfully...
+  else if( (stat = parser.parse_file(retcode, errors, sc)) == JWOP::good ) { // Job terminated successfully...
     elog::cedglog << logger::setlevel( logger::info ) << "Real return code: " << retcode << endl;
 
+#ifdef ENABLE_LBPROXY
+    this->ei_data->md_logger->set_LBProxy_context( position->edg_id(), position->sequence_code(), position->proxy_file() );
+#else
     this->ei_data->md_logger->reset_user_proxy( position->proxy_file() ).reset_context( position->edg_id(), position->sequence_code() );
+#endif   
+
+    if ( sc != "NoToken" )
+      this->ei_data->md_logger->job_really_run_event( sc ); // logged really running event
+
     this->ei_data->md_logger->terminated_event( retcode ); // This call discriminates between 0 and all other codes.
 
     this->ei_data->md_container->update_pointer( position, this->ei_data->md_logger->sequence_code(), this->et_event->eventNumber );
@@ -83,7 +95,15 @@ void EventTerminated::processNormalJob( jccommon::IdContainer::iterator &positio
 		  << ") aborted." << endl
 		  << "Reason: \"" << errors << "\"." << endl;
 
+#ifdef ENABLE_LBPROXY
+    this->ei_data->md_logger->set_LBProxy_context( position->edg_id(), position->sequence_code(), position->proxy_file() );
+#else
     this->ei_data->md_logger->reset_user_proxy( position->proxy_file() ).reset_context( position->edg_id(), position->sequence_code() );
+#endif
+
+    if ( sc != "NoToken" )
+      this->ei_data->md_logger->job_really_run_event( sc ); // logged really running event
+
     this->ei_data->md_logger->failed_on_error_event( errors );
 
     jccommon::JobFilePurger   purger( position->edg_id() );
@@ -131,7 +151,12 @@ void EventTerminated::process_event( void )
       elog::cedglog << logger::setlevel( logger::info ) << ei_s_dagideq << position->edg_id() << endl
 		    << "Return code = " << this->et_event->returnValue << endl;
 
+#ifdef ENABLE_LBPROXY
+      this->ei_data->md_logger->set_LBProxy_context( position->edg_id(), position->sequence_code(), position->proxy_file() );
+#else
       this->ei_data->md_logger->reset_user_proxy( position->proxy_file() ).reset_context( position->edg_id(), position->sequence_code() );
+#endif
+      
       if( this->ei_data->md_aborted->search(this->ei_condor) ) { // The POST script bug
 	this->ei_data->md_aborted->remove( this->ei_condor );
 

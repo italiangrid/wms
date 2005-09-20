@@ -16,10 +16,10 @@ public:
   JobWrapperOutputParser( const std::string &dagid, const std::string &jobid );
   ~JobWrapperOutputParser( void );
 
-  status_type parse_file( int &retcode, std::string &errors );
+  status_type parse_file( int &retcode, std::string &errors, std::string &sc );
 
 private:
-  bool parseStream( std::istream &is, std::string &errors, int &retcode, status_type &stat );
+  bool parseStream( std::istream &is, std::string &errors, int &retcode, status_type &stat, std::string &sc );
 
   std::string     jwop_dagid, jwop_edgid;
 };

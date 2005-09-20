@@ -105,7 +105,11 @@ void EventJobHeld::process_event( void )
 	throw CannotExecute( ei_s_failedinsertion );
       }
 
+#ifdef ENABLE_LBPROXY
+      this->ei_data->md_logger->set_LBProxy_context( position->edg_id(), position->sequence_code(), position->proxy_file() );
+#else
       this->ei_data->md_logger->reset_user_proxy( position->proxy_file() ).reset_context( position->edg_id(), position->sequence_code() );
+#endif
       this->ei_data->md_logger->job_held_event( reason );
 
       elog::cedglog << logger::setlevel( logger::info ) << "Forwarding remove request to JC." << endl;

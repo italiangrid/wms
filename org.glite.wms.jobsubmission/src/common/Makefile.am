@@ -17,6 +17,9 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.8  2005/09/20 14:11:37  gianelle
+#       Syncronize the rc1 branch with head.
+#
 #       Revision 1.7  2004/08/10 12:01:43  eronchie
 #       Updated
 #
@@ -73,6 +76,7 @@ AM_CPPFLAGS = -I$(top_srcdir)/src \
 	$(CLASSAD_CFLAGS) \
 	$(BOOST_CFLAGS) \
 	-I$(top_srcdir)/../org.glite.wms.purger/src \
-	-DENABLE_LOGGING -DENABLE_PURGER -DENABLE_RENEWAL
+	-DENABLE_LOGGING -DENABLE_PURGER \
+	-DENABLE_RENEWAL -DENABLE_LBPROXY
 
 MAINTAINERCLEANFILES = Makefile.in *~

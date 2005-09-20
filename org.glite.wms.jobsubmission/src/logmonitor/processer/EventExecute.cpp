@@ -43,10 +43,13 @@ void EventExecute::process_event( void )
 
     if( this->ei_data->md_isDagLog )
       elog::cedglog << ei_s_subnodeof << this->ei_data->md_dagId << endl;
-
+#ifdef ENABLE_LBPROXY
+    this->ei_data->md_logger->set_LBProxy_context( position->edg_id(), position->sequence_code(), position->proxy_file() );
+#else
     this->ei_data->md_logger->reset_user_proxy( position->proxy_file() ).reset_context( position->edg_id(), position->sequence_code() );
+#endif 
     this->ei_data->md_logger->execute_event( this->ee_event->executeHost );
-
+    
     this->ei_data->md_container->update_pointer( position, this->ei_data->md_logger->sequence_code(), this->ee_event->eventNumber );
   }
 

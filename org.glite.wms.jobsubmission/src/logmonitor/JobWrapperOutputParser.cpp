@@ -42,7 +42,7 @@ JobWrapperOutputParser::JobWrapperOutputParser( const string &dagid, const strin
 
 JobWrapperOutputParser::~JobWrapperOutputParser( void ) {}
 
-bool JobWrapperOutputParser::parseStream( istream &is, string &errors, int &retcode, status_type &stat )
+bool JobWrapperOutputParser::parseStream( istream &is, string &errors, int &retcode, status_type &stat, string &sc )
 {
   bool                found = false;
   char                buffer[BUFSIZ];
@@ -79,6 +79,18 @@ bool JobWrapperOutputParser::parseStream( istream &is, string &errors, int &retc
 	    }
 	    else retcode = -1;
 	  }
+
+	  if (strstr(buffer, "Take token: ") == buffer) {
+            char s[256];
+            if (sscanf(buffer, "Take token: %255s", &s) == 1) {
+              s[255] = '\0';
+              sc.assign(s);
+            } else { // The sequence code is not set... so what can we do?
+              sc.assign("");
+            }
+          } else { // Token not found
+	    sc.assign("NoToken");
+	  }
 	}
 	else {
 	  errors.assign( "IO error while reading file: " );
@@ -100,7 +112,7 @@ bool JobWrapperOutputParser::parseStream( istream &is, string &errors, int &retc
   return found;
 }
 
-JWOP::status_type JobWrapperOutputParser::parse_file( int &retcode, string &errors )
+JWOP::status_type JobWrapperOutputParser::parse_file( int &retcode, string &errors, string &sc )
 {
   const configuration::LMConfiguration    *lmconfig = configuration::Configuration::instance()->lm();
 
@@ -117,7 +129,7 @@ JWOP::status_type JobWrapperOutputParser::parse_file( int &retcode, string &erro
   elog::cedglog << logger::setlevel( logger::high ) << "Going to parse standard output file." << endl;
 
   ifs.open( files->standard_output().native_file_string().c_str() );
-  found = this->parseStream( ifs, errors, retcode, stat );
+  found = this->parseStream( ifs, errors, retcode, stat, sc );
   ifs.close();
   if( !found ) {
     errors.assign( "Standard output does not contain useful data." );
@@ -129,7 +141,7 @@ JWOP::status_type JobWrapperOutputParser::parse_file( int &retcode, string &erro
 
       ifs.clear();
       ifs.open( files->maradona_file().native_file_string().c_str() );
-      found = this->parseStream( ifs, errors, retcode, stat );
+      found = this->parseStream( ifs, errors, retcode, stat, sc );
       ifs.close();
       if( found )
 	elog::cedglog << logger::setlevel( logger::null )

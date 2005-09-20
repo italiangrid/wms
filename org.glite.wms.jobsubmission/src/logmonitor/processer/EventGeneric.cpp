@@ -154,14 +154,19 @@ void EventGeneric::finalProcess( int cn, const string &message )
 			<< "As I cannot hope to remove such job anymore, I try to remove the DAG, sorry :(" << endl;
 
 	  dagposition = this->ei_data->md_container->position_by_edg_id( this->ei_data->md_dagId );
-	  if( this->ei_data->md_aborted->insert(dagposition->condor_id()) ) {
+	  if( dagposition == this->ei_data->md_container->end() || 
+	      this->ei_data->md_aborted->insert(dagposition->condor_id()) ) {
 	    elog::cedglog << logger::setlevel( logger::fatal ) << ei_s_failedinsertion << endl;
 
 	    throw CannotExecute( ei_s_failedinsertion );
 	  }
-
+#ifdef ENABLE_LBPROXY
+          this->ei_data->md_logger->set_LBProxy_context( dagposition->edg_id(), dagposition->sequence_code(), 
+							 dagposition->proxy_file() );
+#else
 	  this->ei_data->md_logger->reset_user_proxy( dagposition->proxy_file() );
 	  this->ei_data->md_logger->reset_context( dagposition->edg_id(), dagposition->sequence_code() );
+#endif
 	  this->ei_data->md_logger->aborted_by_system_event( string("Forced cancellation of a node of the DAG failed,"
 								    " removing the whole DAG.") );
 
@@ -172,8 +177,11 @@ void EventGeneric::finalProcess( int cn, const string &message )
 	  elog::cedglog << logger::setlevel( logger::severe )
 			<< "Forced cancellation retries exceeded maximum (" << retry << '/' << maxretries << ')' << endl
 			<< "Job will be removed from the queue and aborted." << endl;
-
+#ifdef ENABLE_LBPROXY
+          this->ei_data->md_logger->set_LBProxy_context( edgid, position->sequence_code(), position->proxy_file() );
+#else
 	  this->ei_data->md_logger->reset_user_proxy( position->proxy_file() ).reset_context( edgid, position->sequence_code() );
+#endif
 	  this->ei_data->md_logger->abort_on_error_event( string("Removal retries exceeded.") );
 
 	  jccommon::ProxyUnregistrar( edgid ).unregister();

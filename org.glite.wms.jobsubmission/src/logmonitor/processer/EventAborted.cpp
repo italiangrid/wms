@@ -55,7 +55,12 @@ void EventAborted::process_event( void )
     this->ei_data->md_sizefile->set_last( true );
 
     this->ei_data->md_sizefile->decrement_pending();
+
+#ifdef ENABLE_LBPROXY
+    this->ei_data->md_logger->set_LBProxy_context( position->edg_id(), position->sequence_code(), position->proxy_file() );
+#else
     this->ei_data->md_logger->reset_user_proxy( position->proxy_file() ).reset_context( position->edg_id(), position->sequence_code() );
+#endif
     this->ei_data->md_logger->aborted_by_user_event();
 
     if( this->ei_data->md_aborted->search(this->ei_condor) )
@@ -71,7 +76,11 @@ void EventAborted::process_event( void )
       this->ei_data->md_timer->remove_all_timeouts( this->ea_event->cluster ); // Remove any installed timeout for the job
 
     this->ei_data->md_sizefile->decrement_pending();
+#ifdef ENABLE_LBPROXY
+    this->ei_data->md_logger->set_LBProxy_context( position->edg_id(), position->sequence_code(), position->proxy_file() );
+#else
     this->ei_data->md_logger->reset_user_proxy( position->proxy_file() ).reset_context( position->edg_id(), position->sequence_code() );
+#endif
 
     if( this->ei_data->md_aborted->search(this->ei_condor) ) { // Job got an error
       this->ei_data->md_aborted->remove( this->ei_condor );

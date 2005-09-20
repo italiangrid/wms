@@ -40,7 +40,7 @@ EventPostTerminated::~EventPostTerminated( void )
 void EventPostTerminated::process_event( void )
 {
   int                                retcode, stat;
-  string                             error;
+  string                             error, sc;
   jccommon::IdContainer::iterator    position, dagposition;
   logger::StatePusher                pusher( elog::cedglog, "EventPostTerminated::process_event()" );
 
@@ -79,7 +79,11 @@ void EventPostTerminated::process_event( void )
 	elog::cedglog << logger::setlevel( logger::warning )
 		      << "Signal number for abnormal termination: " << this->ept_event->signalNumber << endl;
 
+#ifdef ENABLE_LBPROXY
+      this->ei_data->md_logger->set_LBProxy_context( position->edg_id(), position->sequence_code(), position->proxy_file() );
+#else
       this->ei_data->md_logger->reset_user_proxy( position->proxy_file() ).reset_context( position->edg_id(), position->sequence_code() );
+#endif
 
       if( this->ei_data->md_aborted->search(this->ei_condor) ) { // Aborting node ??? Huh ???
 	elog::cedglog << logger::setlevel( logger::info )
@@ -89,15 +93,21 @@ void EventPostTerminated::process_event( void )
 
 	this->ei_data->md_logger->failed_on_error_event( ei_s_joberror );
       }
-      else if( (stat = parser.parse_file(retcode, error)) == JWOP::good ) { // Node terminated successfully
+      else if( (stat = parser.parse_file(retcode, error, sc)) == JWOP::good ) { // Node terminated successfully
 	elog::cedglog << "Return code of the node: " << retcode << endl;
 
+	if ( sc != "NoToken" ) 
+          this->ei_data->md_logger->job_really_run_event( sc ); // logged really running event
+	
 	this->ei_data->md_logger->terminated_event( retcode ); // This call will also check if the retcode is == 0
       }
       else { // Node got an error in the JobWrapper
 	elog::cedglog << logger::setlevel( logger::info )
 		      << "Last node terminated (" << this->ei_condor << ") aborted." << endl
 		      << "Reason: " << error << endl;
+
+	if ( sc != "NoToken" ) 
+          this->ei_data->md_logger->job_really_run_event( sc ); // logged really running event
 
 	this->ei_data->md_logger->failed_on_error_event( error );
 

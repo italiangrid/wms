@@ -17,6 +17,9 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.12  2005/09/20 14:11:37  gianelle
+#       Syncronize the rc1 branch with head.
+#
 #       Revision 1.11  2004/10/13 14:27:57  eronchie
 #       Removed sslutils dependency
 #
@@ -118,6 +121,6 @@ AM_CPPFLAGS = -I$(top_srcdir)/src \
 	$(BOOST_CFLAGS) \
 	$(CLASSAD_CFLAGS) \
 	$(ARES_CFLAGS) $(EXPAT_CFLAGS) \
-	$(CONDORG_CFLAGS)
+	$(CONDORG_CFLAGS) -DENABLE_LBPROXY
 
 MAINTAINERCLEANFILES = Makefile.in *~

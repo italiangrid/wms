@@ -101,10 +101,22 @@ bool cancelJob( const string &condorid, bool force, string &info )
   clog << logger::setlevel( logger::debug ) << "Condor id of job was: " << condorid << endl;
 
   if( force ) {
-    clog << logger::setlevel( logger::info ) << "Forcing job removal." << endl;
+    clog << logger::setlevel( logger::info ) << "Forcing job removal  (only for _globus_ job)." << endl;
 
-    parameters.assign( "-f " );
-    parameters.append( condorid );
+    parameters.assign( "-f -constraint 'ClusterId==" );
+
+    string::size_type pos = condorid.find('.');
+
+    if( pos != std::string::npos ) { // procID is defined
+      parameters.append( condorid.substr(0, pos) );
+      parameters.append( " && ProcId==" );
+      parameters.append( condorid.substr( pos+1 ) );
+    } else { // procID is not define so put 0
+      parameters.append( condorid );
+      parameters.append( " && ProcId==0" );
+    }
+    // force removal must be used only for globus jobs
+    parameters.append( " && JobUniverse == 9 && JobGridType = \"globus\"'" );
   }
   else parameters.assign( condorid );
 
