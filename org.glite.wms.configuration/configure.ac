@@ -19,6 +19,9 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.10  2005/09/20 14:59:45  eronchie
+#       Started merging with rc1.4
+#
 #       Revision 1.9  2005/02/22 13:36:29  eronchie
 #       Updated version
 #
@@ -53,7 +56,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.57)
-AC_INIT([GLite WMS Configuration], [1.0.2])
+AC_INIT([GLite WMS Configuration], [1.0.8])
 AC_CONFIG_AUX_DIR([./project])
 AM_INIT_AUTOMAKE([1.6.3 subdir-objects])
 AC_CONFIG_SRCDIR([config/glite_wms.conf])
@@ -101,12 +104,20 @@ AC_FUNC_STRFTIME
 AC_FUNC_VPRINTF
 AC_CHECK_FUNCS([bzero endpwent ftruncate getmntent memset mkdir pow strerror strtol])
 
-AC_GLITE
-
 have_condorg=no
 
 AC_CONDORG(6.7.1, have_condorg=yes, have_condorg=no)
 AC_MSG_RESULT(["CONDORG found $have_condorg"])
+
+if test "$have_condorg" = "no"; then
+  AC_MSG_RESULT(["Please verify CONDORG package"])
+fi
+
+if test "$have_condorg" = "no"; then
+  AC_MSG_ERROR([Cannot continue building])
+fi
+
+AC_GLITE
 
 # Configuration items
 AC_PREFIX_DEFAULT([/opt/glite])
