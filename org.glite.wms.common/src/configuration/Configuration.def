@@ -355,6 +355,7 @@ class WMConfiguration {
   parameter int(WorkerThreads = 1) section normal;
   parameter int(InputIterations = 1) section normal;
   parameter int(MaxRetryCount = 10) section normal;
+  parameter int(MaxShallowRetryCount = 10) section normal;
   parameter std::string(Input = "${EDG_WL_TMP}/workload_manager/input.fl") section fileparse;
   parameter std::string(IsmDump = "${GLITE_WMS_TMP}/workload_manager/ismdump.fl") section fileparse;
   parameter bool(EnableIsmDump = true) section normal;
@@ -367,6 +368,7 @@ class WMConfiguration {
   parameter int(IsmIiPurchasingRate = 240) section normal;
   parameter int(IsmCEMonPurchasingRate = 120) section normal;
   parameter int(IsmCEMonAsynchPurchasingRate = 30) section normal;
+  parameter std::string(TokenFile = "token.txt") section fileparse;
 
 }
 class WMCConfiguration {
