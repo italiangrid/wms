@@ -21,9 +21,13 @@
 
 	Revision history:
 	$Log$
+	Revision 1.87  2005/09/20 11:27:17  eronchie
+	Started merging with rc.14
+	Dependencies feature has not been included
+
 	Revision 1.86  2005/03/25 09:19:22  eronchie
 	Updated brokerinfo dependency
-
+	
 	Revision 1.85  2005/03/11 16:40:58  eronchie
 	Removed jdlj component
 	It was moved on the jdl subsystem
@@ -498,6 +502,10 @@
                         <equals arg1="${org.glite.wms.configuration.version}" arg2="HEAD" />
                 </condition>
 
+		<condition property="client.head">
+                        <equals arg1="${org.glite.wms.client.version}" arg2="HEAD" />
+                </condition>
+
 		<condition property="wmproxy-interface.head">
                         <equals arg1="${org.glite.wms.wmproxy-interface.version}" arg2="HEAD" />
                 </condition>
@@ -813,6 +821,16 @@
                     tag="${org.glite.wms.configuration.version}" />
         </target>
 
+	<!-- Client -->
+        <target name="client" depends="classads, boost, globus, jdl, common, wmproxy-api-cpp, get.client.head, get.client.tag"/>
+        <target name="get.client.head" if="client.head">
+            <cvs-co package="org.glite.wms.client" />
+        </target>
+        <target name="get.client.tag" unless="client.head">
+            <cvs-co package="org.glite.wms.client"
+                    tag="${org.glite.wms.client.version}" />
+        </target>
+
 	 <!-- WMPROXY Interface -->
         <target name="wmproxy-interface" depends="get.wmproxy-interface.head, get.wmproxy-interface.tag"/>
         <target name="get.wmproxy-interface.head" if="wmproxy-interface.head">
@@ -892,7 +910,8 @@
                                         wmproxy-interface,
                                         wmproxy-api-cpp,
                                         wmproxy-api-java,
-					manager"/>
+					manager,
+					client"/>
 
 
 	<!-- ====================================================

@@ -21,9 +21,13 @@
 
 	Revision history:
 	$Log$
+	Revision 1.98  2005/09/20 11:27:17  eronchie
+	Started merging with rc.14
+	Dependencies feature has not been included
+
 	Revision 1.97  2005/05/26 15:19:30  zurek
 	inserted module.build.file
-
+	
 	Revision 1.96  2005/03/25 09:19:22  eronchie
 	Updated brokerinfo dependency
 	
@@ -909,6 +913,22 @@
                 </if>
         </target>
 
+        <target name="client" unless="setenvonly" depends="envset, boost, classads, globus, wmproxy-api-cpp, gridsite, jdl, common">
+                <if>
+                       <isset property="small.memory" />
+                       <then>
+                               <exec dir="${wms.subsystem.dir}.client" executable="${antExec}" failonerror="${failonerror}">
+                                       <arg line="${target} &quot;-Dsmall.memory=true&quot; &quot;-Dbootstrap=${bootstrap}&quot; &quot;-Dfailonerror=${failonerror}&quot; &quot;-Ddo.cvs.tag=${do.cvs.tag}&quot;"/>
+                               </exec>
+                       </then>
+                       <else>
+                               <ant dir="${wms.subsystem.dir}.client"
+                                    target="${target}"
+                                    inheritall="false" />
+                       </else>
+                </if>
+        </target>
+
 	<target name="wmproxy-interface" unless="setenvonly" depends="envset">
                 <if>
                         <isset property="small.memory" />
@@ -977,11 +997,12 @@ ilonerror}">
 
 	<!-- Main proxy -->
 	<target name="buildmodules" depends="envset,
-						 configuration,
+ 					     configuration,
+					     common,
+					     checkpointing,
    					     thirdparty-globus_gridftp_server,
 					     thirdparty-bypass,
 					     interactive,
-					     common,
 					     jdl,
 					     brokerinfo,
 					     brokerinfo-access,
@@ -990,7 +1011,6 @@ ilonerror}">
 					     matchmaking,
 					     broker,
 					     helper,
-					     checkpointing,
 					     purger,
 					     manager-ns-versions,
 					     manager-ns-fsm,
@@ -1005,7 +1025,8 @@ ilonerror}">
 					     wmproxy-interface,
 					     wmproxy-api-cpp,
 					     wmproxy-api-java,
-					     manager">
+					     manager,
+					     client">
 		<echo append="true" file="${global.project.dir}/cruisecontrol-stub.xml">
 	&lt;project name="${subsystem.name}" type="post-subsystem" packageName="${global.prefix}-${subsystem.prefix}"/&gt;
 		</echo>
