@@ -235,6 +235,7 @@ class JCConfiguration {
   parameter std::string( CondorDagman ) section fileparse;
   parameter int( DagmanLogLevel ) section normal;
   parameter int( DagmanLogRotate ) section normal;
+  parameter int( MaximumTimeAllowedForCondorMatch = 900 ) section normal;
 
   parameter std::string( Input ) section fileparse;
   parameter std::string( SubmitFileDir ) section fileparse;
@@ -368,7 +369,15 @@ class WMConfiguration {
   parameter int(IsmIiPurchasingRate = 240) section normal;
   parameter int(IsmCEMonPurchasingRate = 120) section normal;
   parameter int(IsmCEMonAsynchPurchasingRate = 30) section normal;
+  parameter bool(DisablePurchasingFromGris = false) section normal;
+  parameter bool(EnablePurchasingFromRgma = false) section normal;
+  parameter int(RgmaQueryTimeout = 30) section normal;
+  parameter int(RgmaConsumerTtl = 300) section normal;
+  parameter int(RgmaConsumerLifeCycle = 30) section normal;
+  parameter int(IsmRgmaPurchasingRate = 120) section normal;
   parameter std::string(TokenFile = "token.txt") section fileparse;
+  parameter std::string(DliServiceName = "data-location-interface") section normal;
+  parameter std::string(SiServiceName = "SIndex") section normal;
 
 }
 class WMCConfiguration {

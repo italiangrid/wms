@@ -24,7 +24,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.57)
-AC_INIT([GLite WMS Common], [1.0.3])
+AC_INIT([GLite WMS Common], [1.1.11])
 AC_CONFIG_AUX_DIR([./project])
 AM_INIT_AUTOMAKE([1.6.3 subdir-objects])
 AC_CONFIG_SRCDIR([src/ldif2classad/LDAPForwardIterator.h])
@@ -78,17 +78,50 @@ have_globus=no
 have_cppunit=no
 
 AC_BOOST([], have_boost=yes, have_boost=no)
-AC_CLASSADS([], have_classads=yes, have_classads=no)
-AC_GLOBUS([], have_globus=yes, have_globus=no)
-AC_CPPUNIT([], have_cppunit=yes, have_cppunit=no)
-
-AC_MSG_RESULT(["CLASSADS found $have_classads"])
 AC_MSG_RESULT(["BOOST found $have_boost"])
+
+AC_CLASSADS([], have_classads=yes, have_classads=no)
+AC_MSG_RESULT(["CLASSADS found $have_classads"])
+
+AC_GLOBUS([], have_globus=yes, have_globus=no)
 AC_MSG_RESULT(["GLOBUS found $have_globus"])
+
+AC_CPPUNIT([], have_cppunit=yes, have_cppunit=no)
 AC_MSG_RESULT(["CPPUNIT found $have_cppunit"])
 
-AC_OPTIMIZE
+if test "$have_globus" = "no"; then
+  AC_MSG_RESULT(["Please verify GLOBUS package"])
+fi
 
+if test "$have_boost" = "no"; then
+  AC_MSG_RESULT(["Please verify BOOST package"])
+fi
+
+if test "$have_classads" = "no"; then
+  AC_MSG_RESULT(["Please verify CLASSADS package"])
+fi
+
+if test "$have_cppunit" = "no"; then
+  AC_MSG_RESULT(["Please verify CPPUNIT package"])
+fi
+
+if test "$have_globus" = "no"; then
+  AC_MSG_ERROR([Cannot continue building])
+fi
+
+if test "$have_boost" = "no"; then
+  AC_MSG_ERROR([Cannot continue building])
+fi
+
+if test "$have_classads" = "no"; then
+  AC_MSG_ERROR([Cannot continue building])
+fi
+
+if test "$have_cppunit" = "no"; then
+  AC_MSG_ERROR([Cannot continue building])
+fi
+
+AC_OPTIMIZE
 AC_GLITE
 
 # Configuration items

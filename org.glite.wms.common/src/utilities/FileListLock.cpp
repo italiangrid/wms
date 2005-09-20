@@ -23,15 +23,17 @@ FileListLock::FileListLock( FileListDescriptorMutex &fldm, bool lock ) : fl_lock
   *this->fl_locked = lock;
 }
 
-FileListLock::FileListLock( FileListMutex &flm, bool lock ) : fl_locked( &flm.fldm_locked ), fl_mutexlock( NULL ),
-							      fl_filelock( flm.fldm_descriptor, lock )
+FileListLock::FileListLock( FileListMutex &flm, bool lock ) : fl_locked( &flm.fldm_locked ), 
+fl_mutexlock( new boost::mutex::scoped_lock( flm.flm_mutex, lock ) ),
+fl_filelock( flm.fldm_descriptor, lock )
 {
-  this->fl_mutexlock = new boost::mutex::scoped_lock( flm.flm_mutex, lock );
+  //this->fl_mutexlock = new boost::mutex::scoped_lock( flm.flm_mutex, lock );
   *this->fl_locked = lock;
 }
 
 FileListLock::~FileListLock( void )
 {
+  this->unlock();
   if( this->fl_mutexlock ) delete this->fl_mutexlock;
 }
 
@@ -39,11 +41,22 @@ int FileListLock::lock( void )
 {
   int    res = 0;
 
-  if( !*this->fl_locked ) {
-    res = this->fl_filelock.lock();
-    if( (res == 0) && this->fl_mutexlock ) this->fl_mutexlock->lock();
+//  if( !*this->fl_locked ) {
+//    res = this->fl_filelock.lock();
+//    if( (res == 0) && this->fl_mutexlock ) this->fl_mutexlock->lock();
+//
+//    if( res == 0 ) *this->fl_locked = true;
+//  }
 
-    if( res == 0 ) *this->fl_locked = true;
+  if ( this->fl_mutexlock ) this->fl_mutexlock->lock();
+
+  res = this->fl_filelock.lock();
+
+  if( res == 0 ) {
+    *this->fl_locked = true;
+  } else {
+    *this->fl_locked = false;
+    if ( this->fl_mutexlock ) this->fl_mutexlock->unlock();
   }
 
   return( res );
@@ -51,10 +64,10 @@ int FileListLock::lock( void )
 
 int FileListLock::unlock( void )
 {
-  int    res = 0;
+  int    res = -1;
 
   if( *this->fl_locked ) {
-    if( this->fl_mutexlock ) this->fl_mutexlock->unlock();
+//    if( this->fl_mutexlock ) this->fl_mutexlock->unlock();
 
     res = this->fl_filelock.unlock();
 

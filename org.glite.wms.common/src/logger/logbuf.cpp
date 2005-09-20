@@ -31,11 +31,13 @@ const char   *Logbuf::lb_s_letterLevels = "FCSEWID*VLMHU!";
 
 bool Logbuf::checkRotationBuffer( void )
 {
-bool         res = false;
-long int     flags;
-filebuf     *buffer = dynamic_cast<filebuf *>( this->lb_buffer );
-if(buffer && !lb_bad_file) {
+  bool         res = false;
+  long int     flags;
+  filebuf     *buffer = dynamic_cast<filebuf *>( this->lb_buffer );
+
+  if (buffer && !lb_bad_file) {
     int   fd = utilities::bufferdescriptor( *buffer );
+
     if( fd > 2 ) { // Avoid truncation on stdout/stderr (cout/cerr have a filebuf as buffer !!!)
       flags = fcntl( fd, F_GETFL ) & O_ACCMODE;
       res = (flags == O_RDWR) || (flags == O_RDONLY);
