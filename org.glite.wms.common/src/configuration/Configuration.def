@@ -427,7 +427,10 @@ class WMPConfiguration {
   copy ConfBase.parse;
   copy ConfBase.fileparse;
 
+  parameter int ( HTTPSPort ) section normal;
   parameter int ( GridFTPPort ) section normal;
+
+  parameter std::string ( DefaultProtocol ) section normal;
 
   parameter double ( MaxInputSandboxSize = 10000000 ) section normal;
   parameter std::string ( SandboxStagingPath = "${GLITE_WMS_TMP}/SandboxDir" ) section fileparse;
