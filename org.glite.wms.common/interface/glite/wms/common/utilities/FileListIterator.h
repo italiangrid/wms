@@ -179,12 +179,12 @@ FLIterator<Type, Converter>::FLIterator<Type, Converter>( const FileIterator &it
 template <class Type, class Converter>
 FLIterator<Type, Converter>::~FLIterator<Type, Converter>( void ) {}
 
-template<> const std::string &FLIterator<std::string>::operator*( void ) const 
+template<> inline const std::string &FLIterator<std::string>::operator*( void ) const 
 { 
   this->check_status();
   return this->bi_data;
 }
-template<> const std::string *FLIterator<std::string>::operator->( void ) const 
+template<> inline const std::string *FLIterator<std::string>::operator->( void ) const 
 {
   this->check_status();
   return &this->bi_data;
