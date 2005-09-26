@@ -436,7 +436,7 @@ class WMPConfiguration {
   parameter std::string ( SandboxStagingPath = "${GLITE_WMS_TMP}/SandboxDir" ) section fileparse;
   parameter std::string ( ListMatchRootPath = "/tmp" ) section fileparse;
 
-  parameter bool ( LBProxy = false ) section normal;
+  parameter bool ( LBProxy = true ) section normal;
   parameter std::string ( LBServer ) section normal;
   parameter std::string ( LBLocalLogger ) section normal;
 }
