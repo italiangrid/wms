@@ -68,7 +68,7 @@ public:
   void aborted_by_system_event( const std::string &cause );
   void aborted_by_user_event( void );
   void globus_submit_failed_event( const std::string &rsl, const char *reason, const std::string &logfile );
-  void globus_resource_down_event( void );
+ // void globus_resource_down_event( void );
   void job_held_event( const std::string &reason );
   void job_really_run_event( const std::string &sc ); 
 

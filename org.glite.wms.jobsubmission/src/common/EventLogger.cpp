@@ -687,7 +687,7 @@ void EventLogger::globus_submit_failed_event( const string &rsl, const char *rea
 
   return;
 }
-
+/*
 void EventLogger::globus_resource_down_event( void )
 {
   logger::StatePusher      pusher( elog::cedglog, "EventLogger::globus_resource_down_event()" );
@@ -718,7 +718,7 @@ void EventLogger::globus_resource_down_event( void )
 
   return;
 }
-
+*/
 void EventLogger::job_held_event( const string &reason )
 {
   logger::StatePusher     pusher( elog::cedglog, "EventLogger::job_held_event(...)" );

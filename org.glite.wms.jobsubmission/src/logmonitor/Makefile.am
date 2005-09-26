@@ -17,6 +17,10 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.13  2005/09/26 13:17:40  gianelle
+#       Added RENEWAL_NOTHR_LIBS library.
+#       Commented unused function.
+#
 #       Revision 1.12  2004/10/13 14:27:57  eronchie
 #       Removed sslutils dependency
 #
@@ -104,7 +108,8 @@ glite_wms_lm_job_status_LDADD = libglite_wms_jss_logmonitor.la \
 	$(GLITE_LB_NOTHR_CLIENT_LIBS) $(GLITE_LB_NOTHR_CLIENTPP_LIBS) \
 	$(GLITE_LB_NOTHR_COMMON_LIBS) \
 	$(ARES_LIBS) $(EXPAT_LIBS) \
-	$(GLITE_SECURITY_RENEWAL_NOTHR_LIBS) $(GLITE_WMS_PURGER_LIBS)
+	$(GLITE_SECURITY_RENEWAL_NOTHR_LIBS) $(GLITE_WMS_PURGER_LIBS) \
+	$(RENEWAL_NOTHR_LIBS)	
 
 libglite_wms_jss_logmonitor_la_SOURCES = CondorMonitor.cpp \
 	EventAd.cpp \
