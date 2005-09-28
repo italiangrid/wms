@@ -328,11 +328,6 @@ class NSConfiguration {
 # Remote catalog connection and IO timeout
   parameter int ( DLI_SI_CatalogTimeout = 0 ) section normal;
 
-  parameter bool ( LBProxy = false ) section normal;
-  parameter int ( HTTPSPort ) section normal;
-  parameter int ( GridFTPPort ) section normal;
-  parameter std::string ( LBServer ) section normal;
-  parameter std::string ( LBLocalLogger ) section normal;
 }
 
 class WMConfiguration {
@@ -429,6 +424,8 @@ class WMPConfiguration {
 
   parameter int ( HTTPSPort ) section normal;
   parameter int ( GridFTPPort ) section normal;
+
+  parameter int ( MinPerusalTimeInterval ) section normal;
 
   parameter std::string ( DefaultProtocol ) section normal;
 
