@@ -206,7 +206,7 @@ class CommonConfiguration {
 
   parameter std::string( DGUser = "dguser" ) section parse;
   parameter std::string( HostProxyFile ) section fileparse;
-  parameter bool( UseCacheInsteadOfGris = false ) section normal; 
+  parameter bool( UseCacheInsteadOfGris = false ) section normal;
 }
 
 class JCConfiguration {
@@ -392,6 +392,7 @@ class WMCConfiguration {
   copy ConfBase.fileparse;
 
   parameter int(RetryCount = 3) section normal;
+  parameter int(ShallowRetryCount = 3) section normal;
   parameter int(DefaultStatusLevel  = 1) section normal;
   parameter int(DefaultLoggingLevel = 0) section normal;
   parameter std::string(VirtualOrganisation) section normal;
@@ -403,7 +404,11 @@ class WMCConfiguration {
   parameter std::string(HLRLocation) section normal;
   parameter std::string(MyProxyServer) section normal;
   parameter std::vector<std::string>(WmProxyEndPoints) section normal;
-  parameter std::vector<std::string>(LBEndPoints) section normal;
+  parameter std::string(JobProvenance) section normal;
+# LBProxy service not yet available:
+# parameter std::vector<std::string>(LBEndPoints) section normal;
+  parameter bool( PerusalFileEnable) section normal;
+  parameter bool( AllowZippedISB   ) section normal;
 
 }
 class WMPConfiguration {
