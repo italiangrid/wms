@@ -21,10 +21,13 @@
 
 	Revision history:
 	$Log$
+	Revision 1.88  2005/09/28 09:39:05  eronchie
+	Updated client and wmproxy dependencies
+
 	Revision 1.87  2005/09/20 11:27:17  eronchie
 	Started merging with rc.14
 	Dependencies feature has not been included
-
+	
 	Revision 1.86  2005/03/25 09:19:22  eronchie
 	Updated brokerinfo dependency
 	
@@ -822,7 +825,7 @@
         </target>
 
 	<!-- Client -->
-        <target name="client" depends="classads, boost, globus, jdl, common, wmproxy-api-cpp, get.client.head, get.client.tag"/>
+        <target name="client" depends="classads, boost, globus, zlib, libtar, jdl, common, wmproxy-api-cpp, get.client.head, get.client.tag"/>
         <target name="get.client.head" if="client.head">
             <cvs-co package="org.glite.wms.client" />
         </target>
@@ -862,7 +865,7 @@
         </target>
 
 	<!-- WMPROXY -->
-        <target name="wmproxy" depends="axis,boost,fcgi,gsoap,partitioner,wmproxy-interface, get.wmproxy.head, get.wmproxy.tag"/>
+        <target name="wmproxy" depends="axis,boost,fcgi,gsoap,zlib, libtar, partitioner,wmproxy-interface, get.wmproxy.head, get.wmproxy.tag"/>
         <target name="get.wmproxy.head" if="wmproxy.head">
             <cvs-co package="org.glite.wms.wmproxy" />
         </target>

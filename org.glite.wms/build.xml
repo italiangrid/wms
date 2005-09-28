@@ -21,10 +21,13 @@
 
 	Revision history:
 	$Log$
+	Revision 1.99  2005/09/28 09:39:04  eronchie
+	Updated client and wmproxy dependencies
+
 	Revision 1.98  2005/09/20 11:27:17  eronchie
 	Started merging with rc.14
 	Dependencies feature has not been included
-
+	
 	Revision 1.97  2005/05/26 15:19:30  zurek
 	inserted module.build.file
 	
@@ -913,7 +916,7 @@
                 </if>
         </target>
 
-        <target name="client" unless="setenvonly" depends="envset, boost, classads, globus, wmproxy-api-cpp, gridsite, jdl, common">
+        <target name="client" unless="setenvonly" depends="envset, boost, classads, globus, zlib, libtar, wmproxy-api-cpp, gridsite, jdl, common">
                 <if>
                        <isset property="small.memory" />
                        <then>
@@ -977,7 +980,7 @@
                 </if>
         </target>
 
-	<target name="wmproxy" unless="setenvonly" depends="envset, boost, axis, fcgi, gsoap, partitioner, wmproxy-interface">
+	<target name="wmproxy" unless="setenvonly" depends="envset, boost, libtar, zlib, axis, fcgi, gsoap, partitioner, wmproxy-interface">
                 <if>
                         <isset property="small.memory" />
                         <then>
