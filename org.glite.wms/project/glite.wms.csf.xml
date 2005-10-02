@@ -21,9 +21,12 @@
 
 	Revision history:
 	$Log$
+	Revision 1.89  2005/10/02 15:04:57  eronchie
+	Added wmproxy-api-python
+
 	Revision 1.88  2005/09/28 09:39:05  eronchie
 	Updated client and wmproxy dependencies
-
+	
 	Revision 1.87  2005/09/20 11:27:17  eronchie
 	Started merging with rc.14
 	Dependencies feature has not been included
@@ -517,6 +520,10 @@
                         <equals arg1="${org.glite.wms.wmproxy-api-cpp.version}" arg2="HEAD" />
                 </condition>
 
+		<condition property="wmproxy-api-python.head">
+                        <equals arg1="${org.glite.wms.wmproxy-api-python.version}" arg2="HEAD" />
+                </condition>
+
 		<condition property="wmproxy-api-java.head">
                         <equals arg1="${org.glite.wms.wmproxy-api-java.version}" arg2="HEAD" />
                 </condition>
@@ -854,6 +861,16 @@
                     tag="${org.glite.wms.wmproxy-api-cpp.version}" />
         </target>
 
+	<!-- WMPROXY Api Python -->
+        <target name="wmproxy-api-python" depends="gsoap,get.wmproxy-api-python.head, get.wmproxy-api-python.tag"/>
+        <target name="get.wmproxy-api-python.head" if="wmproxy-api-python.head">
+            <cvs-co package="org.glite.wms.wmproxy-api-python" />
+        </target>
+        <target name="get.wmproxy-api-python.tag" unless="wmproxy-api-python.head">
+            <cvs-co package="org.glite.wms.wmproxy-api-python"
+                    tag="${org.glite.wms.wmproxy-api-python.version}" />
+        </target>
+
 	<!-- WMPROXY Api Java -->
         <target name="wmproxy-api-java" depends="axis,get.wmproxy-api-java.head, get.wmproxy-api-java.tag"/>
         <target name="get.wmproxy-api-java.head" if="wmproxy-api-java.head">
@@ -912,6 +929,7 @@
 					wmproxy,
                                         wmproxy-interface,
                                         wmproxy-api-cpp,
+					wmproxy-api-python,
                                         wmproxy-api-java,
 					manager,
 					client"/>

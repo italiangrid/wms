@@ -21,9 +21,12 @@
 
 	Revision history:
 	$Log$
+	Revision 1.100  2005/10/02 15:04:57  eronchie
+	Added wmproxy-api-python
+
 	Revision 1.99  2005/09/28 09:39:04  eronchie
 	Updated client and wmproxy dependencies
-
+	
 	Revision 1.98  2005/09/20 11:27:17  eronchie
 	Started merging with rc.14
 	Dependencies feature has not been included
@@ -964,6 +967,22 @@
                 </if>
         </target>
 
+	<target name="wmproxy-api-python" unless="setenvonly" depends="envset">
+                <if>
+                        <isset property="small.memory" />
+                        <then>
+                                <exec dir="${wms.subsystem.dir}.wmproxy-api-python" executable="${antExec}" failonerror="${failonerror}">
+                                        <arg line="${target} &quot;-Dsmall.memory=true&quot; &quot;-Dbootstrap=${bootstrap}&quot; &quot;-Dfailonerror=${failonerror}&quot; &quot;-Ddo.cvs.tag=${do.cvs.tag}&quot;"/>
+                                </exec>
+                        </then>
+                        <else>
+                                <ant dir="${wms.subsystem.dir}.wmproxy-api-python"
+                                     target="${target}"
+                                     inheritall="false" />
+                        </else>
+                </if>
+        </target>
+
 	<target name="wmproxy-api-java" unless="setenvonly" depends="envset, axis">
                 <if>
                         <isset property="small.memory" />
@@ -1027,6 +1046,7 @@ ilonerror}">
 					     wmproxy,
 					     wmproxy-interface,
 					     wmproxy-api-cpp,
+					     wmproxy-api-python,
 					     wmproxy-api-java,
 					     manager,
 					     client">
