@@ -21,9 +21,12 @@
 
 	Revision history:
 	$Log$
+	Revision 1.90  2005/10/03 19:47:04  eronchie
+	Updated dependencies
+
 	Revision 1.89  2005/10/02 15:04:57  eronchie
 	Added wmproxy-api-python
-
+	
 	Revision 1.88  2005/09/28 09:39:05  eronchie
 	Updated client and wmproxy dependencies
 	
@@ -832,7 +835,7 @@
         </target>
 
 	<!-- Client -->
-        <target name="client" depends="classads, boost, globus, zlib, libtar, jdl, common, wmproxy-api-cpp, get.client.head, get.client.tag"/>
+        <target name="client" depends="classads, boost, globus, zlib, libtar, jdl, common, configuration, wmproxy-api-cpp, get.client.head, get.client.tag"/>
         <target name="get.client.head" if="client.head">
             <cvs-co package="org.glite.wms.client" />
         </target>
@@ -882,7 +885,7 @@
         </target>
 
 	<!-- WMPROXY -->
-        <target name="wmproxy" depends="axis,boost,fcgi,gsoap,zlib, libtar, partitioner,wmproxy-interface, get.wmproxy.head, get.wmproxy.tag"/>
+        <target name="wmproxy" depends="axis,boost,fcgi,gsoap,zlib,mod_ssl, libtar, common, configuration, jdl, checkpointing, partitioner,wmproxy-interface, get.wmproxy.head, get.wmproxy.tag"/>
         <target name="get.wmproxy.head" if="wmproxy.head">
             <cvs-co package="org.glite.wms.wmproxy" />
         </target>

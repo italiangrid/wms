@@ -21,9 +21,12 @@
 
 	Revision history:
 	$Log$
+	Revision 1.101  2005/10/03 19:47:04  eronchie
+	Updated dependencies
+
 	Revision 1.100  2005/10/02 15:04:57  eronchie
 	Added wmproxy-api-python
-
+	
 	Revision 1.99  2005/09/28 09:39:04  eronchie
 	Updated client and wmproxy dependencies
 	
@@ -919,7 +922,7 @@
                 </if>
         </target>
 
-        <target name="client" unless="setenvonly" depends="envset, boost, classads, globus, zlib, libtar, wmproxy-api-cpp, gridsite, jdl, common">
+        <target name="client" unless="setenvonly" depends="envset, boost, classads, globus, zlib, libtar, configuration, wmproxy-api-cpp, gridsite, jdl, common">
                 <if>
                        <isset property="small.memory" />
                        <then>
@@ -999,7 +1002,7 @@
                 </if>
         </target>
 
-	<target name="wmproxy" unless="setenvonly" depends="envset, boost, libtar, zlib, axis, fcgi, gsoap, partitioner, wmproxy-interface">
+	<target name="wmproxy" unless="setenvonly" depends="envset, boost, libtar, zlib, axis, fcgi, mod_ssl, gsoap, partitioner, wmproxy-interface">
                 <if>
                         <isset property="small.memory" />
                         <then>
