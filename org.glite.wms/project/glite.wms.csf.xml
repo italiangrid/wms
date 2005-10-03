@@ -21,9 +21,12 @@
 
 	Revision history:
 	$Log$
+	Revision 1.91  2005/10/03 22:07:15  eronchie
+	Removed mod_ssl
+
 	Revision 1.90  2005/10/03 19:47:04  eronchie
 	Updated dependencies
-
+	
 	Revision 1.89  2005/10/02 15:04:57  eronchie
 	Added wmproxy-api-python
 	
@@ -885,7 +888,7 @@
         </target>
 
 	<!-- WMPROXY -->
-        <target name="wmproxy" depends="axis,boost,fcgi,gsoap,zlib,mod_ssl, libtar, common, configuration, jdl, checkpointing, partitioner,wmproxy-interface, get.wmproxy.head, get.wmproxy.tag"/>
+        <target name="wmproxy" depends="axis,boost,fcgi,gsoap,zlib, libtar, common, configuration, jdl, checkpointing, partitioner,wmproxy-interface, get.wmproxy.head, get.wmproxy.tag"/>
         <target name="get.wmproxy.head" if="wmproxy.head">
             <cvs-co package="org.glite.wms.wmproxy" />
         </target>

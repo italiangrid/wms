@@ -21,9 +21,12 @@
 
 	Revision history:
 	$Log$
+	Revision 1.102  2005/10/03 22:07:15  eronchie
+	Removed mod_ssl
+
 	Revision 1.101  2005/10/03 19:47:04  eronchie
 	Updated dependencies
-
+	
 	Revision 1.100  2005/10/02 15:04:57  eronchie
 	Added wmproxy-api-python
 	
@@ -1002,7 +1005,7 @@
                 </if>
         </target>
 
-	<target name="wmproxy" unless="setenvonly" depends="envset, boost, libtar, zlib, axis, fcgi, mod_ssl, gsoap, partitioner, wmproxy-interface">
+	<target name="wmproxy" unless="setenvonly" depends="envset, boost, libtar, zlib, axis, fcgi, gsoap, partitioner, wmproxy-interface">
                 <if>
                         <isset property="small.memory" />
                         <then>
