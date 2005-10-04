@@ -405,7 +405,7 @@ class WMCConfiguration {
   parameter std::string(MyProxyServer) section normal;
   parameter std::vector<std::string>(WmProxyEndPoints) section normal;
   parameter std::string(JobProvenance) section normal;
-# LBProxy service not yet available:
+# LB WS-based interface not yet used:
 # parameter std::vector<std::string>(LBEndPoints) section normal;
   parameter bool(PerusalFileEnable=false) section normal;
   parameter bool(AllowZippedISB=false) section normal;
