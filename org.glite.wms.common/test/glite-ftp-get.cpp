@@ -1,5 +1,16 @@
+#include <errno.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <netdb.h>
+
 #include <iostream>
+
+#include <string>
+#include "globus_common.h"
+#include "globus_io.h"
 #include "globus_ftp_utils.h"
+
 #include "glite/wms/common/logger/edglog.h"
 #include "glite/wms/common/logger/manipulators.h"
 
