@@ -372,7 +372,7 @@ class WMConfiguration {
   parameter int(IsmRgmaPurchasingRate = 120) section normal;
   parameter std::string(TokenFile = "token.txt") section fileparse;
   parameter std::string(DliServiceName = "data-location-interface") section normal;
-  parameter std::string(SiServiceName = "SIndex") section normal;
+  parameter std::string(SiServiceName = "org.glite.SEIndex") section normal;
 
 }
 class WMCConfiguration {
