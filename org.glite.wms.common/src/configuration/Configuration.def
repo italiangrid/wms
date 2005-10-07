@@ -206,7 +206,7 @@ class CommonConfiguration {
 
   parameter std::string( DGUser = "dguser" ) section parse;
   parameter std::string( HostProxyFile ) section fileparse;
-  parameter bool( UseCacheInsteadOfGris = false ) section normal;
+  parameter bool( UseCacheInsteadOfGris = false ) section normal; 
 }
 
 class JCConfiguration {
@@ -372,8 +372,11 @@ class WMConfiguration {
   parameter int(IsmRgmaPurchasingRate = 120) section normal;
   parameter std::string(TokenFile = "token.txt") section fileparse;
   parameter std::string(DliServiceName = "data-location-interface") section normal;
-  parameter std::string(SiServiceName = "org.glite.SEIndex") section normal;
-
+  parameter std::string(SiServiceName = "SIndex") section normal;
+  parameter std::string(JobWrapperTemplateDir = "/opt/glite/etc/templates") section fileparse;
+  parameter std::string( PboxHostName = "pbox1.cnaf.infn.it" ) section fileparse;
+  parameter int( PboxPortNum = 6699 ) section normal;
+  parameter bool( PboxSafeMode = false ) section normal;
 }
 class WMCConfiguration {
 
@@ -392,7 +395,6 @@ class WMCConfiguration {
   copy ConfBase.fileparse;
 
   parameter int(RetryCount = 3) section normal;
-  parameter int(ShallowRetryCount = 3) section normal;
   parameter int(DefaultStatusLevel  = 1) section normal;
   parameter int(DefaultLoggingLevel = 0) section normal;
   parameter std::string(VirtualOrganisation) section normal;
@@ -404,11 +406,7 @@ class WMCConfiguration {
   parameter std::string(HLRLocation) section normal;
   parameter std::string(MyProxyServer) section normal;
   parameter std::vector<std::string>(WmProxyEndPoints) section normal;
-  parameter std::string(JobProvenance) section normal;
-# LB WS-based interface not yet used:
-# parameter std::vector<std::string>(LBEndPoints) section normal;
-  parameter bool(PerusalFileEnable=false) section normal;
-  parameter bool(AllowZippedISB=false) section normal;
+  parameter std::vector<std::string>(LBEndPoints) section normal;
 
 }
 class WMPConfiguration {
@@ -430,15 +428,13 @@ class WMPConfiguration {
   parameter int ( HTTPSPort ) section normal;
   parameter int ( GridFTPPort ) section normal;
 
-  parameter int ( MinPerusalTimeInterval ) section normal;
-
   parameter std::string ( DefaultProtocol ) section normal;
 
   parameter double ( MaxInputSandboxSize = 10000000 ) section normal;
   parameter std::string ( SandboxStagingPath = "${GLITE_WMS_TMP}/SandboxDir" ) section fileparse;
   parameter std::string ( ListMatchRootPath = "/tmp" ) section fileparse;
 
-  parameter bool ( LBProxy = true ) section normal;
+  parameter bool ( LBProxy = false ) section normal;
   parameter std::string ( LBServer ) section normal;
   parameter std::string ( LBLocalLogger ) section normal;
 }
