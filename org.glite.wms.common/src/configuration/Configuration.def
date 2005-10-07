@@ -428,6 +428,8 @@ class WMPConfiguration {
   parameter int ( HTTPSPort ) section normal;
   parameter int ( GridFTPPort ) section normal;
 
+  parameter int ( MinPerusalTimeInterval ) section normal;
+
   parameter std::string ( DefaultProtocol ) section normal;
 
   parameter double ( MaxInputSandboxSize = 10000000 ) section normal;
