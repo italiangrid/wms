@@ -372,7 +372,7 @@ class WMConfiguration {
   parameter int(IsmRgmaPurchasingRate = 120) section normal;
   parameter std::string(TokenFile = "token.txt") section fileparse;
   parameter std::string(DliServiceName = "data-location-interface") section normal;
-  parameter std::string(SiServiceName = "SIndex") section normal;
+  parameter std::string(SiServiceName = "org.glite.SEIndex") section normal;
   parameter std::string(JobWrapperTemplateDir = "/opt/glite/etc/templates") section fileparse;
   parameter std::string( PboxHostName = "pbox1.cnaf.infn.it" ) section fileparse;
   parameter int( PboxPortNum = 6699 ) section normal;
