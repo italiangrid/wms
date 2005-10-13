@@ -374,9 +374,9 @@ class WMConfiguration {
   parameter std::string(DliServiceName = "data-location-interface") section normal;
   parameter std::string(SiServiceName = "org.glite.SEIndex") section normal;
   parameter std::string(JobWrapperTemplateDir = "${GLITE_WMS_LOCATION}/etc/templates") section fileparse;
-  parameter std::string( PboxHostName = "pbox1.cnaf.infn.it" ) section fileparse;
-  parameter int( PboxPortNum = 6699 ) section normal;
-  parameter bool( PboxSafeMode = false ) section normal;
+  parameter std::string(PboxHostName) section fileparse;
+  parameter int(PboxPortNum = 6699) section normal;
+  parameter bool(PboxSafeMode = false) section normal;
 }
 class WMCConfiguration {
 
