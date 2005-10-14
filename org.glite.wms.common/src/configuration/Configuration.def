@@ -352,6 +352,7 @@ class WMConfiguration {
   parameter int(InputIterations = 1) section normal;
   parameter int(MaxRetryCount = 10) section normal;
   parameter int(MaxShallowRetryCount = 10) section normal;
+  parameter bool(EnableRecovery = false) section normal;
   parameter std::string(Input = "${EDG_WL_TMP}/workload_manager/input.fl") section fileparse;
   parameter std::string(IsmDump = "${GLITE_WMS_TMP}/workload_manager/ismdump.fl") section fileparse;
   parameter bool(EnableIsmDump = true) section normal;
