@@ -17,6 +17,9 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.17  2005/10/15 12:03:41  eronchie
+#       Increased version
+#
 #       Revision 1.16  2005/09/20 14:11:36  gianelle
 #       Syncronize the rc1 branch with head.
 #
@@ -72,7 +75,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.57)
-AC_INIT([GLite WMS jobsubmission], [1.2.0])
+AC_INIT([GLite WMS jobsubmission], [1.5.0])
 AC_CONFIG_AUX_DIR([./project])
 AM_INIT_AUTOMAKE([1.6.3 subdir-objects])
 AC_CONFIG_SRCDIR([src/common/constants.h])
