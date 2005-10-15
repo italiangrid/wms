@@ -19,6 +19,9 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.12  2005/10/15 12:18:39  eronchie
+#       Increased version
+#
 #       Revision 1.11  2005/09/19 11:00:08  monforte
 #       Merge against  glite-wms-purger_branch_1_0_2
 #
@@ -104,7 +107,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.57)
-AC_INIT([GLite WMS Purger], [1.0.6])
+AC_INIT([GLite WMS Purger], [1.5.0])
 AC_CONFIG_AUX_DIR([./project])
 AM_INIT_AUTOMAKE([1.6.3 subdir-objects])
 AC_CONFIG_SRCDIR([src/purger.cpp])
