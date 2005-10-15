@@ -19,6 +19,9 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.11  2005/10/15 11:55:27  eronchie
+#       Increased version
+#
 #       Revision 1.10  2005/09/20 14:59:45  eronchie
 #       Started merging with rc1.4
 #
@@ -56,7 +59,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.57)
-AC_INIT([GLite WMS Configuration], [1.0.8])
+AC_INIT([GLite WMS Configuration], [1.5.0])
 AC_CONFIG_AUX_DIR([./project])
 AM_INIT_AUTOMAKE([1.6.3 subdir-objects])
 AC_CONFIG_SRCDIR([config/glite_wms.conf])
