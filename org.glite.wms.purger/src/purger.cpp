@@ -7,6 +7,7 @@
 
 #include <boost/filesystem/operations.hpp> 
 #include <boost/filesystem/exception.hpp>
+#include <boost/scoped_ptr.hpp>
 
 #include "glite/wmsutils/jobid/JobId.h"
 #include "glite/wmsutils/jobid/manipulation.h"
@@ -16,6 +17,8 @@
 #include "glite/wms/common/configuration/NSConfiguration.h"
 #include "glite/wms/common/configuration/exceptions.h"
 
+#include "glite/wms/common/utilities/classad_utils.h"
+
 #include "glite/wms/common/logger/edglog.h"
 #include "glite/wms/common/logger/manipulators.h"
 
@@ -23,7 +26,7 @@
 #include "glite/lb/JobStatus.h"
 
 #include "purger.h"
-
+#include "jp_upload_files.h"
 #include "glite/lb/context.h"
 #include "glite/lb/producer.h"
 #include "glite/lb/LoggingExceptions.h"
@@ -35,7 +38,7 @@ namespace jobid         = glite::wmsutils::jobid;
 namespace logger	= glite::wms::common::logger::threadsafe;
 namespace logging       = glite::lb;
 namespace configuration = glite::wms::common::configuration;
-
+namespace utilities     = glite::wms::common::utilities;
 #define edglog_fn(name) glite::wms::common::logger::StatePusher    pusher(logger::edglog, #name);
 
 namespace glite {
@@ -53,12 +56,66 @@ namespace
     int staging_path_length = p.native_file_string().length() -
       (jobid::get_reduced_part(jobid).length()+jobid::to_filename(jobid).length()+2);
     return p.native_file_string().substr(0,staging_path_length);
+ }
+
+  bool list_directory(const fs::path& p, std::vector<std::string>& v)
+  {
+    if(!fs::is_directory(p)) return false;
+ 
+    fs::directory_iterator end_itr; // default construction yields past-the-end
+    for ( fs::directory_iterator itr( p );
+          itr != end_itr; ++itr ) {
+      if (fs::exists(*itr)) try {
+          if (!fs::is_directory( *itr )) 
+            v.push_back(itr->native_file_string());
+      }
+      catch( fs::filesystem_error& e) {
+        std::cerr << e.what() << std::endl;
+      }
+    }
+    return true;
+  }
+
+  bool upload_input_sandbox(const fs::path& p)
+  {
+    bool result = false;
+    jobid::JobId jobid( jobid::from_filename( p.leaf() ) );
+    logging::JobStatus job_status = logging::Job( jobid ).status(0);
+    std::string dg_jobid( jobid.toString() );
+    std::string jdlstr(job_status.getValString(logging::JobStatus::JDL));
+    boost::scoped_ptr<classad::ClassAd> jdlad;
+    try {
+      jdlad.reset(utilities::parse_classad(jdlstr));
+      std::string job_provenance(utilities::evaluate_attribute(*jdlad, "JobProvenance"));
+      std::string proxy_file((p/"user.proxy").native_file_string());
+      std::vector<std::string> isb_files;
+      list_directory(p/"input", isb_files);
+      jp_upload_files uploader(dg_jobid, proxy_file, "", job_provenance);
+      uploader(isb_files);
+      result = true;
+    } 
+    catch(utilities::CannotParseClassAd& cpc) {
+      logger::edglog << "Cannot parse logging::JobStatus::JDL";
+    }
+    catch(utilities::InvalidValue& ive) {
+      logger::edglog << "JobProvenance attribute not found in JDL";
+    }
+    catch(jp_upload_files::init_context_exception& ice) {
+      logger::edglog << "Failed to init JobProvenance context";
+    }
+    catch(jp_upload_files::importer_upload_exception& iup) {
+      logger::edglog << "ISB upload failure: " << iup.what();
+    }
+    return result; 
   }
 
   bool purgeStorage(const fs::path& p, const edg_wll_Context& log_ctx, wll_log_function_type wll_log_function)
   { 
     bool result = false;
     try {
+      if( !upload_input_sandbox(p) ) {
+        logger::edglog << "input sandbox upload to JP failure";
+      }
       fs::remove_all(p);
       purgeQuota(p);
       if( !(result = !(wll_log_function( log_ctx ) != 0)) ) logger::edglog << "log event to LB failed";
@@ -128,6 +185,9 @@ bool purgeStorage(const jobid::JobId& jobid, const std::string& sandboxdir)
   }
   
   try {
+    if( !upload_input_sandbox(p) ) {
+      logger::edglog << "input sandbox upload to JP failure" << std::endl;
+    }
     fs::remove_all( p );
     purgeQuota(p);
     return true;
