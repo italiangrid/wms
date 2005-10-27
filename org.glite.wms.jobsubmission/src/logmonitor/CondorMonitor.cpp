@@ -63,7 +63,7 @@ void CondorMonitor::doRecycle( void )
   fs::path    dotfile( this->cm_shared_data->md_sizefile->filename(), fs::native ), newfile;
   logger::StatePusher        pusher( elog::cedglog, "CondorMonitor::doRecycle()" );
 
-  newfile = recycleDir / oldfile.native_file_string();
+  newfile = recycleDir / oldfile.leaf();
 
   fs::copy_file( oldfile, newfile );
   elog::cedglog << logger::setlevel( logger::info ) << "Old log file (" << this->cm_shared_data->md_logfile_name
@@ -162,14 +162,14 @@ CondorMonitor::CondorMonitor( const string &filename, MonitorData &data ) :
   FILE                                           *fp;
   string                                         &logfile_name = this->cm_shared_data->md_logfile_name;
   fs::path                        &logfile_path = this->cm_internal_data->id_logfile_path;
-  string                                          dagId, error, logfile_nopath( logfile_path.native_file_string() );
+  string                                          dagId, error, logfile_nopath( logfile_path.leaf() );
   boost::match_results<string::const_iterator>    match_pieces;
   fs::path                         timer_path( conf->monitor_internal_dir(), fs::native );
   logger::StatePusher                             pusher( elog::cedglog, "CondorMonitor::CondorMonitor()" );
 
   static boost::regex   dagid_expression( ".*DagId = ([^\\s]+).*" );
 
-  if( fs::exists(logfile_path) ) { 
+  if( fs::exists(logfile_path) ) {
     this->cm_shared_data->md_sizefile.reset( new SizeFile(logfile_name.c_str()) );
 
     elog::cedglog << logger::setlevel( logger::info ) << "Opened old log position file." << endl;
@@ -235,7 +235,7 @@ CondorMonitor::CondorMonitor( const string &filename, MonitorData &data ) :
   if( this->cm_shared_data->md_isDagLog )
     elog::cedglog << logger::setlevel( logger::info ) << "Log file is attached to DAG id: " << this->cm_shared_data->md_dagId << endl
 		  << "Entering DAG mode..." << endl;
-
+  
   logfile_nopath.append( ".timer" );
   timer_path /= logfile_nopath;
 

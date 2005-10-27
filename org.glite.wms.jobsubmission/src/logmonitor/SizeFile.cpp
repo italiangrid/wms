@@ -149,15 +149,15 @@ SizeHeader &SizeHeader::reset( const string &header )
 void SizeFile::createDotFile( void )
 {
   fs::path      condorfile( this->sf_filename, fs::native );
-  fs::path      dotfile( condorfile.branch_path() );
-  string                       name( condorfile.native_file_string() );
+  string        name( condorfile.leaf() );
 
   if( !condorfile.empty() ) {
+  
     name.insert( name.begin(), '.' );
     name.append( ".size" );
 
-    dotfile /= name;
-
+    fs::path dotfile(condorfile.branch_path() / fs::path(name, fs::native));
+		
     this->sf_filename.assign( dotfile.native_file_string() );
   }
   else this->sf_filename.clear();
