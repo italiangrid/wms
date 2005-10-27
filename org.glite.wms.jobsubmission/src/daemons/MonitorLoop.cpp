@@ -342,7 +342,7 @@ try {
       logBegin = fs::directory_iterator( logdir );
 
       for( logIt = logBegin; logIt != logEnd; ++logIt ) {
-	name.assign( logIt->native_file_string() );
+	name.assign( logIt->leaf() );
  	if ( !fs::exists(*logIt) ) // see lcg2 bug 3807
  	  ; // ignore
  	else if( !fs::is_directory(*logIt) && !boost::regex_match(name, expr) && (filemap.count(name) == 0) ) {
@@ -351,7 +351,8 @@ try {
           
           try {
             tmp = new logmonitor::CondorMonitor( logIt->native_file_string(), data );
-            filemap.insert( map<string, MonitorPtr>::value_type(logIt->native_file_string(), MonitorPtr(tmp)) );
+	    filemap.insert( map<string, MonitorPtr>::value_type(logIt->leaf(), MonitorPtr(tmp)) );
+
           } catch( logmonitor::CannotOpenFile &err ) {
             this->ml_stream << logger::setlevel( logger::error )
                             << "Detected an error while reading condor log file: " << endl
