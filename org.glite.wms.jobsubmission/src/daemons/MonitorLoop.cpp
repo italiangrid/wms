@@ -43,8 +43,6 @@
 #include "MonitorLoop.h"
 #include "exceptions.h"
 
-#define create_path( string ) (fs::path((string), fs::system_specific))
-
 using namespace std;
 namespace fs = boost::filesystem;
 

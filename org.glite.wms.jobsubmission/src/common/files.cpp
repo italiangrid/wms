@@ -51,7 +51,7 @@ Files::path *Files::createDagLogFileName( const string &jobid )
 Files::Files( const glite::wmsutils::jobid::JobId &id ) : f_epoch( 0 ), f_submit(), f_classad(), f_outdir(), f_logfile(), f_maradona(),
 					 f_sandbox(), f_insbx(), f_outsbx(), f_dagsubdir(),
 					 f_jobid( glite::wmsutils::jobid::to_filename(id) ), f_dagid(),
-					 f_jobReduced( glite::wmsutils::jobid::get_reduced_part(id) ),
+					 f_jobReduced( glite::wmsutils::jobid::get_reduced_part(id), fs::native ),
 					 f_dagReduced()
 
 {}
@@ -60,8 +60,8 @@ Files::Files( const glite::wmsutils::jobid::JobId &dagid, const glite::wmsutils:
 								    f_maradona(), f_insbx(), f_outsbx(), f_dagsubdir(),
 								    f_jobid( glite::wmsutils::jobid::to_filename(id) ),
 								    f_dagid( glite::wmsutils::jobid::to_filename(dagid) ),
-								    f_jobReduced( glite::wmsutils::jobid::get_reduced_part(id) ),
-								    f_dagReduced( glite::wmsutils::jobid::get_reduced_part(dagid) )
+								    f_jobReduced( glite::wmsutils::jobid::get_reduced_part(id), fs::native ),
+								    f_dagReduced( glite::wmsutils::jobid::get_reduced_part(dagid), fs::native )
 {}
 
 Files::~Files( void ) {}
@@ -165,11 +165,11 @@ const fs::path &Files::output_directory( void )
     this->f_outdir.reset( new path(dirname, fs::native) );
 
     if( this->f_dagid.size() != 0 )
-      *this->f_outdir /= this->f_dagReduced / this->f_dagid;
+      *this->f_outdir /= this->f_dagReduced / fs::path(this->f_dagid, fs::native);
     else
       *this->f_outdir /= this->f_jobReduced;
 
-    *this->f_outdir /= this->f_jobid;
+    *this->f_outdir /= fs::path(this->f_jobid, fs::native);
   }
 
   return *this->f_outdir;
@@ -273,7 +273,7 @@ const fs::path &Files::sandbox_root( void )
     string    sbx( fs::normalize_path(nsconfig->sandbox_staging_path()) );
 
     this->f_sandbox.reset( new path(sbx, fs::native) );
-    *this->f_sandbox /= this->f_jobReduced / this->f_jobid;
+    *this->f_sandbox /= this->f_jobReduced / fs::path(this->f_jobid, fs::native);
   }
 
   return *this->f_sandbox;

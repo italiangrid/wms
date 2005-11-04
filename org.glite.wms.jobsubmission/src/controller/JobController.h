@@ -16,10 +16,7 @@
 
 typedef  struct _edg_wll_Context  *edg_wll_Context;
 
-using namespace glite::wmsutils::jobid;
-
 namespace classad { class ClassAd; }
-COMMON_SUBNAMESPACE_CLASS_J(jobid, JobId );
 
 JOBCONTROL_NAMESPACE_BEGIN {
 
@@ -45,7 +42,7 @@ private:
   JobControllerImpl    *jc_impl;
 };
 
-}; // namespace controller
+} // namespace controller
 
 } JOBCONTROL_NAMESPACE_END;
 
