@@ -33,6 +33,8 @@ class ConfBase {
     template( classad::ExprTree* )
     inline @ATTRTYPE@ @.@( void ) <const> { return this->getExpression( @ATTRNAME@ ); }
 
+    template( classad::ClassAd* )
+    inline @ATTRTYPE@ @.@( void ) <const> { return this->getClassAd( @ATTRNAME@ ); }
 
 
     ctemplate( bool -> int, std::streamsize -> long, unsigned int, int, long, size_t, double )
@@ -413,6 +415,7 @@ class WMCConfiguration {
 # parameter std::vector<std::string>(LBEndPoints) section normal;
   parameter bool(PerusalFileEnable=false) section normal;
   parameter bool(AllowZippedISB=false) section normal;
+  parameter classad::ClassAd*(JdlDefaultAttributes) section normal;
 }
 class WMPConfiguration {
 

@@ -107,6 +107,13 @@ classad::ExprTree* confbase_c::getExpression( const char *name ) const
 	return tree;
 }
 
+classad::ClassAd* confbase_c::getClassAd( const char *name ) const
+{
+	classad::ClassAd* cad = static_cast<classad::ClassAd*> (this->cb_ad->Lookup(name));
+	return cad;
+}
+
+
 
 confbase_c::confbase_c( const classad::ClassAd *ad ) : cb_ad( ad )
 {}

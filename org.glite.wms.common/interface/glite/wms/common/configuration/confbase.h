@@ -29,6 +29,7 @@ protected:
   std::string getAndParseFileName( const char *name, const std::string &def ) const;
   std::vector<std::string> getVector( const char *name ) const;
   classad::ExprTree* getExpression(const char *name) const;
+  classad::ClassAd* getClassAd(const char *name) const;  
   const classad::ClassAd        *cb_ad;
 
 private:
