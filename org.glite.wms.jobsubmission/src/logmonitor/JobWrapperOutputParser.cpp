@@ -57,6 +57,7 @@ bool JobWrapperOutputParser::parseStream( istream &is, string &errors, int &retc
   struct JWErrors    *errIt;
 
   if( is.good() ) {
+    sc.assign("NoToken");	
     do {
       is.getline( buffer, BUFSIZ );
 
@@ -87,11 +88,9 @@ bool JobWrapperOutputParser::parseStream( istream &is, string &errors, int &retc
               sc.assign(s);
             } else { // The sequence code is not set... so what can we do?
               sc.assign("");
-            }
-          } else { // Token not found
-	    sc.assign("NoToken");
+	    }
 	  }
-	}
+        }
 	else {
 	  errors.assign( "IO error while reading file: " );
 	  errors.append( strerror(errno) );
