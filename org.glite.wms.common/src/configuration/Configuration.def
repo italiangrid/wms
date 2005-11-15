@@ -408,6 +408,8 @@ class WMCConfiguration {
 #  parameter bool(PerusalFileEnable=false) section normal;
 #  parameter bool(AllowZippedISB=false) section normal;
 
+# Minimal value for proxy validity (in minutes)
+  parameter int(DefaultProxyValidity= 5) section normal;
   parameter int(DefaultStatusLevel  = 1) section normal;
   parameter int(DefaultLoggingLevel = 0) section normal;
   parameter std::string(ErrorStorage=   "/var/tmp") section normal;
