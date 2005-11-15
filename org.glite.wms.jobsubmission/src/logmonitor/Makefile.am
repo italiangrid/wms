@@ -17,6 +17,9 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.14  2005/11/15 10:19:55  gianelle
+#       Added LBProxy macro setting
+#
 #       Revision 1.13  2005/09/26 13:17:40  gianelle
 #       Added RENEWAL_NOTHR_LIBS library.
 #       Commented unused function.
@@ -143,6 +146,6 @@ AM_CPPFLAGS = -I$(top_srcdir)/src \
 	$(GLOBUS_NOTHR_CFLAGS) \
 	$(BOOST_CFLAGS) \
 	$(CLASSAD_CFLAGS) \
-	$(CONDORG_CFLAGS) 
+	$(CONDORG_CFLAGS) -DENABLE_LBPROXY 
 
 MAINTAINERCLEANFILES = Makefile.in *~
