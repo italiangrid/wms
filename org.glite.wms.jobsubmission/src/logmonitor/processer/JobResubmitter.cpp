@@ -104,7 +104,7 @@ void JobResubmitter::resubmit( int laststatus, const string &edgid, const string
       this->jr_logger->reset_user_proxy( position->proxy_file() ).reset_context( edgid, position->sequence_code() );
 #endif    
       
-      if ( sc != "NoToken" ) 
+      if ( !sc.empty() && ( sc != "NoToken" ) ) 
         this->jr_logger->job_really_run_event( sc ); // logged really running event 
       
       this->jr_logger->terminated_event( retcode ); // This call discriminates between 0 and all other codes.
@@ -126,9 +126,9 @@ void JobResubmitter::resubmit( int laststatus, const string &edgid, const string
     arguments.InsertAttr( "lb_sequence_code", sequence_code );
     command.Insert( "arguments", arguments.Copy() );
 
-     if ( sc != "NoToken" ) 
+     if ( !sc.empty() && ( sc != "NoToken" ) ) 
        this->jr_logger->job_really_run_event( sc ); // logged really running event
-
+    
     this->jr_logger->job_resubmitting_event();
     this->jr_logger->job_wm_enqueued_start_event( config->input(), command );
     try {

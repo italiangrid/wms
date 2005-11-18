@@ -55,9 +55,10 @@ bool JobWrapperOutputParser::parseStream( istream &is, string &errors, int &retc
 				     { NULL, unknown },
   };
   struct JWErrors    *errIt;
+  
+  sc.assign("NoToken");
 
   if( is.good() ) {
-    sc.assign("NoToken");	
     do {
       is.getline( buffer, BUFSIZ );
 
@@ -81,16 +82,16 @@ bool JobWrapperOutputParser::parseStream( istream &is, string &errors, int &retc
 	    else retcode = -1;
 	  }
 
-	  if (strstr(buffer, "Take token: ") == buffer) {
+          if (strstr(buffer, "Take token: ") == buffer) {
             char s[256];
             if (sscanf(buffer, "Take token: %255s", &s) == 1) {
               s[255] = '\0';
               sc.assign(s);
             } else { // The sequence code is not set... so what can we do?
               sc.assign("");
-	    }
-	  }
-        }
+            }
+          }	
+	}
 	else {
 	  errors.assign( "IO error while reading file: " );
 	  errors.append( strerror(errno) );

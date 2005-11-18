@@ -96,7 +96,7 @@ void EventPostTerminated::process_event( void )
       else if( (stat = parser.parse_file(retcode, error, sc)) == JWOP::good ) { // Node terminated successfully
 	elog::cedglog << "Return code of the node: " << retcode << endl;
 
-	if ( sc != "NoToken" ) 
+	if ( !sc.empty() && ( sc != "NoToken" ) )
           this->ei_data->md_logger->job_really_run_event( sc ); // logged really running event
 	
 	this->ei_data->md_logger->terminated_event( retcode ); // This call will also check if the retcode is == 0
@@ -106,7 +106,7 @@ void EventPostTerminated::process_event( void )
 		      << "Last node terminated (" << this->ei_condor << ") aborted." << endl
 		      << "Reason: " << error << endl;
 
-	if ( sc != "NoToken" ) 
+	if ( !sc.empty() && ( sc != "NoToken" ) )
           this->ei_data->md_logger->job_really_run_event( sc ); // logged really running event
 
 	this->ei_data->md_logger->failed_on_error_event( error );

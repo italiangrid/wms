@@ -80,7 +80,7 @@ void EventTerminated::processNormalJob( jccommon::IdContainer::iterator &positio
     this->ei_data->md_logger->reset_user_proxy( position->proxy_file() ).reset_context( position->edg_id(), position->sequence_code() );
 #endif   
 
-    if ( sc != "NoToken" )
+    if ( !sc.empty() && ( sc != "NoToken" ) )
       this->ei_data->md_logger->job_really_run_event( sc ); // logged really running event
 
     this->ei_data->md_logger->terminated_event( retcode ); // This call discriminates between 0 and all other codes.
@@ -101,7 +101,7 @@ void EventTerminated::processNormalJob( jccommon::IdContainer::iterator &positio
     this->ei_data->md_logger->reset_user_proxy( position->proxy_file() ).reset_context( position->edg_id(), position->sequence_code() );
 #endif
 
-    if ( sc != "NoToken" )
+    if ( !sc.empty() && ( sc != "NoToken" ) )
       this->ei_data->md_logger->job_really_run_event( sc ); // logged really running event
 
     this->ei_data->md_logger->failed_on_error_event( errors );
