@@ -333,9 +333,10 @@ bool JobControllerReal::cancel( const glite::wmsutils::jobid::JobId &id, const c
 
   if( condorid.size() != 0 ) {
     // Comunicate to LM that this request comes from the user
-    if( logfile ) logGenericEvent( jccommon::user_cancelled_event, icid, logfile );
 
     if( logfile ) icid = boost::lexical_cast<int>( condorid );
+
+    if( logfile ) logGenericEvent( jccommon::user_cancelled_event, icid, logfile );
 
     if( (good = cancelJob(condorid, force, info)) ) { // The condor command worked fine
       if( logfile ) logGenericEvent( jccommon::cancelled_event, icid, logfile );
