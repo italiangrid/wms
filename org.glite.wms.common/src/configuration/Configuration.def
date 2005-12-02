@@ -451,4 +451,6 @@ class WMPConfiguration {
   parameter bool ( LBProxy = true ) section normal;
   parameter std::string ( LBServer ) section normal;
   parameter std::string ( LBLocalLogger ) section normal;
+
+  parameter bool ( AsyncJobStart = true ) section normal;
 }
