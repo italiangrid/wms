@@ -7,7 +7,7 @@ namespace wms {
 namespace common {
 namespace configuration {
 
-static char      *names[] = { "Unknown Module", "NetworkServer", "WorkloadManager", "JobController", "LogMonitor", "WmsClient", "WorkloadManagerProxy" };
+static char      *names[] = { "Unknown Module", "NetworkServer", "WorkloadManager", "JobController", "LogMonitor", "WmsClient", "WorkloadManagerProxy", "ICE" };
 
 vector<string>    ModuleType::mt_s_names( names, names + (int) ModuleType::last_module );
 

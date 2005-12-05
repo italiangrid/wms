@@ -11,6 +11,7 @@
 #include "WMConfiguration.h"
 #include "WMCConfiguration.h"
 #include "WMPConfiguration.h"
+#include "ICEConfiguration.h"
 
 using namespace std;
 using namespace glite::wms::common;
@@ -22,6 +23,7 @@ using namespace glite::wms::common;
 /* Tmpl: wrap class WMConfiguration */
 /* Tmpl: wrap class WMCConfiguration */
 /* Tmpl: wrap class WMPConfiguration */
+/* Tmpl: wrap class ICEConfiguration */
 
 // Local Variables:
 // mode: c++

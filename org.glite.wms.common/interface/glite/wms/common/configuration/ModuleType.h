@@ -18,6 +18,7 @@ public:
 		     log_monitor,
 		     wms_client,
                      workload_manager_proxy,
+		     interface_cream_environment,
 		     last_module
   };
 

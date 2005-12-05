@@ -10,6 +10,7 @@
 /* Tmpl: wrap class WMConfiguration */
 /* Tmpl: wrap class WMCConfiguration */
 /* Tmpl: wrap class WMPConfiguration */
+/* Tmpl: wrap class ICEConfiguration *
 
 #endif /* GLITE_WMS_COMMON_CONFIGURATION_CWRAPPER_H */
 
