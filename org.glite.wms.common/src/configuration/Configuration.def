@@ -454,3 +454,35 @@ class WMPConfiguration {
 
   parameter bool ( AsyncJobStart = true ) section normal;
 }
+
+class ICEConfiguration {
+
+  defaultvalue bool = true;
+  defaultvalue int = 0;
+  defaultvalue size_t = 0;
+  defaultvalue std::string = "";
+
+  wrapper {
+    prefix = edg_wlcc_IceMonitor_;
+    contexttype = const configuration::ICEConfiguration *;
+    contextfunc = ice;
+  }
+
+  copy ConfBase.normal;
+  copy ConfBase.parse;
+  copy ConfBase.fileparse;
+
+#  parameter bool( UseMaradonaFile = true ) section normal;
+  parameter int(  pippo = 1000 ) section normal;
+#  parameter int( MainLoopDuration = 3 ) section normal;
+#  parameter int( AbortedJobsTimeout = 600 ) section normal;
+#  parameter int( GlobusDownTimeout = 600 ) section normal;
+#  parameter int( ForceCancellationRetries = 10 ) section normal;
+#  parameter size_t( ContainersCompactThreshold = 1000 ) section normal;
+#  parameter std::string( CondorLogDir ) section fileparse;
+#  parameter std::string( CondorLogRecycleDir ) section fileparse;
+#  parameter std::string( ExternalLogFile ) section fileparse;
+#  parameter std::string( MonitorInternalDir ) section fileparse;
+#  parameter std::string( IdRepositoryName ) section fileparse;
+#  parameter std::string( MaradonaTransportProtocol = "gsiftp://${HOSTNAME}" ) section parse; 
+}
