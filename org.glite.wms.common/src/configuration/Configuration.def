@@ -478,6 +478,16 @@ class ICEConfiguration {
   parameter std::string( Input = "${EDG_WL_TMP}/workload_manager/Output.fl") section normal;
   parameter std::string( cache_persist_file = "/tmp/ice_cache_persist_file") section normal;
   parameter std::string( logfile = "/tmp/ice_logfile") section normal;
+  parameter bool( start_poller = true ) section normal;
+  parameter bool( start_listener = true ) section normal;
+  parameter int( poller_delay = 10 ) section normal;
+  parameter std::string( cream_url_prefix = "https://") section normal;
+  parameter std::string( cream_url_postfix = "/ce-cream/services/CREAM" ) section normal;
+  parameter std::string( creamdelegation_url_prefix = "https://") section normal;
+  parameter std::string( creamdelegation_url_postfix = "/ce-cream/services/CREAMDelegation" ) section normal;
+  parameter std::string( cemon_url_prefix = "https://") section normal;
+  parameter std::string( cemon_url_postfix = "/ce-monitor/services/CEMonitor" ) section normal;
+  parameter std::string( ice_topic = "ICE" ) section normal;
 #  parameter int( MainLoopDuration = 3 ) section normal;
 #  parameter int( AbortedJobsTimeout = 600 ) section normal;
 #  parameter int( GlobusDownTimeout = 600 ) section normal;
