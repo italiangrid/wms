@@ -56,7 +56,7 @@ void EventAborted::process_event( void )
 
     this->ei_data->md_sizefile->decrement_pending();
 
-#ifdef ENABLE_LBPROXY
+#ifdef GLITE_WMS_HAVE_LBPROXY
     this->ei_data->md_logger->set_LBProxy_context( position->edg_id(), position->sequence_code(), position->proxy_file() );
 #else
     this->ei_data->md_logger->reset_user_proxy( position->proxy_file() ).reset_context( position->edg_id(), position->sequence_code() );
@@ -76,7 +76,7 @@ void EventAborted::process_event( void )
       this->ei_data->md_timer->remove_all_timeouts( this->ea_event->cluster ); // Remove any installed timeout for the job
 
     this->ei_data->md_sizefile->decrement_pending();
-#ifdef ENABLE_LBPROXY
+#ifdef GLITE_WMS_HAVE_LBPROXY
     this->ei_data->md_logger->set_LBProxy_context( position->edg_id(), position->sequence_code(), position->proxy_file() );
 #else
     this->ei_data->md_logger->reset_user_proxy( position->proxy_file() ).reset_context( position->edg_id(), position->sequence_code() );

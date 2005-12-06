@@ -56,7 +56,7 @@ void EventSubmit::finalProcess( const string &edgid, const string &seqcode )
 
     reader.reset( this->createReader(edgid) );
 
-#ifdef ENABLE_LBPROXY
+#ifdef GLITE_WMS_HAVE_LBPROXY
     this->ei_data->md_logger->set_LBProxy_context( edgid, seqcode, position->proxy_file() );
 #else
     this->ei_data->md_logger->reset_user_proxy( position->proxy_file() ).reset_context( edgid, seqcode );

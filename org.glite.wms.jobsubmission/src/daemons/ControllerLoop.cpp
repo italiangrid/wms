@@ -325,7 +325,7 @@ try {
 
 	  this->cl_stream << logger::setlevel( logger::info ) << "Got new submit request..." << endl; 
 
-#ifdef ENABLE_LBPROXY
+#ifdef GLITE_WMS_HAVE_LBPROXY
           this->cl_logger->set_LBProxy_context(glite::wms::jdl::get_edg_jobid(*jobad),
                                                glite::wms::jdl::get_lb_sequence_code(*jobad),
                                                glite::wms::jdl::get_x509_user_proxy(*jobad) );
@@ -354,7 +354,7 @@ try {
 	  this->cl_stream << logger::setlevel( logger::info ) << "Got new remove request (JOB ID = " << jobid << ")..." << endl
 			  << "Must " << ( force ? "" : "not " ) << "force job removal !" << endl;
 
-#ifdef ENABLE_LBPROXY
+#ifdef GLITE_WMS_HAVE_LBPROXY
           this->cl_logger->set_LBProxy_context( jobid, remreq->get_sequence_code(), remreq->get_proxyfile() );
 #else 
 	  this->cl_logger->reset_user_proxy( remreq->get_proxyfile() );

@@ -17,6 +17,13 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.4  2005/12/06 12:53:28  gianelle
+#       Change the name of some "ifdef" parameters:
+#       ENABLE_LBPROXY --> GLITE_WMS_HAVE_LBPROXY
+#       ENABLE_LOGGING --> GLITE_WMS_HAVE_LOGGING
+#       ENABLE_RENEWAL --> GLITE_WMS_HAVE_RENEWAL
+#       ENABLE_PURGER  --> GLITE_WMS_HAVE_PURGER
+#
 #       Revision 1.3  2005/09/20 14:11:37  gianelle
 #       Syncronize the rc1 branch with head.
 #
@@ -76,6 +83,6 @@ EXTRA_DIST = EventFactory.cpp \
 	SubmitReader.cpp \
 	JobResubmitter.cpp
 
-AM_CPPFLAGS = -DENABLE_LBPROXY
+AM_CPPFLAGS = -DGLITE_WMS_HAVE_LBPROXY
 
 MAINTAINERCLEANFILES = Makefile.in *~

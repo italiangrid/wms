@@ -3,7 +3,7 @@
 
 #include <exception>
 
-#ifdef ENABLE_LOGGING
+#ifdef GLITE_WMS_HAVE_LOGGING
 #include "glite/lb/context.h"
 #endif
 
@@ -36,7 +36,7 @@ private:
 class EventLogger {
 public:
   EventLogger( void );
-#ifdef ENABLE_LOGGING
+#ifdef GLITE_WMS_HAVE_LOGGING
   EventLogger( edg_wll_Context *cont, int flag = EDG_WLL_SEQ_NORMAL );
 #else
   EventLogger( edg_wll_Context *cont, int flag = 0 );
@@ -51,7 +51,7 @@ public:
 
   EventLogger &reset_user_proxy( const std::string &proxyfile );
 
-#ifdef ENABLE_LBPROXY
+#ifdef GLITE_WMS_HAVE_LBPROXY
   EventLogger &set_LBProxy_context( const std::string &jobid, const std::string &sequence, const std::string &proxyfile);
 #endif
 

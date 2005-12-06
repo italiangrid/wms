@@ -160,7 +160,7 @@ void EventGeneric::finalProcess( int cn, const string &message )
 
 	    throw CannotExecute( ei_s_failedinsertion );
 	  }
-#ifdef ENABLE_LBPROXY
+#ifdef GLITE_WMS_HAVE_LBPROXY
           this->ei_data->md_logger->set_LBProxy_context( dagposition->edg_id(), dagposition->sequence_code(), 
 							 dagposition->proxy_file() );
 #else
@@ -177,7 +177,7 @@ void EventGeneric::finalProcess( int cn, const string &message )
 	  elog::cedglog << logger::setlevel( logger::severe )
 			<< "Forced cancellation retries exceeded maximum (" << retry << '/' << maxretries << ')' << endl
 			<< "Job will be removed from the queue and aborted." << endl;
-#ifdef ENABLE_LBPROXY
+#ifdef GLITE_WMS_HAVE_LBPROXY
           this->ei_data->md_logger->set_LBProxy_context( edgid, position->sequence_code(), position->proxy_file() );
 #else
 	  this->ei_data->md_logger->reset_user_proxy( position->proxy_file() ).reset_context( edgid, position->sequence_code() );

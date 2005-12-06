@@ -43,7 +43,7 @@ void EventExecute::process_event( void )
 
     if( this->ei_data->md_isDagLog )
       elog::cedglog << ei_s_subnodeof << this->ei_data->md_dagId << endl;
-#ifdef ENABLE_LBPROXY
+#ifdef GLITE_WMS_HAVE_LBPROXY
     this->ei_data->md_logger->set_LBProxy_context( position->edg_id(), position->sequence_code(), position->proxy_file() );
 #else
     this->ei_data->md_logger->reset_user_proxy( position->proxy_file() ).reset_context( position->edg_id(), position->sequence_code() );

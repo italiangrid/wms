@@ -16,7 +16,7 @@ namespace fs = boost::filesystem;
 #include "glite/wmsutils/jobid/JobId.h"
 
 #include "glite/wms/common/utilities/boost_fs_add.h"
-#ifdef ENABLE_PURGER
+#ifdef GLITE_WMS_HAVE_PURGER
 #include "purger.h"
 #endif
 #include "../jobcontrol_namespace.h"
@@ -44,7 +44,7 @@ void JobFilePurger::do_purge( bool everything )
 {
   const configuration::LMConfiguration    *lmconfig = configuration::Configuration::instance()->lm();
   logger::StatePusher                      pusher( elog::cedglog, "JobFilePurger::do_purge(...)" );
-#ifdef ENABLE_PURGER
+#ifdef GLITE_WMS_HAVE_PURGER
   bool     purge;
 #endif
 
@@ -114,7 +114,7 @@ void JobFilePurger::do_purge( bool everything )
   if( everything ) {
     elog::cedglog << logger::setlevel( logger::ugly ) << "Going to purge job storage..." << endl;
 
-#ifdef ENABLE_PURGER
+#ifdef GLITE_WMS_HAVE_PURGER
     purge = purger::purgeStorage( this->jfp_jobId );
 
     elog::cedglog << logger::setlevel( logger::verylow ) << "Purging command returned " << (purge ? "ok" : "an error") << endl;

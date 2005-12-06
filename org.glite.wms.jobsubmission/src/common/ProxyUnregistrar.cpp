@@ -3,7 +3,7 @@
 #include "glite/wms/common/logger/manipulators.h"
 #include "glite/wms/common/logger/edglog.h"
 #include "glite/wmsutils/jobid/JobId.h"
-#ifdef ENABLE_RENEWAL
+#ifdef GLITE_WMS_HAVE_RENEWAL
 #include "glite/security/proxyrenewal/renewal.h"
 #endif
 #include "../jobcontrol_namespace.h"
@@ -25,7 +25,7 @@ ProxyUnregistrar::~ProxyUnregistrar( void ) {}
 
 void ProxyUnregistrar::unregister( void )
 {
-#ifdef ENABLE_RENEWAL
+#ifdef GLITE_WMS_HAVE_RENEWAL
   int      err = 0;
 #endif
   logger::StatePusher      pusher( ts::edglog, "ProxyUnregistrar::unregister()" );
@@ -33,7 +33,7 @@ void ProxyUnregistrar::unregister( void )
   ts::edglog << logger::setlevel( logger::verylow )
 	     << "Unregistering user proxy..." << endl;
 
-#ifdef ENABLE_RENEWAL
+#ifdef GLITE_WMS_HAVE_RENEWAL
   err = edg_wlpr_UnregisterProxy( this->pu_id, NULL );
 
   if( err && (err != EDG_WLPR_PROXY_NOT_REGISTERED) )

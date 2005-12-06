@@ -98,7 +98,7 @@ void JobResubmitter::resubmit( int laststatus, const string &edgid, const string
       
       elog::cedglog << logger::setlevel( logger::verylow ) << "Real return code: " << retcode << endl;
       
-#ifdef ENABLE_LBPROXY
+#ifdef GLITE_WMS_HAVE_LBPROXY
       this->jr_logger->set_LBProxy_context( edgid, position->sequence_code(), position->proxy_file() );
 #else 
       this->jr_logger->reset_user_proxy( position->proxy_file() ).reset_context( edgid, position->sequence_code() );

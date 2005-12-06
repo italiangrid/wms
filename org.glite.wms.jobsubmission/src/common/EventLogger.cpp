@@ -7,13 +7,13 @@
 
 #include <classad_distribution.h>
 
-#ifdef ENABLE_LOGGING
+#ifdef GLITE_WMS_HAVE_LOGGING
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
 
 namespace fs = boost::filesystem;
 
-#ifdef ENABLE_LBPROXY
+#ifdef GLITE_WMS_HAVE_LBPROXY
 #include <openssl/pem.h>
 #include <openssl/x509.h>
 #endif
@@ -88,7 +88,7 @@ string EventLogger::getLoggingError( const char *preamble )
 
   if( preamble ) cause.append( 1, ' ' ); 
 
-#ifdef ENABLE_LOGGING
+#ifdef GLITE_WMS_HAVE_LOGGING
   char        *text, *desc;
 
   edg_wll_Error( *this->el_context, &text, &desc );
@@ -120,7 +120,7 @@ void EventLogger::testCode( int &code, bool retry )
 
       code = 0; // Don't retry...
       break;
-#ifdef ENABLE_LOGGING
+#ifdef GLITE_WMS_HAVE_LOGGING
     case EDG_WLL_ERROR_GSS:
       ts::edglog << logger::setlevel( logger::severe )
 		 << "Severe error in GSS layer while communicating with L&B daemons." << endl
@@ -190,7 +190,7 @@ void EventLogger::testCode( int &code, bool retry )
 }
 
 EventLogger::EventLogger( void ) : el_remove( true ),
-#ifdef ENABLE_LOGGING
+#ifdef GLITE_WMS_HAVE_LOGGING
 				   el_flag( EDG_WLL_SEQ_NORMAL ),
 #else
 				   el_flag( 0 ),
@@ -199,7 +199,7 @@ EventLogger::EventLogger( void ) : el_remove( true ),
 {
   this->el_context = new edg_wll_Context;
 
-#ifdef ENABLE_LOGGING
+#ifdef GLITE_WMS_HAVE_LOGGING
   if( edg_wll_InitContext(this->el_context) )
     throw LoggerException( "Cannot initialize logging context" );
 #endif
@@ -213,7 +213,7 @@ EventLogger::EventLogger( edg_wll_Context *cont, int flag ) : el_remove( false )
 EventLogger::~EventLogger( void )
 {
   if( this->el_context && this->el_remove ) {
-#ifdef ENABLE_LOGGING
+#ifdef GLITE_WMS_HAVE_LOGGING
     edg_wll_FreeContext( *this->el_context );
 #endif
 
@@ -223,7 +223,7 @@ EventLogger::~EventLogger( void )
 
 EventLogger &EventLogger::initialize_jobcontroller_context( ProxySet *ps )
 {
-#ifdef ENABLE_LOGGING
+#ifdef GLITE_WMS_HAVE_LOGGING
   int   res = 0;
 
   if( this->el_context ) {
@@ -245,7 +245,7 @@ EventLogger &EventLogger::initialize_jobcontroller_context( ProxySet *ps )
 
 EventLogger &EventLogger::initialize_logmonitor_context( ProxySet *ps )
 {
-#ifdef ENABLE_LOGGING
+#ifdef GLITE_WMS_HAVE_LOGGING
   int    res = 0;
 
   if( this->el_context ) {
@@ -267,7 +267,7 @@ EventLogger &EventLogger::initialize_logmonitor_context( ProxySet *ps )
 
 EventLogger &EventLogger::reset_context( const string &jobid, const string &sequence, int flag )
 {
-#ifdef ENABLE_LOGGING
+#ifdef GLITE_WMS_HAVE_LOGGING
   int             res;
   edg_wlc_JobId   id;
 
@@ -284,7 +284,7 @@ EventLogger &EventLogger::reset_context( const string &jobid, const string &sequ
 
 EventLogger &EventLogger::reset_user_proxy( const string &proxyfile )
 {
-#ifdef ENABLE_LOGGING
+#ifdef GLITE_WMS_HAVE_LOGGING
   bool    erase = false;
   int     res;
 
@@ -316,7 +316,7 @@ EventLogger &EventLogger::reset_user_proxy( const string &proxyfile )
 
 EventLogger &EventLogger::reset_context( const string &jobid, const string &sequence )
 {
-#ifdef ENABLE_LOGGING
+#ifdef GLITE_WMS_HAVE_LOGGING
   int             res;
   edg_wlc_JobId   id;
 
@@ -331,15 +331,15 @@ EventLogger &EventLogger::reset_context( const string &jobid, const string &sequ
   return *this;
 }
 
-#ifdef ENABLE_LBPROXY
+#ifdef GLITE_WMS_HAVE_LBPROXY
 
 EventLogger &EventLogger::set_LBProxy_context( const string &jobid, const string &sequence, const string &proxyfile)
 { 
-#ifdef ENABLE_LOGGING
+#ifdef GLITE_WMS_HAVE_LOGGING
   bool              erase = false;
   int               res;
   edg_wlc_JobId     id;
-                                                                                
+   
   if( proxyfile.size() && (proxyfile != this->el_proxy) ) {
     fs::path    pf( fs::normalize_path(proxyfile), fs::native );
     if( fs::exists(pf) ) {
@@ -389,13 +389,13 @@ void EventLogger::condor_submit_event( const string &condorId, const string &rsl
 {
   logger::StatePusher     pusher( elog::cedglog, "EventLogger::condor_submit_event(...)" );
 
-#ifdef ENABLE_LOGGING
+#ifdef GLITE_WMS_HAVE_LOGGING
   int          res;
 
   if( this->el_context ) {
     this->startLogging();
     do {
-#ifdef ENABLE_LBPROXY
+#ifdef GLITE_WMS_HAVE_LBPROXY
       res = edg_wll_LogAcceptedProxy( *this->el_context, EDG_WLL_SOURCE_JOB_SUBMISSION, "localhost", el_s_unavailable, condorId.c_str() );
 #else
       res = edg_wll_LogAccepted( *this->el_context, EDG_WLL_SOURCE_JOB_SUBMISSION, "localhost", el_s_unavailable, condorId.c_str() );
@@ -419,13 +419,13 @@ void EventLogger::globus_submit_event( const string &ce, const string &rsl, cons
 {
   logger::StatePusher     pusher( elog::cedglog, "EventLogger::globus_submit_event(...)" );
   
-#ifdef ENABLE_LOGGING
+#ifdef GLITE_WMS_HAVE_LOGGING
   int           res;
 
   if( this->el_context ) {
     this->startLogging();
     do {
-#ifdef ENABLE_LBPROXY
+#ifdef GLITE_WMS_HAVE_LBPROXY
       res = edg_wll_LogTransferOKProxy( *this->el_context, EDG_WLL_SOURCE_LRMS, ce.c_str(),
                                         logfile.c_str(), rsl.c_str(), "Job successfully submitted to Globus",
 					el_s_unavailable );
@@ -454,13 +454,13 @@ void EventLogger::execute_event( const char *host )
 {
   logger::StatePusher     pusher( elog::cedglog, "EventLogger::execute_event(...)" );
 
-#ifdef ENABLE_LOGGING
+#ifdef GLITE_WMS_HAVE_LOGGING
   int           res;
 
   if( this->el_context ) {
     this->startLogging();
     do {
-#ifdef ENABLE_LBPROXY
+#ifdef GLITE_WMS_HAVE_LBPROXY
       res = edg_wll_LogRunningProxy( *this->el_context, host );
 #else
       res = edg_wll_LogRunning( *this->el_context, host );
@@ -485,13 +485,13 @@ void EventLogger::terminated_event( int retcode )
 {
   logger::StatePusher     pusher( elog::cedglog, "EventLogger::terminated_event(...)" );
 
-#ifdef ENABLE_LOGGING
+#ifdef GLITE_WMS_HAVE_LOGGING
   int          res;
 
   if( this->el_context ) {
     this->startLogging();
     do {
-#ifdef ENABLE_LBPROXY
+#ifdef GLITE_WMS_HAVE_LBPROXY
       res = edg_wll_LogDoneOKProxy( *this->el_context, (retcode ? "Warning: job exit code != 0" : "Job terminated successfully"), retcode );
 #else
       res = edg_wll_LogDoneOK( *this->el_context, (retcode ? "Warning: job exit code != 0" : "Job terminated successfully"), retcode );
@@ -516,13 +516,13 @@ void EventLogger::failed_on_error_event( const string &cause )
 {
   logger::StatePusher      pusher( elog::cedglog, "EventLogger::failed_on_error_event(...)" );
 
-#ifdef ENABLE_LOGGING
+#ifdef GLITE_WMS_HAVE_LOGGING
   int           res;
 
   if( this->el_context ) {
     this->startLogging();
     do {
-#ifdef ENABLE_LBPROXY
+#ifdef GLITE_WMS_HAVE_LBPROXY
       res = edg_wll_LogDoneFAILEDProxy( *this->el_context, cause.c_str(), 1 );
 #else
       res = edg_wll_LogDoneFAILED( *this->el_context, cause.c_str(), 1 );
@@ -549,13 +549,13 @@ void EventLogger::abort_on_error_event( const string &cause )
 {
   logger::StatePusher      pusher( elog::cedglog, "EventLogger::abort_on_error_event(...)" );
 
-#ifdef ENABLE_LOGGING
+#ifdef GLITE_WMS_HAVE_LOGGING
   int           res;
 
   if( this->el_context ) {
     this->startLogging();
     do {
-#ifdef ENABLE_LBPROXY
+#ifdef GLITE_WMS_HAVE_LBPROXY
       res = edg_wll_LogAbortProxy( *this->el_context, cause.c_str() );
 #else
       res = edg_wll_LogAbort( *this->el_context, cause.c_str() );
@@ -582,13 +582,13 @@ void EventLogger::aborted_by_system_event( const string &cause )
 {
   logger::StatePusher        pusher( elog::cedglog, "EventLogger::abort_by_system_event(...)" );
 
-#ifdef ENABLE_LOGGING
+#ifdef GLITE_WMS_HAVE_LOGGING
   int           res;
 
   if( this->el_context ) {
     this->startLogging();
     do {
-#ifdef ENABLE_LBPROXY
+#ifdef GLITE_WMS_HAVE_LBPROXY
       res = edg_wll_LogDoneFAILEDProxy( *this->el_context, cause.c_str(), 1 );
 #else
       res = edg_wll_LogDoneFAILED( *this->el_context, cause.c_str(), 1 );
@@ -615,13 +615,13 @@ void EventLogger::aborted_by_user_event( void )
 {
   logger::StatePusher       pusher( elog::cedglog, "EventLogger::aborted_by_user_event()" );
 
-#ifdef ENABLE_LOGGING
+#ifdef GLITE_WMS_HAVE_LOGGING
   int           res;
 
   if( this->el_context ) {
     this->startLogging();
     do {
-#ifdef ENABLE_LBPROXY
+#ifdef GLITE_WMS_HAVE_LBPROXY
       res = edg_wll_LogCancelDONEProxy( *this->el_context, "Aborted by user." );
 #else
       res = edg_wll_LogCancelDONE( *this->el_context, "Aborted by user." );
@@ -632,7 +632,7 @@ void EventLogger::aborted_by_user_event( void )
 
     this->startLogging();
     do {
-#ifdef ENABLE_LBPROXY
+#ifdef GLITE_WMS_HAVE_LBPROXY
       res = edg_wll_LogDoneCANCELLEDProxy( *this->el_context, "Aborted by user", 0 );
 #else
       res = edg_wll_LogDoneCANCELLED( *this->el_context, "Aborted by user", 0 );
@@ -657,13 +657,13 @@ void EventLogger::globus_submit_failed_event( const string &rsl, const char *rea
 {
   logger::StatePusher      pusher( elog::cedglog, "EventLogger::globus_submit_failed_event(...)" );
 
-#ifdef ENABLE_LOGGING
+#ifdef GLITE_WMS_HAVE_LOGGING
   int           res;
 
   if( this->el_context ) {
     this->startLogging();
     do {
-#ifdef ENABLE_LBPROXY
+#ifdef GLITE_WMS_HAVE_LBPROXY
       res = edg_wll_LogTransferFAILProxy( *this->el_context, EDG_WLL_SOURCE_LRMS, el_s_unavailable, logfile.c_str(),
 					  rsl.c_str(), reason, el_s_unavailable );
 #else
@@ -692,13 +692,13 @@ void EventLogger::globus_resource_down_event( void )
 {
   logger::StatePusher      pusher( elog::cedglog, "EventLogger::globus_resource_down_event()" );
 
-#ifdef ENABLE_LOGGING
+#ifdef GLITE_WMS_HAVE_LOGGING
   int           res;
 
   if( this->el_context ) {
     this->startLogging();
     do {
-#ifdef ENABLE_LBPROXY
+#ifdef GLITE_WMS_HAVE_LBPROXY
       res = edg_wll_LogDoneFAILEDProxy( *this->el_context, "Globus resource down", 1 );
 #else
       res = edg_wll_LogDoneFAILED( *this->el_context, "Globus resource down", 1 );
@@ -723,7 +723,7 @@ void EventLogger::job_held_event( const string &reason )
 {
   logger::StatePusher     pusher( elog::cedglog, "EventLogger::job_held_event(...)" );
 
-#ifdef ENABLE_LOGGING
+#ifdef GLITE_WMS_HAVE_LOGGING
   int            res;
   string         what( "Got a job held event, reason: " );
 
@@ -732,7 +732,7 @@ void EventLogger::job_held_event( const string &reason )
   if( this->el_context ) {
     this->startLogging();
     do {
-#ifdef ENABLE_LBPROXY
+#ifdef GLITE_WMS_HAVE_LBPROXY
       res = edg_wll_LogDoneFAILEDProxy( *this->el_context, what.c_str(), 1 );
 #else
       res = edg_wll_LogDoneFAILED( *this->el_context, what.c_str(), 1 );
@@ -757,7 +757,7 @@ void EventLogger::job_enqueued_start_event( const string &filename, const classa
 {
   logger::StatePusher      pusher( ts::edglog, "EventLogger::job_enqueued_start_event(...)" );
 
-#ifdef ENABLE_LOGGING
+#ifdef GLITE_WMS_HAVE_LOGGING
   int                         res;
   string                      job;
   classad::ClassAdUnParser    unparser;
@@ -767,7 +767,7 @@ void EventLogger::job_enqueued_start_event( const string &filename, const classa
   if( this->el_context ) {
     this->startLogging();
     do {
-#ifdef ENABLE_LBPROXY
+#ifdef GLITE_WMS_HAVE_LBPROXY
       res = edg_wll_LogEnQueuedSTARTProxy( *this->el_context, filename.c_str(), job.c_str(), el_s_unavailable );
 #else
       res = edg_wll_LogEnQueuedSTART( *this->el_context, filename.c_str(), job.c_str(), el_s_unavailable );
@@ -793,7 +793,7 @@ void EventLogger::job_enqueued_ok_event( const string &filename, const classad::
 {
   logger::StatePusher      pusher( ts::edglog, "EventLogger::job_enqueued_ok_event(...)" );
 
-#ifdef ENABLE_LOGGING
+#ifdef GLITE_WMS_HAVE_LOGGING
   int                         res;
   string                      job;
   classad::ClassAdUnParser    unparser;
@@ -803,7 +803,7 @@ void EventLogger::job_enqueued_ok_event( const string &filename, const classad::
   if( this->el_context ) {
     this->startLogging();
     do {
-#ifdef ENABLE_LBPROXY
+#ifdef GLITE_WMS_HAVE_LBPROXY
       res = edg_wll_LogEnQueuedOKProxy( *this->el_context, filename.c_str(), job.c_str(), el_s_unavailable );
 #else
       res = edg_wll_LogEnQueuedOK( *this->el_context, filename.c_str(), job.c_str(), el_s_unavailable );
@@ -829,7 +829,7 @@ void EventLogger::job_enqueued_failed_event( const string &filename, const strin
 {
   logger::StatePusher       pusher( ts::edglog, "EventLogger::job_enqueued_failed_event(...)" );
 
-#ifdef ENABLE_LOGGING
+#ifdef GLITE_WMS_HAVE_LOGGING
   int                        res;
   string                     job;
   classad::ClassAdUnParser   unparser;
@@ -839,7 +839,7 @@ void EventLogger::job_enqueued_failed_event( const string &filename, const strin
   if( this->el_context ) {
     this->startLogging();
     do {
-#ifdef ENABLE_LBPROXY
+#ifdef GLITE_WMS_HAVE_LBPROXY
       res = edg_wll_LogEnQueuedFAILProxy( *this->el_context, filename.c_str(), job.c_str(), error.c_str() );
 #else
       res = edg_wll_LogEnQueuedFAIL( *this->el_context, filename.c_str(), job.c_str(), error.c_str() );
@@ -867,13 +867,13 @@ void EventLogger::job_dequeued_event( const string &filename )
 {
   logger::StatePusher     pusher( elog::cedglog, "EventLogger::job_dequeued_event(...)" );
 
-#ifdef ENABLE_LOGGING
+#ifdef GLITE_WMS_HAVE_LOGGING
   int            res;
 
   if( this->el_context ) {
     this->startLogging();
     do {
-#ifdef ENABLE_LBPROXY
+#ifdef GLITE_WMS_HAVE_LBPROXY
       res = edg_wll_LogDeQueuedProxy( *this->el_context, filename.c_str(), el_s_unavailable );
 #else
       res = edg_wll_LogDeQueued( *this->el_context, filename.c_str(), el_s_unavailable );
@@ -898,7 +898,7 @@ void EventLogger::job_cancel_requested_event( const string &source )
 {
   logger::StatePusher     pusher( elog::cedglog, "EventLogger::job_cancel_requested_event()" );
 
-#ifdef ENABLE_LOGGING
+#ifdef GLITE_WMS_HAVE_LOGGING
   int            res;
   string         reason( "Cancel requested by " );
 
@@ -907,7 +907,7 @@ void EventLogger::job_cancel_requested_event( const string &source )
   if( this->el_context ) {
     this->startLogging();
     do {
-#ifdef ENABLE_LBPROXY
+#ifdef GLITE_WMS_HAVE_LBPROXY
       res = edg_wll_LogCancelREQProxy( *this->el_context, reason.c_str() );
 #else
       res = edg_wll_LogCancelREQ( *this->el_context, reason.c_str() );
@@ -932,13 +932,13 @@ void EventLogger::condor_submit_start_event( const string &logfile )
 {
   logger::StatePusher      pusher( elog::cedglog, "EventLogger::condor_submit_start_event(...)" );
 
-#ifdef ENABLE_LOGGING
+#ifdef GLITE_WMS_HAVE_LOGGING
   int            res;
 
   if( this->el_context ) {
     this->startLogging();
     do {
-#ifdef ENABLE_LBPROXY
+#ifdef GLITE_WMS_HAVE_LBPROXY
       res = edg_wll_LogTransferSTARTProxy( *this->el_context, EDG_WLL_SOURCE_LOG_MONITOR, "localhost", logfile.c_str(),
 					   el_s_unavailable, el_s_unavailable, el_s_unavailable );
 #else
@@ -965,13 +965,13 @@ void EventLogger::condor_submit_ok_event( const string &rsl, const string &condo
 {
   logger::StatePusher     pusher( elog::cedglog, "EventLogger::condor_submit_ok_event(...)" );
 
-#ifdef ENABLE_LOGGING
+#ifdef GLITE_WMS_HAVE_LOGGING
   int            res;
 
   if( this->el_context ) {
     this->startLogging();
     do {
-#ifdef ENABLE_LBPROXY
+#ifdef GLITE_WMS_HAVE_LBPROXY
       res = edg_wll_LogTransferOKProxy( *this->el_context, EDG_WLL_SOURCE_LOG_MONITOR, "localhost", logfile.c_str(),
 					rsl.c_str(), el_s_unavailable, condorid.c_str() );
 #else
@@ -998,13 +998,13 @@ void EventLogger::condor_submit_failed_event( const string &rsl, const string &r
 {
   logger::StatePusher      pusher( elog::cedglog, "EventLogger::condor_submit_failed_event(...)" );
 
-#ifdef ENABLE_LOGGING
+#ifdef GLITE_WMS_HAVE_LOGGING
   int            res;
 
   if( this->el_context ) {
     this->startLogging();
     do {
-#ifdef ENABLE_LBPROXY
+#ifdef GLITE_WMS_HAVE_LBPROXY
       res = edg_wll_LogTransferFAILProxy( *this->el_context, EDG_WLL_SOURCE_LOG_MONITOR, "localhost", logfile.c_str(),
 					  rsl.c_str(), reason.c_str(), el_s_unavailable );
 #else
@@ -1017,7 +1017,7 @@ void EventLogger::condor_submit_failed_event( const string &rsl, const string &r
 
     this->startLogging();
     do {
-#ifdef ENABLE_LBPROXY
+#ifdef GLITE_WMS_HAVE_LBPROXY
       res = edg_wll_LogAbortProxy( *this->el_context, "Submission to condor failed." );
 #else
       res = edg_wll_LogAbort( *this->el_context, "Submission to condor failed." );
@@ -1047,13 +1047,13 @@ void EventLogger::job_cancel_refused_event( const string &info )
 {
   logger::StatePusher     pusher( elog::cedglog, "EventLogger::job_cancel_refused_event(...)" );
 
-#ifdef ENABLE_LOGGING
+#ifdef GLITE_WMS_HAVE_LOGGING
   int            res;
 
   if( this->el_context ) {
     this->startLogging();
     do {
-#ifdef ENABLE_LBPROXY
+#ifdef GLITE_WMS_HAVE_LBPROXY
       res = edg_wll_LogCancelREFUSEProxy( *this->el_context, info.c_str() );
 #else
       res = edg_wll_LogCancelREFUSE( *this->el_context, info.c_str() );
@@ -1080,7 +1080,7 @@ void EventLogger::job_abort_classad_invalid_event( const string &logfile, const 
 {
   logger::StatePusher      pusher( elog::cedglog, "EventLogger::job_abort_classad_invalid_event(...)" );
 
-#ifdef ENABLE_LOGGING
+#ifdef GLITE_WMS_HAVE_LOGGING
   int            res;
   string         info( "Invalid classad syntax: " );
 
@@ -1089,7 +1089,7 @@ void EventLogger::job_abort_classad_invalid_event( const string &logfile, const 
   if( this->el_context ) {
     this->startLogging();
     do {
-#ifdef ENABLE_LBPROXY
+#ifdef GLITE_WMS_HAVE_LBPROXY
       res = edg_wll_LogTransferFAILProxy( *this->el_context, EDG_WLL_SOURCE_LOG_MONITOR, "localhost", logfile.c_str(),
 					  el_s_unavailable, info.c_str(), el_s_unavailable );
 #else
@@ -1102,7 +1102,7 @@ void EventLogger::job_abort_classad_invalid_event( const string &logfile, const 
 
     this->startLogging();
     do {
-#ifdef ENABLE_LBPROXY
+#ifdef GLITE_WMS_HAVE_LBPROXY
       res = edg_wll_LogAbortProxy( *this->el_context, info.c_str() );
 #else
       res = edg_wll_LogAbort( *this->el_context, info.c_str() );
@@ -1127,7 +1127,7 @@ void EventLogger::job_abort_cannot_write_submit_file_event( const string &logfil
 {
   logger::StatePusher    pusher( elog::cedglog, "EventLogger::job_abort_cannot_write_submit_file_event(...)" );
 
-#ifdef ENABLE_LOGGING
+#ifdef GLITE_WMS_HAVE_LOGGING
   int            res;
   string         info( "Cannot create condor submit file \"" );
 
@@ -1137,7 +1137,7 @@ void EventLogger::job_abort_cannot_write_submit_file_event( const string &logfil
   if( this->el_context ) {
     this->startLogging();
     do {
-#ifdef ENABLE_LBPROXY
+#ifdef GLITE_WMS_HAVE_LBPROXY
       res = edg_wll_LogTransferFAILProxy( *this->el_context, EDG_WLL_SOURCE_LOG_MONITOR, "localhose", logfile.c_str(),
 					  el_s_unavailable, info.c_str(), el_s_unavailable );
 #else
@@ -1150,7 +1150,7 @@ void EventLogger::job_abort_cannot_write_submit_file_event( const string &logfil
 
     this->startLogging();
     do {
-#ifdef ENABLE_LBPROXY
+#ifdef GLITE_WMS_HAVE_LBPROXY
       res = edg_wll_LogAbortProxy( *this->el_context, info.c_str() );
 #else
       res = edg_wll_LogAbort( *this->el_context, info.c_str() );
@@ -1175,13 +1175,13 @@ void EventLogger::job_resubmitting_event( void )
 {
   logger::StatePusher     pusher( elog::cedglog, "EventLogger::job_resubmitted_event()" );
 
-#ifdef ENABLE_LOGGING
+#ifdef GLITE_WMS_HAVE_LOGGING
   int            res;
 
   if( this->el_context ) {
     this->startLogging();
     do {
-#ifdef ENABLE_LBPROXY
+#ifdef GLITE_WMS_HAVE_LBPROXY
       res = edg_wll_LogResubmissionWILLRESUBProxy( *this->el_context, el_s_unavailable, el_s_unavailable );
 #else
       res = edg_wll_LogResubmissionWILLRESUB( *this->el_context, el_s_unavailable, el_s_unavailable );
@@ -1206,7 +1206,7 @@ void EventLogger::job_wm_enqueued_start_event( const string &filename, const cla
 {
   logger::StatePusher        pusher(elog::cedglog, "EventLogger::job_wm_enqueued_start_event(...)" );
 
-#ifdef ENABLE_LOGGING
+#ifdef GLITE_WMS_HAVE_LOGGING
   int                       res;
   string                    job;
   classad::ClassAdUnParser  unparser;
@@ -1216,7 +1216,7 @@ void EventLogger::job_wm_enqueued_start_event( const string &filename, const cla
   if( this->el_context ) {
     this->startLogging();
     do {
-#ifdef ENABLE_LBPROXY
+#ifdef GLITE_WMS_HAVE_LBPROXY
       res = edg_wll_LogEnQueuedSTARTProxy( *this->el_context, filename.c_str(), job.c_str(), el_s_unavailable );
 #else
       res = edg_wll_LogEnQueuedSTART( *this->el_context, filename.c_str(), job.c_str(), el_s_unavailable );
@@ -1242,7 +1242,7 @@ void EventLogger::job_wm_enqueued_ok_event( const string &filename, const classa
 {
   logger::StatePusher     pusher( elog::cedglog, "EventLogger::job_wm_enqueued_ok_event(...)" );
 
-#ifdef ENABLE_LOGGING
+#ifdef GLITE_WMS_HAVE_LOGGING
   int                       res;
   string                    job;
   classad::ClassAdUnParser  unparser;
@@ -1252,7 +1252,7 @@ void EventLogger::job_wm_enqueued_ok_event( const string &filename, const classa
   if( this->el_context ) {
     this->startLogging();
     do {
-#ifdef ENABLE_LBPROXY
+#ifdef GLITE_WMS_HAVE_LBPROXY
       res = edg_wll_LogEnQueuedOKProxy( *this->el_context, filename.c_str(), job.c_str(), el_s_unavailable );
 #else
       res = edg_wll_LogEnQueuedOK( *this->el_context, filename.c_str(), job.c_str(), el_s_unavailable );
@@ -1277,7 +1277,7 @@ void EventLogger::job_wm_enqueued_failed_event( const string &filename, const cl
 {
   logger::StatePusher    pusher( elog::cedglog, "EventLogger::job_wm_enqueued_failed_event(...)" );
 
-#ifdef ENABLE_LOGGING
+#ifdef GLITE_WMS_HAVE_LOGGING
   int                       res;
   string                    job;
   classad::ClassAdUnParser  unparser;
@@ -1287,7 +1287,7 @@ void EventLogger::job_wm_enqueued_failed_event( const string &filename, const cl
   if( this->el_context ) {
     this->startLogging();
     do {
-#ifdef ENABLE_LBPROXY
+#ifdef GLITE_WMS_HAVE_LBPROXY
       res = edg_wll_LogEnQueuedFAILProxy( *this->el_context, filename.c_str(), job.c_str(), error.c_str() );
 #else
       res = edg_wll_LogEnQueuedFAIL( *this->el_context, filename.c_str(), job.c_str(), error.c_str() );
@@ -1315,13 +1315,13 @@ void EventLogger::job_really_run_event( const string &sc )
 {
   logger::StatePusher    pusher( elog::cedglog, "EventLogger::job_really_run_event(...)" );
                                                                                    
-#ifdef ENABLE_LOGGING
+#ifdef GLITE_WMS_HAVE_LOGGING
   int                       res;
                                                                                    
   if( this->el_context ) {
     this->startLogging();
     do {
-#ifdef ENABLE_LBPROXY
+#ifdef GLITE_WMS_HAVE_LBPROXY
       res = edg_wll_LogReallyRunningProxy( *this->el_context, sc.c_str() );
 #else
       res = edg_wll_LogReallyRunning( *this->el_context, sc.c_str() );
@@ -1346,7 +1346,7 @@ string EventLogger::sequence_code( void )
   char          *seqcode;
   string         res( "undefined" );
 
-#ifdef ENABLE_LOGGING
+#ifdef GLITE_WMS_HAVE_LOGGING
   if( this->el_context ) {
     seqcode = edg_wll_GetSequenceCode( *this->el_context );
 

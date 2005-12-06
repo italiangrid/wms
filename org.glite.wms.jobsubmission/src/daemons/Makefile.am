@@ -17,6 +17,13 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.13  2005/12/06 12:53:28  gianelle
+#       Change the name of some "ifdef" parameters:
+#       ENABLE_LBPROXY --> GLITE_WMS_HAVE_LBPROXY
+#       ENABLE_LOGGING --> GLITE_WMS_HAVE_LOGGING
+#       ENABLE_RENEWAL --> GLITE_WMS_HAVE_RENEWAL
+#       ENABLE_PURGER  --> GLITE_WMS_HAVE_PURGER
+#
 #       Revision 1.12  2005/09/20 14:11:37  gianelle
 #       Syncronize the rc1 branch with head.
 #
@@ -121,6 +128,6 @@ AM_CPPFLAGS = -I$(top_srcdir)/src \
 	$(BOOST_CFLAGS) \
 	$(CLASSAD_CFLAGS) \
 	$(ARES_CFLAGS) $(EXPAT_CFLAGS) \
-	$(CONDORG_CFLAGS) -DENABLE_LBPROXY
+	$(CONDORG_CFLAGS) -DGLITE_WMS_HAVE_LBPROXY
 
 MAINTAINERCLEANFILES = Makefile.in *~
