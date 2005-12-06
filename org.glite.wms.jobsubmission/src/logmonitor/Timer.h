@@ -70,6 +70,11 @@ private:
   static const char     *te_s_DaemonName, *te_s_ErrorStr, *te_s_CriticalError;
   static const char     *te_s_ReasonCode, *te_s_ReasonSubCode, *te_s_UserNotes;
 #endif
+#if (CONDORG_VERSION >= 670)
+  static const char      *te_s_StartdAddr, *te_s_StartdName, *te_s_StarterAddr;
+  static const char      *te_s_DisconnReason, *te_s_NoReconnReason, *te_s_CanReconn;
+ 	
+#endif
 };
 
 class Timer {

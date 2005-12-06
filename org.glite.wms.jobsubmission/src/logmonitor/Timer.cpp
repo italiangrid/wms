@@ -80,6 +80,11 @@ const char   *TimeoutEvent::te_s_RestartableJM = "RestartableJM", *TimeoutEvent:
   const char   *TimeoutEvent::te_s_ReasonCode = "ReasonCode", *TimeoutEvent::te_s_ReasonSubCode = "ReasonSubCode";
   const char   *TimeoutEvent::te_s_UserNotes = "UserNotes";
 #endif
+#if (CONDORG_VERSION >= 670)
+  const char   *TimeoutEvent::te_s_StartdAddr = "StartdAddr", *TimeoutEvent::te_s_StartdName = "StartdName";
+  const char   *TimeoutEvent::te_s_StarterAddr = "StartesAddr", *TimeoutEvent::te_s_DisconnReason = "DisconnReason";
+  const char   *TimeoutEvent::te_s_NoReconnReason = "NoReconnReason", *TimeoutEvent::te_s_CanReconn = "CanReconn";
+#endif
 
 namespace {
 
@@ -398,6 +403,45 @@ classad::ClassAd *TimeoutEvent::to_classad( void )
       break;
     }
 #endif
+#if (CONDORG_VERSION >= 670)
+    case ULOG_JOB_DISCONNECTED: {
+      JobDisconnectedEvent     *jdcev = dynamic_cast<JobDisconnectedEvent *>( this->te_event.get() );
+      NullString                startdAddr( jdcev->getStartdAddr() );
+      NullString                startdName( jdcev->getStartdName() );
+      NullString                disconnReason( jdcev->getDisconnectReason() );
+      NullString                noreconnReason( jdcev->getNoReconnectReason() );
+
+      this->te_classad->InsertAttr( te_s_StartdAddr, startdAddr );
+      this->te_classad->InsertAttr( te_s_StartdName, startdName );
+      this->te_classad->InsertAttr( te_s_DisconnReason, disconnReason );
+      this->te_classad->InsertAttr( te_s_NoReconnReason, noreconnReason );
+      this->te_classad->InsertAttr( te_s_CanReconn, jdcev->canReconnect() );
+
+      break;
+    }
+    case ULOG_JOB_RECONNECTED: {
+      JobReconnectedEvent      *jrcev = dynamic_cast<JobReconnectedEvent *>( this->te_event.get() );
+      NullString                startdAddr( jrcev->getStartdAddr() );
+      NullString                startdName( jrcev->getStartdName() );
+      NullString                starterAddr( jrcev->getStarterAddr() );
+      
+      this->te_classad->InsertAttr( te_s_StartdAddr, startdAddr );
+      this->te_classad->InsertAttr( te_s_StartdName, startdName );
+      this->te_classad->InsertAttr( te_s_StarterAddr, starterAddr );
+
+      break;
+    }
+    case ULOG_JOB_RECONNECT_FAILED: {
+      JobReconnectFailedEvent *jrcfev = dynamic_cast<JobReconnectFailedEvent *>( this->te_event.get() );
+      NullString                startdName( jrcfev->getStartdName() );
+      NullString                reason( jrcfev->getReason() );
+
+      this->te_classad->InsertAttr( te_s_StartdName, startdName );
+      this->te_classad->InsertAttr( te_s_Reason, reason );
+
+      break;
+    }
+#endif
     } 
   }
   return this->te_classad.get();
@@ -681,6 +725,44 @@ ULogEvent *TimeoutEvent::to_event( void )
       this->te_classad->EvaluateAttrBool( te_s_CriticalError, bval );
       reev->setCriticalError( bval );
      
+      break;
+    }
+#endif
+#if (CONDORG_VERSION >= 670)
+    case ULOG_JOB_DISCONNECTED: {
+      JobDisconnectedEvent     *jdcev = dynamic_cast<JobDisconnectedEvent *>( this->te_event.get() );
+                                                                                                                       
+      this->te_classad->EvaluateAttrString( te_s_StartdAddr, sval );
+      jdcev->setStartdAddr( myStrdup( sval ) );
+      this->te_classad->EvaluateAttrString( te_s_StartdName, sval );
+      jdcev->setStartdName( myStrdup( sval ) );
+      this->te_classad->EvaluateAttrString( te_s_DisconnReason, sval );
+      jdcev->setDisconnectReason( myStrdup( sval ) );
+      this->te_classad->EvaluateAttrString( te_s_NoReconnReason, sval );
+      jdcev->setNoReconnectReason( myStrdup( sval ) );
+
+      break;
+    }
+    case ULOG_JOB_RECONNECTED: {
+      JobReconnectedEvent      *jrcev = dynamic_cast<JobReconnectedEvent *>( this->te_event.get() );
+      
+      this->te_classad->EvaluateAttrString( te_s_StartdAddr, sval );
+      jrcev->setStartdAddr( myStrdup( sval ) );
+      this->te_classad->EvaluateAttrString( te_s_StartdName, sval );
+      jrcev->setStartdName( myStrdup( sval ) );
+      this->te_classad->EvaluateAttrString( te_s_StarterAddr, sval );
+      jrcev->setStarterAddr( myStrdup( sval ) );
+                                                                                                            
+      break;
+    }
+    case ULOG_JOB_RECONNECT_FAILED: {
+      JobReconnectFailedEvent *jrcfev = dynamic_cast<JobReconnectFailedEvent *>( this->te_event.get() );  
+      
+      this->te_classad->EvaluateAttrString( te_s_StartdName, sval );
+      jrcfev->setStartdName( myStrdup( sval ) );
+      this->te_classad->EvaluateAttrString( te_s_Reason, sval );
+      jrcfev->setReason( myStrdup( sval ) );
+
       break;
     }
 #endif

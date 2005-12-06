@@ -84,7 +84,7 @@ bool JobWrapperOutputParser::parseStream( istream &is, string &errors, int &retc
 
           if (strstr(buffer, "Take token: ") == buffer) {
             char s[256];
-            if (sscanf(buffer, "Take token: %255s", &s) == 1) {
+            if (sscanf(buffer, "Take token: %255s", s) == 1) {
               s[255] = '\0';
               sc.assign(s);
             } else { // The sequence code is not set... so what can we do?
