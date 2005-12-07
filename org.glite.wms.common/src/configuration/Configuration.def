@@ -377,10 +377,11 @@ class WMConfiguration {
   parameter std::string(DliServiceName = "data-location-interface") section normal;
   parameter std::string(SiServiceName = "org.glite.SEIndex") section normal;
   parameter std::string(JobWrapperTemplateDir = "${GLITE_WMS_LOCATION}/etc/templates") section fileparse;
+  parameter int(JobWrapperMaxOutputSandboxSize = -1) section normal;
+  parameter int(JobWrapperFileTxRetryCount = 3) section normal;
   parameter std::string(PboxHostName) section fileparse;
   parameter int(PboxPortNum = 6699) section normal;
   parameter bool(PboxSafeMode = false) section normal;
-  parameter int(MaxOutputSandboxSize = -1) section normal;
 }
 class WMCConfiguration {
 
