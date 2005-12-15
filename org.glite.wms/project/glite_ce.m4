@@ -10,7 +10,7 @@ AC_DEFUN(AC_GLITE_CE,
 	dnl
 	dnl 
 	dnl
-        ac_glite_ce_lib="-L$ac_glite_cd_prefix/lib"
+        ac_glite_ce_lib="-L$ac_glite_ce_prefix/lib"
 	GLITE_CE_MONITOR_CLIENT_API_LIBS="$ac_glite_ce_lib -lglite_ce_monitor_client"
 	ifelse([$2], , :, [$2])
     else
