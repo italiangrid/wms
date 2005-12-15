@@ -477,6 +477,7 @@ class ICEConfiguration {
 #  parameter bool( UseMaradonaFile = true ) section normal;
 #  parameter int(  pippo = 1000 ) section normal;
   parameter int( listener_port = 9000) section normal;
+  parameter int( subscription_duration = 86400) section normal;
   parameter std::string( Input = "${EDG_WL_TMP}/workload_manager/Output.fl") section normal;
   parameter std::string( cache_persist_file = "/tmp/ice_cache_persist_file") section normal;
   parameter std::string( logfile = "/tmp/ice_logfile") section normal;
