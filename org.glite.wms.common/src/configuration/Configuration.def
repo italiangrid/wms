@@ -484,6 +484,7 @@ class ICEConfiguration {
   parameter std::string( logfile = "/tmp/ice_logfile") section normal;
   parameter bool( start_poller = true ) section normal;
   parameter bool( start_listener = true ) section normal;
+  parameter bool( start_subscription_updater = true ) section normal;
   parameter int( poller_delay = 10 ) section normal;
   parameter std::string( cream_url_prefix = "https://") section normal;
   parameter std::string( cream_url_postfix = "/ce-cream/services/CREAM" ) section normal;
