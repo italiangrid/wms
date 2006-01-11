@@ -399,16 +399,18 @@ class WMCConfiguration {
   copy ConfBase.parse;
   copy ConfBase.fileparse;
 
-#  parameter std::string(VirtualOrganisation) section normal;
-#  parameter int(RetryCount = 3) section normal;
-#  parameter int(ShallowRetryCount = 3) section normal;
-#  parameter classad::ExprTree*(requirements) section normal;
-#  parameter classad::ExprTree*(rank) section normal;
-#  parameter std::string(HLRLocation) section normal;
-#  parameter std::string(MyProxyServer) section normal;
-#  parameter std::string(JobProvenance) section normal;
-#  parameter bool(PerusalFileEnable=false) section normal;
-#  parameter bool(AllowZippedISB=false) section normal;
+# OLD Approach (deprecated values moved into JdlDefaultAttributes
+  parameter std::string(VirtualOrganisation) section normal;
+  parameter int(RetryCount = 3) section normal;
+  parameter int(ShallowRetryCount = 3) section normal;
+  parameter classad::ExprTree*(requirements) section normal;
+  parameter classad::ExprTree*(rank) section normal;
+  parameter std::string(HLRLocation) section normal;
+  parameter std::string(MyProxyServer) section normal;
+  parameter std::string(JobProvenance) section normal;
+  parameter bool(PerusalFileEnable=false) section normal;
+  parameter bool(AllowZippedISB=false) section normal;
+# OLD Approach END
 
 # Minimal value for proxy validity (in minutes)
   parameter int(DefaultProxyValidity= 5) section normal;
