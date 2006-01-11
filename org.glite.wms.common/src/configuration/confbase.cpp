@@ -1,9 +1,7 @@
 #include <boost/regex.hpp>
 #include <classad_distribution.h>
-
 #include "glite/wms/common/utilities/classad_utils.h"
 #include "utilities/boost_fs_add.h"
-
 #include "glite/wms/common/configuration/confbase.h"
 
 using namespace std;
@@ -109,7 +107,11 @@ classad::ExprTree* confbase_c::getExpression( const char *name ) const
 
 classad::ClassAd* confbase_c::getClassAd( const char *name ) const
 {
-	classad::ClassAd* cad = static_cast<classad::ClassAd*> (this->cb_ad->Lookup(name));
+	classad::ClassAd* cad = NULL;
+	classad::ExprTree* tree = this->cb_ad->Lookup(name);
+	if (tree){
+		cad = static_cast<classad::ClassAd*> (tree->Copy());
+	}
 	return cad;
 }
 
