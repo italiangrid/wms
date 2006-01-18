@@ -481,9 +481,9 @@ class ICEConfiguration {
   parameter int( listener_port = 9000) section normal;
   parameter int( subscription_update_threshold_time = 1200) section normal;
   parameter int( subscription_duration = 86400) section normal;
-  parameter std::string( Input = "${EDG_WL_TMP}/workload_manager/Output.fl") section normal;
-  parameter std::string( cache_persist_file = "/tmp/ice_cache_persist_file") section normal;
-  parameter std::string( logfile = "/tmp/ice_logfile") section normal;
+  parameter std::string( Input = "${EDG_WL_TMP}/workload_manager/Output.fl") section fileparse;
+  parameter std::string( cache_persist_file = "/tmp/ice_cache_persist_file") section fileparse;
+  parameter std::string( logfile = "/tmp/ice_logfile") section fileparse;
   parameter bool( start_poller = true ) section normal;
   parameter bool( start_listener = true ) section normal;
   parameter bool( start_subscription_updater = true ) section normal;
