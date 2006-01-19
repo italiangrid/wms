@@ -496,6 +496,8 @@ class ICEConfiguration {
   parameter std::string( cemon_url_postfix = "/ce-monitor/services/CEMonitor" ) section normal;
   parameter std::string( ice_topic = "ICE" ) section normal;
   parameter int( poller_status_threshold_time = 60 ) section normal;
+  parameter bool( log_on_console = true ) section normal;
+  parameter bool( log_on_file = true) section normal;
 #  parameter int( MainLoopDuration = 3 ) section normal;
 #  parameter int( AbortedJobsTimeout = 600 ) section normal;
 #  parameter int( GlobusDownTimeout = 600 ) section normal;
