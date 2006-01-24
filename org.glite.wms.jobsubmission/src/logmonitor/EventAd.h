@@ -38,9 +38,12 @@ private:
   static const char   *ea_s_CoreFile, *ea_s_TotalSentBytes, *ea_s_TotalRecvdBytes, *ea_s_Size, *ea_s_Message;
   static const char   *ea_s_Info, *ea_s_NumPids, *ea_s_Node;
   static const char   *ea_s_RestartableJM, *ea_s_RmContact, *ea_s_JmContact;
-#if (CONDORG_VERSION >= 653)
+#if CONDORG_AT_LEAST(6,5,3)
   static const char   *ea_s_DaemonName, *ea_s_ErrorStr, *ea_s_CriticalError;
   static const char   *ea_s_ReasonCode, *ea_s_ReasonSubCode, *ea_s_UserNotes;
+#endif
+#if CONDORG_AT_LEAST(6,7,14)
+  static const char   *ea_s_JobId, *ea_s_ResourceName;
 #endif
 };
 

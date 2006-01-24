@@ -17,6 +17,14 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.5  2006/01/24 12:35:56  gianelle
+#       Added some new condor events:
+#        EventGridResourceDown
+#        EventGridResourceUp
+#        EventGridSubmit
+#
+#       Added the support for condorG version 6.7.15
+#
 #       Revision 1.4  2005/12/06 12:53:28  gianelle
 #       Change the name of some "ifdef" parameters:
 #       ENABLE_LBPROXY --> GLITE_WMS_HAVE_LBPROXY
@@ -48,13 +56,16 @@ noinst_HEADERS = \
 	EventInterface.h \
 	EventSubmit.h \
 	EventGlobusSubmit.h \
+	EventGridSubmit.h \
 	EventExecute.h \
 	EventTerminated.h \
 	EventPostTerminated.h \
 	EventAborted.h \
 	EventGlobusSubmitFailed.h \
 	EventGlobusResourceDown.h \
+	EventGridResourceDown.h \
 	EventGlobusResourceUp.h \
+	EventGridResourceUp.h \
 	EventJobHeld.h \
 	EventGeneric.h \
 	EventUnhandled.h \
@@ -70,13 +81,16 @@ EXTRA_DIST = EventFactory.cpp \
 	EventUnhandled.cpp \
 	EventSubmit.cpp \
 	EventGlobusSubmit.cpp \
+	EventGridSubmit.cpp \
 	EventExecute.cpp \
 	EventTerminated.cpp \
 	EventPostTerminated.cpp \
 	EventAborted.cpp \
 	EventGlobusSubmitFailed.cpp \
 	EventGlobusResourceDown.cpp \
+	EventGridResourceDown.cpp \
 	EventGlobusResourceUp.cpp \
+	EventGridResourceUp.cpp \
 	EventJobHeld.cpp \
 	EventGeneric.cpp \
 	MonitorData.cpp \

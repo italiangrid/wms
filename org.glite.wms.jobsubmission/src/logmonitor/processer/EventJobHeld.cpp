@@ -8,7 +8,7 @@
 #include <string>
 
 #include <user_log.c++.h>
-#if (CONDORG_VERSION >= 653)
+#if CONDORG_AT_LEAST(6,5,3)
 #include <globus_gram_protocol_constants.h>
 #endif
 
@@ -67,7 +67,7 @@ void EventJobHeld::process_event( void )
   else {
     elog::cedglog << logger::setlevel( logger::info )
 		  << "Reason = \"" << reason << "\"." << endl
-#if (CONDORG_VERSION >= 653)
+#if CONDORG_AT_LEAST(6,5,3)
 		  << "Code = " << this->ejh_event->getReasonCode() << ", SubCode = " << this->ejh_event->getReasonSubCode() << endl
 #endif
 		  << ei_s_edgideq << position->edg_id() << endl;
@@ -77,7 +77,7 @@ void EventJobHeld::process_event( void )
 
     if( this->ei_data->md_aborted->search(this->ei_condor) ) // Job got a previous error, ignoring event...
       elog::cedglog << logger::setlevel( logger::info ) << "The job got a previous error, ignoring the held event..." << endl;
-#if (CONDORG_VERSION >= 653)
+#if CONDORG_AT_LEAST(6,5,3)
     else if( position->last_status() == GLOBUS_GRAM_PROTOCOL_ERROR_JOB_CANCEL_FAILED ) {
       elog::cedglog << logger::setlevel( logger::warning )
 		    << "Got another held event for an already removing job: Hugh !!!" << endl
@@ -117,7 +117,7 @@ void EventJobHeld::process_event( void )
       controller.cancel( this->ejh_event->cluster, this->ei_data->md_logfile_name.c_str(), false );	
 
 
-#if (CONDORG_VERSION >= 653)
+#if CONDORG_AT_LEAST(6,5,3)
       this->ei_data->md_container->update_pointer( position, this->ei_data->md_logger->sequence_code(),
 						   this->ejh_event->eventNumber, this->ejh_event->getReasonSubCode() );
 #else

@@ -122,13 +122,17 @@ const char   *EventAd::ea_s_CoreFile = "CoreFile", *EventAd::ea_s_TotalSentBytes
 const char   *EventAd::ea_s_TotalRecvdBytes = "TotalRecvdBytes", *EventAd::ea_s_Size = "Size";
 const char   *EventAd::ea_s_Message = "Message", *EventAd::ea_s_Info = "Info", *EventAd::ea_s_NumPids = "NumPids";
 const char   *EventAd::ea_s_RestartableJM = "RestartableJM", *EventAd::ea_s_RmContact = "RmContact";
-const char   *EventAd::ea_s_JmContact = "JmContact";
+const char   *EventAd::ea_s_JmContact = "JmContact"; 
 
-#if (CONDORG_VERSION >= 653)
+#if CONDORG_AT_LEAST(6,5,3)
 const char   *EventAd::ea_s_DaemonName = "DaemonName", *EventAd::ea_s_ErrorStr = "ErrorStr";
 const char   *EventAd::ea_s_CriticalError = "CriticalError";
 const char   *EventAd::ea_s_ReasonCode = "ReasonCode", *EventAd::ea_s_ReasonSubCode = "ReasonSubCode";
 const char   *EventAd::ea_s_UserNotes = "UserNotes";
+#endif
+
+#if CONDORG_AT_LEAST(6,7,14)
+const char   *EventAd::ea_s_ResourceName= "GridResource", *EventAd::ea_s_JobId = "GridJobId";
 #endif
 
 EventAd::EventAd( void ) : ea_ad()
@@ -172,7 +176,7 @@ EventAd &EventAd::from_event( const ULogEvent *const_event )
       this->ea_ad.InsertAttr( ea_s_LogNotes, lnotes );
     }
 
-#if (CONDORG_VERSION >= 653)
+#if CONDORG_AT_LEAST(6,5,3)
     if( sev->submitEventUserNotes ) {
       NullString    unotes( sev->submitEventUserNotes );
 	
@@ -288,7 +292,7 @@ EventAd &EventAd::from_event( const ULogEvent *const_event )
     NullString      reason( jhev->getReason() );
 
     this->ea_ad.InsertAttr( ea_s_Reason, reason );
-#if (CONDORG_VERSION >= 653)
+#if CONDORG_AT_LEAST(6,5,3)
     this->ea_ad.InsertAttr( ea_s_ReasonCode, jhev->getReasonCode() );
     this->ea_ad.InsertAttr( ea_s_ReasonSubCode, jhev->getReasonSubCode() );
 #endif
@@ -345,7 +349,7 @@ ULogEvent *EventAd::create_event( void )
       if( this->ea_ad.EvaluateAttrString(ea_s_LogNotes, string_value) )
 	sev->submitEventLogNotes = local_strdup( string_value );
 
-#if (CONDORG_VERSION >= 653)
+#if CONDORG_AT_LEAST(6,5,3)
       if( this->ea_ad.EvaluateAttrString(ea_s_UserNotes, string_value) )
 	sev->submitEventUserNotes = local_strdup( string_value );
 #endif
@@ -482,7 +486,7 @@ ULogEvent *EventAd::create_event( void )
       this->ea_ad.EvaluateAttrString( ea_s_Reason, string_value );
       jhev->setReason( local_strdup(string_value) );
 
-#if (CONDORG_VERSION >= 653)
+#if CONDORG_AT_LEAST(6,5,3)
       this->ea_ad.EvaluateAttrNumber( ea_s_ReasonCode, integer_value );
       jhev->setReasonCode( integer_value );
 
@@ -587,7 +591,7 @@ ULogEvent *EventAd::create_event( void )
 
       break;
     }
-#if (CONDORG_VERSION >= 653)
+#if CONDORG_AT_LEAST(6,5,3)
     case ULOG_REMOTE_ERROR: {
       RemoteErrorEvent        *reev = dynamic_cast<RemoteErrorEvent *>( event.get() );
       
@@ -606,6 +610,35 @@ ULogEvent *EventAd::create_event( void )
       break;
     }
 #endif
+#if CONDORG_AT_LEAST(6,7,14)
+    case ULOG_GRID_SUBMIT: {
+      GridSubmitEvent    *gsev = dynamic_cast<GridSubmitEvent *>( event.get() );
+
+      this->ea_ad.EvaluateAttrString( ea_s_ResourceName, string_value );
+      gsev->resourceName = local_strdup( string_value );
+
+      this->ea_ad.EvaluateAttrString( ea_s_JobId, string_value );
+      gsev->jobId = local_strdup( string_value );
+
+      break;
+    }
+    case ULOG_GRID_RESOURCE_UP: {
+      GridResourceUpEvent   *gruev = dynamic_cast<GridResourceUpEvent *>( event.get() );
+
+      this->ea_ad.EvaluateAttrString( ea_s_ResourceName, string_value );
+      gruev->resourceName = local_strdup( string_value );
+
+      break;
+    }
+    case ULOG_GRID_RESOURCE_DOWN: {
+      GridResourceDownEvent   *grdev = dynamic_cast<GridResourceDownEvent *>( event.get() );
+
+      this->ea_ad.EvaluateAttrString( ea_s_ResourceName, string_value );
+      grdev->resourceName = local_strdup( string_value );
+
+      break;
+    }
+#endif // 6.7.14 and beyond
     default: // Nothing to do, by now..
       break;
     }

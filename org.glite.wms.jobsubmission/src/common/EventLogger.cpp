@@ -450,6 +450,35 @@ void EventLogger::globus_submit_event( const string &ce, const string &rsl, cons
   return;
 }
 
+void EventLogger::grid_submit_event( const string &ce, const string &logfile )
+{
+  logger::StatePusher     pusher( elog::cedglog, "EventLogger::grid_submit_event(...)" );
+  
+#ifdef ENABLE_LOGGING
+  int           res;
+
+  if( this->el_context ) {
+    this->startLogging();
+    do {
+      res = edg_wll_LogTransferOK( *this->el_context, EDG_WLL_SOURCE_LRMS, ce.c_str(), 
+				   logfile.c_str(), "Grid job - no RSL", "Job successfully submitted over the Grid",
+				   el_s_unavailable );
+
+      this->testCode( res );
+    } while( res != 0 );
+  }
+  else
+    elog::cedglog << logger::setlevel( logger::null )
+		  << "Got grid submit event, ce = " << ce << endl
+		  << el_s_notLogged << endl;
+#else
+  elog::cedglog << logger::setlevel( logger::null )
+		<< "Unlogged event grid submit, ce = " << ce << endl;
+#endif
+
+  return;
+}
+
 void EventLogger::execute_event( const char *host )
 {
   logger::StatePusher     pusher( elog::cedglog, "EventLogger::execute_event(...)" );

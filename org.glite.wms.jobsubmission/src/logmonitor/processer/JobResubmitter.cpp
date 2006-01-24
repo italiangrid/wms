@@ -6,7 +6,7 @@
 
 #include <classad_distribution.h>
 
-#if (CONDORG_VERSION >= 653)
+#if CONDORG_AT_LEAST(6,5,3) 
 #include <globus_gram_protocol_constants.h>
 #endif
 
@@ -75,7 +75,7 @@ void JobResubmitter::resubmit( int laststatus, const string &edgid, const string
 		<< "Last known status = " << laststatus << endl;
 
   switch( laststatus ) {
-#if (CONDORG_VERSION >= 653)
+#if CONDORG_AT_LEAST(6,5,3) 
     case GLOBUS_GRAM_PROTOCOL_ERROR_USER_PROXY_EXPIRED:
       elog::cedglog << logger::setlevel( logger::warning ) << "Job has an expiring proxy." << endl
 		    << logger::setlevel( logger::info ) << "Must not resubmit, but abort." << endl

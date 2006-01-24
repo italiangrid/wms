@@ -17,6 +17,14 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.16  2006/01/24 12:35:55  gianelle
+#       Added some new condor events:
+#        EventGridResourceDown
+#        EventGridResourceUp
+#        EventGridSubmit
+#
+#       Added the support for condorG version 6.7.15
+#
 #       Revision 1.15  2005/12/06 12:53:28  gianelle
 #       Change the name of some "ifdef" parameters:
 #       ENABLE_LBPROXY --> GLITE_WMS_HAVE_LBPROXY
@@ -133,13 +141,16 @@ libglite_wms_jss_logmonitor_la_SOURCES = CondorMonitor.cpp \
 	./processer/EventUnhandled.cpp \
 	./processer/EventSubmit.cpp \
 	./processer/EventGlobusSubmit.cpp \
+	./processer/EventGridSubmit.cpp \
 	./processer/EventExecute.cpp \
 	./processer/EventTerminated.cpp \
 	./processer/EventPostTerminated.cpp \
 	./processer/EventAborted.cpp \
 	./processer/EventGlobusSubmitFailed.cpp \
 	./processer/EventGlobusResourceDown.cpp \
+	./processer/EventGridResourceDown.cpp \
 	./processer/EventGlobusResourceUp.cpp \
+	./processer/EventGridResourceUp.cpp \
 	./processer/EventJobHeld.cpp \
 	./processer/EventGeneric.cpp \
 	./processer/MonitorData.cpp \

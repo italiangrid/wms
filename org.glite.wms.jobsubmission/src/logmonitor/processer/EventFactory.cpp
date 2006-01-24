@@ -26,6 +26,11 @@
 #include "EventGlobusSubmitFailed.h"
 #include "EventGlobusResourceDown.h"
 #include "EventGlobusResourceUp.h"
+#if CONDORG_AT_LEAST(6,7,14)
+#include "EventGridSubmit.h"
+#include "EventGridResourceDown.h"
+#include "EventGridResourceUp.h"
+#endif
 #include "EventJobHeld.h"
 #include "EventGeneric.h"
 
@@ -75,6 +80,17 @@ EventInterface *EventFactory::create_processor( ULogEvent *event, bool removeTim
   case ULOG_GLOBUS_RESOURCE_UP:
     processer = new EventGlobusResourceUp( event, this->ef_data.get() );
     break;					
+#if CONDORG_AT_LEAST(6,7,14)
+  case ULOG_GRID_SUBMIT:
+    processer = new EventGridSubmit( event, this->ef_data.get() );
+    break;
+  case ULOG_GRID_RESOURCE_DOWN:
+    processer = new EventGridResourceDown( event, this->ef_data.get() );
+    break;
+  case ULOG_GRID_RESOURCE_UP:
+    processer = new EventGridResourceUp( event, this->ef_data.get() );
+    break;					
+#endif
   case ULOG_JOB_HELD:
     processer = new EventJobHeld( event, this->ef_data.get() );
     break;
