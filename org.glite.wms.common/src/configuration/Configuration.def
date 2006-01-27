@@ -380,6 +380,7 @@ class WMConfiguration {
   parameter std::string(PboxHostName) section fileparse;
   parameter int(PboxPortNum = 6699) section normal;
   parameter bool(PboxSafeMode = false) section normal;
+  parameter std::vector<std::string>(CeForwardParameters) section normal;
 }
 class WMCConfiguration {
 
