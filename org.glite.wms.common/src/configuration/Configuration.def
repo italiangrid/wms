@@ -497,6 +497,7 @@ class ICEConfiguration {
   parameter int( poller_status_threshold_time = 60 ) section normal;
   parameter bool( log_on_console = true ) section normal;
   parameter bool( log_on_file = true) section normal;
+  parameter int( max_jobcache_operation_before_dump = 10 ) section normal;
 #  parameter int( MainLoopDuration = 3 ) section normal;
 #  parameter int( AbortedJobsTimeout = 600 ) section normal;
 #  parameter int( GlobusDownTimeout = 600 ) section normal;
