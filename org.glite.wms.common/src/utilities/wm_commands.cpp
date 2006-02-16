@@ -7,7 +7,6 @@
 #include "glite/wms/common/utilities/classad_utils.h"
 #include <algorithm>
 #include <cctype>
-#include <boost/scoped_ptr.hpp>
 
 namespace glite {
 namespace wms {
@@ -65,24 +64,46 @@ command_get_command(classad::ClassAd const& command_ad)
 }
 
 classad::ClassAd
-submit_command_create(classad::ClassAd const& job_ad)
+submit_command_create(std::auto_ptr<classad::ClassAd> jdl)
 {
   classad::ClassAd result;
 
   result.InsertAttr("version", std::string("1.0.0"));
   result.InsertAttr("command", std::string("jobsubmit"));
   std::auto_ptr<classad::ClassAd> args(new classad::ClassAd);
-  std::auto_ptr<classad::ClassAd> job_ad_copy(new classad::ClassAd(job_ad));
-  args->Insert("ad", job_ad_copy.release());
-  result.Insert("arguments", args.release());
+  args->Insert("ad", jdl.get());
+  jdl.release();
+  result.Insert("arguments", args.get());
+  args.release();
 
-  return result;
+  return result;  
+}
+
+classad::ClassAd
+submit_command_create(classad::ClassAd const& jdl)
+{
+  std::auto_ptr<classad::ClassAd> jdl_(new classad::ClassAd(jdl));
+  return submit_command_create(jdl);
 }
 
 classad::ClassAd const*
 submit_command_get_ad(classad::ClassAd const& submit_command_ad)
 {
   return evaluate_expression(submit_command_ad, "arguments.ad");
+}
+
+std::auto_ptr<classad::ClassAd>
+submit_command_remove_ad(classad::ClassAd& submit_command_ad)
+{
+  std::auto_ptr<classad::ClassAd> result(
+    static_cast<classad::ClassAd*>(
+      static_cast<classad::ClassAd*>(
+        submit_command_ad.Lookup("arguments")
+      )->Remove("ad")
+    )
+  );
+
+  return result;
 }
 
 classad::ClassAd
@@ -95,12 +116,11 @@ resubmit_command_create(std::string const& job_id, std::string const& sequence_c
   std::auto_ptr<classad::ClassAd> args(new classad::ClassAd);
   args->InsertAttr("id", job_id);
   args->InsertAttr("lb_sequence_code", sequence_code);
-  result.Insert("arguments", args.release());
+  result.Insert("arguments", args.get());
+  args.release();
 
   return result;
 }
-
-
 
 std::string
 resubmit_command_get_id(classad::ClassAd const& command_ad)
@@ -123,7 +143,8 @@ cancel_command_create(std::string const& job_id)
   result.InsertAttr("command", std::string("jobcancel"));
   std::auto_ptr<classad::ClassAd> args(new classad::ClassAd);
   args->InsertAttr("id", job_id);
-  result.Insert("arguments", args.release());
+  result.Insert("arguments", args.get());
+  args.release();
 
   return result;
 }
@@ -142,7 +163,7 @@ cancel_command_get_lb_sequence_code(classad::ClassAd const& command_ad)
 
 classad::ClassAd
 match_command_create(
-  classad::ClassAd const& jdl,
+  std::auto_ptr<classad::ClassAd> jdl,
   std::string const& file,
   int number_of_results,
   bool include_brokerinfo
@@ -153,20 +174,47 @@ match_command_create(
   result.InsertAttr("version", std::string("1.0.0"));
   result.InsertAttr("command", std::string("match"));
   std::auto_ptr<classad::ClassAd> args(new classad::ClassAd);
-  std::auto_ptr<classad::ClassAd> jdl_copy(new classad::ClassAd(jdl));
-  args->Insert("ad", jdl_copy.release());
+  args->Insert("ad", jdl.get());
+  jdl.release();
   args->InsertAttr("file", file);
   args->InsertAttr("number_of_results", number_of_results);
   args->InsertAttr("include_brokerinfo", include_brokerinfo);
-  result.Insert("arguments", args.release());
+  result.Insert("arguments", args.get());
+  args.release();
 
   return result;
+}
+
+classad::ClassAd
+match_command_create(
+  classad::ClassAd const& jdl,
+  std::string const& file,
+  int number_of_results,
+  bool include_brokerinfo
+)
+{
+  std::auto_ptr<classad::ClassAd> jdl_(new classad::ClassAd(jdl));
+  return match_command_create(jdl_, file);
 }
 
 classad::ClassAd const*
 match_command_get_ad(classad::ClassAd const& match_command_ad)
 {
   return evaluate_expression(match_command_ad, "arguments.ad");
+}
+
+std::auto_ptr<classad::ClassAd>
+match_command_remove_ad(classad::ClassAd& match_command_ad)
+{
+  std::auto_ptr<classad::ClassAd> result(
+    static_cast<classad::ClassAd*>(
+      static_cast<classad::ClassAd*>(
+        match_command_ad.Lookup("arguments")
+      )->Remove("ad")
+    )
+  );
+
+  return result;
 }
 
 std::string

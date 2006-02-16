@@ -7,6 +7,7 @@
 #define GLITE_WMS_COMMON_UTILITIES_WM_COMMANDS_H
 
 #include <string>
+#include <memory>
 
 namespace classad {
 class ClassAd;
@@ -24,10 +25,16 @@ std::string
 command_get_command(classad::ClassAd const& command_ad);
 
 classad::ClassAd
-submit_command_create(classad::ClassAd const& job_ad);
+submit_command_create(std::auto_ptr<classad::ClassAd> jdl);
+
+classad::ClassAd
+submit_command_create(classad::ClassAd const& jdl);
 
 classad::ClassAd const*
 submit_command_get_ad(classad::ClassAd const& submit_command_ad);
+
+std::auto_ptr<classad::ClassAd>
+submit_command_remove_ad(classad::ClassAd& submit_command_ad);
 
 classad::ClassAd
 cancel_command_create(std::string const& job_id);
@@ -49,14 +56,25 @@ resubmit_command_get_lb_sequence_code(classad::ClassAd const& command_ad);
 
 classad::ClassAd
 match_command_create(
-  classad::ClassAd const& job_ad,
+  std::auto_ptr<classad::ClassAd> jdl,
   std::string const& file,
-  int number_of_result = -1,    // unlimited
+  int number_of_results = -1,    // unlimited
+  bool include_brokerinfo = false
+);
+
+classad::ClassAd
+match_command_create(
+  classad::ClassAd const& jdl,
+  std::string const& file,
+  int number_of_results = -1,    // unlimited
   bool include_brokerinfo = false
 );
 
 classad::ClassAd const*
 match_command_get_ad(classad::ClassAd const& match_command_ad);
+
+std::auto_ptr<classad::ClassAd>
+match_command_remove_ad(classad::ClassAd& match_command_ad);
 
 std::string
 match_command_get_file(classad::ClassAd const& match_command_ad);
