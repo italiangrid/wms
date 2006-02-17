@@ -6,6 +6,8 @@
 // $Id$
 
 #include "glite/wms/common/utilities/classad_utils.h"
+#include <boost/bind.hpp>
+#include "glite/wms/common/utilities/scope_guard.h"
 
 namespace glite {
 namespace wms {
@@ -153,88 +155,203 @@ evaluate_expression(classad::ClassAd const& ad,
   return ValueProxy(expression, v);
 }
 
+namespace {
+
+char const* const leftMatchesRight = "leftMatchesRight";
+char const* const rightMatchesLeft = "rightMatchesLeft";
+char const* const symmetricMatch = "symmetricMatch";
+
 bool
-match(classad::ClassAd const& lhs, classad::ClassAd const& rhs,
-      std::string const& match_type)
+match(classad::ClassAd* lhs, classad::ClassAd* rhs, char const* match_type)
 {
+  classad::MatchClassAd match_ad(lhs, rhs);
+
+  // prevent the deletion of the two original classads
+  scope_guard remove_left_ad_guard(
+    boost::bind(&classad::MatchClassAd::RemoveLeftAd, boost::ref(match_ad))
+  );
+  scope_guard remove_right_ad_guard(
+    boost::bind(&classad::MatchClassAd::RemoveRightAd, boost::ref(match_ad))
+  );
+
   bool result = false;
-
-  classad::ClassAd* lhs_ad(new classad::ClassAd(lhs));
-  classad::ClassAd* rhs_ad(new classad::ClassAd(rhs));
-  assert(lhs_ad != 0 && rhs_ad != 0);
-
-  classad::MatchClassAd match_ad(lhs_ad, rhs_ad);
   match_ad.EvaluateAttrBool(match_type, result);
 
   return result;
 }
 
+}
+
+bool
+left_matches_right(classad::ClassAd& lhs, classad::ClassAd& rhs)
+{
+  return match(&lhs, &rhs, leftMatchesRight);
+}
+
+bool
+left_matches_right(classad::ClassAd const& lhs, classad::ClassAd& rhs)
+{
+  classad::ClassAd lhs_(lhs);
+  return match(&lhs_, &rhs, leftMatchesRight);
+}
+
+bool
+left_matches_right(classad::ClassAd& lhs, classad::ClassAd const& rhs)
+{
+  classad::ClassAd rhs_(rhs);
+  return match(&lhs, &rhs_, leftMatchesRight);
+}
+
 bool
 left_matches_right(classad::ClassAd const& lhs, classad::ClassAd const& rhs)
 {
-  return match(lhs, rhs, "leftMatchesRight");
+  classad::ClassAd lhs_(lhs);
+  classad::ClassAd rhs_(rhs);
+  return match(&lhs_, &rhs_, leftMatchesRight);
+}
+
+bool
+right_matches_left(classad::ClassAd& lhs, classad::ClassAd& rhs)
+{
+  return match(&lhs, &rhs, rightMatchesLeft);
+}
+
+bool
+right_matches_left(classad::ClassAd const& lhs, classad::ClassAd& rhs)
+{
+  classad::ClassAd lhs_(lhs);
+  return match(&lhs_, &rhs, rightMatchesLeft);
+}
+
+bool
+right_matches_left(classad::ClassAd& lhs, classad::ClassAd const& rhs)
+{
+  classad::ClassAd rhs_(rhs);
+  return match(&lhs, &rhs_, rightMatchesLeft);
 }
 
 bool
 right_matches_left(classad::ClassAd const& lhs, classad::ClassAd const& rhs)
 {
-  return match(lhs, rhs, "rightMatchesLeft");
+  classad::ClassAd lhs_(lhs);
+  classad::ClassAd rhs_(rhs);
+  return match(&lhs_, &rhs_, rightMatchesLeft);
+}
+
+bool
+symmetric_match(classad::ClassAd& lhs, classad::ClassAd& rhs)
+{
+  return match(&lhs, &rhs, symmetricMatch);
+}
+
+bool
+symmetric_match(classad::ClassAd const& lhs, classad::ClassAd& rhs)
+{
+  classad::ClassAd lhs_(lhs);
+  return match(&lhs_, &rhs, symmetricMatch);
+}
+
+bool
+symmetric_match(classad::ClassAd& lhs, classad::ClassAd const& rhs)
+{
+  classad::ClassAd rhs_(rhs);
+  return match(&lhs, &rhs_, symmetricMatch);
 }
 
 bool
 symmetric_match(classad::ClassAd const& lhs, classad::ClassAd const& rhs)
 {
-  return match(lhs, rhs, "symmetricMatch");
+  classad::ClassAd lhs_(lhs);
+  classad::ClassAd rhs_(rhs);
+  return match(&lhs_, &rhs_, symmetricMatch);
+}
+
+namespace {
+
+char const* const leftRankValue = "leftRankValue";
+char const* const rightRankValue = "rightRankValue";
+
+double
+rank(classad::ClassAd* lhs, classad::ClassAd* rhs, char const* rank_type)
+{
+  classad::MatchClassAd match_ad(lhs, rhs);
+
+  // prevent the deletion of the two original classads
+  scope_guard remove_left_ad_guard(
+    boost::bind(&classad::MatchClassAd::RemoveLeftAd, boost::ref(match_ad))
+  );
+  scope_guard remove_right_ad_guard(
+    boost::bind(&classad::MatchClassAd::RemoveRightAd, boost::ref(match_ad))
+  );
+
+  try {
+
+    return evaluate_attribute(match_ad, rank_type);
+
+  } catch (InvalidValue&) {
+
+    throw UndefinedRank();
+  }
+}
+
 }
 
 double
-rank(classad::ClassAd const& lhs, classad::ClassAd const& rhs,
-     std::string const& rank_type)
+left_rank(classad::ClassAd& lhs, classad::ClassAd& rhs)
 {
-  classad::ClassAd* lhs_ad(new classad::ClassAd(lhs));
-  classad::ClassAd* rhs_ad(new classad::ClassAd(rhs));
-  assert(lhs_ad != 0 && rhs_ad != 0);
+  return rank(&lhs, &rhs, leftRankValue);
+}
 
-  classad::MatchClassAd match_ad(lhs_ad, rhs_ad);
-  try {
-    return evaluate_attribute(match_ad, rank_type);
-  } catch (InvalidValue&) {
-    throw UndefinedRank();
-  }
+double
+left_rank(classad::ClassAd& lhs, classad::ClassAd const& rhs)
+{
+  classad::ClassAd rhs_(rhs);
+  return rank(&lhs, &rhs_, leftRankValue);
+}
+
+double
+left_rank(classad::ClassAd const& lhs, classad::ClassAd& rhs)
+{
+  classad::ClassAd lhs_(lhs);
+  return rank(&lhs_, &rhs, leftRankValue);
 }
 
 double
 left_rank(classad::ClassAd const& lhs, classad::ClassAd const& rhs)
 {
-  return rank(lhs, rhs, "leftRankValue");
+  classad::ClassAd lhs_(lhs);
+  classad::ClassAd rhs_(rhs);
+  return rank(&lhs_, &rhs_, leftRankValue);
+}
+
+double
+right_rank(classad::ClassAd& lhs, classad::ClassAd& rhs)
+{
+  return rank(&lhs, &rhs, rightRankValue);
+}
+
+double
+right_rank(classad::ClassAd& lhs, classad::ClassAd const& rhs)
+{
+  classad::ClassAd rhs_(rhs);
+  return rank(&lhs, &rhs_, rightRankValue);
+}
+
+double
+right_rank(classad::ClassAd const& lhs, classad::ClassAd& rhs)
+{
+  classad::ClassAd lhs_(lhs);
+  return rank(&lhs_, &rhs, rightRankValue);
 }
 
 double
 right_rank(classad::ClassAd const& lhs, classad::ClassAd const& rhs)
 {
-  return rank(lhs, rhs, "rightRankValue");
+  classad::ClassAd lhs_(lhs);
+  classad::ClassAd rhs_(rhs);
+  return rank(&lhs_, &rhs_, rightRankValue);
 }
 
-// possible alternative version (faster but probably unsafe)
-//  bool match(classad::ClassAd const& lhs,
-//             classad::ClassAd const& rhs,
-//             std::string const& type_of_match)
-//  {
-//    bool result = false;
-
-//    // according to Alain Roy the following is safe because after
-//    // RemoveLeft/RightAd() the original classads are restored to their original
-//    // value
-//    // it's probably not safe in a multithreaded environment, because another
-//    // thread can access the classad in the time window when it's modified
-//    classad::MatchClassAd match_ad(const_cast<classad::ClassAd*>(&lhs),
-//                                    const_cast<classad::ClassAd*>(&rhs));
-//    match_ad.EvaluateAttrBool(type_of_match, result);
-//    match_ad.RemoveLeftAd();
-//    match_ad.RemoveRightAd();
-
-//    return result;
-//  }
 
 // more traditional interface (to be completed)
 
