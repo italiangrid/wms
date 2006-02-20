@@ -7,7 +7,7 @@
 
 #include "glite/wms/common/utilities/classad_utils.h"
 #include <boost/bind.hpp>
-#include "glite/wms/common/utilities/scope_guard.h"
+#include "scope_guard.h"
 
 namespace glite {
 namespace wms {
