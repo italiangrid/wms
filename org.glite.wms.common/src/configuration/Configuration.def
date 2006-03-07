@@ -208,7 +208,7 @@ class CommonConfiguration {
 
   parameter std::string( DGUser = "dguser" ) section parse;
   parameter std::string( HostProxyFile ) section fileparse;
-  parameter bool( UseCacheInsteadOfGris = false ) section normal; 
+  parameter bool( UseCacheInsteadOfGris = false ) section normal;
 }
 
 class JCConfiguration {
@@ -407,6 +407,7 @@ class WMCConfiguration {
   parameter std::string(HLRLocation) section normal;
   parameter std::string(MyProxyServer) section normal;
   parameter std::string(JobProvenance) section normal;
+  parameter std::string(LBAddress) section normal;  
   parameter bool(PerusalFileEnable=false) section normal;
   parameter bool(AllowZippedISB=false) section normal;
 # OLD Approach END
@@ -415,9 +416,9 @@ class WMCConfiguration {
   parameter int(DefaultProxyValidity= 5) section normal;
   parameter int(DefaultStatusLevel  = 1) section normal;
   parameter int(DefaultLoggingLevel = 0) section normal;
-  parameter std::string(ErrorStorage=   "/var/tmp") section normal;
-  parameter std::string(OutputStorage=  "/tmp") section normal;
-  parameter std::string(ListenerStorage="/tmp") section normal;
+  parameter std::string(ErrorStorage=   "/var/tmp") section fileparse;
+  parameter std::string(OutputStorage=  "/tmp") section fileparse;
+  parameter std::string(ListenerStorage="/tmp") section fileparse;
 
   parameter std::vector<std::string>(WmProxyEndPoints) section normal;
 # LB WS-based interface not yet used:
@@ -454,6 +455,7 @@ class WMPConfiguration {
   parameter bool ( LBProxy = true ) section normal;
   parameter std::string ( LBServer ) section normal;
   parameter std::string ( LBLocalLogger ) section normal;
+  parameter classad::ExprTree*(SDJRequirements) section normal;
 
   parameter bool ( AsyncJobStart = true ) section normal;
 }
