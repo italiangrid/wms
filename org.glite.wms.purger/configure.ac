@@ -19,6 +19,40 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.13  2006/03/07 11:39:01  monforte
+#       Merge against glite-wms-purger_branch_1_5_0_RC15
+#
+#       Revision 1.12.2.10  2006/01/20 00:27:21  eronchie
+#       Increased version
+#
+#       Revision 1.12.2.9  2005/12/06 18:56:07  monforte
+#       Increased version number
+#
+#       Revision 1.12.2.8  2005/12/06 15:53:22  monforte
+#       Added handling of --enable-jp-integration configuration flag to toggle jp code
+#       integration
+#
+#       Revision 1.12.2.7  2005/12/02 10:51:08  eronchie
+#       Increased version
+#
+#       Revision 1.12.2.6  2005/12/01 19:16:09  eronchie
+#       Correct version according to the latest tag
+#
+#       Revision 1.12.2.5  2005/12/01 15:36:42  monforte
+#       Disabled JP Api calls and library linking
+#
+#       Revision 1.12.2.4  2005/11/17 08:36:43  monforte
+#       LBProxy + JP + Fix
+#
+#       Revision 1.12.2.3  2005/10/20 16:20:59  eronchie
+#       Fix a problem
+#
+#       Revision 1.12.2.2  2005/10/19 11:02:26  eronchie
+#       Added macros to correctly use the jp api
+#
+#       Revision 1.12.2.1  2005/10/19 10:08:42  eronchie
+#       Increased version
+#
 #       Revision 1.12  2005/10/15 12:18:39  eronchie
 #       Increased version
 #
@@ -107,7 +141,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.57)
-AC_INIT([GLite WMS Purger], [1.5.0])
+AC_INIT([GLite WMS Purger], [1.5.6])
 AC_CONFIG_AUX_DIR([./project])
 AM_INIT_AUTOMAKE([1.6.3 subdir-objects])
 AC_CONFIG_SRCDIR([src/purger.cpp])
@@ -160,9 +194,13 @@ have_classads=no
 have_globus=no
 have_expat=no
 have_ares=no
+have_libtar=no
 
 AC_BOOST([], have_boost=yes, have_boost=no)
 AC_MSG_RESULT(["BOOST found $have_boost"])
+
+AC_LIBTAR([], have_libtar=yes, have_libtar=no)
+AC_MSG_RESULT(["BOOST found $have_libtar"])
 
 AC_CLASSADS([], have_classads=yes, have_classads=no)
 AC_MSG_RESULT(["CLASSADS found $have_classads"])
@@ -178,6 +216,10 @@ AC_MSG_RESULT(["ARES found $have_ares"])
 
 if test "$have_globus" = "no"; then
   AC_MSG_RESULT(["Please verify GLOBUS package"])
+fi
+
+if test "$have_libtar" = "no"; then
+  AC_MSG_RESULT(["Please verify LIBTAR package"])
 fi
 
 if test "$have_boost" = "no"; then
@@ -200,6 +242,10 @@ if test "$have_globus" = "no"; then
   AC_MSG_ERROR([Cannot continue building])
 fi
 
+if test "$have_libtar" = "no"; then
+  AC_MSG_ERROR([Cannot continue building])
+fi
+
 if test "$have_boost" = "no"; then
   AC_MSG_ERROR([Cannot continue building])
 fi
@@ -219,6 +265,7 @@ fi
 have_glite_wms_common=no
 have_glite_wmsutils=no
 have_glite_lb=no
+have_glite_jp=no
 
 AC_GLITE
 AC_OPTIMIZE
@@ -231,6 +278,11 @@ AC_MSG_RESULT(["GLITE_WMSUTILS found $have_glite_wmsutils"])
 
 AC_GLITE_LB([], have_glite_lb=yes, have_glite_lb=no)
 AC_MSG_RESULT(["GLITE_LB found $gave_glite_lb"])
+
+AC_GLITE_JP([], have_glite_jp=yes, have_glite_jp=no)
+AC_MSG_RESULT(["GLITE_JP found $have_glite_jp"])
+
+AC_GLITE_WMS_OPTIONAL
 
 # Configuration items
 AC_PREFIX_DEFAULT([/opt/glite])

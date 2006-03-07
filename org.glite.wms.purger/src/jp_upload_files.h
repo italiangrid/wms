@@ -1,6 +1,6 @@
 #ifndef GLITE_WMS_PURGER_JP_UPLOAD_FILES
 #define GLITE_WMS_PURGER_JP_UPLOAD_FILES
-
+#ifndef GLITE_WMS_DONT_HAVE_JP
 #include <string>
 #include <vector>
 
@@ -42,5 +42,5 @@ private:
 }
 }
 }
-
+#endif
 #endif

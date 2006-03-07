@@ -15,6 +15,7 @@
 
 #include "glite/wms/common/utilities/LineParser.h"
 #include "glite/wms/common/utilities/LineParserExceptions.h"
+#include "glite/wms/common/configuration/Configuration.h"
 
 #include <iostream>                        // for cout
 #include <string>
@@ -28,11 +29,12 @@ namespace fs            = boost::filesystem;
 namespace wl	        = glite::wms;
 namespace logger	= glite::wms::common::logger;
 namespace utilities     = glite::wms::common::utilities;
+namespace configuration = glite::wms::common::configuration;
 namespace jobid         = glite::wmsutils::jobid;
 
 using namespace std;
-
 utilities::LineOption  options[] = {
+  { 'c', 1,		"conf-file",	    "\t configuration file." },
   { 'l', 1,             "log-file",	    "\t logs any information into the specified file." },
   { 't', 1,		"threshold",	    "\t sets the purging threshold to the specified number of seconds." },
   { 'p', 1,		"staging-path",	    "\t defines the sandbox staging path." },
@@ -72,7 +74,7 @@ int main( int argc, char* argv[])
 {
   vector<utilities::LineOption>             optvec( options, options + sizeof(options)/sizeof(utilities::LineOption) );
   utilities::LineParser                     options( optvec, utilities::ParserData::zero_args );
-  string log_file, staging_path;
+  string log_file, staging_path, conf_file;
   int allocated_limit, purge_threshold;
   bool fake_rm = false;
 
@@ -88,7 +90,6 @@ int main( int argc, char* argv[])
 		return 0;
 	}
     }
-    
     allocated_limit     = options.is_present('a') ? options['a'].getIntegerValue(): 0;
         if( allocated_limit ) {
     	struct statfs fs_stat;
@@ -103,7 +104,11 @@ int main( int argc, char* argv[])
     
     fake_rm = options.is_present('f');
     purge_threshold = options.is_present('t') ? options['t'].getIntegerValue() : 604800;	    
-    
+    conf_file = options.is_present('c') ? options['c'].getStringValue() : "glite_wms.conf";
+   
+    configuration::Configuration config(conf_file,
+      configuration::ModuleType::network_server);
+  
  
     if( !options.is_present('l') && options.is_present('e') ) {
 	char* env_var;
