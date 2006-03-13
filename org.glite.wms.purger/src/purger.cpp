@@ -153,6 +153,21 @@ namespace
       jp_upload_files uploader(
         jobid.toString(), proxy_file, "", job_provenance
       );
+      fs::path jdl_original_path(
+        p / fs::path("JDLOriginal", fs::native)
+      );
+      
+      if (fs::exists(jdl_original_path)) {
+        isb_files.push_back(jdl_original_path);
+      }
+
+      fs::path jdl_to_start_path(
+        p / fs::path("JDLToStart", fs::native)
+      );
+      if (fs::exists(jdl_to_start_path)) {
+        isb_files.push_back(jdl_to_start_path);
+      }
+
       uploader(isb_files);
       result = true;
     }
