@@ -17,6 +17,9 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.10  2006/03/14 21:22:14  eronchie
+#       Applied PURGER macro
+#
 #       Revision 1.9  2005/12/06 12:53:28  gianelle
 #       Change the name of some "ifdef" parameters:
 #       ENABLE_LBPROXY --> GLITE_WMS_HAVE_LBPROXY
@@ -82,8 +85,10 @@ AM_CPPFLAGS = -I$(top_srcdir)/src \
 	$(GLITE_CFLAGS) \
 	$(CLASSAD_CFLAGS) \
 	$(BOOST_CFLAGS) \
-	-I$(top_srcdir)/../org.glite.wms.purger/src \
 	-DGLITE_WMS_HAVE_LOGGING -DGLITE_WMS_HAVE_PURGER \
-	-DGLITE_WMS_HAVE_RENEWAL -DGLITE_WMS_HAVE_LBPROXY
+        -DGLITE_WMS_HAVE_RENEWAL -DGLITE_WMS_HAVE_LBPROXY
+#	-I$(top_srcdir)/../org.glite.wms.purger/src 
+#	-DGLITE_WMS_HAVE_LOGGING -DGLITE_WMS_HAVE_PURGER 
+#	-DGLITE_WMS_HAVE_RENEWAL -DGLITE_WMS_HAVE_LBPROXY
 
 MAINTAINERCLEANFILES = Makefile.in *~

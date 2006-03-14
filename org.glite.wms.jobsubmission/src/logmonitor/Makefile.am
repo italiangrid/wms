@@ -17,6 +17,9 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.17  2006/03/14 21:22:14  eronchie
+#       Applied PURGER macro
+#
 #       Revision 1.16  2006/01/24 12:35:55  gianelle
 #       Added some new condor events:
 #        EventGridResourceDown
@@ -98,7 +101,7 @@ noinst_HEADERS = \
 	SizeFile.h \
 	Timer.h
 
-GLITE_WMS_PURGER_LIBS = $(top_srcdir)/../org.glite.wms.purger/build/src/libglite_wms_purger.la
+#GLITE_WMS_PURGER_LIBS = $(top_srcdir)/../org.glite.wms.purger/build/src/libglite_wms_purger.la
 
 
 SUBDIRS = processer

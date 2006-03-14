@@ -17,6 +17,9 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.18  2006/03/14 21:22:14  eronchie
+#       Applied PURGER macro
+#
 #       Revision 1.17  2005/10/15 12:03:41  eronchie
 #       Increased version
 #
@@ -140,6 +143,7 @@ AC_MSG_RESULT(["EXPAT found $have_expat"])
 have_glite_wms_common=no
 have_glite_wmsutils=no
 have_glite_wms_jdl=no
+have_glite_wms_purger=no
 have_glite_lb=no
 have_glite_security=no                                                       
                       
@@ -153,6 +157,9 @@ AC_MSG_RESULT(["GLITE_WMSUTILS found $have_glite_wmsutils"])
 
 AC_GLITE_WMS_JDL([], have_glite_wms_jdl=yes, have_glite_wms_jdl=no)
 AC_MSG_RESULT(["GLITE_WMS_JDL found $have_glite_wms_jdl"])
+
+AC_GLITE_WMS_PURGER([], have_glite_wms_purger=yes, have_glite_wms_purger=no)
+AC_MSG_RESULT(["GLITE_WMS_PURGER found $have_glite_wms_purger"])
 
 AC_GLITE_LB([], have_glite_lb=yes, have_glite_lb=no)
 AC_MSG_RESULT(["GLITE_LB found $have_glite_lb"])
