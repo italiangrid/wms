@@ -6,9 +6,11 @@
 ## *
 ## *********************************************************************
 
-noinst_LTLIBRARIES = libglite_wms_purger.la
+lib_LTLIBRARIES = libglite_wms_purger.la
 
-noinst_HEADERS     = purger.h
+incdir = $(includedir)/glite/wms/purger
+nobase_inc_HEADERS = \
+	purger.h 
 
 sbin_PROGRAMS      = glite-wms-purgeStorage
 
