@@ -19,6 +19,9 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.14  2006/03/14 11:51:36  monforte
+#       *** empty log message ***
+#
 #       Revision 1.13  2006/03/07 11:39:01  monforte
 #       Merge against glite-wms-purger_branch_1_5_0_RC15
 #
@@ -277,7 +280,7 @@ AC_GLITE_WMSUTILS([], have_glite_wmsutils=yes, have_glite_wmsutils=no)
 AC_MSG_RESULT(["GLITE_WMSUTILS found $have_glite_wmsutils"])
 
 AC_GLITE_LB([], have_glite_lb=yes, have_glite_lb=no)
-AC_MSG_RESULT(["GLITE_LB found $gave_glite_lb"])
+AC_MSG_RESULT(["GLITE_LB found $have_glite_lb"])
 
 AC_GLITE_JP([], have_glite_jp=yes, have_glite_jp=no)
 AC_MSG_RESULT(["GLITE_JP found $have_glite_jp"])

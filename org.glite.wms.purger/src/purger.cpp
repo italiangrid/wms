@@ -158,14 +158,14 @@ namespace
       );
       
       if (fs::exists(jdl_original_path)) {
-        isb_files.push_back(jdl_original_path);
+        isb_files.push_back(jdl_original_path.native_file_string());
       }
 
       fs::path jdl_to_start_path(
         p / fs::path("JDLToStart", fs::native)
       );
       if (fs::exists(jdl_to_start_path)) {
-        isb_files.push_back(jdl_to_start_path);
+        isb_files.push_back(jdl_to_start_path.native_file_string());
       }
 
       uploader(isb_files);
