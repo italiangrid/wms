@@ -17,6 +17,9 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.6  2006/03/15 13:19:55  gianelle
+#       Drops any explicit references to ares.
+#
 #       Revision 1.5  2006/01/24 12:35:56  gianelle
 #       Added some new condor events:
 #        EventGridResourceDown
@@ -73,8 +76,8 @@ noinst_HEADERS = \
 	SubmitReader.h \
 	JobResubmitter.h
 
-LOCAL_CFLAGS = $(ARES_CFLAGS) $(EXPAT_CFLAGS)
-LOCAL_LIBS = $(ARES_LIBS) $(EXPAT_LIBS)
+LOCAL_CFLAGS = $(EXPAT_CFLAGS)
+LOCAL_LIBS = $(EXPAT_LIBS)
 
 EXTRA_DIST = EventFactory.cpp \
 	EventInterface.cpp \

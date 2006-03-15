@@ -17,6 +17,9 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.19  2006/03/15 13:19:55  gianelle
+#       Drops any explicit references to ares.
+#
 #       Revision 1.18  2006/03/15 12:55:51  gianelle
 #       Added (macro) support for:
 #       - libtar
@@ -133,7 +136,7 @@ glite_wms_lm_job_status_LDADD = libglite_wms_jss_logmonitor.la \
 	$(CLASSAD_LIBS) $(CONDORG_LIBS) \
 	$(GLITE_LB_NOTHR_CLIENT_LIBS) $(GLITE_LB_NOTHR_CLIENTPP_LIBS) \
 	$(GLITE_LB_NOTHR_COMMON_LIBS) \
-	$(ARES_LIBS) $(EXPAT_LIBS) \
+	$(EXPAT_LIBS) \
 	$(GLITE_SECURITY_RENEWAL_NOTHR_LIBS) $(GLITE_WMS_PURGER_LIBS) \
 	$(GLITE_WMS_OPTIONAL_JP_LIBS) \
         $(RENEWAL_NOTHR_LIBS)	
