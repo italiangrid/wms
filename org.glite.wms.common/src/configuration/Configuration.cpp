@@ -12,7 +12,7 @@
 #include <boost/filesystem/exception.hpp>
 #include <boost/regex.hpp>
 
-#include "glite/wms/common/utilities/classad_utils.h"
+#include "glite/wmsutils/classads/classad_utils.h"
 #include "utilities/boost_fs_add.h"
 
 #include "glite/wms/common/configuration/Configuration.h"

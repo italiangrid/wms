@@ -21,6 +21,7 @@ libexec_PROGRAMS   = glite-wms-eval_ad_expr
 glite_wms_eval_ad_expr_SOURCES = glite-wms-eval_ad_expr.cpp
 glite_wms_eval_ad_expr_LDADD   = \
         ./libglite_wms_util.la \
+	$(GLITE_WMSUTILS_CLASSADS_LIBS) \
 	$(BOOST_LIBS) \
 	$(CLASSAD_LIBS)
 

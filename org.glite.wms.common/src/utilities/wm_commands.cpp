@@ -4,9 +4,11 @@
 // $Id$
 
 #include "glite/wms/common/utilities/wm_commands.h"
-#include "glite/wms/common/utilities/classad_utils.h"
+#include "glite/wmsutils/classads/classad_utils.h"
 #include <algorithm>
 #include <cctype>
+
+using namespace glite::wmsutils::classads;
 
 namespace glite {
 namespace wms {

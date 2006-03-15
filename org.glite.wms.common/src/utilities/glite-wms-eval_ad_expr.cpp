@@ -12,9 +12,9 @@
 #include <classad_distribution.h>
 #include <value.h>
 
-#include "glite/wms/common/utilities/classad_utils.h"
+#include "glite/wmsutils/classads/classad_utils.h"
 
-namespace utilities = glite::wms::common::utilities;
+namespace utilities = glite::wmsutils::classads;
 
 namespace {
 

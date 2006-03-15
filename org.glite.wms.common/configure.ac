@@ -122,7 +122,12 @@ if test "$have_cppunit" = "no"; then
 fi
 
 AC_OPTIMIZE
+
+have_glite_wmsutils=no
+
 AC_GLITE
+
+AC_GLITE_WMSUTILS
 
 # Configuration items
 AC_PREFIX_DEFAULT([/opt/glite])
