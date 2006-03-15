@@ -1,8 +1,6 @@
 #ifndef EDG_WORKLOAD_JOBCONTROL_COMMON_PROXYUNREGISTRAR_H
 #define EDG_WORKLOAD_JOBCONTROL_COMMON_PROXYUNREGISTRAR_H
 
-COMMON_SUBNAMESPACE_CLASS_J(jobid, JobId );
-
 JOBCONTROL_NAMESPACE_BEGIN {
 
 namespace jccommon {
@@ -15,7 +13,7 @@ public:
   void unregister( void );
 
 private:
-  glite::wmsutils::jobid::JobId   pu_id;
+  const std::string   pu_id;
 };
 
 };

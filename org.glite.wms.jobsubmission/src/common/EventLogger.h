@@ -105,6 +105,11 @@ public:
   void job_wm_enqueued_failed_event( const std::string &filename, const classad::ClassAd &ad, const std::string &error );
 
   /*
+    Queries LB
+  */
+  std::string EventLogger::query_condorid( const std::string &jobid );
+
+  /*
     Extractors
   */
   std::string sequence_code( void );

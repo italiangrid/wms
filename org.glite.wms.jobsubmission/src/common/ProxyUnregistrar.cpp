@@ -2,7 +2,6 @@
 
 #include "glite/wms/common/logger/manipulators.h"
 #include "glite/wms/common/logger/edglog.h"
-#include "glite/wmsutils/jobid/JobId.h"
 #ifdef GLITE_WMS_HAVE_RENEWAL
 #include "glite/security/proxyrenewal/renewal.h"
 #endif
@@ -34,7 +33,7 @@ void ProxyUnregistrar::unregister( void )
 	     << "Unregistering user proxy..." << endl;
 
 #ifdef GLITE_WMS_HAVE_RENEWAL
-  err = edg_wlpr_UnregisterProxy( this->pu_id, NULL );
+  err = glite_renewal_UnregisterProxy( this->pu_id.c_str(), NULL );
 
   if( err && (err != EDG_WLPR_PROXY_NOT_REGISTERED) )
     ts::edglog << logger::setlevel( logger::null ) << "I cannot unregister the job proxy." << endl

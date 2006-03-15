@@ -20,6 +20,7 @@ namespace fs = boost::filesystem;
 
 #include "glite/wms/common/utilities/boost_fs_add.h"
 #include "glite/lb/producer.h"
+#include "glite/lb/consumer.h"
 #include "glite/lb/context.h"
 #endif
 #include "glite/wms/common/configuration/Configuration.h"
@@ -1388,6 +1389,57 @@ string EventLogger::sequence_code( void )
 
   return res;
 }
+
+// Queries LB
+
+// TO BE CHECK 
+string EventLogger::query_condorid( const string &jobid )
+{
+  string              condor_id;
+  edg_wlc_JobId       id;
+  edg_wlc_JobIdParse( jobid.c_str(), &id );
+  edg_wll_Event       *events = NULL;
+  edg_wll_QueryRec    jc[2];
+  edg_wll_QueryRec    ec[3];
+
+  memset(jc,0,sizeof jc);
+  memset(ec,0,sizeof ec);
+
+  // job condition: JOBID = jobid
+  jc[0].attr    = EDG_WLL_QUERY_ATTR_JOBID;
+  jc[0].op      = EDG_WLL_QUERY_OP_EQUAL;
+  jc[0].value.j = id;
+  jc[1].attr    = EDG_WLL_QUERY_ATTR_UNDEF;   
+
+  // event condition: Event type = ACCEPTED AND source = LM
+  ec[0].attr    = EDG_WLL_QUERY_ATTR_EVENT_TYPE;
+  ec[0].op      = EDG_WLL_QUERY_OP_EQUAL;
+  ec[0].value.i = EDG_WLL_EVENT_ACCEPTED;
+  ec[1].attr    = EDG_WLL_QUERY_ATTR_SOURCE;
+  ec[1].op      = EDG_WLL_QUERY_OP_EQUAL;
+  ec[1].value.i = EDG_WLL_SOURCE_LOG_MONITOR;
+  ec[2].attr    = EDG_WLL_QUERY_ATTR_UNDEF;
+
+#ifdef GLITE_WMS_HAVE_LBPROXY 
+  edg_wll_QueryEventsProxy( *this->el_context, jc, ec, &events);
+#else
+  edg_wll_QueryEvents( *this->el_context, jc, ec, &events);
+#endif
+
+  if (events) {
+    for (int i = 0; events[i].type; ++i) {
+      // if the job has been resubmitted we need the last one
+      condor_id = events[i].accepted.local_jobid;
+      edg_wll_FreeEvent(&events[i]);
+    }
+    free(events);
+  }
+	
+  edg_wlc_JobIdFree( id );
+
+  return condor_id;
+}
+
 
 }; // Namespace common
 
