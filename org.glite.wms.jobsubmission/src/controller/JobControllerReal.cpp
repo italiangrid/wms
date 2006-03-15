@@ -116,7 +116,7 @@ bool cancelJob( const string &condorid, bool force, string &info )
       parameters.append( " && ProcId==0" );
     }
     // force removal must be used only for globus jobs
-    parameters.append( " && JobUniverse == 9 && JobGridType = \"globus\"'" );
+    parameters.append( " && JobUniverse==9 && JobGridType==\"globus\"'" );
   }
   else parameters.assign( condorid );
 
@@ -331,6 +331,11 @@ bool JobControllerReal::cancel( const glite::wmsutils::jobid::JobId &id, const c
 
   condorid.assign( this->jcr_repository->condor_id(sid) );
 
+  if ( condorid.size() == 0 ) { // syncronize the "ram" repository with the LM's one
+     this->readRepository();
+     condorid.assign( this->jcr_repository->condor_id(sid) );	
+  }
+
   if( condorid.size() != 0 ) {
     // Comunicate to LM that this request comes from the user
 
@@ -351,7 +356,7 @@ bool JobControllerReal::cancel( const glite::wmsutils::jobid::JobId &id, const c
     }
   }
   else
-    elog::cedglog << logger::setlevel( logger::null ) << "Job " << sid << " unknown to the system." << endl;
+    elog::cedglog << logger::setlevel( logger::null ) << "I'm not able to retrieve the condor ID." << endl;
 
   return good;
 }
