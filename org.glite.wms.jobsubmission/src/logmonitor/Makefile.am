@@ -17,6 +17,14 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.18  2006/03/15 12:55:51  gianelle
+#       Added (macro) support for:
+#       - libtar
+#       - Optimization
+#       - Gpbox
+#       - JP
+#       - Purger
+#
 #       Revision 1.17  2006/03/14 21:22:14  eronchie
 #       Applied PURGER macro
 #
@@ -101,9 +109,6 @@ noinst_HEADERS = \
 	SizeFile.h \
 	Timer.h
 
-#GLITE_WMS_PURGER_LIBS = $(top_srcdir)/../org.glite.wms.purger/build/src/libglite_wms_purger.la
-
-
 SUBDIRS = processer
 
 libexec_PROGRAMS = glite-wms-lm-job_status
@@ -130,7 +135,8 @@ glite_wms_lm_job_status_LDADD = libglite_wms_jss_logmonitor.la \
 	$(GLITE_LB_NOTHR_COMMON_LIBS) \
 	$(ARES_LIBS) $(EXPAT_LIBS) \
 	$(GLITE_SECURITY_RENEWAL_NOTHR_LIBS) $(GLITE_WMS_PURGER_LIBS) \
-	$(RENEWAL_NOTHR_LIBS)	
+	$(GLITE_WMS_OPTIONAL_JP_LIBS) \
+        $(RENEWAL_NOTHR_LIBS)	
 
 libglite_wms_jss_logmonitor_la_SOURCES = CondorMonitor.cpp \
 	EventAd.cpp \

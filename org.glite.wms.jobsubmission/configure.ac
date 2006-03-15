@@ -17,6 +17,14 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.19  2006/03/15 12:55:51  gianelle
+#       Added (macro) support for:
+#       - libtar
+#       - Optimization
+#       - Gpbox
+#       - JP
+#       - Purger
+#
 #       Revision 1.18  2006/03/14 21:22:14  eronchie
 #       Applied PURGER macro
 #
@@ -92,6 +100,7 @@ AC_REVISION([$Revision$])
 #Environment.
 WORKDIR=`pwd`
 AC_SUBST(WORKDIR)
+AC_OPTIMIZE
 
 # Checks for programs.
 AC_PROG_CC
@@ -125,6 +134,7 @@ have_condorg=no
 have_globus=no
 have_ares=no
 have_expat=no
+have_libtar=no
                                                                                 
 AC_BOOST([], have_boost=yes, have_boost=no)
 AC_CLASSADS([], have_classads=yes, have_classads=no)
@@ -132,13 +142,15 @@ AC_CONDORG(6.7.1, have_condorg=yes, have_condorg=no)
 AC_GLOBUS([], have_globus=yes, have_globus=no)
 AC_ARES([], have_ares=yes, have_ares=no)
 AC_EXPAT([], have_expat=yes, have_expat=no)
-                                                                                
+AC_LIBTAR([], have_libtar=yes, have_libtar=no)
+
 AC_MSG_RESULT(["CLASSADS found $have_classads"])
 AC_MSG_RESULT(["BOOST found $have_boost"])
 AC_MSG_RESULT(["CONDORG found $have_condorg"])
 AC_MSG_RESULT(["GLOBUS found $have_globus"])
 AC_MSG_RESULT(["ARES found $have_ares"])
 AC_MSG_RESULT(["EXPAT found $have_expat"])
+AC_MSG_RESULT(["LIBTAR found $have_libtar"])
 
 have_glite_wms_common=no
 have_glite_wmsutils=no
@@ -146,6 +158,7 @@ have_glite_wms_jdl=no
 have_glite_wms_purger=no
 have_glite_lb=no
 have_glite_security=no                                                       
+have_glite_jp=no
                       
 AC_GLITE
                                                                                 
@@ -164,8 +177,14 @@ AC_MSG_RESULT(["GLITE_WMS_PURGER found $have_glite_wms_purger"])
 AC_GLITE_LB([], have_glite_lb=yes, have_glite_lb=no)
 AC_MSG_RESULT(["GLITE_LB found $have_glite_lb"])
 
+AC_GLITE_JP([], have_glite_jp=yes, have_glite_jp=no)
+AC_MSG_RESULT(["GLITE_JP found $have_glite_jp"])
+
 AC_GLITE_SECURITY([], have_glite_security=yes, have_glite_security=no)
 AC_MSG_RESULT(["GLITE_SECURITY found $have_glite_security"])
+
+AC_GLITE_GPBOX
+AC_GLITE_WMS_OPTIONAL
 
 # Configuration items
 AC_PREFIX_DEFAULT([/opt/glite])

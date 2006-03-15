@@ -20,9 +20,17 @@
 	
 	Revision history:
 	$Log$
+	Revision 1.6  2006/03/15 12:55:51  gianelle
+	Added (macro) support for:
+	- libtar
+	- Optimization
+	- Gpbox
+	- JP
+	- Purger
+
 	Revision 1.5  2004/10/08 09:38:23  pandreet
 	LICENSE in rpm; defined summary and description
-
+	
 	Revision 1.4  2004/08/12 17:20:31  eronchie
 	Changed renewal in security
 	Changed NOTHR_RENEWAL_LIBS in RENEWAL_NOTHR_LIBS
@@ -79,6 +87,6 @@
                                                                                                                           
         <property name="build.package.description" value="WMS job submission: component used to submit job via condor and to monitor condor logs" />
                                                                                                                           
-	<property name="m4files.list" value="globus.m4 classads.m4 boost.m4 expat.m4 ares.m4 condorg.m4 glite.m4 glite_lb.m4 glite_wmsutils.m4 glite_wms_common.m4 glite_wms_jdl.m4 glite_security.m4"/>
+	<property name="m4files.list" value="optimize.m4 globus.m4 classads.m4 boost.m4 expat.m4 ares.m4 condorg.m4 libtar.m4 glite.m4 glite_wms.m4 glite_lb.m4 glite_wmsutils.m4 glite_wms_common.m4 glite_wms_jdl.m4 glite_security.m4 glite_jp.m4 glite_gpbox.m4 glite_wms_optional.m4"/>
 	
 </project>
