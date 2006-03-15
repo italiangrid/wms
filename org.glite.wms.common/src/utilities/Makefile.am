@@ -50,7 +50,6 @@ libglite_wms_util_la_SOURCES = \
 	LineParserExceptions.cpp \
 	mixed.cpp \
 	boost_fs_add.cpp \
-	classad_utils.cpp \
 	wm_commands.cpp
 
 libglite_wms_util_la_LIBADD = -lstdc++

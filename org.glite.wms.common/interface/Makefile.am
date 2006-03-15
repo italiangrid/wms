@@ -29,7 +29,6 @@ nobase_commonut_HEADERS = \
 	glite/wms/common/logger/logstream.h \
 	glite/wms/common/logger/logstream_ts.h \
 	glite/wms/common/logger/manipulators.h \
-	glite/wms/common/utilities/classad_utils.h \
 	glite/wms/common/utilities/edgstrstream.h \
 	glite/wms/common/utilities/Extractor.h \
 	glite/wms/common/utilities/filecontainer.h \
