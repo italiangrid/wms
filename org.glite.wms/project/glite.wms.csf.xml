@@ -21,9 +21,12 @@
 
 	Revision history:
 	$Log$
+	Revision 1.93  2006/03/16 09:16:14  eronchie
+	Updated
+
 	Revision 1.92  2006/03/16 08:36:36  eronchie
 	Added ice
-
+	
 	Revision 1.91  2005/10/03 22:07:15  eronchie
 	Removed mod_ssl
 	
@@ -920,6 +923,7 @@
 					brokerinfo-access,
 					classad_plugin,
 					rls,
+					ice,
 					matchmaking,
 					broker,
 					helper,
