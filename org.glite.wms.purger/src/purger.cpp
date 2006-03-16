@@ -18,7 +18,7 @@
 #include "glite/wms/common/configuration/CommonConfiguration.h"
 #include "glite/wms/common/configuration/exceptions.h"
 
-#include "glite/wms/common/utilities/classad_utils.h"
+#include "glite/wmsutils/classads/classad_utils.h"
 
 #include "glite/wms/common/logger/edglog.h"
 #include "glite/wms/common/logger/manipulators.h"
