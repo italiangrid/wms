@@ -21,9 +21,12 @@
 
 	Revision history:
 	$Log$
+	Revision 1.92  2006/03/16 08:36:36  eronchie
+	Added ice
+
 	Revision 1.91  2005/10/03 22:07:15  eronchie
 	Removed mod_ssl
-
+	
 	Revision 1.90  2005/10/03 19:47:04  eronchie
 	Updated dependencies
 	
@@ -426,10 +429,6 @@
 			<equals arg1="${org.glite.wms.common.version}" arg2="HEAD" />
 		</condition>
 
-		<condition property="jdl.head">
-                        <equals arg1="${org.glite.wms.jdl.version}" arg2="HEAD" />
-                </condition>
-
 		<condition property="partitioner.head">
                         <equals arg1="${org.glite.wms.partitioner.version}" arg2="HEAD" />
                 </condition>
@@ -464,6 +463,10 @@
 
 		<condition property="rls.head">
                         <equals arg1="${org.glite.wms.rls.version}" arg2="HEAD" />
+                </condition>
+
+		<condition property="ice.head">
+                        <equals arg1="${org.glite.wms.ice.version}" arg2="HEAD" />
                 </condition>
 
 		<condition property="manager-ns-fsm.head">
@@ -627,18 +630,8 @@
 			tag="${org.glite.wms.common.version}" />
 	</target>
 
-	<!-- Jdl -->
-    	<target name="jdl" depends="boost,classads,globus,get.jdl.head, get.jdl.tag"/>
-    	<target name="get.jdl.head" if="jdl.head">
-            <cvs-co package="org.glite.wms.jdl" />
-    	</target>
-    	<target name="get.jdl.tag" unless="jdl.head">
-            <cvs-co package="org.glite.wms.jdl"
-                    tag="${org.glite.wms.jdl.version}" />
-    	</target>
-
 	<!-- Brokerinfo -->
-    	<target name="brokerinfo" depends="boost,classads,globus,common,jdl,rls, cgsi-gsoap, gsoap, ism, get.brokerinfo.head, get.brokerinfo.tag"/>
+    	<target name="brokerinfo" depends="boost,classads,globus,common,rls, cgsi-gsoap, gsoap, ism, get.brokerinfo.head, get.brokerinfo.tag"/>
     	<target name="get.brokerinfo.head" if="brokerinfo.head">
             <cvs-co package="org.glite.wms.brokerinfo" />
     	</target>
@@ -646,6 +639,16 @@
             <cvs-co package="org.glite.wms.brokerinfo"
                     tag="${org.glite.wms.brokerinfo.version}" />
     	</target>
+
+	<!-- Ice -->
+        <target name="ice" depends="get.ice.head, get.ice.tag"/>
+        <target name="get.ice.head" if="ice.head">
+            <cvs-co package="org.glite.wms.ice" />
+        </target>
+        <target name="get.ice.tag" unless="ice.head">
+            <cvs-co package="org.glite.wms.ice"
+                    tag="${org.glite.wms.ice.version}" />
+        </target>
 
 	<!-- Brokerinfo Access -->
         <target name="brokerinfo-access" depends="classads, get.brokerinfo-access.head, get.brokerinfo-access.tag"/>
@@ -678,7 +681,7 @@
     	</target>
 
 	<!-- Helper -->
-    	<target name="helper" depends="boost,classads,globus,common,jdl,matchmaking,broker,get.helper.head, get.helper.tag"/>
+    	<target name="helper" depends="boost,classads,globus,common,matchmaking,broker,get.helper.head, get.helper.tag"/>
     	<target name="get.helper.head" if="helper.head">
             <cvs-co package="org.glite.wms.helper" />
     	</target>
@@ -688,7 +691,7 @@
     	</target>
 
 	<!-- Broker -->
-    	<target name="broker" depends="boost,classads,globus,common,jdl,rls,get.broker.head, get.broker.tag"/>
+    	<target name="broker" depends="boost,classads,globus,common,rls,get.broker.head, get.broker.tag"/>
     	<target name="get.broker.head" if="broker.head">
             <cvs-co package="org.glite.wms.broker" />
     	</target>
@@ -788,7 +791,7 @@
         </target>
 
 	<!-- JobSubmission -->
-        <target name="jobsubmission" depends="boost,classads,globus,condor,common,jdl,purger,configuration,get.jobsubmission.head, get.jobsubmission.tag"/>
+        <target name="jobsubmission" depends="boost,classads,globus,condor,common,purger,configuration,get.jobsubmission.head, get.jobsubmission.tag"/>
         <target name="get.jobsubmission.head" if="jobsubmission.head">
             <cvs-co package="org.glite.wms.jobsubmission" />
         </target>
@@ -808,7 +811,7 @@
         </target>
 
 	<!-- Manager -->
-        <target name="manager" depends="boost,classads,globus,expat,ares,common,jdl,purger,helper,jobsubmission,ism,configuration,get.manager.head, get.manager.tag"/>
+        <target name="manager" depends="boost,classads,globus,expat,ares,common,purger,helper,jobsubmission,ism,configuration,get.manager.head, get.manager.tag"/>
         <target name="get.manager.head" if="manager.head">
             <cvs-co package="org.glite.wms.manager" />
         </target>
@@ -838,7 +841,7 @@
         </target>
 
 	<!-- Client -->
-        <target name="client" depends="classads, boost, globus, zlib, libtar, jdl, common, configuration, wmproxy-api-cpp, get.client.head, get.client.tag"/>
+        <target name="client" depends="classads, boost, globus, zlib, libtar, common, configuration, wmproxy-api-cpp, get.client.head, get.client.tag"/>
         <target name="get.client.head" if="client.head">
             <cvs-co package="org.glite.wms.client" />
         </target>
@@ -888,7 +891,7 @@
         </target>
 
 	<!-- WMPROXY -->
-        <target name="wmproxy" depends="axis,boost,fcgi,gsoap,zlib, libtar, common, configuration, jdl, checkpointing, partitioner,wmproxy-interface, get.wmproxy.head, get.wmproxy.tag"/>
+        <target name="wmproxy" depends="axis,boost,fcgi,gsoap,zlib, libtar, common, configuration, checkpointing, partitioner,wmproxy-interface, get.wmproxy.head, get.wmproxy.tag"/>
         <target name="get.wmproxy.head" if="wmproxy.head">
             <cvs-co package="org.glite.wms.wmproxy" />
         </target>
@@ -913,7 +916,6 @@
 					thirdparty-bypass,
 					interactive,
 				        common,
-					jdl,
 					brokerinfo,
 					brokerinfo-access,
 					classad_plugin,

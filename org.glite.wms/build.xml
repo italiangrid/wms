@@ -21,9 +21,12 @@
 
 	Revision history:
 	$Log$
+	Revision 1.103  2006/03/16 08:36:36  eronchie
+	Added ice
+
 	Revision 1.102  2005/10/03 22:07:15  eronchie
 	Removed mod_ssl
-
+	
 	Revision 1.101  2005/10/03 19:47:04  eronchie
 	Updated dependencies
 	
@@ -589,23 +592,7 @@
 		</if>
 	</target>
 
-	<target name="jdl" unless="setenvonly" depends="envset, boost,classads,globus,common">
-		<if>
-			<isset property="small.memory" />
-			<then>
-				<exec dir="${wms.subsystem.dir}.jdl" executable="${antExec}" failonerror="${failonerror}">
-					<arg line="${target} &quot;-Dsmall.memory=true&quot; &quot;-Dbootstrap=${bootstrap}&quot; &quot;-Dfailonerror=${failonerror}&quot; &quot;-Ddo.cvs.tag=${do.cvs.tag}&quot;"/>
-				</exec>
-			</then>
-			<else>
-				<ant dir="${wms.subsystem.dir}.jdl"
-	                    	     target="${target}"
-	                    	     inheritall="false" />
-			</else>
-		</if>
-        </target>
-
-	<target name="brokerinfo" unless="setenvonly" depends="envset, boost,classads,common,jdl,rls,ism,cgsi-gsoap, gsoap">
+	<target name="brokerinfo" unless="setenvonly" depends="envset, boost,classads,common,rls,ism,cgsi-gsoap, gsoap">
 		<if>
 			<isset property="small.memory" />
 			<then>
@@ -619,6 +606,22 @@
 	                    	     inheritall="false" />
 			</else>
 		</if>
+        </target>
+
+	<target name="ice" unless="setenvonly" depends="envset">
+                <if>
+                        <isset property="small.memory" />
+                        <then>
+                                <exec dir="${wms.subsystem.dir}.ice" executable="${antExec}" failonerror="${failonerror}">
+                                        <arg line="${target} &quot;-Dsmall.memory=true&quot; &quot;-Dbootstrap=${bootstrap}&quot; &quot;-Dfailonerror=${failonerror}&quot; &quot;-Ddo.cvs.tag=${do.cvs.tag}&quot;"/>
+                                </exec>
+                        </then>
+                        <else>
+                                <ant dir="${wms.subsystem.dir}.ice"
+                                     target="${target}"
+                                     inheritall="false" />
+                        </else>
+                </if>
         </target>
 
 	 <target name="brokerinfo-access" unless="setenvonly" depends="envset, classads">
@@ -669,7 +672,7 @@
 		</if>
         </target>
 
-	<target name="helper" unless="setenvonly" depends="envset, boost,classads,common,jdl,matchmaking,broker">
+	<target name="helper" unless="setenvonly" depends="envset, boost,classads,common,matchmaking,broker">
 		<if>
 			<isset property="small.memory" />
 			<then>
@@ -685,7 +688,7 @@
 		</if>
         </target>
 
-	<target name="broker" unless="setenvonly" depends="envset, boost,classads,common,jdl,rls">
+	<target name="broker" unless="setenvonly" depends="envset, boost,classads,common,rls">
 		<if>
 			<isset property="small.memory" />
 			<then>
@@ -845,7 +848,7 @@
 		</if>
         </target>
 
-	<target name="jobsubmission" unless="setenvonly" depends="envset, boost,classads,condor,globus,common,purger,jdl,configuration">
+	<target name="jobsubmission" unless="setenvonly" depends="envset, boost,classads,condor,globus,common,purger,configuration">
 		<if>
 			<isset property="small.memory" />
 			<then>
@@ -877,7 +880,7 @@
                 </if>
         </target>
 
-	<target name="manager" unless="setenvonly" depends="envset, boost,classads,globus,expat,ares,common,purger,jdl,helper,jobsubmission,ism,configuration">
+	<target name="manager" unless="setenvonly" depends="envset, boost,classads,globus,expat,ares,common,purger,helper,jobsubmission,ism,configuration">
 		<if>
 			<isset property="small.memory" />
 			<then>
@@ -925,7 +928,7 @@
                 </if>
         </target>
 
-        <target name="client" unless="setenvonly" depends="envset, boost, classads, globus, zlib, libtar, configuration, wmproxy-api-cpp, gridsite, jdl, common">
+        <target name="client" unless="setenvonly" depends="envset, boost, classads, globus, zlib, libtar, configuration, wmproxy-api-cpp, gridsite, common">
                 <if>
                        <isset property="small.memory" />
                        <then>
@@ -1031,11 +1034,11 @@ ilonerror}">
    					     thirdparty-globus_gridftp_server,
 					     thirdparty-bypass,
 					     interactive,
-					     jdl,
 					     brokerinfo,
 					     brokerinfo-access,
 					     classad_plugin,
 					     rls,
+					     ice,
 					     matchmaking,
 					     broker,
 					     helper,
