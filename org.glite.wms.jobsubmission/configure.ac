@@ -17,6 +17,9 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.21  2006/03/16 17:28:39  gianelle
+#       Migration to "new" jdl library
+#
 #       Revision 1.20  2006/03/15 13:19:54  gianelle
 #       Drops any explicit references to ares.
 #
@@ -154,7 +157,7 @@ AC_MSG_RESULT(["LIBTAR found $have_libtar"])
 
 have_glite_wms_common=no
 have_glite_wmsutils=no
-have_glite_wms_jdl=no
+have_glite_jdl=no
 have_glite_wms_purger=no
 have_glite_lb=no
 have_glite_security=no                                                       
@@ -168,8 +171,8 @@ AC_MSG_RESULT(["GLITE_WMS_COMMON found $have_glite_wms_common"])
 AC_GLITE_WMSUTILS([], have_glite_wmsutils=yes, have_glite_wmsutils=no)
 AC_MSG_RESULT(["GLITE_WMSUTILS found $have_glite_wmsutils"])
 
-AC_GLITE_WMS_JDL([], have_glite_wms_jdl=yes, have_glite_wms_jdl=no)
-AC_MSG_RESULT(["GLITE_WMS_JDL found $have_glite_wms_jdl"])
+AC_GLITE_JDL([], have_glite_jdl=yes, have_glite_jdl=no)
+AC_MSG_RESULT(["GLITE_JDL found $have_glite_jdl"])
 
 AC_GLITE_WMS_PURGER([], have_glite_wms_purger=yes, have_glite_wms_purger=no)
 AC_MSG_RESULT(["GLITE_WMS_PURGER found $have_glite_wms_purger"])

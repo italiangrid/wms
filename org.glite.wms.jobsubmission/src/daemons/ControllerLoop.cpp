@@ -31,9 +31,9 @@
 #include "glite/wms/common/logger/manipulators.h"
 #include "glite/wms/common/logger/logstream.h"
 #include "glite/wms/common/logger/edglog.h"
-#include "glite/wms/jdl/JobAdManipulation.h"
-#include "glite/wms/jdl/PrivateAdManipulation.h"
-#include "glite/wms/jdl/ManipulationExceptions.h"
+#include "glite/jdl/JobAdManipulation.h"
+#include "glite/jdl/PrivateAdManipulation.h"
+#include "glite/jdl/ManipulationExceptions.h"
 #include "glite/wms/common/process/process.h"
 #include "glite/wms/common/process/user.h"
 #include "../common/EventLogger.h"
@@ -326,12 +326,12 @@ try {
 	  this->cl_stream << logger::setlevel( logger::info ) << "Got new submit request..." << endl; 
 
 #ifdef GLITE_WMS_HAVE_LBPROXY
-          this->cl_logger->set_LBProxy_context(glite::wms::jdl::get_edg_jobid(*jobad),
-                                               glite::wms::jdl::get_lb_sequence_code(*jobad),
-                                               glite::wms::jdl::get_x509_user_proxy(*jobad) );
+          this->cl_logger->set_LBProxy_context(glite::jdl::get_edg_jobid(*jobad),
+                                               glite::jdl::get_lb_sequence_code(*jobad),
+                                               glite::jdl::get_x509_user_proxy(*jobad) );
 #else
-	  this->cl_logger->reset_user_proxy( glite::wms::jdl::get_x509_user_proxy(*jobad) );
-	  this->cl_logger->reset_context( glite::wms::jdl::get_edg_jobid(*jobad), glite::wms::jdl::get_lb_sequence_code(*jobad) );
+	  this->cl_logger->reset_user_proxy( glite::jdl::get_x509_user_proxy(*jobad) );
+	  this->cl_logger->reset_context( glite::jdl::get_edg_jobid(*jobad), glite::jdl::get_lb_sequence_code(*jobad) );
 #endif
 
 	  this->cl_logger->job_dequeued_event( this->cl_queuefilename );
@@ -421,7 +421,7 @@ try {
 			<< logger::setlevel( logger::info )
 			<< "Ignoring request..." << endl;
       }
-      catch( glite::wms::jdl::ManipulationException &par ) {
+      catch( glite::jdl::ManipulationException &par ) {
 	this->cl_stream << logger::setlevel( logger::severe )
 			<< "Cannot execute command \"" << controller::Request::string_command( command ) << "\"." << endl
 			<< "Reason: parameter \"" << par.parameter() << "\" not found in the classad." << endl

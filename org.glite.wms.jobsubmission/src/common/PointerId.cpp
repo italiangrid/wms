@@ -3,7 +3,7 @@
 #include <boost/lexical_cast.hpp>
 
 #include "glite/wmsutils/jobid/JobId.h"
-#include "glite/wms/jdl/PrivateAdManipulation.h"
+#include "glite/jdl/PrivateAdManipulation.h"
 
 #include "PointerId.h"
 #include "constants.h"
@@ -113,7 +113,7 @@ string PointerId::proxy_file( void )
 {
   bool                       good;
   const classad::ClassAd    &jobad = this->job_ad();
-  string                     file( glite::wms::jdl::get_x509_user_proxy(jobad, good) );
+  string                     file( glite::jdl::get_x509_user_proxy(jobad, good) );
 
   if( !good ) file.erase();
 

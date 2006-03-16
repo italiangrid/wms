@@ -17,6 +17,9 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.20  2006/03/16 17:28:40  gianelle
+#       Migration to "new" jdl library
+#
 #       Revision 1.19  2006/03/15 13:19:55  gianelle
 #       Drops any explicit references to ares.
 #
@@ -126,8 +129,9 @@ glite_wms_lm_job_status_LDADD = libglite_wms_jss_logmonitor.la \
 	$(GLITE_WMSUTILS_JOBID_LIBS) \
 	$(GLITE_WMSUTILS_CJOBID_LIBS) \
 	$(GLITE_WMS_COMMON_LOGGER_LIBS) \
-	$(GLITE_WMS_JDL_LIBS) \
-	$(GLITE_WMS_COMMON_UT_UTIL_LIBS) \
+	$(GLITE_JDL_LIBS) \
+	$(GLITE_WMSUTILS_CLASSADS_LIBS) \
+        $(GLITE_WMS_COMMON_UT_UTIL_LIBS) \
 	$(GLITE_WMSUTILS_EXCEPTION_LIBS) \
 	$(BOOST_FS_LIBS) $(BOOST_THREAD_LIBS) $(BOOST_REGEX_LIBS) \
 	$(GLOBUS_LIBS) $(GLOBUS_SSL_NOTHR_LIBS) \

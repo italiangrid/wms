@@ -21,9 +21,9 @@
 
 #include "glite/wms/common/logger/manipulators.h"
 #include "glite/wms/common/logger/edglog.h"
-#include "glite/wms/jdl/JobAdManipulation.h"
-#include "glite/wms/jdl/PrivateAdManipulation.h"
-#include "glite/wms/jdl/ManipulationExceptions.h"
+#include "glite/jdl/JobAdManipulation.h"
+#include "glite/jdl/PrivateAdManipulation.h"
+#include "glite/jdl/ManipulationExceptions.h"
 #include "../jobcontrol_namespace.h"
 #include "../common/files.h"
 
@@ -55,7 +55,7 @@ JobControllerProxy::~JobControllerProxy()
 
 int JobControllerProxy::submit( const classad::ClassAd *ad )
 try {
-  string                  jobid( glite::wms::jdl::get_edg_jobid(*ad) );
+  string                  jobid( glite::jdl::get_edg_jobid(*ad) );
   SubmitRequest           request( *ad, this->jcp_source );
   logger::StatePusher     pusher( ts::edglog, "JobControllerProxy::submit(...)" );
 
@@ -77,7 +77,7 @@ try {
 
   return 0;
 }
-catch( glite::wms::jdl::ManipulationException &par ) {
+catch( glite::jdl::ManipulationException &par ) {
   string   error( "Cannot extract " );
   
   error.append( par.parameter() ); error.append( " from passed classad." );
@@ -106,12 +106,12 @@ bool JobControllerProxy::cancel( const glite::wmsutils::jobid::JobId &id, const 
     jobad.reset( parser.ParseClassAd(ifs) );
 
     if( jobad.get() != NULL ) {
-      proxyfile.assign( glite::wms::jdl::get_x509_user_proxy(*jobad, good) );
+      proxyfile.assign( glite::jdl::get_x509_user_proxy(*jobad, good) );
 
       if( good ) request.set_proxyfile( proxyfile );
       
       if ( !logfile ) { // See lcg2 bug 3883
-	lf.assign( glite::wms::jdl::get_log(*jobad, good) );
+	lf.assign( glite::jdl::get_log(*jobad, good) );
 	if( good ) request.set_logfile( lf );
       }
       

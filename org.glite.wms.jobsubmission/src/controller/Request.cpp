@@ -3,9 +3,9 @@
 
 #include <classad_distribution.h>
 
-#include "glite/wms/jdl/JobAdManipulation.h"
-#include "glite/wms/jdl/PrivateAdManipulation.h"
-#include "glite/wms/jdl/ManipulationExceptions.h"
+#include "glite/jdl/JobAdManipulation.h"
+#include "glite/jdl/PrivateAdManipulation.h"
+#include "glite/jdl/ManipulationExceptions.h"
 #include "../jobcontrol_namespace.h"
 #include "Request.h"
 #include "RequestExceptions.h"
@@ -176,7 +176,7 @@ void SubmitRequest::set_sequence_code( const string &code )
 {
   classad::ClassAd     *jobad = dynamic_cast<classad::ClassAd *>( this->r_arguments->Lookup(sr_s_JobAd) );
 
-  if( jobad ) glite::wms::jdl::set_lb_sequence_code( *jobad, code );
+  if( jobad ) glite::jdl::set_lb_sequence_code( *jobad, code );
   else throw MalformedRequest( *this->r_request );
 
   return;

@@ -17,6 +17,9 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.17  2006/03/16 17:28:40  gianelle
+#       Migration to "new" jdl library
+#
 #       Revision 1.16  2006/03/15 13:19:54  gianelle
 #       Drops any explicit references to ares.
 #
@@ -95,8 +98,9 @@ glite_wms_job_controller_LDADD = ../controller/libglite_wms_jss_controller.la \
 	$(GLITE_WMSUTILS_JOBID_LIBS) \
 	$(GLITE_WMSUTILS_CJOBID_LIBS) \
 	$(GLITE_WMS_COMMON_LOGGER_LIBS) \
-	$(GLITE_WMS_JDL_LIBS)\
-	$(GLITE_WMS_COMMON_UT_UTIL_LIBS) \
+	$(GLITE_JDL_LIBS)\
+	$(GLITE_WMSUTILS_CLASSADS_LIBS) \
+        $(GLITE_WMS_COMMON_UT_UTIL_LIBS) \
 	$(GLITE_WMSUTILS_EXCEPTION_LIBS) \
 	$(GLITE_WMS_COMMON_PROCESS_LIBS) \
 	$(GLITE_LB_NOTHR_CLIENT_LIBS) $(GLITE_LB_NOTHR_CLIENTPP_LIBS) \
@@ -121,8 +125,9 @@ glite_wms_log_monitor_LDADD = ../controller/libglite_wms_jss_controller.la \
 	$(GLITE_WMSUTILS_JOBID_LIBS) \
 	$(GLITE_WMSUTILS_CJOBID_LIBS) \
 	$(GLITE_WMS_COMMON_LOGGER_LIBS) \
-	$(GLITE_WMS_JDL_LIBS)\
-	$(GLITE_WMS_COMMON_UT_UTIL_LIBS) \
+	$(GLITE_JDL_LIBS)\
+	$(GLITE_WMSUTILS_CLASSADS_LIBS) \
+        $(GLITE_WMS_COMMON_UT_UTIL_LIBS) \
 	$(GLITE_WMSUTILS_EXCEPTION_LIBS) \
 	$(GLITE_WMS_COMMON_PROCESS_LIBS) \
 	$(GLITE_LB_NOTHR_CLIENT_LIBS) $(GLITE_LB_NOTHR_CLIENTPP_LIBS) \

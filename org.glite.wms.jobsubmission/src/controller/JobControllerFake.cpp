@@ -6,9 +6,9 @@
 #include <boost/filesystem/exception.hpp>
 #include <classad_distribution.h>
 
-#include "glite/wms/jdl/convert.h"
-#include "glite/wms/jdl/JobAdManipulation.h"
-#include "glite/wms/jdl/PrivateAdManipulation.h"
+#include "glite/jdl/convert.h"
+#include "glite/jdl/JobAdManipulation.h"
+#include "glite/jdl/PrivateAdManipulation.h"
 #include "glite/wms/common/logger/logstream.h"
 #include "glite/wms/common/logger/manipulators.h"
 
@@ -46,7 +46,7 @@ try {
   ofs.open( ad.submit_file().c_str() );
 
   if( ofs.good() ) {
-    glite::wms::jdl::to_submit_stream( ofs, ad );
+    glite::jdl::to_submit_stream( ofs, ad );
 
     ofs.close();
 

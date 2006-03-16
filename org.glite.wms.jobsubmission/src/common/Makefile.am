@@ -17,6 +17,9 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.11  2006/03/16 17:28:39  gianelle
+#       Migration to "new" jdl library
+#
 #       Revision 1.10  2006/03/14 21:22:14  eronchie
 #       Applied PURGER macro
 #
@@ -87,8 +90,5 @@ AM_CPPFLAGS = -I$(top_srcdir)/src \
 	$(BOOST_CFLAGS) \
 	-DGLITE_WMS_HAVE_LOGGING -DGLITE_WMS_HAVE_PURGER \
         -DGLITE_WMS_HAVE_RENEWAL -DGLITE_WMS_HAVE_LBPROXY
-#	-I$(top_srcdir)/../org.glite.wms.purger/src 
-#	-DGLITE_WMS_HAVE_LOGGING -DGLITE_WMS_HAVE_PURGER 
-#	-DGLITE_WMS_HAVE_RENEWAL -DGLITE_WMS_HAVE_LBPROXY
 
 MAINTAINERCLEANFILES = Makefile.in *~

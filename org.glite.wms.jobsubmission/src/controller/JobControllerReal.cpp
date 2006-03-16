@@ -39,9 +39,9 @@ namespace fs = boost::filesystem;
 #include "glite/wmsutils/jobid/JobId.h"
 #include "glite/wmsutils/jobid/manipulation.h"
 
-#include "glite/wms/jdl/convert.h"
-#include "glite/wms/jdl/PrivateAdManipulation.h"
-#include "glite/wms/jdl/JobAdManipulation.h"
+#include "glite/jdl/convert.h"
+#include "glite/jdl/PrivateAdManipulation.h"
+#include "glite/jdl/JobAdManipulation.h"
 #include "glite/wms/common/logger/logstream.h"
 #include "glite/wms/common/logger/manipulators.h"
 #include "../common/IdContainer.h"
@@ -215,7 +215,7 @@ try {
   elog::cedglog << logger::setlevel( logger::verylow ) << "Submitting job \"" << sad->job_id() << "\"" << endl;
 
   if( ad.get() != NULL ) {
-    glite::wms::jdl::to_submit_stream( oss, *ad );
+    glite::jdl::to_submit_stream( oss, *ad );
 
 #ifndef HAVE_STRINGSTREAM
     if( oss.str() == NULL ) {
@@ -298,7 +298,7 @@ try {
   }
   else { // Submit classad not good...
     bool      good;
-    string    id( glite::wms::jdl::get_edg_jobid(*pad, good) ), type( glite::wms::jdl::get_type(*pad, good) );
+    string    id( glite::jdl::get_edg_jobid(*pad, good) ), type( glite::jdl::get_type(*pad, good) );
 
     elog::cedglog << logger::setlevel( logger::null ) << "Received classad is invalid." << endl
 		  << "Reason: \"" << sad->reason() << "\"" << endl;

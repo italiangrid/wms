@@ -6,7 +6,6 @@
 
 #include "glite/wms/common/logger/edglog.h"
 #include "glite/wms/common/logger/manipulators.h"
-#include "glite/wms/jdl/JobAdManipulation.h"
 
 #include "SubmitAdapter.h"
 #include "SubmitAd.h"

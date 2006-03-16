@@ -20,9 +20,9 @@ namespace fs = boost::filesystem;
 #include "glite/wms/common/configuration/Configuration.h"
 #include "glite/wms/common/configuration/LMConfiguration.h"
 #include "glite/wms/common/configuration/JCConfiguration.h"
-#include "glite/wms/jdl/JobAdManipulation.h"
-#include "glite/wms/jdl/PrivateAdManipulation.h"
-#include "glite/wms/jdl/ManipulationExceptions.h"
+#include "glite/jdl/JobAdManipulation.h"
+#include "glite/jdl/PrivateAdManipulation.h"
+#include "glite/jdl/ManipulationExceptions.h"
 
 #include "glite/wmsutils/jobid/JobId.h"
 #include "glite/wmsutils/jobid/manipulation.h"
@@ -107,17 +107,17 @@ void SubmitAd::createFromAd( const classad::ClassAd *pad )
   if( this->sa_ad.get() == NULL )
     this->sa_ad.reset(static_cast<classad::ClassAd*>(pad->Copy()));
 
-  this->sa_jobtype.assign( glite::wms::jdl::get_type(*this->sa_ad, this->sa_good) );
+  this->sa_jobtype.assign( glite::jdl::get_type(*this->sa_ad, this->sa_good) );
 
   if( this->sa_good ) {
     transform( this->sa_jobtype.begin(), this->sa_jobtype.end(), this->sa_jobtype.begin(), ::tolower );
 
-    this->sa_dagid.assign( glite::wms::jdl::get_edg_dagid(*this->sa_ad, this->sa_hasDagId) );
+    this->sa_dagid.assign( glite::jdl::get_edg_dagid(*this->sa_ad, this->sa_hasDagId) );
 
     if( !this->sa_hasDagId ) this->loadStatus();
     else dagId.fromString( this->sa_dagid );
 
-    this->sa_jobid.assign( glite::wms::jdl::get_edg_jobid(*this->sa_ad, this->sa_good) );
+    this->sa_jobid.assign( glite::jdl::get_edg_jobid(*this->sa_ad, this->sa_good) );
 
     if( !this->sa_good ) this->sa_reason.assign( "Cannot extract \"edg_jobid\" from given classad." );
     else {
@@ -191,22 +191,22 @@ void SubmitAd::createFromAd( const classad::ClassAd *pad )
       }
 
       try {
-	glite::wms::jdl::set_log( *this->sa_ad, this->sa_logfile );
-	glite::wms::jdl::set_condor_submit_file( *this->sa_ad, this->sa_submitfile );
+	glite::jdl::set_log( *this->sa_ad, this->sa_logfile );
+	glite::jdl::set_condor_submit_file( *this->sa_ad, this->sa_submitfile );
       }
-      catch( glite::wms::jdl::CannotGetAttribute &par ) {
+      catch( glite::jdl::CannotGetAttribute &par ) {
 	this->sa_reason.assign( "Cannot extract parameter \"" );
 	this->sa_reason.append( par.parameter() ); this->sa_reason.append( "\" from given classad." );
 
 	this->sa_good = false;
       }
-      catch( glite::wms::jdl::CannotSetAttribute &par ) {
+      catch( glite::jdl::CannotSetAttribute &par ) {
 	this->sa_reason.assign( "Cannot set parameter \"" );
 	this->sa_reason.append( par.parameter() ); this->sa_reason.append( "\" into given classad." );
 
 	this->sa_good = false;
       }
-      catch( glite::wms::jdl::CannotRemoveAttribute &par ) {
+      catch( glite::jdl::CannotRemoveAttribute &par ) {
 	this->sa_reason.assign( "Cannot remove parameter \"" );
 	this->sa_reason.append( par.parameter() ); this->sa_reason.append( "\" from classad." );
 
@@ -239,7 +239,7 @@ SubmitAd &SubmitAd::set_sequence_code( const string &code )
 
   if( this->sa_good ) {
     if( this->sa_seqcode.size() == 0 )
-      seqcode.assign( glite::wms::jdl::get_lb_sequence_code(*this->sa_ad) );
+      seqcode.assign( glite::jdl::get_lb_sequence_code(*this->sa_ad) );
     else
       seqcode.assign( this->sa_seqcode );
 
@@ -248,22 +248,22 @@ SubmitAd &SubmitAd::set_sequence_code( const string &code )
       notes.append( seqcode );notes.append( ") (" );
       notes.append( boost::lexical_cast<string>(this->sa_last) ); notes.append( 1, ')' );
 
-      glite::wms::jdl::set_lb_sequence_code( *this->sa_ad, seqcode );
+      glite::jdl::set_lb_sequence_code( *this->sa_ad, seqcode );
 
       seqcode.insert( seqcode.begin(), '\'' ); seqcode.append( 1, '\'' );
-      glite::wms::jdl::set_arguments( *this->sa_ad, seqcode ); // Must pass the seqcode as first argument of the JobWrapper...
+      glite::jdl::set_arguments( *this->sa_ad, seqcode ); // Must pass the seqcode as first argument of the JobWrapper...
 
       if( this->sa_hasDagId )
-	glite::wms::jdl::set_submit_event_user_notes( *this->sa_ad, notes );
+	glite::jdl::set_submit_event_user_notes( *this->sa_ad, notes );
       else
-	glite::wms::jdl::set_submit_event_notes( *this->sa_ad, notes );
+	glite::jdl::set_submit_event_notes( *this->sa_ad, notes );
     }
     else if( this->sa_jobtype == "dag" ) {
       notes.assign( "DAG job: (" ); notes.append( this->sa_jobid ); notes.append( ") (" );
       notes.append( seqcode ); notes.append( 1, ')' );
 
-      glite::wms::jdl::set_lb_sequence_code( *this->sa_ad, seqcode );
-      glite::wms::jdl::set_submit_event_notes( *this->sa_ad, notes );
+      glite::jdl::set_lb_sequence_code( *this->sa_ad, seqcode );
+      glite::jdl::set_submit_event_notes( *this->sa_ad, notes );
     }
   }
 

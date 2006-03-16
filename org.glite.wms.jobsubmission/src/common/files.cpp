@@ -12,7 +12,7 @@
 #include "glite/wmsutils/jobid/JobId.h"
 #include "glite/wmsutils/jobid/manipulation.h"
 
-#include "glite/wms/jdl/PrivateAdManipulation.h"
+#include "glite/jdl/PrivateAdManipulation.h"
 #include "glite/wms/common/utilities/boost_fs_add.h"
 #include "../jobcontrol_namespace.h"
 
@@ -250,7 +250,7 @@ const fs::path &Files::log_file( void )
 
       if( ad != NULL ) {
 	bool     good = false;
-	string   logfile( glite::wms::jdl::get_log(*ad, good) );
+	string   logfile( glite::jdl::get_log(*ad, good) );
 
 	if( good )
 	  this->f_logfile.reset( new path(fs::normalize_path(logfile), fs::native) );
