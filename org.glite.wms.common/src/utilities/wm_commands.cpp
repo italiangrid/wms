@@ -85,7 +85,7 @@ classad::ClassAd
 submit_command_create(classad::ClassAd const& jdl)
 {
   std::auto_ptr<classad::ClassAd> jdl_(new classad::ClassAd(jdl));
-  return submit_command_create(jdl);
+  return submit_command_create(jdl_);
 }
 
 classad::ClassAd const*
