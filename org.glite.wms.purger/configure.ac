@@ -19,6 +19,9 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.15  2006/03/17 13:20:43  monforte
+#       Removing ares inclusion.
+#
 #       Revision 1.14  2006/03/14 11:51:36  monforte
 #       *** empty log message ***
 #
@@ -196,7 +199,6 @@ have_boost=no
 have_classads=no
 have_globus=no
 have_expat=no
-have_ares=no
 have_libtar=no
 
 AC_BOOST([], have_boost=yes, have_boost=no)
@@ -214,9 +216,6 @@ AC_MSG_RESULT(["GLOBUS found $have_globus"])
 AC_EXPAT([], have_expat=yes, have_expat=no)
 AC_MSG_RESULT(["EXPAT found $have_expat"])
 
-AC_ARES([], have_ares=yes, have_ares=no)
-AC_MSG_RESULT(["ARES found $have_ares"])
-
 if test "$have_globus" = "no"; then
   AC_MSG_RESULT(["Please verify GLOBUS package"])
 fi
@@ -231,10 +230,6 @@ fi
 
 if test "$have_classads" = "no"; then
   AC_MSG_RESULT(["Please verify CLASSADS package"])
-fi
-
-if test "$have_ares" = "no"; then
-  AC_MSG_RESULT(["Please verify ARES package"])
 fi
 
 if test "$have_expat" = "no"; then

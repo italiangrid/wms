@@ -49,7 +49,6 @@ glite_wms_purgeStorage_LDADD = \
 	$(GLOBUS_COMMON_NOTHR_LIBS) \
 	$(GLOBUS_GSS_NOTHR_LIBS) \
 	$(CLASSAD_LIBS) \
-	$(ARES_LIBS) \
 	$(EXPAT_LIBS) \
 	-lstdc++ 
 
