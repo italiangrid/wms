@@ -21,9 +21,12 @@
 
 	Revision history:
 	$Log$
+	Revision 1.94  2006/03/17 08:45:52  eronchie
+	Added ice dependencies
+
 	Revision 1.93  2006/03/16 09:16:14  eronchie
 	Updated
-
+	
 	Revision 1.92  2006/03/16 08:36:36  eronchie
 	Added ice
 	
@@ -644,7 +647,7 @@
     	</target>
 
 	<!-- Ice -->
-        <target name="ice" depends="get.ice.head, get.ice.tag"/>
+        <target name="ice" depends="boost, classads, globus, log4cpp, common, get.ice.head, get.ice.tag"/>
         <target name="get.ice.head" if="ice.head">
             <cvs-co package="org.glite.wms.ice" />
         </target>

@@ -21,9 +21,12 @@
 
 	Revision history:
 	$Log$
+	Revision 1.104  2006/03/17 08:45:52  eronchie
+	Added ice dependencies
+
 	Revision 1.103  2006/03/16 08:36:36  eronchie
 	Added ice
-
+	
 	Revision 1.102  2005/10/03 22:07:15  eronchie
 	Removed mod_ssl
 	
@@ -608,7 +611,7 @@
 		</if>
         </target>
 
-	<target name="ice" unless="setenvonly" depends="envset">
+	<target name="ice" unless="setenvonly" depends="envset, boost, classads, globus, log4cpp, common">
                 <if>
                         <isset property="small.memory" />
                         <then>
