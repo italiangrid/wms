@@ -19,6 +19,9 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.16  2006/03/20 22:52:54  eronchie
+#       Increased version
+#
 #       Revision 1.15  2006/03/17 13:20:43  monforte
 #       Removing ares inclusion.
 #
@@ -147,7 +150,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.57)
-AC_INIT([GLite WMS Purger], [1.5.6])
+AC_INIT([GLite WMS Purger], [3.1.0])
 AC_CONFIG_AUX_DIR([./project])
 AM_INIT_AUTOMAKE([1.6.3 subdir-objects])
 AC_CONFIG_SRCDIR([src/purger.cpp])
