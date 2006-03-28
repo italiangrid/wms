@@ -38,8 +38,10 @@ FLExtractor<T>::get_all_available()
 
   FileListLock lock(m_mutex);
 
+  iterator const end(m_filelist.end());
   for (iterator next(m_extractor.get_next());
-       next != m_filelist.end(); next = m_extractor.get_next()) {
+       next != end;
+       next = m_extractor.get_next()) {
     result.push_back(next);
   }
 
