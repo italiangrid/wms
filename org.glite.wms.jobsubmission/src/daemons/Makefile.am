@@ -17,6 +17,9 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.18  2006/03/28 10:23:16  eronchie
+#       Updated
+#
 #       Revision 1.17  2006/03/16 17:28:40  gianelle
 #       Migration to "new" jdl library
 #
@@ -110,7 +113,7 @@ glite_wms_job_controller_LDADD = ../controller/libglite_wms_jss_controller.la \
 	$(GLOBUS_COMMON_NOTHR_LIBS) \
 	$(CLASSAD_LIBS) $(BOOST_LIBS) \
 	$(EXPAT_LIBS) $(CONDORG_LIBS) \
-	$(GLITE_SECURITY_RENEWAL_THR_LIBS) \
+	$(GLITE_SECURITY_RENEWAL_NOTHR_LIBS) \
 	$(GLITE_WMS_PURGER_LIBS) \
         $(GLITE_WMS_OPTIONAL_JP_LIBS)
 
@@ -137,7 +140,7 @@ glite_wms_log_monitor_LDADD = ../controller/libglite_wms_jss_controller.la \
 	$(GLOBUS_COMMON_NOTHR_LIBS) \
 	$(CLASSAD_LIBS) $(BOOST_LIBS) \
 	$(CONDORG_LIBS) $(EXPAT_LIBS) \
-        $(GLITE_SECURITY_RENEWAL_THR_LIBS) \
+        $(GLITE_SECURITY_RENEWAL_NOTHR_LIBS) \
 	$(GLITE_WMS_PURGER_LIBS) \
         $(GLITE_WMS_OPTIONAL_JP_LIBS)
 
