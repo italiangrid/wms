@@ -27,6 +27,8 @@ libglite_wms_purger_la_SOURCES = \
 	purger.cpp \
 	lb_utils.cpp \
 	jp_upload_files.cpp
+libglite_wms_purger_la_LIBADD = \
+        $(GLITE_WMS_OPTIONAL_JP_LIBS)
 
 glite_wms_purgeStorage_SOURCES = \
 	glite-wms-purgeStorage.cpp
@@ -43,7 +45,6 @@ glite_wms_purgeStorage_LDADD = \
 	$(GLITE_LB_NOTHR_CLIENTPP_LIBS) \
 	$(GLITE_LB_NOTHR_COMMON_LIBS) \
 	./libglite_wms_purger.la \
-        $(GLITE_WMS_OPTIONAL_JP_LIBS) \
 	$(BOOST_LIBS) \
 	$(GLOBUS_SSL_NOTHR_LIBS) \
 	$(GLOBUS_COMMON_NOTHR_LIBS) \
