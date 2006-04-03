@@ -44,6 +44,8 @@ namespace logger	= glite::wms::common::logger::threadsafe;
 namespace logging       = glite::lb;
 namespace configuration = glite::wms::common::configuration;
 namespace utilities     = glite::wms::common::utilities;
+namespace utils		= glite::wmsutils::classads;
+
 #define edglog_fn(name) glite::wms::common::logger::StatePusher    pusher(logger::edglog, #name);
 
 namespace glite {
@@ -138,10 +140,10 @@ namespace
       std::string jdlstr(
         get_original_jdl(lb_context.get(), jobid)
       );
-      jdlad.reset(utilities::parse_classad(jdlstr));
+      jdlad.reset(utils::parse_classad(jdlstr));
       
       std::string job_provenance(
-        utilities::evaluate_attribute(*jdlad, "JobProvenance")
+        utils::evaluate_attribute(*jdlad, "JobProvenance")
       );
       
       fs::path proxy_path(
@@ -174,10 +176,10 @@ namespace
     catch (CannotCreateLBContext& e) {
       logger::edglog << "CannotCreateLBContext error code #" << e.error_code();
     }  
-    catch(utilities::CannotParseClassAd& cpc) {
+    catch(utils::CannotParseClassAd& cpc) {
       logger::edglog << "Cannot parse logging::JobStatus::JDL";
     }
-    catch(utilities::InvalidValue& ive) {
+    catch(utils::InvalidValue& ive) {
       logger::edglog << "JobProvenance attribute not found in JDL";
     }
     catch(jp_upload_files::init_context_exception& ice) {
