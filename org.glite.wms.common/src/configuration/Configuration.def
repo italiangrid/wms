@@ -237,6 +237,8 @@ class JCConfiguration {
   parameter std::string( CondorDagman ) section fileparse;
   parameter int( DagmanLogLevel ) section normal;
   parameter int( DagmanLogRotate ) section normal;
+  parameter int(DagmanMaxPre = 10) section normal;
+  parameter int(MaxDAGRunningNodes = 10) section normal;
   parameter int( MaximumTimeAllowedForCondorMatch = 900 ) section normal;
 
   parameter std::string( Input ) section fileparse;
@@ -354,7 +356,6 @@ class WMConfiguration {
   parameter int(InputIterations = 1) section normal;
   parameter int(MaxRetryCount = 10) section normal;
   parameter int(MaxShallowRetryCount = 10) section normal;
-  parameter int(MaxDAGRunningNodes = 10) section normal;
   parameter bool(EnableRecovery = false) section normal;
   parameter bool(EnableStatusCheck = false) section normal;
   parameter std::string(Input = "${EDG_WL_TMP}/workload_manager/input.fl") section fileparse;
