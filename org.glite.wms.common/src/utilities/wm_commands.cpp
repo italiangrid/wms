@@ -196,7 +196,8 @@ match_command_create(
 )
 {
   std::auto_ptr<classad::ClassAd> jdl_(new classad::ClassAd(jdl));
-  return match_command_create(jdl_, file);
+  return
+    match_command_create(jdl_, file, number_of_results, include_brokerinfo);
 }
 
 classad::ClassAd const*
