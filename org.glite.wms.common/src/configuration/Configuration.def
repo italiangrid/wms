@@ -490,6 +490,7 @@ class ICEConfiguration {
   parameter std::string( cache_persist_file = "/tmp/ice_cache_persist_file") section fileparse;
   parameter std::string( logfile = "/tmp/ice_logfile") section fileparse;
   parameter bool( start_poller = true ) section normal;
+  parameter bool( poller_purges_jobs = true) section normal;
   parameter bool( start_listener = true ) section normal;
   parameter bool( start_subscription_updater = true ) section normal;
   parameter int( poller_delay = 10 ) section normal;
