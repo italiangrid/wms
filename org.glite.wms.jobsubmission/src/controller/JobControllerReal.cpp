@@ -4,7 +4,7 @@
 // Copyright (c) 2001 EU DataGrid.
 // For license conditions see http://www.eu-datagrid.org/license.html
 
-// $Id$
+// $Id:
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -93,20 +93,40 @@ void logGenericEvent( jccommon::generic_event_t ev, int condorid, const char *lo
 
 bool cancelJob( const string &condorid, bool force, string &info )
 {
-  bool                     ret = true;
+  // TODO: force parameter is no more used, remove it!
   int                      result;
   string                   parameters;
   logger::StatePusher      pusher( clog, "cancelJob(...)" );
-
+                                                                                                                                                            
   clog << logger::setlevel( logger::debug ) << "Condor id of job was: " << condorid << endl;
-
-  if( force ) {
-    clog << logger::setlevel( logger::info ) << "Forcing job removal  (only for _globus_ job)." << endl;
-
+                                                                                                                                                            
+  parameters.assign( "-constraint 'ClusterId==" );
+  string::size_type pos = condorid.find('.');
+                                                                                                                                                            
+  if( pos != std::string::npos ) { // procID is defined
+    parameters.append( condorid.substr(0, pos) );
+    parameters.append( " && ProcId==" );
+    parameters.append( condorid.substr( pos+1 ) );
+  } else { // procID is not define so put 0
+    parameters.append( condorid );
+    parameters.append( " && ProcId==0" );
+  }
+  // remove job only if is not in "removed" status
+  parameters.append( " && JobStatus!=3'");
+                                                                                                                                                            
+  result = CondorG::instance()->set_command( CondorG::remove, parameters )->execute( info );
+                                                                                                                                                            
+  if( result ) { // normal cancellation has been refused, try to force it
+    clog << logger::setlevel( logger::severe ) << "Job cancellation refused." << endl
+         << "Condor ID = " << condorid << endl
+         << "Reason: \"" << info << "\"." << endl;
+                                                                                                                                                            
+    clog << logger::setlevel( logger::info ) << "Try to force job removal  (only for _globus_ job)." << endl;
+                                                                                                                                                            
     parameters.assign( "-f -constraint 'ClusterId==" );
-
+                                                                                                                                                            
     string::size_type pos = condorid.find('.');
-
+                                                                                                                                                            
     if( pos != std::string::npos ) { // procID is defined
       parameters.append( condorid.substr(0, pos) );
       parameters.append( " && ProcId==" );
@@ -117,19 +137,11 @@ bool cancelJob( const string &condorid, bool force, string &info )
     }
     // force removal must be used only for globus jobs
     parameters.append( " && JobUniverse==9 && JobGridType==\"globus\"'" );
+                                                                                                                                                            
+    result = CondorG::instance()->set_command( CondorG::remove, parameters )->execute( info );
   }
-  else parameters.assign( condorid );
-
-  result = CondorG::instance()->set_command( CondorG::remove, parameters )->execute( info );
-  if( result ) {
-    clog << logger::setlevel( logger::severe ) << "Job cancellation refused." << endl
-	 << "Condor ID = " << condorid << endl
-	 << "Reason: \"" << info << "\"." << endl;
-
-    ret = ( force ? false : cancelJob(condorid, true, info) );
-  }
-
-  return ret;
+                                                                                                                                                            
+  return !result;
 }
 
 } // Anonymous namespace

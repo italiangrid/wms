@@ -77,6 +77,7 @@ void EventSubmit::process_event( void )
   string                notes( char_notes ? char_notes : "" );
   logger::StatePusher   pusher( elog::cedglog, "EventSubmit::process_event()" );
   boost::match_results<string::const_iterator>   match_pieces;
+  jccommon::IdContainer::iterator   position;
 
   static boost::regex  jobexpr( "^\\s*\\((.*)\\) \\((.*)\\) \\(([01])\\)$" );
   static boost::regex  dagexpr( "^DAG job: \\((.*)\\) \\((.*)\\)$" );
@@ -109,8 +110,7 @@ void EventSubmit::process_event( void )
 
       elog::cedglog << logger::setlevel( logger::info ) << "First job is a DAG job, entered DAG mode." << endl;
 
-			this->ei_data->md_sizefile->increment_pending().set_last( true );
-      //this->ei_data->md_sizefile->increment_pending();
+      this->ei_data->md_sizefile->increment_pending().set_last( true ); 
       this->finalProcess( this->ei_data->md_dagId, seqcode );
     }
   }
@@ -119,13 +119,21 @@ void EventSubmit::process_event( void )
     seqcode.assign( match_pieces[2].first, match_pieces[2].second );
     islast.assign( match_pieces[3].first, match_pieces[3].second );
 
-	this->ei_data->md_sizefile->set_last( boost::lexical_cast<bool>(islast) || this->ei_data->md_isDagLog ).increment_pending();
+    this->ei_data->md_sizefile->set_last( boost::lexical_cast<bool>(islast) || this->ei_data->md_isDagLog ).increment_pending();
 
 
     if( this->ei_data->md_isDagLog )
       elog::cedglog << logger::setlevel( logger::info )
 		    << ei_s_subnodeof << this->ei_data->md_dagId << endl;
-
+    
+    // Check if the node has been resubmitted (This check is not need if condor log always the post script event)
+    position = this->ei_data->md_container->position_by_edg_id( edgid );
+    if( position != this->ei_data->md_container->end() ) { // Job already exist in our database
+      elog::cedglog << logger::setlevel( logger::info ) << "This node seems to be resubmitted." << endl;
+      this->ei_data->md_sizefile->decrement_pending();
+      this->ei_data->md_container->update_pointer( position, this->ei_data->md_logger->sequence_code(), 5 );	
+      this->ei_data->md_container->remove( position ); // remove it
+    }
     this->finalProcess( edgid, seqcode );
   }
   else

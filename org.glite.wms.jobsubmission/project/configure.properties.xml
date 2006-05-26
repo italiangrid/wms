@@ -4,6 +4,6 @@
         
 	<project name="configure options">                                                                        
         <property name="configure.args"
-               value="--prefix=${workspace.abs.dir}/stage --enable-jp-integration=${enable.jp.integration} -with-classads-prefix=${with.classads.prefix} --with-boost-prefix=${with.boost.prefix} --enable-boost_debug=${enable.boost.debug} --with-condor-prefix=${with.condor.prefix} --with-globus-prefix=${with.globus.prefix} --with-globus-thr-flavor=${with.globus.thr.flavor} --with-globus-nothr-flavor=${with.globus.nothr.flavor} --with-glite-location=${with.glite.location} --with-expat-prefix=${with.expat.prefix} --with-dist-location=${with.dist.location} --with-libtar-prefix=${with.libtar.prefix} --disable-optimization"/>
+               value="--prefix=${workspace.abs.dir}/stage --enable-jp-integration=${enable.jp.integration} -with-classads-prefix=${with.classads.prefix} --with-boost-prefix=${with.boost.prefix} --enable-boost_debug=${enable.boost.debug} --with-condor-prefix=${with.condor.prefix} --with-globus-prefix=${with.globus.prefix} --with-globus-thr-flavor=${with.globus.thr.flavor} --with-globus-nothr-flavor=${with.globus.nothr.flavor} --with-glite-location=${with.glite.location} --with-expat-prefix=${with.expat.prefix} --with-dist-location=${with.dist.location} --with-libtar-prefix=${with.libtar.prefix} --enable-optimization=${enable.optimization}"/>
 
 	</project>

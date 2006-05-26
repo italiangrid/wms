@@ -116,7 +116,8 @@ void EventPostTerminated::process_event( void )
 			<< "I should resubmit such job... But this is a DAG node..." << endl
 			<< logger::setlevel( logger::warning ) << "Ignoring..." << endl;
 
-	this->ei_data->md_logger->abort_on_error_event( ei_s_jobwrapfail );
+        // Don't log Abort, this condition is now manage by the planner
+	// this->ei_data->md_logger->abort_on_error_event( ei_s_jobwrapfail );
 
 	if( this->ept_event->returnValue == 0 ) {
 	  /*
@@ -130,9 +131,7 @@ void EventPostTerminated::process_event( void )
 
 	  elog::cedglog << logger::setlevel( logger::warning )
 			<< "Setting the DAG as aborting." << endl
-			<< "As of the form of the POST script, DAGMan isn't able to detect this failure." << endl
-			<< logger::setlevel( logger::debug )
-			<< "Ask Francesco Giacomini <Francesco.Giacomini@cnaf.infn.it> for details." << endl;
+			<< "As of the form of the POST script, DAGMan isn't able to detect this failure." << endl;
 
 	  dagposition = this->ei_data->md_container->position_by_edg_id( this->ei_data->md_dagId );
 	  if( this->ei_data->md_aborted->insert(dagposition->condor_id()) ) { // Insert the condor id of the DAG...

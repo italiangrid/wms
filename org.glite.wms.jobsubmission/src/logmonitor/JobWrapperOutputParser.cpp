@@ -53,7 +53,9 @@ bool JobWrapperOutputParser::parseStream( istream &is, string &errors, int &retc
 				     { "Cannot download",                resubmit },
 				     { "Cannot upload",                  resubmit },
 				     { "Cannot take token!",             resubmit },
-				     { NULL, unknown },
+				     { "prologue failed with error",     resubmit },    
+				     { "epilogue failed with error",     resubmit },    
+                                     { NULL, unknown },
   };
   struct JWErrors    *errIt;
   

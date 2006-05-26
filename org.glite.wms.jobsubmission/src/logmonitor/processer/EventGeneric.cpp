@@ -150,9 +150,8 @@ void EventGeneric::finalProcess( int cn, const string &message )
 
 	  elog::cedglog << logger::setlevel( logger::error )
 			<< "Forced cancellation retries exceeded maximum (" << retry << '/' << maxretries << ')' << endl
-			<< ei_s_subnodeof << this->ei_data->md_dagId << endl
-			<< "As I cannot hope to remove such job anymore, I try to remove the DAG, sorry :(" << endl;
-
+			<< ei_s_subnodeof << this->ei_data->md_dagId << endl;
+/* Not remove the dag see bugs #16034
 	  dagposition = this->ei_data->md_container->position_by_edg_id( this->ei_data->md_dagId );
 	  if( dagposition == this->ei_data->md_container->end() || 
 	      this->ei_data->md_aborted->insert(dagposition->condor_id()) ) {
@@ -160,18 +159,22 @@ void EventGeneric::finalProcess( int cn, const string &message )
 
 	    throw CannotExecute( ei_s_failedinsertion );
 	  }
+*/
 #ifdef GLITE_WMS_HAVE_LBPROXY
-          this->ei_data->md_logger->set_LBProxy_context( dagposition->edg_id(), dagposition->sequence_code(), 
-							 dagposition->proxy_file() );
+          this->ei_data->md_logger->set_LBProxy_context( edgid, position->sequence_code(), 
+							 position->proxy_file() );
 #else
-	  this->ei_data->md_logger->reset_user_proxy( dagposition->proxy_file() );
-	  this->ei_data->md_logger->reset_context( dagposition->edg_id(), dagposition->sequence_code() );
+	  this->ei_data->md_logger->reset_user_proxy( position->proxy_file() );
+	  this->ei_data->md_logger->reset_context( edgid, position->sequence_code() );
 #endif
+          this->ei_data->md_logger->abort_on_error_event( string("Removal retries exceeded.") );
+
+/* Not remove the dag see bugs #16034
 	  this->ei_data->md_logger->aborted_by_system_event( string("Forced cancellation of a node of the DAG failed,"
 								    " removing the whole DAG.") );
-
 	  controller.cancel( this->ei_data->md_dagId, this->ei_data->md_logfile_name.c_str(), true );
 	  this->ei_data->md_container->update_pointer( dagposition, this->ei_data->md_logger->sequence_code(), ULOG_GENERIC );
+*/         
 	}
 	else { // Normal job or a Dag job (Not subnode)
 	  elog::cedglog << logger::setlevel( logger::severe )
