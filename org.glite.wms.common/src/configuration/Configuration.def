@@ -505,7 +505,7 @@ class ICEConfiguration {
   parameter bool( log_on_console = true ) section normal;
   parameter bool( log_on_file = true) section normal;
   parameter int( max_jobcache_operation_before_dump = 10 ) section normal;
-  parameter int( notification_frequency = 10 ) section normal;
+  parameter int( notification_frequency = 60 ) section normal;
   parameter int( lease_delta_time = 60 ) section normal;
   parameter int( lease_threshold_time = 20 ) section normal;
   parameter int( ice_log_level = 400 ) section normal;
