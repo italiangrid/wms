@@ -455,16 +455,21 @@ void EventLogger::grid_submit_event( const string &ce, const string &logfile )
 {
   logger::StatePusher     pusher( elog::cedglog, "EventLogger::grid_submit_event(...)" );
   
-#ifdef ENABLE_LOGGING
+#ifdef GLITE_WMS_HAVE_LOGGING
   int           res;
 
   if( this->el_context ) {
     this->startLogging();
     do {
+#ifdef GLITE_WMS_HAVE_LBPROXY
+      res = edg_wll_LogTransferOKProxy( *this->el_context, EDG_WLL_SOURCE_LRMS, ce.c_str(),
+                                   logfile.c_str(), "Grid job - no RSL", "Job successfully submitted over the Grid",
+                                   el_s_unavailable );
+#else
       res = edg_wll_LogTransferOK( *this->el_context, EDG_WLL_SOURCE_LRMS, ce.c_str(), 
 				   logfile.c_str(), "Grid job - no RSL", "Job successfully submitted over the Grid",
 				   el_s_unavailable );
-
+#endif
       this->testCode( res );
     } while( res != 0 );
   }
