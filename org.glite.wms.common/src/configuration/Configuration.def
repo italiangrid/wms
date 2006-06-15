@@ -512,6 +512,8 @@ class ICEConfiguration {
   parameter bool( listener_enable_authn = false ) section normal;
   parameter int( job_cancellation_threshold_time = 300 ) section normal;
   parameter bool( start_job_killer = true ) section normal;
+  parameter bool( start_proxy_renewer = true) section normal;
+  parameter bool( start_lease_updater = true) section normal;
 #  parameter int( MainLoopDuration = 3 ) section normal;
 #  parameter int( AbortedJobsTimeout = 600 ) section normal;
 #  parameter int( GlobusDownTimeout = 600 ) section normal;
