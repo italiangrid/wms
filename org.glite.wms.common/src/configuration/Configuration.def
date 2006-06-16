@@ -514,6 +514,9 @@ class ICEConfiguration {
   parameter bool( start_job_killer = true ) section normal;
   parameter bool( start_proxy_renewer = true) section normal;
   parameter bool( start_lease_updater = true) section normal;
+  parameter bool( ice_host_key = "${GLITE_HOST_KEY}" ) section fileparse;
+  parameter bool( ice_host_cert = "${GLITE_HOST_CERT}" ) section fileparse;
+
 #  parameter int( MainLoopDuration = 3 ) section normal;
 #  parameter int( AbortedJobsTimeout = 600 ) section normal;
 #  parameter int( GlobusDownTimeout = 600 ) section normal;
