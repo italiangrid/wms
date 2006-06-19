@@ -24,7 +24,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.57)
-AC_INIT([GLite WMS Common], [3.1.1])
+AC_INIT([GLite WMS Common], [3.1.2])
 AC_CONFIG_AUX_DIR([./project])
 AM_INIT_AUTOMAKE([1.6.3 subdir-objects])
 AC_CONFIG_SRCDIR([src/ldif2classad/LDAPForwardIterator.h])
