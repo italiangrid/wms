@@ -51,7 +51,8 @@ libglite_wms_util_la_SOURCES = \
 	LineParserExceptions.cpp \
 	mixed.cpp \
 	boost_fs_add.cpp \
-	wm_commands.cpp
+	wm_commands.cpp \
+	jobdir.cpp
 
 libglite_wms_util_la_LIBADD = -lstdc++
 
@@ -71,7 +72,8 @@ utilitiesinclude_HEADERS = \
 	LineParserExceptions.h \
 	quota.h \
 	triple.h \
-	scope_guard.h
+	scope_guard.h \
+	jobdir.h
 
 AM_CPPFLAGS = -I$(top_srcdir)/interface \
 	-I$(top_srcdir)/src \
