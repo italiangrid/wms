@@ -510,6 +510,7 @@ class ICEConfiguration {
   parameter int( lease_threshold_time = 20 ) section normal;
   parameter int( ice_log_level = 400 ) section normal;
   parameter bool( listener_enable_authn = false ) section normal;
+  parameter bool( listener_enable_authz = true ) section normal;
   parameter int( job_cancellation_threshold_time = 300 ) section normal;
   parameter bool( start_job_killer = true ) section normal;
   parameter bool( start_proxy_renewer = true) section normal;
