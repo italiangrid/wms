@@ -19,6 +19,9 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.14  2006/06/27 12:05:23  rlops
+#       increased version
+#
 #       Revision 1.13  2006/03/20 22:06:07  eronchie
 #       Increased version
 #
@@ -65,7 +68,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.57)
-AC_INIT([GLite WMS Configuration], [3.1.0])
+AC_INIT([GLite WMS Configuration], [3.1.1])
 AC_CONFIG_AUX_DIR([./project])
 AM_INIT_AUTOMAKE([1.6.3 subdir-objects])
 AC_CONFIG_SRCDIR([config/glite_wms.conf])
