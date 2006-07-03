@@ -457,7 +457,8 @@ class WMPConfiguration {
   parameter std::string ( ListMatchRootPath = "/tmp" ) section fileparse;
 
   parameter bool ( LBProxy = true ) section normal;
-  parameter std::string ( LBServer ) section normal;
+  parameter bool ( EnableServiceDiscovery = false ) section normal;
+  parameter std::vector<std::string>( LBServer ) section normal;
   parameter std::string ( LBLocalLogger ) section normal;
   parameter classad::ExprTree*(SDJRequirements) section normal;
 
