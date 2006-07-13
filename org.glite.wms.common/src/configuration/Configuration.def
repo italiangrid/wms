@@ -463,7 +463,7 @@ class WMPConfiguration {
   parameter std::vector<std::string>( LBServer ) section normal;
   parameter std::string ( LBLocalLogger ) section normal;
   parameter classad::ExprTree*(SDJRequirements) section normal;
-
+  parameter classad::ClassAd*( OperationLoadScripts ) section normal;
   parameter bool ( AsyncJobStart = true ) section normal;
 }
 
