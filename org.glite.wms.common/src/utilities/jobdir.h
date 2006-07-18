@@ -9,20 +9,21 @@
 #define GLITE_WMS_COMMON_UTILITIES_JOBDIR_H
 
 #include <string>
-#include <exception>
+#include <stdexcept>
+#include <vector>
 #include <boost/filesystem/path.hpp>
 #include <boost/shared_ptr.hpp>
+#include <boost/shared_container_iterator.hpp>
 
 namespace glite {
 namespace wms {
 namespace common {
 namespace utilities {
 
-class JobDirError: public std::exception
+class JobDirError: public std::runtime_error
 {
 public:
-  ~JobDirError() throw();
-  char const* what() const throw();
+  JobDirError(std::string const& what);
 };
 
 class JobDir
@@ -40,8 +41,11 @@ public:
   );
   boost::filesystem::path set_old(boost::filesystem::path const& file);
 
-  boost::filesystem::directory_iterator new_entries();
-  boost::filesystem::directory_iterator old_entries();
+  typedef boost::shared_container_iterator<
+    std::vector<boost::filesystem::path>
+  > iterator;
+  std::pair<iterator, iterator> new_entries();
+  std::pair<iterator, iterator> old_entries();
 
 public:
   static bool create(boost::filesystem::path const& base_dir);

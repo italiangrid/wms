@@ -7,6 +7,7 @@
  
 #include "jobdir.h"
 #include <sstream>
+#include <iomanip>
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/fstream.hpp>
 #include <boost/filesystem/convenience.hpp>
@@ -31,13 +32,9 @@ bool link(fs::path const& old_path, fs::path const& new_path)
 
 }
 
-JobDirError::~JobDirError() throw()
+JobDirError::JobDirError(std::string const& what)
+  : std::runtime_error(what)
 {
-}
-
-char const* JobDirError::what() const throw()
-{
-  return "JobDirError";
 }
 
 struct JobDir::Impl
@@ -75,7 +72,7 @@ JobDir::JobDir(fs::path const& base_dir)
        && fs::exists(m_impl->old_dir) && fs::is_directory(m_impl->old_dir)
       )
      ) {
-    throw JobDirError();
+    throw JobDirError("invalid directory hierarchy");
   }
 }
 
@@ -98,7 +95,9 @@ fs::path JobDir::deliver(
   } else {
     ++m_impl->counter;
   }
-  file_name += boost::lexical_cast<std::string>(m_impl->counter);
+  std::ostringstream os;
+  os << std::setw(6) << std::setfill('0') << m_impl->counter;
+  file_name += os.str();
   if (!tag.empty()) {
     file_name += '_';
     file_name += tag;
@@ -108,15 +107,21 @@ fs::path JobDir::deliver(
   fs::path const new_path(m_impl->new_dir / file);
 
   fs::ofstream tmp_file(tmp_path);
-  assert(tmp_file && "cannot open the tmp file");
+  if (!tmp_file) {
+    throw JobDirError("cannot create the tmp file");
+  }
 
   tmp_file << contents << std::flush;
-  assert(tmp_file && "tmp file is in a bad state");
+  if (!tmp_file) {
+    throw JobDirError("cannot write the tmp file");
+  }
 
   tmp_file.close(); // synch too?
 
   bool link_result = link(tmp_path, new_path);
-  assert(link_result && "link failed");
+  if (!link_result) {
+    throw JobDirError("cannot link tmp and new files");
+  }
 
   fs::remove(tmp_path);
 
@@ -126,26 +131,36 @@ fs::path JobDir::deliver(
 fs::path JobDir::set_old(fs::path const& file)
 {
   fs::path const new_path(m_impl->new_dir / file.leaf());
-  assert(fs::exists(new_path));
   fs::path const old_path(m_impl->old_dir / file.leaf());
-  assert(!fs::exists(old_path));
 
   bool link_result = link(new_path, old_path);
-  assert(link_result && "link failed");
+  if (!link_result) {
+    throw JobDirError("cannot link new and old files");
+  }
 
   fs::remove(new_path);
 
   return old_path;
 }
 
-fs::directory_iterator JobDir::new_entries()
+std::pair<JobDir::iterator, JobDir::iterator> JobDir::new_entries()
 {
-  return fs::directory_iterator(m_impl->new_dir);
+  fs::directory_iterator const b(m_impl->new_dir);
+  fs::directory_iterator const e;
+  typedef std::vector<fs::path> container;
+  boost::shared_ptr<container> entries(new container(b, e));
+  sort(entries->begin(), entries->end());
+  return boost::make_shared_container_range(entries);
 }
 
-fs::directory_iterator JobDir::old_entries()
+std::pair<JobDir::iterator, JobDir::iterator> JobDir::old_entries()
 {
-  return fs::directory_iterator(m_impl->old_dir);
+  fs::directory_iterator const b(m_impl->old_dir);
+  fs::directory_iterator const e;
+  typedef std::vector<fs::path> container;
+  boost::shared_ptr<container> entries(new container(b, e));
+  sort(entries->begin(), entries->end());
+  return boost::make_shared_container_range(entries);
 }
 
 bool JobDir::create(fs::path const& base_dir)
