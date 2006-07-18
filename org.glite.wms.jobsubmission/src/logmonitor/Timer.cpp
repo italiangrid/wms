@@ -845,6 +845,8 @@ Timer::Timer( const string &backup ) : t_filename( backup ), t_events(), t_backu
       ptr->pointer( fileIt );
       this->t_events.insert( EventMap::value_type(ptr->timeout(), ptr) );
     }
+  // Let's save an open file descriptor.
+  this->t_backup.close();
 }
 
 Timer::~Timer( void )
@@ -855,11 +857,16 @@ Timer &Timer::start_timer( time_t expire, ULogEvent *ptr )
   EventPointer               event( new TimeoutEvent(expire, ptr) );
   FileContainer::iterator    fIt;
 
+  this->t_backup.open(this->t_filename);
+
   this->t_backup.push_back( *event->to_classad() );
   fIt = this->t_backup.end(); --fIt;
 
   event->pointer( fIt );
   this->t_events.insert( EventMap::value_type(expire, event) );
+
+  // Let's save an open file descriptor.
+  this->t_backup.close();
 
   return *this;
 }
@@ -871,7 +878,11 @@ Timer &Timer::remove_timeout( EventIterator &evIt )
   if( evIt != this->t_events.end() ) {
     ptr = evIt->second->pointer();
 
+    this->t_backup.open(this->t_filename);
     this->t_backup.erase( ptr );
+    // Let's save an open file descriptor.
+    this->t_backup.close();
+
     this->t_events.erase( evIt );
   }
 

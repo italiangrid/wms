@@ -35,7 +35,7 @@ public:
 private:
   void doRecycle( void );
   void openFile( void );
-  void writeCurrentPosition( void );
+  void writeCurrentPosition( FILE *fp );
   status_t checkAndProcessTimers( void );
 
   boost::shared_ptr<processer::MonitorData>   cm_shared_data;

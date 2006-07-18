@@ -48,12 +48,10 @@ struct internal_data_s {
 
   auto_ptr<processer::EventFactory>  id_event_factory;
   fs::path            id_logfile_path;
-  ReadUserLog                        id_logfile_parser;
 };
 
 internal_data_s::internal_data_s( const string &filename ) : id_event_factory(),
-							     id_logfile_path( filename, fs::native ),
-							     id_logfile_parser()
+							     id_logfile_path( filename, fs::native )
 {}
 
 void CondorMonitor::doRecycle( void )
@@ -78,15 +76,13 @@ void CondorMonitor::doRecycle( void )
   return;
 }
 
-void CondorMonitor::writeCurrentPosition( void )
+void CondorMonitor::writeCurrentPosition( FILE *fp )
 {
   long int               currpos;
-  FILE                  *fp;
   string                 err;
   logger::StatePusher    pusher( elog::cedglog, "CondorMonitor::writeCurrentPosition()" );
 
   if( this->cm_shared_data->md_sizefile->good() ) {
-    fp = this->cm_internal_data->id_logfile_parser.getfp();
     currpos = ftell( fp );
 
     if( currpos == -1 ) {
@@ -95,17 +91,17 @@ void CondorMonitor::writeCurrentPosition( void )
 
       err.assign( "Cannot ftell log file \"" ); err.append( this->cm_shared_data->md_logfile_name ); err.append( "\"." );
       throw FileSystemError( err );
-    }
-    else {
+    } else {
+
       this->cm_shared_data->md_sizefile->update_position( currpos );
 
       if( !this->cm_shared_data->md_sizefile->good() ) {
         err.assign( "Error while writing on position file \"" );
-	err.append( this->cm_shared_data->md_sizefile->filename() ); err.append( "\"." );
+        err.append( this->cm_shared_data->md_sizefile->filename() ); err.append( "\"." );
 
         elog::cedglog << logger::setlevel( logger::fatal ) << err << endl;
 
-	throw FileSystemError( err );
+        throw FileSystemError( err );
       }
     }
   }
@@ -159,7 +155,6 @@ CondorMonitor::CondorMonitor( const string &filename, MonitorData &data ) :
 {
   const configuration::LMConfiguration *conf = configuration::Configuration::instance()->lm();
 
-  FILE                                           *fp;
   string                                         &logfile_name = this->cm_shared_data->md_logfile_name;
   fs::path                        &logfile_path = this->cm_internal_data->id_logfile_path;
   string                                          dagId, error, logfile_nopath( logfile_path.leaf() );
@@ -181,35 +176,12 @@ CondorMonitor::CondorMonitor( const string &filename, MonitorData &data ) :
     elog::cedglog << logger::setlevel( logger::info ) << "Created new log position file." << endl;
   }
 
-  this->cm_internal_data->id_logfile_parser.initialize( logfile_name.c_str() );
-  if( this->cm_internal_data->id_logfile_parser.getfd() == -1 ) {
-    elog::cedglog << logger::setlevel( logger::severe )
-		  << "Cannot open Condor log file \"" << logfile_name << "\"." << endl;
-
-    throw CannotOpenFile( logfile_name );
-  }
-
   if( this->cm_shared_data->md_sizefile->size_field().position() != 0 ) {
     elog::cedglog << logger::setlevel( logger::info ) << "Old (known) status for this file:" << endl
 		  << "Log position = " << this->cm_shared_data->md_sizefile->size_field().position() << ", "
 		  << this->cm_shared_data->md_sizefile->size_field().pending() << " job(s) running." << endl
 		  << "Last job " << ( this->cm_shared_data->md_sizefile->size_field().last() ? "yet" : "not" ) << " submitted." << endl;
 
-    fp = this->cm_internal_data->id_logfile_parser.getfp();
-
-    if( fseek(fp, this->cm_shared_data->md_sizefile->size_field().position(), SEEK_SET) == -1 ) {
-      error.assign( "Cannot seek file \"" ); error.append( this->cm_shared_data->md_logfile_name );
-      error.append( "\" to old position " );
-      error.append( boost::lexical_cast<string>(this->cm_shared_data->md_sizefile->size_field().position()) );
-      error.append( ", reason: " );
-      error.append( strerror(errno) ); error.append( "." );
-
-      elog::cedglog << logger::setlevel( logger::fatal ) << "Cannot seek file \"" << logfile_name
-		    << "\" to old position " << this->cm_shared_data->md_sizefile->size_field().position() << endl
-		    << "Due to: \"" << strerror(errno) << "\"" << endl;
-
-      throw FileSystemError( error );
-    }
   }
 
   elog::cedglog << logger::setlevel( logger::info ) << "Condor log file parser initialized." << endl;
@@ -298,14 +270,41 @@ CondorMonitor::status_t CondorMonitor::process_next_event( void )
   }
 
   if( size > this->cm_shared_data->md_sizefile->size_field().position() ) {
-    outcome = this->cm_internal_data->id_logfile_parser.readEvent( event );
+    ReadUserLog id_logfile_parser;
+    id_logfile_parser.initialize(this->cm_shared_data->md_logfile_name.c_str());
+    if( id_logfile_parser.getfd() == -1 ) {
+      elog::cedglog << logger::setlevel( logger::severe )
+                    << "Cannot open Condor log file \"" << logfile_name << "\"." << endl;
+
+      throw CannotOpenFile( this->cm_shared_data->md_logfile_name );
+    }
+
+    // Seek to last 'position'
+    FILE *fp = id_logfile_parser.getfp();
+    std::string error;
+
+    if( fseek(fp, this->cm_shared_data->md_sizefile->size_field().position(), SEEK_SET) == -1 ) {
+      error.assign( "Cannot seek file \"" ); error.append( this->cm_shared_data->md_logfile_name );
+      error.append( "\" to old position " );
+      error.append( boost::lexical_cast<string>(this->cm_shared_data->md_sizefile->size_field().position()) );
+      error.append( ", reason: " );
+      error.append( strerror(errno) ); error.append( "." );
+
+      elog::cedglog << logger::setlevel( logger::fatal ) << "Cannot seek file \"" << logfile_name
+		    << "\" to old position " << this->cm_shared_data->md_sizefile->size_field().position() << endl
+		    << "Due to: \"" << strerror(errno) << "\"" << endl;
+
+      throw FileSystemError( error );
+    }
+
+    outcome = id_logfile_parser.readEvent( event );
     scoped_event.reset( event );
 
     switch( outcome ) {
     case ULOG_NO_EVENT:
       elog::cedglog << logger::setlevel( logger::verylow ) << "Reached the end." << endl;
 
-      this->writeCurrentPosition();
+      this->writeCurrentPosition(fp);
 
       stat = this->checkAndProcessTimers();
       break;
@@ -321,7 +320,7 @@ CondorMonitor::status_t CondorMonitor::process_next_event( void )
       processor->process_event();
       processor.reset();
 
-      this->writeCurrentPosition();
+      this->writeCurrentPosition(fp);
 
       stat = event_read;
       break;

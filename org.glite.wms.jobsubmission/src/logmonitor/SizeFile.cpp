@@ -167,7 +167,11 @@ void SizeFile::createDotFile( void )
 
 void SizeFile::newSizeFile( void )
 {
-  this->sf_stream.clear(); this->sf_stream.close();
+  if (! this->sf_stashed) {
+    this->sf_stream.clear(); this->sf_stream.close();
+  } else {
+    this->sf_stashed = false;
+  }
   this->sf_stream.open( this->sf_filename.c_str(), ios::out );
 
   if( !this->sf_header.good() )
@@ -186,6 +190,9 @@ SizeField SizeFile::readField( streamoff position )
 {
   SizeField     field;
 
+  // For extra safety - private method
+  if (this->sf_stashed) this->reopenFile();
+
   this->sf_stream.seekg( position );
   this->sf_stream >> field;
 
@@ -196,6 +203,9 @@ SizeField SizeFile::readLastField( void )
 {
   streamoff       position = (SizeField::dimension() + 1);
   SizeField       field;
+
+  // For extra safety - private method
+  if (this->sf_stashed) this->reopenFile();
 
   this->sf_stream.seekg( -position, ios::end );
   this->sf_stream >> field;
@@ -210,6 +220,9 @@ bool SizeFile::checkOldFormat( void )
   unsigned int       pending;
   string             dagid, buffer;
   SizeField          field;
+
+  // For extra safety - private method
+  if (this->sf_stashed) this->reopenFile();
 
   this->sf_stream.clear(); this->sf_stream.seekg( 0 );
   this->sf_stream >> position >> pending >> last;
@@ -375,11 +388,34 @@ void SizeFile::openFile( bool create )
     this->sf_good = false;
   }
 
+  this->sf_stashed = false;
   return;
+}
+
+void SizeFile::stashFile( void )
+{
+  // Stash file to save the file descriptor.
+  if ( this->sf_stashed ) return;
+  sf_stash_pos = this->sf_stream.tellg();
+  this->sf_stream.close();
+  // SizeFile::good() can continue to be happy.
+  this->sf_stashed = true;
+}
+
+void SizeFile::reopenFile( void )
+{
+  if ( ! this->sf_stashed ) return;
+  this->sf_stream.open(this->sf_filename.c_str(), ios::in | ios::out);
+  if (this->sf_stream.good()) this->sf_stream.seekg(sf_stash_pos);
+  this->sf_good = this->sf_stream.good();
+  this->sf_stashed = false;
 }
 
 void SizeFile::dumpField( void )
 {
+  // For extra safety - private method
+  if (this->sf_stashed) this->reopenFile();
+
   if( this->sf_stream.good() )
     this->sf_stream << this->sf_current << endl;
 
@@ -388,11 +424,13 @@ void SizeFile::dumpField( void )
   return;
 }
 
-SizeFile::SizeFile( const char *filename, bool create ) : sf_good( true ), sf_filename( filename ? filename : "" ), sf_stream(),
+SizeFile::SizeFile( const char *filename, bool create ) : sf_good( true ), sf_stashed( false ), sf_filename( filename ? filename : "" ), sf_stream(),
 							  sf_header(), sf_current()
 {
   this->createDotFile();
   this->openFile( create );
+  // Try to save an open FD
+  this->stashFile();
 }
 
 void SizeFile::open( const char *filename, bool create )
@@ -403,44 +441,66 @@ void SizeFile::open( const char *filename, bool create )
 
   this->createDotFile();
   this->openFile( create );
+  // Try to save an open FD
+  this->stashFile();
 }
 
 SizeFile &SizeFile::update_position( long int new_position )
 {
+  if (this->sf_stashed) this->reopenFile();
+
   if( this->sf_good ) {
     this->sf_current.position( new_position );
     this->dumpField();
   }
+
+  // Try to save an open FD
+  this->stashFile();
 
   return *this;
 }
 
 SizeFile &SizeFile::update_pending( unsigned int new_pending )
 {
+  if (this->sf_stashed) this->reopenFile();
+
   if( this->sf_good ) {
     this->sf_current.pending( new_pending );
     this->dumpField();
   }
+
+  // Try to save an open FD
+  this->stashFile();
 
   return *this;
 }
 
 SizeFile &SizeFile::update_last( bool new_last )
 {
+  if (this->sf_stashed) this->reopenFile();
+
   if( this->sf_good ) {
     this->sf_current.last( new_last );
     this->dumpField();
   }
+
+  // Try to save an open FD
+  this->stashFile();
 
   return *this;
 }
 
 SizeFile &SizeFile::update( long int new_position, unsigned int new_pending, bool new_last )
 {
+  if (this->sf_stashed) this->reopenFile();
+
   if( this->sf_good ) {
     this->sf_current.reset( new_position, new_pending, new_last );
     this->dumpField();
   }
+
+  // Try to save an open FD
+  this->stashFile();
 
   return *this;
 }
@@ -494,6 +554,8 @@ SizeFile &SizeFile::update_header( const std::string &newheader )
   string::size_type    space;
   string               buffer;
 
+  if (this->sf_stashed) this->reopenFile();
+
   if( this->sf_good ) {
     if( this->sf_header.header().length() <= newheader.length() ) {
       space = newheader.length() - this->sf_header.header().length();
@@ -511,6 +573,7 @@ SizeFile &SizeFile::update_header( const std::string &newheader )
 	This is dangerous, too...
 	But it should be faster than the next one...
       */
+
       if( this->sf_stream.good() ) {
 	this->sf_stream.seekp( 0 );
 	this->sf_stream << this->sf_header;
@@ -540,6 +603,9 @@ SizeFile &SizeFile::update_header( const std::string &newheader )
       }
     }
   }
+
+  // Try to save an open FD
+  this->stashFile();
 
   return *this;
 }

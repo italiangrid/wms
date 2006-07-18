@@ -83,6 +83,8 @@ public:
 private:
   void createDotFile( void );
   void openFile( bool create );
+  void stashFile( void );
+  void reopenFile( void );
   void newSizeFile( void );
   void dumpField( void );
   bool checkOldFormat( void );
@@ -92,6 +94,8 @@ private:
   static const std::string   sf_s_defaultHeader;
 
   bool          sf_good;
+  bool          sf_stashed;
+  std::ios::pos_type sf_stash_pos;
   std::string   sf_filename;
   std::fstream  sf_stream;
   SizeHeader    sf_header;
