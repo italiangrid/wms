@@ -520,6 +520,8 @@ class ICEConfiguration {
   parameter bool( start_lease_updater = true) section normal;
   parameter std::string( ice_host_key = "${GLITE_HOST_KEY}" ) section fileparse;
   parameter std::string( ice_host_cert = "${GLITE_HOST_CERT}" ) section fileparse;
+  parameter size_t( max_logfile_size = 500*1024 ) section normal;
+  parameter unsigned int( max_logfile_rotations = 10 ) section normal;
 
 #  parameter int( MainLoopDuration = 3 ) section normal;
 #  parameter int( AbortedJobsTimeout = 600 ) section normal;
