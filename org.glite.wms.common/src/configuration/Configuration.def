@@ -460,6 +460,7 @@ class WMPConfiguration {
   parameter bool ( EnableServiceDiscovery = false ) section normal;
   parameter std::string ( LBServiceDiscoveryType ) section normal;
   parameter long ( ServiceDiscoveryInfoValidity = 3600 ) section normal;
+  parameter long ( WeightsFileValidity = 21600 ) section normal;
   parameter std::vector<std::string>( LBServer ) section normal;
   parameter std::string ( LBLocalLogger ) section normal;
   parameter classad::ExprTree*(SDJRequirements) section normal;
