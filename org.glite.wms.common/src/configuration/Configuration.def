@@ -411,7 +411,7 @@ class WMCConfiguration {
   parameter std::string(HLRLocation) section normal;
   parameter std::string(MyProxyServer) section normal;
   parameter std::string(JobProvenance) section normal;
-  parameter std::string(LBAddress) section normal;  
+  parameter std::string(LBAddress) section normal;
   parameter bool(PerusalFileEnable=false) section normal;
   parameter bool(AllowZippedISB=false) section normal;
 # OLD Approach END
@@ -423,6 +423,10 @@ class WMCConfiguration {
   parameter std::string(ErrorStorage=   "/var/tmp") section fileparse;
   parameter std::string(OutputStorage=  "/tmp") section fileparse;
   parameter std::string(ListenerStorage="/tmp") section fileparse;
+
+# Service Discovery attributes
+  parameter std::string ( LBServiceDiscoveryType ) section normal;
+  parameter std::string ( WMProxyServiceDiscoveryType ) section normal;
 
   parameter std::vector<std::string>(WmProxyEndPoints) section normal;
 # LB WS-based interface not yet used:
