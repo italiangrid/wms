@@ -424,6 +424,10 @@ class WMCConfiguration {
   parameter std::string(OutputStorage=  "/tmp") section fileparse;
   parameter std::string(ListenerStorage="/tmp") section fileparse;
 
+  // Service Discovery Types
+  parameter std::string ( LBServiceDiscoveryType      = "org.glite.lb.server"  ) section normal;
+  parameter std::string ( WMProxyServiceDiscoveryType = "org.glite.wms.wmproxy") section normal;
+
   parameter std::vector<std::string>(WmProxyEndPoints) section normal;
 # LB WS-based interface not yet used:
 # parameter std::vector<std::string>(LBEndPoints) section normal;
@@ -458,7 +462,7 @@ class WMPConfiguration {
 
   parameter bool ( LBProxy = true ) section normal;
   parameter bool ( EnableServiceDiscovery = false ) section normal;
-  parameter std::string ( LBServiceDiscoveryType ) section normal;
+  parameter std::string ( LBServiceDiscoveryType      = "org.glite.lb.server"  ) section normal;
   parameter long ( ServiceDiscoveryInfoValidity = 3600 ) section normal;
   parameter long ( WeightsCacheValidity = 21600 ) section normal;
   parameter std::string ( WeightsCachePath = "/var/glite/wmproxy" ) section fileparse;
