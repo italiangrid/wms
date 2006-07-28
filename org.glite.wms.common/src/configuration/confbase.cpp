@@ -96,7 +96,7 @@ vector<string> confbase_c::getVector( const char *name ) const
 {
   vector<string>   v;
 
-  utilities::EvaluateAttrList( *this->cb_ad, name, v );
+  utilities::EvaluateAttrListOrSingle( *this->cb_ad, name, v );
 
   return v;
 }
