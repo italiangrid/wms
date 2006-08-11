@@ -2,7 +2,7 @@
 #define GLITE_WMS_COMMON_UTILITIES_FILELISTITERATOR_H
 
 #ifndef GLITE_WMS_COMMON_UTILITIES_FILECONTAINER_H
-#include "gltie/wms/common/utilities/filecontainer.h"
+#include "glite/wms/common/utilities/filecontainer.h"
 #endif
 
 #include <boost/shared_ptr.hpp>
