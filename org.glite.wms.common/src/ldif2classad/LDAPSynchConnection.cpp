@@ -115,7 +115,7 @@ generic_search_result_t* LDAPSynchConnection::execute( LDAPQuery* query )
 	&timeout, 
 	&ldresult );
     
-    delete topics;
+    delete[] topics;
     if( ldap_last_error != LDAP_SUCCESS ) {
 
 #ifdef WITH_LDAP_EXCEPTIONS
