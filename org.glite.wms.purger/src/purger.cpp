@@ -457,11 +457,11 @@ purgeStorageEx(const fs::path& p,
 
 	  if( !fake_rm ) result = purgeStorage(p, log_ctx.get(), wll_log_function);
 	}
-	else logger::edglog << " skipping ";	
+	else logger::edglog << " skipping: purging threshold not overcome!";	
       }
     break;
     default:
-      logger::edglog << " skipping ";
+      logger::edglog << " skipping: " << edg_wll_StatToString(job_status.state);
     }
     logger::edglog << std::endl;   
   }
