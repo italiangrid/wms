@@ -385,6 +385,9 @@ class WMConfiguration {
   parameter int(PboxPortNum = 6699) section normal;
   parameter bool(PboxSafeMode = false) section normal;
   parameter std::vector<std::string>(CeForwardParameters) section normal;
+  parameter bool (EnableBulkMM) section normal;
+  parameter int(MatchRetryPeriod = 1000) section normal;
+
 }
 class WMCConfiguration {
 
