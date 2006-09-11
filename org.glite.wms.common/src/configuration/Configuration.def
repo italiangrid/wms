@@ -385,9 +385,6 @@ class WMConfiguration {
   parameter int(PboxPortNum = 6699) section normal;
   parameter bool(PboxSafeMode = false) section normal;
   parameter std::vector<std::string>(CeForwardParameters) section normal;
-  parameter bool (EnableBulkMM) section normal;
-  parameter int(MatchRetryPeriod = 1000) section normal;
-
 }
 class WMCConfiguration {
 
@@ -532,6 +529,7 @@ class ICEConfiguration {
   parameter std::string( persist_dir = "/tmp/ice_cache_persist_dir" ) section fileparse;
   parameter size_t( max_logfile_size = 500*1024 ) section normal;
   parameter unsigned int( max_logfile_rotations = 10 ) section normal;
+  parameter unsigned int( max_ice_threads = 10 ) section normal;
 
 #  parameter int( MainLoopDuration = 3 ) section normal;
 #  parameter int( AbortedJobsTimeout = 600 ) section normal;
