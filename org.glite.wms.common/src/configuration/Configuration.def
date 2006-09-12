@@ -530,6 +530,7 @@ class ICEConfiguration {
   parameter size_t( max_logfile_size = 500*1024 ) section normal;
   parameter unsigned int( max_logfile_rotations = 10 ) section normal;
   parameter unsigned int( max_ice_threads = 10 ) section normal;
+  parameter std::string( persist_dir = "/tmp/ice_cache_persist_dir" ) section fileparse;
 
 #  parameter int( MainLoopDuration = 3 ) section normal;
 #  parameter int( AbortedJobsTimeout = 600 ) section normal;
