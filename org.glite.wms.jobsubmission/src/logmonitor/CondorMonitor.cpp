@@ -157,7 +157,7 @@ CondorMonitor::CondorMonitor( const string &filename, MonitorData &data ) :
 
   string                                         &logfile_name = this->cm_shared_data->md_logfile_name;
   fs::path                        &logfile_path = this->cm_internal_data->id_logfile_path;
-  string                                          dagId, error, logfile_nopath( logfile_path.leaf() );
+  string                                          logfile_nopath( logfile_path.leaf() );
   boost::match_results<string::const_iterator>    match_pieces;
   fs::path                         timer_path( conf->monitor_internal_dir(), fs::native );
   logger::StatePusher                             pusher( elog::cedglog, "CondorMonitor::CondorMonitor()" );
@@ -188,18 +188,20 @@ CondorMonitor::CondorMonitor( const string &filename, MonitorData &data ) :
 
   if( boost::regex_match(this->cm_shared_data->md_sizefile->header().header(), match_pieces, dagid_expression) ) {
     this->cm_shared_data->md_dagId.assign( match_pieces[1].first, match_pieces[2].second );
-
     try {
-      glite::wmsutils::jobid::JobId     dId( dagId );
-
+      glite::wmsutils::jobid::JobId     dId( this->cm_shared_data->md_dagId );
       this->cm_shared_data->md_isDagLog = true;
+      dId.clear();
     }
     catch( const glite::wmsutils::jobid::JobIdException &err ) {
+      elog::cedglog << logger::setlevel( logger::debug ) << "I can not setting the DagId, Error is: "
+                    << err.what() << endl; 
       this->cm_shared_data->md_dagId.clear();
       this->cm_shared_data->md_isDagLog = false;
     }
   }
   else {
+
     this->cm_shared_data->md_dagId.clear();
     this->cm_shared_data->md_isDagLog = false;
   }

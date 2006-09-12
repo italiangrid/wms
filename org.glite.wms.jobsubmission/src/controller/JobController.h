@@ -31,8 +31,8 @@ public:
   ~JobController( void );
 
   int submit( const classad::ClassAd *ad );
-  bool cancel( const glite::wmsutils::jobid::JobId &id, const char *logfile = NULL, bool force = false );
-  bool cancel( int condorid, const char *logfile = NULL, bool force = true );
+  bool cancel( const glite::wmsutils::jobid::JobId &id, const char *logfile = NULL );
+  bool cancel( int condorid, const char *logfile = NULL );
   size_t queue_size( void );
 
 private:

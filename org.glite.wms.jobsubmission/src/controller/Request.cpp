@@ -25,11 +25,11 @@ const char   *Request::r_s_Source = "Source";
 
 const char   *SubmitRequest::sr_s_JobAd = "JobAd";
 
-const char   *RemoveRequest::cr_s_JobId = "JobId", *RemoveRequest::cr_s_Force = "Force";
+const char   *RemoveRequest::cr_s_JobId = "JobId";
 const char   *RemoveRequest::cr_s_SequenceCode = "SequenceCode", *RemoveRequest::cr_s_LogFile = "LogFile";
 const char   *RemoveRequest::cr_s_ProxyFile = "ProxyFile";
 
-const char   *CondorRemoveRequest::crr_s_CondorId = "CondorId", *CondorRemoveRequest::crr_s_Force = "Force";
+const char   *CondorRemoveRequest::crr_s_CondorId = "CondorId";
 const char   *CondorRemoveRequest::crr_s_LogFile = "LogFile";
 
 const char *Request::string_command( request_code_t command )
@@ -195,10 +195,9 @@ const classad::ClassAd *SubmitRequest::get_jobad( void ) const
   return jobad;
 }
 
-RemoveRequest::RemoveRequest( const string &jobid, int source, bool force ) : Request( remove, source )
+RemoveRequest::RemoveRequest( const string &jobid, int source ) : Request( remove, source )
 {
   this->r_arguments->InsertAttr( cr_s_JobId, jobid );
-  this->r_arguments->InsertAttr( cr_s_Force, force );
 }
 
 RemoveRequest::~RemoveRequest( void ) {}
@@ -222,18 +221,6 @@ RemoveRequest &RemoveRequest::set_proxyfile( const string &proxyfile )
   this->r_arguments->InsertAttr( cr_s_ProxyFile, proxyfile );
 
   return *this;
-}
-
-bool RemoveRequest::get_force( void ) const
-{
-  bool     force;
-
-  this->checkProtocol();
-
-  if( !this->r_arguments || !this->r_arguments->EvaluateAttrBool(cr_s_Force, force) )
-    throw MalformedRequest( *this->r_request );
-
-  return force;
 }
 
 string RemoveRequest::get_jobid( void ) const
@@ -290,10 +277,9 @@ string RemoveRequest::get_proxyfile( void ) const
   return file;
 }
 
-CondorRemoveRequest::CondorRemoveRequest( int condorid, int source, bool force ) : Request( condorremove, source )
+CondorRemoveRequest::CondorRemoveRequest( int condorid, int source ) : Request( condorremove, source )
 {
   this->r_arguments->InsertAttr( crr_s_CondorId, condorid );
-  this->r_arguments->InsertAttr( crr_s_Force, force );
 }
 
 CondorRemoveRequest::~CondorRemoveRequest( void ) {}
@@ -303,18 +289,6 @@ CondorRemoveRequest &CondorRemoveRequest::set_logfile( const string &logfile )
   this->r_arguments->InsertAttr( crr_s_LogFile, logfile );
 
   return *this;
-}
-
-bool CondorRemoveRequest::get_force( void ) const
-{
-  bool     force;
-
-  this->checkProtocol();
-
-  if( !this->r_arguments || !this->r_arguments->EvaluateAttrBool(crr_s_Force, force) )
-    throw MalformedRequest( *this->r_request );
-
-  return force;
 }
 
 int CondorRemoveRequest::get_condorid( void ) const

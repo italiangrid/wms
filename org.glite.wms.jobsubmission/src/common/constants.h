@@ -8,7 +8,7 @@ namespace jccommon {
 enum generic_event_t {
   null_event,
   cancelled_event,
-  force_remove,
+  retry_remove,
   cannot_cancel_event,
   user_cancelled_event
 };

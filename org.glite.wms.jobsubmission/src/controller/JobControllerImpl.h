@@ -54,19 +54,17 @@ public:
    *  Remove a job from the queue using its JOB ID.
    *  \param id The JOB ID of the job.
    *  \param logfile The file where condor is logging for such job.
-   *  \param force Stats wether to use the -f switch of the condor_rm command.
    *  \return \a true if everything went well, \a false otherwise
    */
-  virtual bool cancel( const glite::wmsutils::jobid::JobId &id, const char *logfile, bool force ) = 0;
+  virtual bool cancel( const glite::wmsutils::jobid::JobId &id, const char *logfile ) = 0;
   /**
    *  Remove a job.
    *  Remove a job from the queue using its condor ID.
    *  \param id The Condor ID of the job.
    *  \param logfile The file where condor is logging for such job.
-   *  \param force Stats wether to use the -f switch of the condor_rm command.
    *  \return Implementation dependent integer. Don't cope on it.
    */
-  virtual bool cancel( int condorid, const char *logfile, bool force ) = 0;
+  virtual bool cancel( int condorid, const char *logfile ) = 0;
   /**
    *  Ask for the queue size.
    *  \return The number of request still in the queue.

@@ -90,12 +90,12 @@ catch( RequestException &err ) {
   throw CannotExecute( error );
 }
 
-bool JobControllerProxy::cancel( const glite::wmsutils::jobid::JobId &id, const char *logfile, bool force )
+bool JobControllerProxy::cancel( const glite::wmsutils::jobid::JobId &id, const char *logfile )
 {
   bool                          good;
   string                        proxyfile, lf;
   ifstream                      ifs;
-  RemoveRequest                 request( id.toString(), this->jcp_source, force );
+  RemoveRequest                 request( id.toString(), this->jcp_source );
   jccommon::Files               files( id );
   boost::filesystem::path       cadfile( files.classad_file() );
   auto_ptr<classad::ClassAd>    jobad;
@@ -134,9 +134,9 @@ bool JobControllerProxy::cancel( const glite::wmsutils::jobid::JobId &id, const 
   return true;
 }
 
-bool JobControllerProxy::cancel( int condorid, const char *logfile, bool force )
+bool JobControllerProxy::cancel( int condorid, const char *logfile )
 {
-  CondorRemoveRequest   request( condorid, this->jcp_source, force );
+  CondorRemoveRequest   request( condorid, this->jcp_source );
 
   if( logfile ) request.set_logfile( string(logfile) );
 

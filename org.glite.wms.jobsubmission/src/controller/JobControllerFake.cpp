@@ -59,7 +59,7 @@ try {
 }
 catch( SubmitAdException &error ) { throw CannotExecute( error.error() ); }
 
-bool JobControllerFake::cancel( const glite::wmsutils::jobid::JobId &id, const char *logfile, bool force )
+bool JobControllerFake::cancel( const glite::wmsutils::jobid::JobId &id, const char *logfile )
 {
   logger::StatePusher     pusher( elog::cedglog, "JobControllerFake::cancel(...)" );
 
@@ -67,22 +67,16 @@ bool JobControllerFake::cancel( const glite::wmsutils::jobid::JobId &id, const c
 		<< "Got request for cancellation of job." << endl
 		<< "JOB Id = " << id.toString() << endl;
 
-  if( force )
-    elog::cedglog << "Must force job removal..." << endl;
-
   return true;
 }
 
-bool JobControllerFake::cancel( int condorid, const char *logfile, bool force )
+bool JobControllerFake::cancel( int condorid, const char *logfile )
 {
   logger::StatePusher     pusher( elog::cedglog, "JobControllerFake::cancel(...)" );
 
   elog::cedglog << logger::setlevel( logger::null )
 		<< "Got request for cancellation of job." << endl
 		<< "condor Id = " << condorid << endl;
-
-  if( force )
-    elog::cedglog << "Must force job removal..." << endl;
 
   return true;
 }

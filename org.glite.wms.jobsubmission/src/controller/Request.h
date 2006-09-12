@@ -64,37 +64,35 @@ private:
 
 class RemoveRequest : public Request {
 public:
-  RemoveRequest( const std::string &jobid, int source, bool force = false );
+  RemoveRequest( const std::string &jobid, int source );
   virtual ~RemoveRequest( void );
 
   RemoveRequest &set_sequence_code( const std::string &code );
   RemoveRequest &set_logfile( const std::string &logfile );
   RemoveRequest &set_proxyfile( const std::string &proxyfile );
 
-  bool get_force( void ) const;
   std::string get_jobid( void ) const;
   std::string get_sequence_code( void ) const;
   std::string get_logfile( void ) const;
   std::string get_proxyfile( void ) const;
 
 private:
-  static const char    *cr_s_JobId, *cr_s_Force;
+  static const char    *cr_s_JobId;
   static const char    *cr_s_SequenceCode, *cr_s_LogFile, *cr_s_ProxyFile;
 };
 
 class CondorRemoveRequest : public Request {
 public:
-  CondorRemoveRequest( int condorid, int source, bool force = true );
+  CondorRemoveRequest( int condorid, int source );
   virtual ~CondorRemoveRequest( void );
 
   CondorRemoveRequest &set_logfile( const std::string &logfile );
 
-  bool get_force( void ) const;
   int get_condorid( void ) const;
   std::string get_logfile( void ) const;
 
 private:
-  static const char   *crr_s_CondorId, *crr_s_Force, *crr_s_LogFile;
+  static const char   *crr_s_CondorId, *crr_s_LogFile;
 };
 
 }; // Namespace controller

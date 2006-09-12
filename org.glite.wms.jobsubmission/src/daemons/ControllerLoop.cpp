@@ -348,11 +348,9 @@ try {
 	}
 	case controller::Request::remove: {
 	  const controller::RemoveRequest     *remreq = static_cast<const controller::RemoveRequest *>( request );
-	  bool                                 force( remreq->get_force() );
 	  string                               jobid( remreq->get_jobid() );
 
-	  this->cl_stream << logger::setlevel( logger::info ) << "Got new remove request (JOB ID = " << jobid << ")..." << endl
-			  << "Must " << ( force ? "" : "not " ) << "force job removal !" << endl;
+	  this->cl_stream << logger::setlevel( logger::info ) << "Got new remove request (JOB ID = " << jobid << ")..." << endl;
 
 #ifdef GLITE_WMS_HAVE_LBPROXY
           this->cl_logger->set_LBProxy_context( jobid, remreq->get_sequence_code(), remreq->get_proxyfile() );
@@ -370,27 +368,25 @@ try {
 	  this->cl_stream << logger::setlevel( logger::debug ) << "Executing remove request..." << endl;
 
 	  if( !logfile.empty() )
-	    controller.cancel( glite::wmsutils::jobid::JobId(jobid), logfile.native_file_string().c_str(), force );
+	    controller.cancel( glite::wmsutils::jobid::JobId(jobid), logfile.native_file_string().c_str() );
 	  else
-	    controller.cancel( glite::wmsutils::jobid::JobId(jobid), NULL, force );
+	    controller.cancel( glite::wmsutils::jobid::JobId(jobid), NULL );
 	  
 	  break;
 	}
 	case controller::Request::condorremove: {
 	  const controller::CondorRemoveRequest   *cremreq = static_cast<const controller::CondorRemoveRequest *>( request );
-	  bool                                     force( cremreq->get_force() );
 	  int                                      condorid( cremreq->get_condorid() );
 
 	  this->cl_stream << logger::setlevel( logger::info ) << "Got new remove request (condor ID = " << condorid << ")..." << endl
-			  << "Must " << ( force ? "" : "not " ) << "force job removal !" << endl
 			  << logger::setlevel( logger::debug ) << "Executing remove request..." << endl;
 
 	  if( source == configuration::ModuleType::log_monitor ) {
 	    fs::path    logfile( cremreq->get_logfile(), fs::native );
-	    controller.cancel( condorid, logfile.native_file_string().c_str(), force );
+	    controller.cancel( condorid, logfile.native_file_string().c_str() );
 	  }
 	  else
-	    controller.cancel( condorid, NULL, force );
+	    controller.cancel( condorid, NULL );
 
 	  break;
 	}

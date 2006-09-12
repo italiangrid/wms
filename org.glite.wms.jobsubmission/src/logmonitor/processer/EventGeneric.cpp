@@ -49,10 +49,10 @@ ULogEvent *instantiate_generic_event( jccommon::generic_event_t evn, int condori
   localtime_r( &epoch, &event->eventTime );
 
   switch( evn ) {
-  case jccommon::force_remove:
+  case jccommon::retry_remove:
     msg.assign( "LM: " );
     msg.append( boost::lexical_cast<string>(static_cast<int>(evn)) );
-    msg.append( " - Must force job removal" );
+    msg.append( " - Must retry job removal" );
 
     break;
   default:
@@ -112,26 +112,26 @@ void EventGeneric::finalProcess( int cn, const string &message )
       break;
     case jccommon::cancelled_event:
       elog::cedglog << logger::setlevel( logger::info )
-		    << "Attaching force remove timeout to cluster " << this->ei_condor << endl;
+		    << "Attaching remove timeout to cluster " << this->ei_condor << endl;
 
       epoch = time( NULL ) + conf->aborted_jobs_timeout();
-      event = instantiate_generic_event( jccommon::force_remove, this->eg_event->cluster, epoch );
+      event = instantiate_generic_event( jccommon::retry_remove, this->eg_event->cluster, epoch );
 
       asctime_r( &event->eventTime, wbuf );
       when.assign( wbuf, 24 );
 
       elog::cedglog << logger::setlevel( logger::info )
-		    << "Timeout force removal will happen in " << conf->aborted_jobs_timeout() << " seconds." << endl
+		    << "Timeout removal will happen in " << conf->aborted_jobs_timeout() << " seconds." << endl
 		    << logger::setlevel( logger::debug ) << "At: " << when << endl;
 
       this->ei_data->md_timer->start_timer( epoch, event );
 
       break;
-    case jccommon::force_remove: {
+    case jccommon::retry_remove: {
       controller::JobController     controller( *this->ei_data->md_logger );
 
       elog::cedglog << logger::setlevel( logger::info )
-		    << "Sending force removal request to JC for cluster " << this->ei_condor << endl
+		    << "Sending new removal request to JC for cluster " << this->ei_condor << endl
 		    << logger::setlevel( logger::debug )
 		    << "This is try n. " << position->retry_count() << endl;
 
@@ -149,7 +149,7 @@ void EventGeneric::finalProcess( int cn, const string &message )
 	  controller::JobController   controller( *this->ei_data->md_logger );
 
 	  elog::cedglog << logger::setlevel( logger::error )
-			<< "Forced cancellation retries exceeded maximum (" << retry << '/' << maxretries << ')' << endl
+			<< "Cancellation retries exceeded maximum (" << retry << '/' << maxretries << ')' << endl
 			<< ei_s_subnodeof << this->ei_data->md_dagId << endl;
 /* Not remove the dag see bugs #16034
 	  dagposition = this->ei_data->md_container->position_by_edg_id( this->ei_data->md_dagId );
@@ -178,7 +178,7 @@ void EventGeneric::finalProcess( int cn, const string &message )
 	}
 	else { // Normal job or a Dag job (Not subnode)
 	  elog::cedglog << logger::setlevel( logger::severe )
-			<< "Forced cancellation retries exceeded maximum (" << retry << '/' << maxretries << ')' << endl
+			<< "Cancellation retries exceeded maximum (" << retry << '/' << maxretries << ')' << endl
 			<< "Job will be removed from the queue and aborted." << endl;
 #ifdef GLITE_WMS_HAVE_LBPROXY
           this->ei_data->md_logger->set_LBProxy_context( edgid, position->sequence_code(), position->proxy_file() );
@@ -203,18 +203,18 @@ void EventGeneric::finalProcess( int cn, const string &message )
       }
       else { // retry <= maxretries so try again!
 	elog::cedglog << logger::setlevel( logger::info )
-		      << "Attaching force remove timeout to cluster " << this->ei_condor << endl
+		      << "Attaching again a remove timeout to cluster " << this->ei_condor << endl
 		      << logger::setlevel( logger::debug ) << "This is try n. " << (retry + 1) << endl;
 
 	epoch = time( NULL ) + conf->aborted_jobs_timeout();
 
-	event = instantiate_generic_event( jccommon::force_remove, this->eg_event->cluster, epoch );
+	event = instantiate_generic_event( jccommon::retry_remove, this->eg_event->cluster, epoch );
 
 	asctime_r( &event->eventTime, wbuf );
 	when.assign( wbuf, 24 );
 
 	elog::cedglog << logger::setlevel( logger::info ) 
-		      << "Timeout force removal will happen in " << conf->aborted_jobs_timeout() << " seconds." << endl
+		      << "Timeout removal will happen in " << conf->aborted_jobs_timeout() << " seconds." << endl
 		      << logger::setlevel( logger::debug ) << "At: " << when << endl;
 
 	this->ei_data->md_container->increment_pointer_retry_count( position );

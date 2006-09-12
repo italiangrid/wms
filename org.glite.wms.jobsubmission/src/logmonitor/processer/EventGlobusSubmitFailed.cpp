@@ -71,7 +71,7 @@ void EventGlobusSubmitFailed::process_event( void )
 
     elog::cedglog << logger::setlevel( logger::info ) << "Forwarding remove request to JC." << endl;
 
-    controller.cancel( this->egsf_event->cluster, this->ei_data->md_logfile_name.c_str(), false );
+    controller.cancel( this->egsf_event->cluster, this->ei_data->md_logfile_name.c_str() );
 
     this->ei_data->md_container->update_pointer( position, this->ei_data->md_logger->sequence_code(), this->egsf_event->eventNumber );
   }

@@ -209,18 +209,27 @@ stop()
 	    echo -ne "\t\tCondorG not running!\n"
 	else
 	    ${CONDOR_OFF} -master > /dev/null 2>&1
-            sleep 3 # hope this is enough for Condor
+	    sleep_cycle=5
+            # hope this is enough for Condor
+           for (( times = 24; times >= 0; times-- )); do
+                sleep $sleep_cycle 
+                if ! checkpid $pid 2>&1; then
+                   success
+                   echo ""
+
+                   if [ ${SCRIPT_UID} -eq 0 ]; then
+                       rm -rf /var/run/${MASTERBASE}.pid
+                   fi
+                   break
+               fi
+           done
             if checkpid $pid 2>&1; then
-		killproc ${CONDOR_SCHEDD}
+                echo -ne "\t\tcondor_master didn't exit. Sending SIGKILL to it."
+                echo -ne " WARNING: This may leave sched universe processes"
+                echo -ne " behind, that should be checked manually!\n"
+                killproc ${CONDOR_SCHEDD}		
 		killproc ${CONDOR_MASTER}
 		echo ""
-	    else
-		success
-		echo ""
-
-		if [ ${SCRIPT_UID} -eq 0 ]; then
-		    rm -rf /var/run/${MASTERBASE}.pid
-		fi
 	    fi
 	fi
     fi

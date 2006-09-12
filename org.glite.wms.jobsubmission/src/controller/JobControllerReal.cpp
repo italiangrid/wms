@@ -4,7 +4,7 @@
 // Copyright (c) 2001 EU DataGrid.
 // For license conditions see http://www.eu-datagrid.org/license.html
 
-// $Id:
+// $Id$
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -91,14 +91,14 @@ void logGenericEvent( jccommon::generic_event_t ev, int condorid, const char *lo
   return;
 }
 
-bool cancelJob( const string &condorid, bool force, string &info )
+bool cancelJob( const string &condorid, string &info )
 {
   // TODO: force parameter is no more used, remove it!
   int                      result;
   string                   parameters;
-  logger::StatePusher      pusher( clog, "cancelJob(...)" );
+  logger::StatePusher      pusher( elog::cedglog, "cancelJob(...)" );
                                                                                                                                                             
-  clog << logger::setlevel( logger::debug ) << "Condor id of job was: " << condorid << endl;
+  elog::cedglog << logger::setlevel( logger::debug ) << "Condor id of job was: " << condorid << endl;
                                                                                                                                                             
   parameters.assign( "-constraint 'ClusterId==" );
   string::size_type pos = condorid.find('.');
@@ -117,11 +117,11 @@ bool cancelJob( const string &condorid, bool force, string &info )
   result = CondorG::instance()->set_command( CondorG::remove, parameters )->execute( info );
                                                                                                                                                             
   if( result ) { // normal cancellation has been refused, try to force it
-    clog << logger::setlevel( logger::severe ) << "Job cancellation refused." << endl
+    elog::cedglog << logger::setlevel( logger::severe ) << "Job cancellation refused." << endl
          << "Condor ID = " << condorid << endl
          << "Reason: \"" << info << "\"." << endl;
                                                                                                                                                             
-    clog << logger::setlevel( logger::info ) << "Try to force job removal  (only for _globus_ job)." << endl;
+    elog::cedglog << logger::setlevel( logger::info ) << "Try to force job removal  (only for _globus_ job)." << endl;
                                                                                                                                                             
     parameters.assign( "-f -constraint 'ClusterId==" );
                                                                                                                                                             
@@ -331,7 +331,7 @@ catch( utilities::FileContainerError &error ) {
 }
 catch( SubmitAdException &error ) { throw CannotExecute( error.error() ); }
 
-bool JobControllerReal::cancel( const glite::wmsutils::jobid::JobId &id, const char *logfile, bool force )
+bool JobControllerReal::cancel( const glite::wmsutils::jobid::JobId &id, const char *logfile )
 {
   bool                  good = true;
   int                   icid = 0;
@@ -355,7 +355,7 @@ bool JobControllerReal::cancel( const glite::wmsutils::jobid::JobId &id, const c
 
     if( logfile ) logGenericEvent( jccommon::user_cancelled_event, icid, logfile );
 
-    if( (good = cancelJob(condorid, force, info)) ) { // The condor command worked fine
+    if( (good = cancelJob(condorid, info)) ) { // The condor command worked fine
       if( logfile ) logGenericEvent( jccommon::cancelled_event, icid, logfile );
 
       elog::cedglog << logger::setlevel( logger::verylow ) << "Job " << sid << " successfully marked for removal." << endl;
@@ -373,7 +373,7 @@ bool JobControllerReal::cancel( const glite::wmsutils::jobid::JobId &id, const c
   return good;
 }
 
-bool JobControllerReal::cancel( int condorid, const char *logfile, bool force )
+bool JobControllerReal::cancel( int condorid, const char *logfile )
 {
   bool                  good;
   string                sid( boost::lexical_cast<string>(condorid) ), info;
@@ -382,7 +382,7 @@ bool JobControllerReal::cancel( int condorid, const char *logfile, bool force )
   clog << logger::setlevel( logger::info )
        << "Asked to remove job: " << sid << " (by condor ID)." << endl;
 
-  if( (good = cancelJob(sid, force, info)) ) {
+  if( (good = cancelJob(sid, info)) ) {
     clog << logger::setlevel( logger::info ) << "Job " << sid << " successfully marked for removal." << endl;
 
     if( logfile ) logGenericEvent( jccommon::cancelled_event, condorid, logfile );

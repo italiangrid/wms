@@ -92,7 +92,7 @@ void EventJobHeld::process_event( void )
 		    << logger::setlevel( logger::info )
 		    << "Sending a remove request (by condor id) to JC" << endl;
 
-      controller.cancel( this->ejh_event->cluster, this->ei_data->md_logfile_name.c_str(), false );
+      controller.cancel( this->ejh_event->cluster, this->ei_data->md_logfile_name.c_str() );
 
       this->ei_data->md_container->update_pointer( position, this->ei_data->md_logger->sequence_code(),
 						   this->ejh_event->eventNumber, this->ejh_event->getReasonSubCode() );
@@ -114,7 +114,7 @@ void EventJobHeld::process_event( void )
 
       elog::cedglog << logger::setlevel( logger::info ) << "Forwarding remove request to JC." << endl;
 
-      controller.cancel( this->ejh_event->cluster, this->ei_data->md_logfile_name.c_str(), false );	
+      controller.cancel( this->ejh_event->cluster, this->ei_data->md_logfile_name.c_str() );	
 
 
 #if CONDORG_AT_LEAST(6,5,3)

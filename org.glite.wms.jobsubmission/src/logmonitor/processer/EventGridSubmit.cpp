@@ -53,40 +53,40 @@ void EventGridSubmit::process_event( void )
 // At that time, code from GlobusSubmit will have to be moved here,
 // if still applicable.
 
-  if (ce.compare("gt") == 0 || ce.compare("globus") == 0) ignore_globus_event = true;
+  if (ce.find("gt") == 0 || ce.find("globus") == 0) ignore_globus_event = true;
 
   if (ignore_globus_event) {
-    elog::cedglog << logger::setlevel( logger::info ) << "Got job submit to grid event. Ignoring for Globus jobs." << endl;
+    elog::cedglog << logger::setlevel( logger::info ) << "Got job submit to grid event. "
+                  << this->ei_condor << ". Ignoring for Globus jobs." << endl;
   } else {
     elog::cedglog << logger::setlevel( logger::info ) << "Got job submit to grid event." << endl;
-  }
 
-  elog::cedglog << "For cluster " << this->ei_condor << endl
-		<< "Contacts " << ce << '.' << endl;
+    elog::cedglog << "For cluster " << this->ei_condor << endl
+         	  << "Contacts " << ce << '.' << endl;
 
-  position = this->ei_data->md_container->position_by_condor_id( this->ei_condor );
+    position = this->ei_data->md_container->position_by_condor_id( this->ei_condor );
 
-  if( position == this->ei_data->md_container->end() )
-    elog::cedglog << logger::setlevel( logger::warning ) << ei_s_notsub << endl;
-  else {
-    elog::cedglog << logger::setlevel( logger::info ) << ei_s_edgideq << position->edg_id() << endl;
+    if( position == this->ei_data->md_container->end() )
+      elog::cedglog << logger::setlevel( logger::warning ) << ei_s_notsub << endl;
+    else {
+      elog::cedglog << logger::setlevel( logger::info ) << ei_s_edgideq << position->edg_id() << endl;
 
-    if( this->ei_data->md_isDagLog )
-      elog::cedglog << ei_s_subnodeof << this->ei_data->md_dagId << endl;
+      if( this->ei_data->md_isDagLog )
+        elog::cedglog << ei_s_subnodeof << this->ei_data->md_dagId << endl;
 
-    reader.reset( this->createReader(position->edg_id()) );
+      reader.reset( this->createReader(position->edg_id()) );
 
 
-    if (!ignore_globus_event) {
 #ifdef GLITE_WMS_HAVE_LBPROXY
       this->ei_data->md_logger->set_LBProxy_context( position->edg_id(), position->sequence_code(), position->proxy_file() );
 #else
       this->ei_data->md_logger->reset_user_proxy( position->proxy_file() ).reset_context( position->edg_id(), position->sequence_code() );
 #endif
       this->ei_data->md_logger->grid_submit_event( ce, this->ei_data->md_logfile_name );
-    }
+    
 
-    this->ei_data->md_container->update_pointer( position, this->ei_data->md_logger->sequence_code(), this->egs_event->eventNumber );
+      this->ei_data->md_container->update_pointer( position, this->ei_data->md_logger->sequence_code(), this->egs_event->eventNumber );
+    }
   }
 
   return;
