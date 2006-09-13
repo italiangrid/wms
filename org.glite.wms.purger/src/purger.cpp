@@ -103,6 +103,75 @@ namespace
    }
    return f_conf->common()->host_proxy_file();
   }
+  
+  bool create_context_from_user_x509_proxy(
+    ContextPtr& log_ctx,
+    jobid::JobId const& id,
+    std::string const& sequence_code
+  )
+  {
+    bool result = true;
+    std::string e(std::getenv("X509_USER_CERT"));
+      try {
+        log_ctx = create_context(
+          id,
+          e.empty()?get_user_x509_proxy(id):e,
+          f_sequence_code
+        );
+      }
+      catch (CannotCreateLBContext& e) {
+        logger::edglog << id.toString()  << " ->"
+          << "CannotCreateLBContext from user proxy, error code #" 
+          << e.error_code() 
+          << std::endl;
+        result = false;
+      }
+    return result;
+  }
+
+  bool create_context_from_host_x509_proxy(
+    ContextPtr& log_ctx,
+    jobid::JobId const& id,
+    std::string const& sequence_code
+  )
+  {
+    bool result = true;
+      try {
+        log_ctx = create_context(
+          id,
+          get_host_x509_proxy(),
+          f_sequence_code
+        );
+      }
+      catch (CannotCreateLBContext& e) {
+        logger::edglog << id.toString()  << " ->"
+          << "CannotCreateLBContext from host proxy, error code #" 
+          << e.error_code()
+          << std::endl;
+        result = false;
+      }
+    return result;
+  }
+
+  bool query_job_status(edg_wll_JobStat& job_status, jobid::JobId const& jobid, ContextPtr const& log_ctx)
+  {
+    edg_wll_InitStatus(&job_status);
+    if (edg_wll_JobStatus(
+        log_ctx.get(),jobid,
+        EDG_WLL_STAT_CLASSADS | EDG_WLL_STAT_CHILDREN,
+        &job_status
+      )) {
+        char  *etxt,*edsc;
+        edg_wll_Error(log_ctx.get(),&etxt,&edsc);
+        logger::edglog << jobid.toString()  << " -> "
+          << "edg_wll_JobStat " 
+          << etxt
+          << std::endl;
+        free(etxt); free(edsc);
+        return false;
+    }
+    return true;
+  }
 
   bool list_directory(const fs::path& p, std::vector<std::string>& v)
   {
@@ -173,9 +242,6 @@ namespace
       uploader(isb_files);
       result = true;
     }
-    catch (CannotCreateLBContext& e) {
-      logger::edglog << "CannotCreateLBContext error code #" << e.error_code();
-    }  
     catch(utils::CannotParseClassAd& cpc) {
       logger::edglog << "Cannot parse logging::JobStatus::JDL";
     }
@@ -308,6 +374,9 @@ bool purgeStorageEx(const fs::path& p,wll_log_function_type wll_log_function)
   return purgeStorageEx(p, 0, false, false, wll_log_function);
 }
 
+
+
+  
 bool 
 purgeStorageEx(const fs::path& p, 
   int purge_threshold, bool fake_rm, bool navigating_dag, 
@@ -317,30 +386,31 @@ purgeStorageEx(const fs::path& p,
   bool result = false;
   try {
     jobid::JobId jobid( jobid::from_filename( p.leaf() ) );
-    logger::edglog << jobid.toString()  << " ->";
+   
     ContextPtr log_ctx;
-    try {
-      log_ctx = create_context(
-        jobid,
-        get_host_x509_proxy(), 
-        f_sequence_code
-      );
-    }
-    catch (CannotCreateLBContext& e) {
-      logger::edglog << "CannotCreateLBContext error code #" << e.error_code();
-    }
-
     edg_wll_JobStat job_status;
-    edg_wll_InitStatus(&job_status);
-    edg_wll_JobStatus(
-      log_ctx.get(),jobid,
-      EDG_WLL_STAT_CLASSADS | EDG_WLL_STAT_CHILDREN,
-      &job_status
+ 
+    bool status_retrieved = (
+      create_context_from_user_x509_proxy(
+        log_ctx, jobid, f_sequence_code
+      ) 
+      &&
+      query_job_status(job_status, jobid, log_ctx)
+    )
+    ||
+    (
+      create_context_from_host_x509_proxy(
+        log_ctx, jobid, f_sequence_code
+      )
+      &&
+      query_job_status(job_status, jobid, log_ctx)
     );
 
     utilities::scope_guard free_job_status(
       boost::bind(edg_wll_FreeStatus, &job_status)
     );
+  
+    logger::edglog << jobid.toString()  << " ->";
     
     // Reads the TYPE of the JOB...
     bool is_jobtype_dag = job_status.jobtype == EDG_WLL_STAT_DAG;
@@ -464,6 +534,9 @@ purgeStorageEx(const fs::path& p,
       logger::edglog << " skipping: " << edg_wll_StatToString(job_status.state);
     }
     logger::edglog << std::endl;   
+  }
+  catch (CannotCreateLBContext& e) {
+    logger::edglog << e.what() << std::endl;
   }
   catch( fs::filesystem_error& fse ) {
     logger::edglog << fse.what() << std::endl;

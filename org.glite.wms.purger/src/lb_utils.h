@@ -9,7 +9,7 @@
 #include <string>
 #include <boost/shared_ptr.hpp>
 #include <boost/shared_array.hpp>
-
+#include <boost/lexical_cast.hpp>
 #include <boost/type_traits.hpp>
 #include <boost/tuple/tuple.hpp>
 #include <boost/function.hpp>
@@ -35,13 +35,24 @@ create_context(
   std::string const& sequence_code
 );
 
-class CannotCreateLBContext
+class CannotCreateLBContext: public std::exception
 {
+  std::string m_what;
   int m_errcode;
+
 public:
   CannotCreateLBContext(int errcode)
     : m_errcode(errcode)
   {
+    m_what = "cannot create LB context ("
+      + boost::lexical_cast<std::string>(m_errcode) + ')';
+  }
+  ~CannotCreateLBContext() throw ()
+  {
+  }
+  char const* what() const throw()
+  {
+    return m_what.c_str();
   }
   int error_code() const
   {
