@@ -225,6 +225,7 @@ classad::ClassAd *Configuration::get_classad( void )
   total->Insert( "WorkloadManagerProxy", parse_and_copy_classad(this->c_wp->get_classad()) );
   total->Insert( "InterfaceCreamEnvironment", parse_and_copy_classad(this->c_ice->get_classad()) );
   total->Insert( "Common", parse_and_copy_classad(this->c_common->get_classad()) );
+  total->Insert( "ICE", parse_and_copy_classad(this->c_ice->get_classad()) );
 
   return total;
 }
