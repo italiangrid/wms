@@ -14,16 +14,14 @@
 #       Common configure.ac file for the GLite WMS Common module
 #
 #       Authors: Alberto Di Meglio <alberto.di.meglio@cern.ch>
-<<<<<<< configure.ac
 #       Version info: $Id$
 #       Release: $Name$
-=======
-#       Version info: $Id$
-#       Release: $Name$
->>>>>>> 1.16.2.2
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.18  2006/09/19 13:22:47  monforte
+#       *** empty log message ***
+#
 #       Revision 1.17  2006/09/19 12:48:01  monforte
 #       Merge against glite-wms-purger_branch_3_1_0
 #
