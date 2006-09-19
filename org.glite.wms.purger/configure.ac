@@ -14,11 +14,26 @@
 #       Common configure.ac file for the GLite WMS Common module
 #
 #       Authors: Alberto Di Meglio <alberto.di.meglio@cern.ch>
+<<<<<<< configure.ac
 #       Version info: $Id$
 #       Release: $Name$
+=======
+#       Version info: $Id$
+#       Release: $Name$
+>>>>>>> 1.16.2.2
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.17  2006/09/19 12:48:01  monforte
+#       Merge against glite-wms-purger_branch_3_1_0
+#
+#       Revision 1.16.2.2  2006/08/29 11:24:36  monforte
+#       Added printing of skipping reason
+#
+#       Revision 1.16.2.1  2006/04/03 11:49:53  eronchie
+#       Increased version
+#       Fix problem in the tag 3.1.0
+#
 #       Revision 1.16  2006/03/20 22:52:54  eronchie
 #       Increased version
 #
@@ -150,7 +165,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.57)
-AC_INIT([GLite WMS Purger], [3.1.0])
+AC_INIT([GLite WMS Purger], [3.1.2])
 AC_CONFIG_AUX_DIR([./project])
 AM_INIT_AUTOMAKE([1.6.3 subdir-objects])
 AC_CONFIG_SRCDIR([src/purger.cpp])
