@@ -498,7 +498,7 @@ class ICEConfiguration {
   parameter int( subscription_duration = 86400) section normal;
   parameter std::string( Input = "${EDG_WL_TMP}/workload_manager/Output.fl") section fileparse;
   parameter std::string( cache_persist_file = "/tmp/ice_cache_persist_file") section fileparse;
-  parameter std::string( logfile = "/tmp/ice_logfile") section fileparse;
+  parameter std::string( logfile = "${GLITE_LOCATION_LOG}/ice.log") section fileparse;
   parameter bool( start_poller = true ) section normal;
   parameter bool( poller_purges_jobs = true ) section normal;
   parameter bool( start_listener = true ) section normal;
@@ -530,7 +530,7 @@ class ICEConfiguration {
   parameter size_t( max_logfile_size = 500*1024 ) section normal;
   parameter unsigned int( max_logfile_rotations = 10 ) section normal;
   parameter unsigned int( max_ice_threads = 10 ) section normal;
-  parameter std::string( persist_dir = "/tmp/ice_cache_persist_dir" ) section fileparse;
+  parameter std::string( persist_dir = "${GLITE_LOCATION_VAR}/ice/ice_db" ) section fileparse;
 
 #  parameter int( MainLoopDuration = 3 ) section normal;
 #  parameter int( AbortedJobsTimeout = 600 ) section normal;
