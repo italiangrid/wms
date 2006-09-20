@@ -84,7 +84,7 @@ int main( int argc, char* argv[])
     if (options.is_present('p')) staging_path.assign ( options['p'].getStringValue() );
     else {
     	char* env_var;
-	if ((env_var=getenv("GLITE_WMS_TMP"))) staging_path.assign( string(env_var) );
+	if ((env_var=getenv("GLITE_WMS_TMP"))) staging_path.assign( string(env_var)+"/SandboxDir" );
 	else {
 		cerr << "Unable to set sandbox dir from the environment: GLITE_WMS_TMP not defined..." << endl;
 		return 0;
