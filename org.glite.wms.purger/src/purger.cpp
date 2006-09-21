@@ -111,11 +111,11 @@ namespace
   )
   {
     bool result = true;
-    std::string e(std::getenv("X509_USER_CERT"));
+    char* e = std::getenv("X509_USER_CERT");
       try {
         log_ctx = create_context(
           id,
-          e.empty()?get_user_x509_proxy(id):e,
+          !e?get_user_x509_proxy(id):std::string(e),
           f_sequence_code
         );
       }
