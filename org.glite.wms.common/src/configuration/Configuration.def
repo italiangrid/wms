@@ -428,6 +428,7 @@ class WMCConfiguration {
 # Service Discovery Types
   parameter std::string ( LBServiceDiscoveryType      = "org.glite.lb.Server"  ) section normal;
   parameter std::string ( WMProxyServiceDiscoveryType = "org.glite.wms.WMProxy") section normal;
+  parameter bool ( EnableServiceDiscovery = false ) section normal;
 
   parameter std::vector<std::string>(WmProxyEndPoints) section normal;
 # LB WS-based interface not yet used:
