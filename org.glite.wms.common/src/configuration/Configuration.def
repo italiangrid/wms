@@ -386,6 +386,7 @@ class WMConfiguration {
   parameter bool(PboxSafeMode = false) section normal;
   parameter std::vector<std::string>(CeForwardParameters) section normal;
   parameter int(MatchRetryPeriod = 1000) section normal;
+  parameter int(ExpiryPeriod = 86400) section normal;
 }
 class WMCConfiguration {
 
