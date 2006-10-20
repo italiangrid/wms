@@ -276,7 +276,7 @@ class LMConfiguration {
   parameter std::string( ExternalLogFile ) section fileparse;
   parameter std::string( MonitorInternalDir ) section fileparse;
   parameter std::string( IdRepositoryName ) section fileparse;
-  parameter std::string( MaradonaTransportProtocol = "gsiftp://${HOSTNAME}" ) section parse; 
+  parameter std::string( MaradonaTransportProtocol = "gsiftp" ) section parse; 
 }
 
 class NSConfiguration {
@@ -544,5 +544,5 @@ class ICEConfiguration {
 #  parameter std::string( ExternalLogFile ) section fileparse;
 #  parameter std::string( MonitorInternalDir ) section fileparse;
 #  parameter std::string( IdRepositoryName ) section fileparse;
-#  parameter std::string( MaradonaTransportProtocol = "gsiftp://${HOSTNAME}" ) section parse; 
+#  parameter std::string( MaradonaTransportProtocol = "gsiftp" ) section parse; 
 }
