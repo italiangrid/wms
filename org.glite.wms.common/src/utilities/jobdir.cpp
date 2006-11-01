@@ -12,6 +12,7 @@
 #include <boost/filesystem/fstream.hpp>
 #include <boost/filesystem/convenience.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/thread/mutex.hpp>
 
 namespace fs = boost::filesystem;
 
@@ -37,16 +38,6 @@ JobDirError::JobDirError(std::string const& what)
 {
 }
 
-struct JobDir::Impl
-{
-  fs::path base_dir;
-  fs::path tmp_dir;
-  fs::path new_dir;
-  fs::path old_dir;
-  ::time_t last_time;
-  int counter;
-};
-
 namespace {
 
 std::string const tmp_tag("tmp");
@@ -55,16 +46,28 @@ std::string const old_tag("old");
 
 }
 
-JobDir::JobDir(fs::path const& base_dir)
-  : m_impl(new Impl)
+struct JobDir::Impl
 {
-  m_impl->base_dir = base_dir;
-  m_impl->tmp_dir = base_dir / tmp_tag;
-  m_impl->new_dir = base_dir / new_tag;
-  m_impl->old_dir = base_dir / old_tag;
-  m_impl->last_time = ::time(0);
-  m_impl->counter = 0;
+  Impl(fs::path const& p)
+    : base_dir(p),
+      tmp_dir(base_dir / tmp_tag),
+      new_dir(base_dir / new_tag),
+      old_dir(base_dir / old_tag),
+      last_time(::time(0)),
+      counter(0)
+  {}
+  fs::path const base_dir;
+  fs::path const tmp_dir;
+  fs::path const new_dir;
+  fs::path const old_dir;
+  ::time_t last_time;
+  int counter;
+  boost::mutex::mutex mx;  // to protect last_time and counter
+};
 
+JobDir::JobDir(fs::path const& base_dir)
+  : m_impl(new Impl(base_dir))
+{
   if (!
       (fs::exists(m_impl->base_dir) && fs::is_directory(m_impl->base_dir)
        && fs::exists(m_impl->tmp_dir) && fs::is_directory(m_impl->tmp_dir)
@@ -89,14 +92,17 @@ fs::path JobDir::deliver(
   ::time_t t = ::time(0);
   std::string file_name(boost::lexical_cast<std::string>(t));
   file_name += '_';
+  boost::mutex::scoped_lock l(m_impl->mx);
   if (t > m_impl->last_time) {
     m_impl->last_time = t;
     m_impl->counter = 0;
   } else {
     ++m_impl->counter;
   }
+  int counter = m_impl->counter;
+  l.unlock();
   std::ostringstream os;
-  os << std::setw(6) << std::setfill('0') << m_impl->counter;
+  os << std::setw(6) << std::setfill('0') << counter;
   file_name += os.str();
   if (!tag.empty()) {
     file_name += '_';
