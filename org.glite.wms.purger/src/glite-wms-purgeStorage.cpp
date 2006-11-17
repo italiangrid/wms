@@ -16,6 +16,7 @@
 #include "glite/wms/common/utilities/LineParser.h"
 #include "glite/wms/common/utilities/LineParserExceptions.h"
 #include "glite/wms/common/configuration/Configuration.h"
+#include "glite/wms/common/configuration/NSConfiguration.h"
 
 #include <iostream>                        // for cout
 #include <string>
@@ -81,14 +82,18 @@ int main( int argc, char* argv[])
   try {
     options.parse( argc, argv );
    
+    fake_rm = options.is_present('f');
+    purge_threshold = options.is_present('t') ? options['t'].getIntegerValue() : 604800;	    
+    conf_file = options.is_present('c') ? options['c'].getStringValue() : "glite_wms.conf";
+   
+    configuration::Configuration config(conf_file,
+      configuration::ModuleType::network_server);
+  
     if (options.is_present('p')) staging_path.assign ( options['p'].getStringValue() );
     else {
-    	char* env_var;
-	if ((env_var=getenv("GLITE_WMS_TMP"))) staging_path.assign( string(env_var)+"/SandboxDir" );
-	else {
-		cerr << "Unable to set sandbox dir from the environment: GLITE_WMS_TMP not defined..." << endl;
-		return 0;
-	}
+      staging_path.assign(
+        config.ns()->sandbox_staging_path()
+      );
     }
     allocated_limit     = options.is_present('a') ? options['a'].getIntegerValue(): 0;
         if( allocated_limit ) {
@@ -101,14 +106,6 @@ int main( int argc, char* argv[])
 		}
 	}
     }
-    
-    fake_rm = options.is_present('f');
-    purge_threshold = options.is_present('t') ? options['t'].getIntegerValue() : 604800;	    
-    conf_file = options.is_present('c') ? options['c'].getStringValue() : "glite_wms.conf";
-   
-    configuration::Configuration config(conf_file,
-      configuration::ModuleType::network_server);
-  
  
     if( !options.is_present('l') && options.is_present('e') ) {
 	char* env_var;

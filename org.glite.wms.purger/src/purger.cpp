@@ -166,6 +166,7 @@ namespace
         logger::edglog << jobid.toString()  << " -> "
           << "edg_wll_JobStat " 
           << etxt
+          << " " << edsc
           << std::endl;
         free(etxt); free(edsc);
         return false;
