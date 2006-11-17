@@ -320,7 +320,7 @@ ClassAd* LDIFObject::ExportClassAd(vector<string>::const_iterator attrs_begin, v
     string const name = (*it).first; 
     LDIFValue values = (*it).second; 
      
-    if(values.size()==1 &&
+    if(values.size()>=1 &&
        find_if(attrs_begin, attrs_end,
          boost::bind(compare_case_insensitive, _1, name)
        ) == attrs_end ) {  
