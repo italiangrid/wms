@@ -21,6 +21,10 @@
 
 	Revision history:
 	$Log$
+	Revision 1.105  2006/12/05 10:39:37  eronchie
+	Linked ns-common, ns-client and ns
+	Removed old manager-ns components
+
 	Revision 1.104  2006/03/17 08:45:52  eronchie
 	Added ice dependencies
 
@@ -739,96 +743,48 @@
                 </if>
         </target>
 
-	<target name="manager-ns-versions" unless="setenvonly" depends="envset">
+	<target name="ns-common" unless="setenvonly" depends="envset, boost, classads, globus, common, purger, broker">
 		<if>
 			<isset property="small.memory" />
 			<then>
-				<exec dir="${wms.subsystem.dir}.manager-ns-versions" executable="${antExec}" failonerror="${failonerror}">
+				<exec dir="${wms.subsystem.dir}.ns-common" executable="${antExec}" failonerror="${failonerror}">
 					<arg line="${target} &quot;-Dsmall.memory=true&quot; &quot;-Dbootstrap=${bootstrap}&quot; &quot;-Dfailonerror=${failonerror}&quot; &quot;-Ddo.cvs.tag=${do.cvs.tag}&quot;"/>
 				</exec>
 			</then>
 			<else>
-				<ant dir="${wms.subsystem.dir}.manager-ns-versions"
+				<ant dir="${wms.subsystem.dir}.ns-common"
 	                    	     target="${target}"
 	                    	     inheritall="false" />
 			</else>
 		</if>
         </target>
 
-	<target name="manager-ns-common" unless="setenvonly" depends="envset">
+	<target name="ns-client" unless="setenvonly" depends="envset, boost,classads,common, ns-common">
 		<if>
 			<isset property="small.memory" />
 			<then>
-				<exec dir="${wms.subsystem.dir}.manager-ns-common" executable="${antExec}" failonerror="${failonerror}">
+				<exec dir="${wms.subsystem.dir}.ns-client" executable="${antExec}" failonerror="${failonerror}">
 					<arg line="${target} &quot;-Dsmall.memory=true&quot; &quot;-Dbootstrap=${bootstrap}&quot; &quot;-Dfailonerror=${failonerror}&quot; &quot;-Ddo.cvs.tag=${do.cvs.tag}&quot;"/>
 				</exec>
 			</then>
 			<else>
-				<ant dir="${wms.subsystem.dir}.manager-ns-common"
+				<ant dir="${wms.subsystem.dir}.ns-client"
 	                    	     target="${target}"
 	                    	     inheritall="false" />
 			</else>
 		</if>
         </target>
 
-	<target name="manager-ns-fsm" unless="setenvonly" depends="envset, boost,classads,globus">
+	<target name="ns" unless="setenvonly" depends="envset, boost,classads,common, ns-common, configuration">
 		<if>
 			<isset property="small.memory" />
 			<then>
-				<exec dir="${wms.subsystem.dir}.manager-ns-fsm" executable="${antExec}" failonerror="${failonerror}">
+				<exec dir="${wms.subsystem.dir}.ns" executable="${antExec}" failonerror="${failonerror}">
 					<arg line="${target} &quot;-Dsmall.memory=true&quot; &quot;-Dbootstrap=${bootstrap}&quot; &quot;-Dfailonerror=${failonerror}&quot; &quot;-Ddo.cvs.tag=${do.cvs.tag}&quot;"/>
 				</exec>
 			</then>
 			<else>
-				<ant dir="${wms.subsystem.dir}.manager-ns-fsm"
-	                    	     target="${target}"
-	                    	     inheritall="false" />
-			</else>
-		</if>
-        </target>
-
-	<target name="manager-ns-commands" unless="setenvonly" depends="envset, boost,classads,common,manager-ns-fsm,manager-ns-versions,manager-ns-common,purger,broker">
-		<if>
-			<isset property="small.memory" />
-			<then>
-				<exec dir="${wms.subsystem.dir}.manager-ns-commands" executable="${antExec}" failonerror="${failonerror}">
-					<arg line="${target} &quot;-Dsmall.memory=true&quot; &quot;-Dbootstrap=${bootstrap}&quot; &quot;-Dfailonerror=${failonerror}&quot; &quot;-Ddo.cvs.tag=${do.cvs.tag}&quot;"/>
-				</exec>
-			</then>
-			<else>
-				<ant dir="${wms.subsystem.dir}.manager-ns-commands"
-	                    	     target="${target}"
-	                    	     inheritall="false" />
-			</else>
-		</if>
-        </target>
-
-	<target name="manager-ns-client" unless="setenvonly" depends="envset, boost,classads,common, manager-ns-commands">
-		<if>
-			<isset property="small.memory" />
-			<then>
-				<exec dir="${wms.subsystem.dir}.manager-ns-client" executable="${antExec}" failonerror="${failonerror}">
-					<arg line="${target} &quot;-Dsmall.memory=true&quot; &quot;-Dbootstrap=${bootstrap}&quot; &quot;-Dfailonerror=${failonerror}&quot; &quot;-Ddo.cvs.tag=${do.cvs.tag}&quot;"/>
-				</exec>
-			</then>
-			<else>
-				<ant dir="${wms.subsystem.dir}.manager-ns-client"
-	                    	     target="${target}"
-	                    	     inheritall="false" />
-			</else>
-		</if>
-        </target>
-
-	<target name="manager-ns-daemon" unless="setenvonly" depends="envset, boost,classads,common, manager-ns-commands, configuration">
-		<if>
-			<isset property="small.memory" />
-			<then>
-				<exec dir="${wms.subsystem.dir}.manager-ns-daemon" executable="${antExec}" failonerror="${failonerror}">
-					<arg line="${target} &quot;-Dsmall.memory=true&quot; &quot;-Dbootstrap=${bootstrap}&quot; &quot;-Dfailonerror=${failonerror}&quot; &quot;-Ddo.cvs.tag=${do.cvs.tag}&quot;"/>
-				</exec>
-			</then>
-			<else>
-				<ant dir="${wms.subsystem.dir}.manager-ns-daemon"
+				<ant dir="${wms.subsystem.dir}.ns"
 	                    	     target="${target}"
 	                    	     inheritall="false" />
 			</else>
@@ -1046,12 +1002,9 @@ ilonerror}">
 					     broker,
 					     helper,
 					     purger,
-					     manager-ns-versions,
-					     manager-ns-fsm,
-					     manager-ns-common,
-					     manager-ns-commands,
-					     manager-ns-client,
-					     manager-ns-daemon,	
+					     ns-common,
+					     ns-client,
+					     ns,
 					     jobsubmission,
 					     ism,
 					     partitioner,
