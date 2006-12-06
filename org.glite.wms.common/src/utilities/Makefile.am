@@ -8,11 +8,11 @@
 
 CONF = $(top_builddir)/src/configuration/libglite_wms_conf.la
 
-#noinst_LTLIBRARIES = libglite_wms_quota.la
+lib_LTLIBRARIES    = libglite_wms_quota.la
+
 sbin_PROGRAMS      = glite-wms-quota-adjust
 
 lib_LTLIBRARIES    = \
-	libglite_wms_quota.la \
 	libglite_wms_util.la \
 	libglite_wms_globus_ftp_util.la \
 	libglite_wms_iiattrutil.la
