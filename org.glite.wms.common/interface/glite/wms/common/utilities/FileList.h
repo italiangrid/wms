@@ -123,7 +123,7 @@ public:
 
   inline void swap( FileList<Type, Converter> &other ) { this->swapContainer(other); }
 
-  void remove( const Type &val ) { this->removeData( iterator::fli_s_converter(data) ); }
+  void remove( const Type &val ) { this->removeData( iterator::fli_s_converter(val) ); }
 };
 
 template<class Type, class Converter>
