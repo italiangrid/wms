@@ -76,7 +76,7 @@ EventGeneric::EventGeneric( ULogEvent *event, MonitorData *data ) : EventInterfa
 EventGeneric::~EventGeneric( void )
 {}
 
-void EventGeneric::finalProcess( int cn, const string &message )
+void EventGeneric::finalProcess( int cn )
 {
   const configuration::LMConfiguration   *conf = configuration::Configuration::instance()->lm();
 
@@ -85,7 +85,7 @@ void EventGeneric::finalProcess( int cn, const string &message )
   ULogEvent                              *event;
   char                                    wbuf[30];
   string                                  when;
-  jccommon::IdContainer::iterator         position, dagposition;
+  jccommon::IdContainer::iterator         position;
   logger::StatePusher                     pusher( elog::cedglog, "EventGeneric::finalProcess(...)" );
 
   position = this->ei_data->md_container->position_by_condor_id( this->ei_condor );
@@ -108,7 +108,7 @@ void EventGeneric::finalProcess( int cn, const string &message )
       elog::cedglog << logger::setlevel( logger::info )
 		    << "Job cancelled by the user, no resubmission should be triggered off. "  << endl;
       // no resubmission, the job has been cancelled by the user
-      this->ei_data->md_container->update_pointer( position, this->ei_data->md_logger->sequence_code(), ULOG_GENERIC, jccommon::no_resubmission );
+      this->ei_data->md_container->update_pointer( position, position->sequence_code(), ULOG_GENERIC, jccommon::no_resubmission );
       break;
     case jccommon::cancelled_event:
       elog::cedglog << logger::setlevel( logger::info )
@@ -249,7 +249,7 @@ void EventGeneric::process_event( void )
     elog::cedglog << logger::setlevel( logger::debug ) << "Yes, it is a message from my beloved JobController !" << endl
 		  << logger::setlevel( logger::info ) << "Message in the event says: \"" << message << "\"." << endl;
 
-    this->finalProcess( boost::lexical_cast<int>(code), message );
+    this->finalProcess( boost::lexical_cast<int>(code) );
   }
   else if( boost::regex_match(info, match_pieces, lmexpr) ) {
     code.assign( match_pieces[1].first, match_pieces[1].second );
@@ -258,7 +258,7 @@ void EventGeneric::process_event( void )
     elog::cedglog << logger::setlevel( logger::debug ) << "This seems to be a message coming from an expired timeout !" << endl
 		  << logger::setlevel( logger::info ) << "Message in the event says: \"" << message << "\"." << endl;
 
-    this->finalProcess( boost::lexical_cast<int>(code), message );
+    this->finalProcess( boost::lexical_cast<int>(code) );
   }
   else
     elog::cedglog << logger::setlevel( logger::warning )

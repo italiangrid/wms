@@ -17,6 +17,10 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.3  2007/01/22 15:47:19  gianelle
+#       Sincronize HEAD repository with the 3.1 branch
+#       Add the JobDir support
+#
 #       Revision 1.2  2004/08/10 12:01:43  eronchie
 #       Updated
 #
@@ -41,9 +45,9 @@ noinst_HEADERS = \
 	JobControllerClient.h \
 	JobControllerClientImpl.h \
 	JobControllerClientReal.h \
+	JobControllerClientJD.h \
 	Request.h \
 	RequestExceptions.h \
-	SubmitAdapter.h \
 	SubmitAd.h \
 	SubmitAdExceptions.h
 
@@ -63,11 +67,13 @@ libglite_wms_jss_controller_la_SOURCES = CondorG.cpp \
 	JobControllerReal.cpp \
 	JobControllerFake.cpp \
 	JobControllerClient.cpp \
+	JobControllerClientJD.cpp \
 	JobControllerClientReal.cpp
 
 libglite_wms_jss_controller_la_LIBADD = $(CONDORG_LIBS)
 
 AM_CPPFLAGS = -I$(top_srcdir)/src \
+        -I$(top_srcdir)/interface \
 	$(GLITE_CFLAGS) \
 	$(BOOST_CFLAGS) \
 	$(CLASSAD_CFLAGS) \

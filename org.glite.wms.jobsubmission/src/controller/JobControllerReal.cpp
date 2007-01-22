@@ -52,7 +52,7 @@ namespace fs = boost::filesystem;
 #include "JobControllerReal.h"
 #include "JobControllerExceptions.h"
 #include "CondorG.h"
-#include "SubmitAdapter.h"
+#include "glite/wms/jobsubmission/SubmitAdapter.h"
 #include "SubmitAd.h"
 #include "SubmitAdExceptions.h"
 
@@ -93,7 +93,6 @@ void logGenericEvent( jccommon::generic_event_t ev, int condorid, const char *lo
 
 bool cancelJob( const string &condorid, string &info )
 {
-  // TODO: force parameter is no more used, remove it!
   int                      result;
   string                   parameters;
   logger::StatePusher      pusher( elog::cedglog, "cancelJob(...)" );
@@ -137,10 +136,13 @@ bool cancelJob( const string &condorid, string &info )
     }
     // force removal must be used only for globus jobs
     parameters.append( " && JobUniverse==9 && JobGridType==\"globus\"'" );
-                                                                                                                                                            
+                                           
     result = CondorG::instance()->set_command( CondorG::remove, parameters )->execute( info );
   }
-                                                                                                                                                            
+
+  if( !result )
+    elog::cedglog << logger::setlevel( logger::info ) << "Job has been succesfully removed." << endl;
+  
   return !result;
 }
 

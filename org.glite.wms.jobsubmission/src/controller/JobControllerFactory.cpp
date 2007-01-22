@@ -15,6 +15,7 @@
 #include "JobControllerReal.h"
 #include "JobControllerFake.h"
 #include "JobControllerClientReal.h"
+#include "JobControllerClientJD.h"
 #include "JobControllerExceptions.h"
 
 USING_COMMON_NAMESPACE;
@@ -79,7 +80,10 @@ JobControllerClientImpl *JobControllerFactory::create_client( void )
   JobControllerClientImpl                 *result = NULL;
 
   if( configure->get_module() == configuration::ModuleType::job_controller )
-    result = new JobControllerClientReal();
+    if ( configure->jc()->input_type() == "jobdir" )
+      result = new JobControllerClientJD();
+    else
+      result = new JobControllerClientReal();
   else
     result = new JobControllerClientUnknown();
 

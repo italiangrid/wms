@@ -20,35 +20,6 @@ namespace glite { namespace wms {                       \
   }}}
 #endif
 
-
-
-
-/*
-
-#define JOBCONTROL_NAMESPACE_BEGIN namespace edg { namespace workload { namespace jobcontrol
-
-#define JOBCONTROL_NAMESPACE_END }}
-
-
-#define USING_JOBCONTROL_NAMESPACE using namespace edg::workload::jobcontrol
-#define USING_JOBCONTROL_NAMESPACE_ADD( last ) using namespace edg::workload::jobcontrol::##last
-
-#define JOBCONTROL_NAMESPACE_CLASS( Type )                    \
-namespace edg { namespace workload { namespace jobcontrol {   \
-  class Type;                                                 \
-}}}
-
-#define JOBCONTROL_SUBNAMESPACE_CLASS( Namespace, Type )      \
-namespace edg { namespace workload { namespace jobcontrol {   \
-  namespace Namespace {                                       \
-    class Type;                                               \
-}}}}
-
-*/
-
-
-
-
 #define JOBCONTROL_NAMESPACE_BEGIN namespace glite { namespace wms { namespace jobsubmission
 
 #define JOBCONTROL_NAMESPACE_END }}

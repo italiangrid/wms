@@ -7,7 +7,7 @@
 #include "glite/wms/common/logger/edglog.h"
 #include "glite/wms/common/logger/manipulators.h"
 
-#include "SubmitAdapter.h"
+#include "glite/wms/jobsubmission/SubmitAdapter.h"
 #include "SubmitAd.h"
 
 USING_COMMON_NAMESPACE;

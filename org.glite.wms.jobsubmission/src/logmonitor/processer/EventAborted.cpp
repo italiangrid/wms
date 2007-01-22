@@ -83,6 +83,8 @@ void EventAborted::process_event( void )
 #endif
 
     if( this->ei_data->md_aborted->search(this->ei_condor) ) { // Job got an error
+      elog::cedglog << logger::setlevel( logger::debug )
+		    << "Job has a previous error, so abort it." << endl; 
       this->ei_data->md_aborted->remove( this->ei_condor );
 
       this->ei_data->md_logger->aborted_by_system_event( ei_s_joberror );
@@ -96,13 +98,15 @@ void EventAborted::process_event( void )
       }
     }
     else { // Job had a "normal" life cycle...
+      elog::cedglog << logger::setlevel( logger::debug )
+                    << "Job has been aborted by the user." << endl;
       this->ei_data->md_logger->aborted_by_user_event();
 
       if( this->ei_data->md_isDagLog )
-	jccommon::JobFilePurger( this->ei_data->md_dagId, position->edg_id() ).do_purge( true );
+	jccommon::JobFilePurger( this->ei_data->md_dagId, position->edg_id() ).do_purge( true ); // Remove also Sandbox
       else {
 	jccommon::ProxyUnregistrar( position->edg_id() ).unregister();
-	jccommon::JobFilePurger( position->edg_id() ).do_purge( true );
+	jccommon::JobFilePurger( position->edg_id() ).do_purge( true ); // Remove also Sandbox
       }
     }
 

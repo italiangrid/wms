@@ -117,7 +117,7 @@ void EventTerminated::processNormalJob( jccommon::IdContainer::iterator &positio
       this->ei_data->md_logger->abort_on_error_event( ei_s_jobwrapfail );
 
       jccommon::ProxyUnregistrar( position->edg_id() ).unregister();
-      purger.do_purge( true ); // Remove also Sadboxes...
+      purger.do_purge( true ); // Remove also Sandboxes...
 
       break;
     default:

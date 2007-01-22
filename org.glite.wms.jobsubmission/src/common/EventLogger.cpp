@@ -1376,6 +1376,29 @@ void EventLogger::job_really_run_event( const string &sc )
   return;
 }
 
+string EventLogger::seq_code_lbproxy( const string &jobid )
+{
+  char         *seqcode;
+  string       res( "undefined" );
+  edg_wlc_JobId       id;
+  edg_wlc_JobIdParse( jobid.c_str(), &id );
+  
+#ifdef GLITE_WMS_HAVE_LBPROXY
+  if( this->el_context ) {
+    edg_wll_QuerySequenceCodeProxy( *this->el_context, id, &seqcode );
+
+    res.assign( seqcode );
+    free( seqcode );
+  }	
+#else
+  res.assign( "UI=000000:NS=000000:WM=000000:BH=000000:JSS=000000:LM=000000:LRMS=000000:APP=000000" );
+#endif
+
+   edg_wlc_JobIdFree( id );
+  return res;
+
+} 
+
 string EventLogger::sequence_code( void )
 {
   char          *seqcode;

@@ -22,7 +22,7 @@ void AbortedContainer::onConstruct( void )
   this->ac_filelist.compact();
   end = this->ac_filelist.end();
 
-  for( flIt = this->ac_filelist.end(); flIt != end; ++flIt )
+  for( flIt = this->ac_filelist.begin(); flIt != end; ++flIt )
     this->ac_pointers.insert( Map::value_type(*flIt, flIt) );
 }
 

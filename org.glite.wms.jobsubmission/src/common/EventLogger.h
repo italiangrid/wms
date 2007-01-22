@@ -113,6 +113,7 @@ public:
     Extractors
   */
   std::string sequence_code( void );
+  std::string seq_code_lbproxy( const std::string &jobid );
 
   inline operator edg_wll_Context *( void ) { return this->el_context; }
 

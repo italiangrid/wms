@@ -225,11 +225,15 @@ CondorMonitor::~CondorMonitor( void )
   if( this->cm_internal_data.unique() && this->cm_shared_data->md_sizefile->completed() ) {
     try {
       fs::path   timerfile( this->cm_shared_data->md_timer->filename(), fs::native );
-      this->cm_shared_data->md_timer.reset(); // Remove the timer and the filelist it was containing before deleting the file...
+      this->cm_shared_data->md_timer.reset(); // Remove the timer-filelist and its log file before deleting the file...
 
       elog::cedglog << logger::setlevel( logger::info )
-		    << "Removing timer file " << timerfile.native_file_string() << " from staging directory." << endl;
-      fs::remove( timerfile );
+		    << "Removing timer file " << timerfile.native_file_string() << " and its log file from staging directory." << endl;
+ 
+      fs::remove( timerfile );  
+      fs::path timerlogfile( timerfile.native_file_string().append( ".log" ), fs::native );
+      fs::remove( timerlogfile );
+
       elog::cedglog << logger::setlevel( logger::debug ) << "Successfully removed." << endl;
     }
     catch( fs::filesystem_error &err ) {

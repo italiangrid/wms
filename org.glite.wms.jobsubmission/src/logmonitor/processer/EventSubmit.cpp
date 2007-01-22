@@ -90,15 +90,12 @@ void EventSubmit::process_event( void )
 	/*
 	  We have matched a DAG job which isn't the first in the log file...
 	  This is going to cause many problems: throw an exception and abort the daemon
+	  Ale: There are no reasons to abort the daemon see #21708
 	*/
 
-      error.assign( "DAG job: " );
-      error.append( match_pieces[1].first, match_pieces[1].second );
-      error.append( " is not first job in log file, something is going really wrong." );
-
-      throw InvalidLogFile( error );
+      elog::cedglog << logger::setlevel( logger::debug ) << "Dag job is not first job in log file," 
+		    << " something is going wrong. Ignore the problem and cross the fingers!" << endl;
     }
-    else {
       this->ei_data->md_dagId.assign( match_pieces[1].first, match_pieces[1].second );
       this->ei_data->md_isDagLog = true;
 
@@ -112,7 +109,6 @@ void EventSubmit::process_event( void )
 
       this->ei_data->md_sizefile->increment_pending().set_last( true ); 
       this->finalProcess( this->ei_data->md_dagId, seqcode );
-    }
   }
   else if( boost::regex_match(notes, match_pieces, jobexpr) ) { // The event notes are in the EDG format.
     edgid.assign( match_pieces[1].first, match_pieces[1].second );

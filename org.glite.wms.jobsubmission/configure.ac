@@ -17,6 +17,10 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.24  2007/01/22 15:47:18  gianelle
+#       Sincronize HEAD repository with the 3.1 branch
+#       Add the JobDir support
+#
 #       Revision 1.23  2006/05/26 14:41:28  gianelle
 #       Syncronize repository with the branch 3.1
 #
@@ -209,6 +213,7 @@ AC_CONFIG_FILES([src/controller/Makefile])
 AC_CONFIG_FILES([src/logmonitor/Makefile])
 AC_CONFIG_FILES([src/logmonitor/processer/Makefile])
 AC_CONFIG_FILES([src/daemons/Makefile])
+AC_CONFIG_FILES([interface/Makefile])
 AC_CONFIG_FILES([test/Makefile])
 
 AC_OUTPUT

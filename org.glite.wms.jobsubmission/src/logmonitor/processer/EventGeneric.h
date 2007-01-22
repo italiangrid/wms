@@ -21,7 +21,7 @@ public:
 private:
   EventGeneric( ULogEvent *event, MonitorData *data );
 
-  void finalProcess( int code, const std::string &message );
+  void finalProcess( int code );
 
   GenericEvent       *eg_event;
 };

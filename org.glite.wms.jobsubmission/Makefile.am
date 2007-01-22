@@ -17,6 +17,10 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.4  2007/01/22 15:47:18  gianelle
+#       Sincronize HEAD repository with the 3.1 branch
+#       Add the JobDir support
+#
 #       Revision 1.3  2004/10/08 09:38:23  pandreet
 #       LICENSE in rpm; defined summary and description
 #
@@ -36,7 +40,7 @@ docdir = $(datadir)/doc/@PACKAGE@-@VERSION@
 doc_DATA = LICENSE
 
 ## Subdirectories list
-SUBDIRS = config src test 
+SUBDIRS = config src test interface 
 
 ## Default flags to run aclocal
 ACLOCAL_AMFLAGS = -I project
