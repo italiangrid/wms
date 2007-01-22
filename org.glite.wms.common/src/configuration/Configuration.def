@@ -242,6 +242,7 @@ class JCConfiguration {
   parameter int( MaximumTimeAllowedForCondorMatch = 900 ) section normal;
 
   parameter std::string( Input ) section fileparse;
+  parameter std::string( InputType = "filelist" ) section normal;
   parameter std::string( SubmitFileDir ) section fileparse;
   parameter std::string( OutputFileDir ) section fileparse;
 }
