@@ -10,15 +10,6 @@ namespace wms {
 namespace common {
 namespace logger {
 
-namespace {
-
-struct local_stream_s : private threadsafe::logstream {
-public:
-  boost::mutex &get_mutex( void ) { return this->tl_mutex; }
-};
-
-}; // Anonymous namespace
-
 StatePusher::StatePusher( threadsafe::logstream &os, const char *func ) : fp_buffer( os.logbuf() ), fp_data()
 {
   this->setState( func );
@@ -65,7 +56,7 @@ threadsafe::logstream &operator<<( threadsafe::logstream &ls, const setmultiline
 
 threadsafe::logstream &operator<<( threadsafe::logstream &ls, const setcurrent &sc )
 {
-  boost::mutex::scoped_lock    lock( static_cast<local_stream_s &>(ls).get_mutex() );
+  boost::mutex::scoped_lock    lock(ls.get_mutex());
 
   ls.logbuf()->buffer_level( sc.sc_level );
 
@@ -74,7 +65,7 @@ threadsafe::logstream &operator<<( threadsafe::logstream &ls, const setcurrent &
 
 threadsafe::logstream &operator<<( threadsafe::logstream &ls, const setshowseverity &ss )
 {
-  boost::mutex::scoped_lock   lock( static_cast<local_stream_s &>(ls).get_mutex() );
+  boost::mutex::scoped_lock   lock(ls.get_mutex());
 
   ls.logbuf()->show_severity( ss.ss_show );
 

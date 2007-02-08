@@ -92,6 +92,8 @@ public:
   inline Logbuf *logbuf( void ) { return (Logbuf *)(this->tl_stream.rdbuf()); }
   inline logstream &operator<<( std::lts_manip_t func ) { return (*func)( *this ); }
 
+  boost::mutex& get_mutex() { return tl_mutex; }
+
 protected:
   logstream( const logstream &ls ); // Not implemented
   logstream &operator=( const logstream &ls ); // Not implemented
