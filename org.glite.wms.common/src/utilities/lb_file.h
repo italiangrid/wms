@@ -31,7 +31,7 @@ private:
   boost::mutex::mutex f_mx;
   std::ofstream m_log_file;
 
-  bool write(std::ostream message) {
+  bool write(std::ostream& message) {
      std::string date_time; // TODO
      boost::mutex::scoped_lock l(f_mx);
      return m_log_file << date_time << ": " << message << '\n';
@@ -57,8 +57,7 @@ public:
     std::string const& sequence_code
   ) { }
 
-  virtual void log(Context const& ctx, Abort const& e) { //write(std::ostream()); 
-}
+  virtual void log(Context const& ctx, Abort const& e) { write(std::iostream()); }
   virtual void log(Context const& ctx, Accepted const& e) { }
   virtual void log(Context const& ctx, CancelAbort const& e) { }
   virtual void log(Context const& ctx, Cancel const& e) { }

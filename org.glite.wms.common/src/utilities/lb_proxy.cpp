@@ -5,7 +5,6 @@
 // For license conditions see http://public.eu-egee.org/license/license.html
 
 #include "lb_proxy.h"
-#include "lb_file.h"
 #include <boost/bind.hpp>
 #include <openssl/pem.h>
 #include <openssl/x509.h>
