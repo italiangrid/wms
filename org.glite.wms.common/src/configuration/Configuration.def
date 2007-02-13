@@ -476,6 +476,7 @@ class WMPConfiguration {
   parameter classad::ExprTree*(SDJRequirements) section normal;
   parameter classad::ClassAd*( OperationLoadScripts ) section normal;
   parameter bool ( AsyncJobStart = true ) section normal;
+  parameter long ( MaxServedRequests = 300 ) section normal;
 }
 
 class ICEConfiguration {
