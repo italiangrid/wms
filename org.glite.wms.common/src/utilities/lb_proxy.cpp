@@ -169,7 +169,7 @@ void LB_proxy::set_context(
 void LB_proxy::log(Context const& ctx, Abort const& e)
 {
   do_log(
-    boost::bind(edg_wll_LogAbort, _1, e.reason().c_str()),
+    boost::bind(edg_wll_LogAbortProxy, _1, e.reason().c_str()),
     ctx,
     "edg_wll_LogAbortProxy"
   );
@@ -178,7 +178,7 @@ void LB_proxy::log(Context const& ctx, Abort const& e)
 void LB_proxy::log(Context const& ctx, Accepted const& e)
 {
   do_log(
-    boost::bind(edg_wll_LogAccepted,
+    boost::bind(edg_wll_LogAcceptedProxy,
       _1,
       source(),
       e.from_host().c_str(),
@@ -283,7 +283,7 @@ void LB_proxy::log(Context const& ctx, DeepResubmission const& e)
 void LB_proxy::log(Context const& ctx, Match const& e)
 {
   do_log(
-    boost::bind(edg_wll_LogMatch, _1, e.destination().c_str()),
+    boost::bind(edg_wll_LogMatchProxy, _1, e.destination().c_str()),
     ctx,
     "edg_wll_LogMatchProxy"
   );
