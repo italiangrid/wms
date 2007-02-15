@@ -16,15 +16,6 @@ lib_LTLIBRARIES    = \
 	libglite_wms_globus_ftp_util.la \
 	libglite_wms_iiattrutil.la
 
-libexec_PROGRAMS   = glite-wms-eval_ad_expr
-
-glite_wms_eval_ad_expr_SOURCES = glite-wms-eval_ad_expr.cpp
-glite_wms_eval_ad_expr_LDADD   = \
-        ./libglite_wms_util.la \
-	$(GLITE_WMSUTILS_CLASSADS_LIBS) \
-	$(BOOST_LIBS) \
-	$(CLASSAD_LIBS)
-
 glite_wms_quota_adjust_SOURCES = glite_wms_quota_adjust.cpp
 glite_wms_quota_adjust_LDADD = \
         $(CONF) \
@@ -50,6 +41,8 @@ libglite_wms_util_la_SOURCES = \
 	LineParser.cpp \
 	LineParserExceptions.cpp \
 	mixed.cpp \
+  lb_proxy.cpp \
+  lb_server.cpp \
 	boost_fs_add.cpp \
 	wm_commands.cpp \
 	jobdir.cpp \
