@@ -533,7 +533,6 @@ class UserTag
 
 class Context: boost::noncopyable
 {
-private:
   edg_wll_Context m_context;
 public:
   Context()
@@ -552,7 +551,6 @@ public:
 
 class LB: boost::noncopyable
 {
-private:
   edg_wll_Source m_source;
   std::string m_instance;
   bool m_closed;

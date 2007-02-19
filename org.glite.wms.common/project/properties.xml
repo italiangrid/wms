@@ -21,6 +21,9 @@
 	
 	Revision history:
 	$Log$
+	Revision 1.12  2007/02/19 15:11:52  mcecchi
+	LB helper classes
+
 	Revision 1.11  2006/03/15 20:34:03  eronchie
 	Removed classd utils
 
@@ -90,6 +93,6 @@
 		 Define extra properties here ...
 		 ====================================================== -->
 		 
-	<property name="m4files.list" value="globus.m4 classads.m4 boost.m4 glite_wmsutils.m4 glite.m4 cppunit.m4 optimize.m4"/>
+	<property name="m4files.list" value="globus.m4 classads.m4 boost.m4 glite.m4 glite_security.m4 glite_lb.m4 glite_wmsutils.m4 cppunit.m4 optimize.m4"/>
 
 </project>

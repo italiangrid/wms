@@ -9,6 +9,11 @@
 
 #include <boost/tuple/tuple.hpp>
 
+#include <openssl/pem.h>
+#include <openssl/x509.h>
+
+#include "lb.h"
+
 namespace glite {
 namespace wms {
 namespace common {

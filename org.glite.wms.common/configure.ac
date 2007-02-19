@@ -72,62 +72,33 @@ AC_FUNC_STRFTIME
 AC_FUNC_VPRINTF
 AC_CHECK_FUNCS([bzero endpwent ftruncate getmntent memset mkdir pow strerror strtol])
 
+AC_OPTIMIZE
+
 have_boost=no
 have_classads=no
 have_globus=no
 have_cppunit=no
 
 AC_BOOST([], have_boost=yes, have_boost=no)
-AC_MSG_RESULT(["BOOST found $have_boost"])
-
 AC_CLASSADS([], have_classads=yes, have_classads=no)
-AC_MSG_RESULT(["CLASSADS found $have_classads"])
-
 AC_GLOBUS([], have_globus=yes, have_globus=no)
-AC_MSG_RESULT(["GLOBUS found $have_globus"])
-
 AC_CPPUNIT([], have_cppunit=yes, have_cppunit=no)
+
+AC_MSG_RESULT(["BOOST found $have_boost"])
+AC_MSG_RESULT(["CLASSADS found $have_classads"])
+AC_MSG_RESULT(["GLOBUS found $have_globus"])
 AC_MSG_RESULT(["CPPUNIT found $have_cppunit"])
 
-if test "$have_globus" = "no"; then
-  AC_MSG_RESULT(["Please verify GLOBUS package"])
-fi
-
-if test "$have_boost" = "no"; then
-  AC_MSG_RESULT(["Please verify BOOST package"])
-fi
-
-if test "$have_classads" = "no"; then
-  AC_MSG_RESULT(["Please verify CLASSADS package"])
-fi
-
-if test "$have_cppunit" = "no"; then
-  AC_MSG_RESULT(["Please verify CPPUNIT package"])
-fi
-
-if test "$have_globus" = "no"; then
-  AC_MSG_ERROR([Cannot continue building])
-fi
-
-if test "$have_boost" = "no"; then
-  AC_MSG_ERROR([Cannot continue building])
-fi
-
-if test "$have_classads" = "no"; then
-  AC_MSG_ERROR([Cannot continue building])
-fi
-
-if test "$have_cppunit" = "no"; then
-  AC_MSG_ERROR([Cannot continue building])
-fi
-
-AC_OPTIMIZE
-
 have_glite_wmsutils=no
+have_glite_lb=no
 
 AC_GLITE
 
-AC_GLITE_WMSUTILS
+AC_GLITE_WMSUTILS([], have_glite_wmsutils=yes, have_glite_wmsutils=no)
+AC_MSG_RESULT(["GLITE_WMSUTILS found $have_glite_wmsutils"])
+
+AC_GLITE_LB([], have_glite_lb=yes, have_glite_lb=no)
+AC_MSG_RESULT(["GLITE_LB found $have_glite_lb"])
 
 # Configuration items
 AC_PREFIX_DEFAULT([/opt/glite])
@@ -146,4 +117,3 @@ AC_CONFIG_FILES([src/programs/Makefile])
 AC_CONFIG_FILES([test/Makefile])
 
 AC_OUTPUT
-

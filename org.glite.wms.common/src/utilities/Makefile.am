@@ -41,6 +41,7 @@ libglite_wms_util_la_SOURCES = \
 	LineParser.cpp \
 	LineParserExceptions.cpp \
 	mixed.cpp \
+  lb_utils.cpp \
   lb_proxy.cpp \
   lb_server.cpp \
 	boost_fs_add.cpp \
