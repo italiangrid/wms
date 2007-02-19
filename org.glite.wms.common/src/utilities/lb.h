@@ -566,7 +566,7 @@ public:
       m_closed(false),
       m_termination(termination)
   { }
-  virtual ~LB();
+  virtual ~LB() { };
 
   virtual void set_context(
     Context const& context,
