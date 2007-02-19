@@ -12,6 +12,9 @@
 #include <openssl/pem.h>
 #include <openssl/x509.h>
 
+#include "glite/wmsutils/jobid/JobId.h"
+#include "glite/wmsutils/jobid/manipulation.h"
+
 #include "lb.h"
 
 namespace glite {

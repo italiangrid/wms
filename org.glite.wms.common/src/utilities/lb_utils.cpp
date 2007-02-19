@@ -11,6 +11,13 @@ namespace wms {
 namespace common {
 namespace utilities {
 
+void sleep_while(unsigned int seconds, boost::function<bool()> condition)
+{
+  for (unsigned int i = 0; i < seconds && condition(); ++i) {
+    ::sleep(1);
+  }
+}
+
 std::string
 get_proxy_subject(std::string const& x509_proxy)
 {
