@@ -11,6 +11,8 @@
 #include <iostream>
 #include <fstream>
 #include <boost/thread/mutex.hpp>
+#include <boost/date_time/gregorian/gregorian.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
 
 namespace glite {
 
@@ -32,9 +34,10 @@ private:
   std::ofstream m_log_file;
 
   bool write(std::ostream& message) {
-     std::string date_time; // TODO
+    boost::gregorian::date datetime(boost::gregorian::day_clock::local_day());
+
      boost::mutex::scoped_lock l(f_mx);
-     return m_log_file << date_time << ": " << message << '\n';
+     return m_log_file << datetime << ": " << message << '\n';
   };
 public:
   LB_file(
