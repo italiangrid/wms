@@ -68,7 +68,7 @@ LB_server::do_log(
   std::string const& function_name
 )
 {
-  while (!closed() && termination()()) {
+  while (!closed() && !termination()()) {
     int error = log(context.c_context());
     if (!error) {
       return; // successful
@@ -78,7 +78,7 @@ LB_server::do_log(
     );
     if (is_retryable(error)) {
       // TODO Warning(message << " retrying in " << five_seconds << " seconds");
-      sleep_while(five_seconds, termination());
+      sleep_while(five_seconds, this->termination());
     } else {
       // TODO Error(message << " LB is unavailable, giving up");
       close();
@@ -87,12 +87,44 @@ LB_server::do_log(
   }
 }
 
-int LB_server::set_logging_job(
+void
+LB_server::set_logging_job(
   edg_wll_Context context,
   wmsutils::jobid::JobId const& id,
   std::string const& sequence_code    
 )
 {
+  int const flag = EDG_WLL_SEQ_NORMAL;
+
+  while (!closed() && !termination()) {
+    
+    int const result = edg_wll_SetLoggingJob(
+      context,
+      id,
+      sequence_code.c_str(),
+      flag
+    );
+
+    if (!result) {
+      return;
+    }
+
+    std::string message("edg_wll_SetLoggingJob failed:");
+    if (is_retryable(result)) {
+      Warning(message << " retrying in " << five_seconds << " seconds");
+      sleep_while(five_seconds, this->termination());
+    } else {
+      Error(message << " LB is unavailable, giving up");
+      close();
+      throw LB_Unavailable();
+      assert(false);
+    }
+  }
+
+  if(!closed()) {
+    close();
+    throw LB_Unavailable();
+  }
 }
 
 void LB_server::set_context(
@@ -123,15 +155,8 @@ void LB_server::set_context(
     throw BadContext(errcode);
   }
 
-  // set_logging_job
-  errcode = edg_wll_SetLoggingJob(
-    context,
-    id,
-    sequence_code.c_str(),
-    flag
-  );
-
-  if (!errode) {
+  set_logging_job(c_context, id, sequence_code.c_str());
+  if (!errcode) {
     throw BadContext(errcode);
   }
 }

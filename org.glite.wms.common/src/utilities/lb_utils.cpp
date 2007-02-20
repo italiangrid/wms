@@ -11,9 +11,12 @@ namespace wms {
 namespace common {
 namespace utilities {
 
-void sleep_while(unsigned int seconds, boost::function<bool()> condition)
+void sleep_while(
+  unsigned int seconds,
+  boost::function<bool()> termination_condition
+)
 {
-  for (unsigned int i = 0; i < seconds && condition(); ++i) {
+  for (unsigned int i = 0; i < seconds && !termination_condition(); ++i) {
     ::sleep(1);
   }
 }

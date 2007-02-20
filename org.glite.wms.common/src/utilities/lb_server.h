@@ -29,7 +29,7 @@ class LB_server: public LB
     Context const& context,
     std::string const& function_name
   );
-  int set_logging_job(
+  void set_logging_job(
     edg_wll_Context context,
     wmsutils::jobid::JobId const& id,
     std::string const& sequence_code    

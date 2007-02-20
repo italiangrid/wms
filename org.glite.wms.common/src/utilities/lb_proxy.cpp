@@ -38,7 +38,7 @@ LB_proxy::do_log(
   std::string const& function_name
 )
 {
-  while (!closed() && termination()()) {
+  while (!closed() && !termination()()) {
     int error = log(context.c_context());
     if (!error) {
       return; // successful
@@ -57,7 +57,7 @@ LB_proxy::do_log(
   }
 }
 
-int
+void
 LB_proxy::set_logging_job(
   edg_wll_Context context,
   wmsutils::jobid::JobId const& id,
@@ -68,7 +68,7 @@ LB_proxy::set_logging_job(
   std::string const user_dn = get_proxy_subject(x509_proxy);
   int const flag = EDG_WLL_SEQ_NORMAL;
 
-  while (!closed() && termination()) {
+  while (!closed() && !termination()) {
 
     int const result = edg_wll_SetLoggingJobProxy(
       context,
@@ -79,7 +79,7 @@ LB_proxy::set_logging_job(
     );
 
     if (!result) {
-      return 0;
+      return;
     }
 
     std::string message("edg_wll_SetLoggingJobProxy failed:");
@@ -93,9 +93,10 @@ LB_proxy::set_logging_job(
     }
   }
 
-  Error("set_logging_job: fatal error");
-  close();
-  throw LB_Unavailable();
+  if(!closed()) {
+    close();
+    throw LB_Unavailable();
+  }
 }
 
 void LB_proxy::set_context(
@@ -126,14 +127,7 @@ void LB_proxy::set_context(
     throw BadContext(errcode);
   }
 
-  if (set_logging_job(
-    c_context,
-    id,
-    x509_proxy,
-    sequence_code
-  )) {
-    throw BadContext(errcode);
-  }
+  set_logging_job(c_context, id, x509_proxy, sequence_code);
 }
 
 void LB_proxy::log(Context const& ctx, Abort const& e)
