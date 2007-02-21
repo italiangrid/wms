@@ -51,8 +51,6 @@ libglite_wms_util_la_SOURCES = \
 	filelist_reader.cpp \
 	jobdir_reader.cpp
 
-libglite_wms_util_la_LIBADD = -lstdc++
-
 libglite_wms_iiattrutil_la_SOURCES = \
 	ii_attr_utils.cpp
 
