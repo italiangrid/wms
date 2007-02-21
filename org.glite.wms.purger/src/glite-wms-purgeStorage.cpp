@@ -22,6 +22,7 @@
 #include <string>
 #include <vector>
 
+#include <math.h>
 #include <time.h>
 #include <fstream>
 #include <sys/vfs.h>
