@@ -52,7 +52,10 @@ libglite_wms_util_la_SOURCES = \
 	mixed.cpp \
 	boost_fs_add.cpp \
 	wm_commands.cpp \
-	jobdir.cpp
+	jobdir.cpp \
+	input_reader.cpp \
+	jobdir_reader.cpp \
+	filelist_reader.cpp
 
 libglite_wms_util_la_LIBADD = -lstdc++
 
@@ -73,7 +76,10 @@ utilitiesinclude_HEADERS = \
 	quota.h \
 	triple.h \
 	scope_guard.h \
-	jobdir.h
+	jobdir.h \
+	input_reader.h \
+	jobdir_reader.h \
+	filelist_reader.h
 
 AM_CPPFLAGS = -I$(top_srcdir)/interface \
 	-I$(top_srcdir)/src \
