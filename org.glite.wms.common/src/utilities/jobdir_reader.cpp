@@ -12,8 +12,8 @@
 #include <boost/bind.hpp>
 #include <classad_distribution.h>
 #include "glite/wms/common/logger/logger_utils.h"
-#include "glite/wms/common/utilities/scope_guard.h"
-#include "glite/wms/common/utilities/jobdir.h"
+#include "scope_guard.h"
+#include "jobdir.h"
 
 namespace utilities = glite::wms::common::utilities;
 namespace fs = boost::filesystem;
