@@ -538,6 +538,7 @@ class ICEConfiguration {
   parameter unsigned int( max_ice_threads = 10 ) section normal;
   parameter std::string( persist_dir = "${GLITE_LOCATION_VAR}/ice/ice_db" ) section fileparse;
   parameter int( soap_timeout = 60) section normal;
+  parameter std::string( InputType = "filelist" ) section normal;
 
 #  parameter int( MainLoopDuration = 3 ) section normal;
 #  parameter int( AbortedJobsTimeout = 600 ) section normal;
