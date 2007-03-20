@@ -516,7 +516,7 @@ class ICEConfiguration {
   parameter std::string( creamdelegation_url_postfix = "/ce-cream/services/CREAMDelegation" ) section normal;
   parameter std::string( cemon_url_prefix = "https://") section normal;
   parameter std::string( cemon_url_postfix = "/ce-monitor/services/CEMonitor" ) section normal;
-  parameter std::string( ice_topic = "ICE" ) section normal;
+  parameter std::string( ice_topic = "CREAM_JOBS" ) section normal;
   parameter int( poller_status_threshold_time = 60 ) section normal;
   parameter bool( log_on_console = true ) section normal;
   parameter bool( log_on_file = true) section normal;
