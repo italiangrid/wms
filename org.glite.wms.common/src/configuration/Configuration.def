@@ -438,6 +438,10 @@ class WMCConfiguration {
 # LB WS-based interface not yet used:
 # parameter std::vector<std::string>(LBEndPoints) section normal;
   parameter classad::ClassAd*(JdlDefaultAttributes) section normal;
+
+# SOAP Timeouts
+  parameter int( SoapSendTimeout = 360 ) section normal;
+  parameter int( SoapReceiveTimeout = 360 ) section normal; 
 }
 class WMPConfiguration {
 
