@@ -539,6 +539,7 @@ class ICEConfiguration {
   parameter std::string( InputType = "filelist" ) section normal;
   parameter int( poll_query_size = 100 ) section normal;
   parameter int( lease_query_size = 100 ) section normal;
+  parameter int( proxy_renewal_frequency = 300 ) section normal;
 
 #  parameter int( MainLoopDuration = 3 ) section normal;
 #  parameter int( AbortedJobsTimeout = 600 ) section normal;
