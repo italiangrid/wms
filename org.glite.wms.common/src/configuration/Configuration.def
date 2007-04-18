@@ -440,8 +440,10 @@ class WMCConfiguration {
   parameter classad::ClassAd*(JdlDefaultAttributes) section normal;
 
 # SOAP Timeouts
-  parameter int( SoapSendTimeout = 360 ) section normal;
-  parameter int( SoapReceiveTimeout = 360 ) section normal; 
+  parameter classad::ClassAd*(SoapTimeouts) section normal;
+  
+# System Call Timeout  
+  parameter int(SystemCallTimeout) section normal;
 }
 class WMPConfiguration {
 
