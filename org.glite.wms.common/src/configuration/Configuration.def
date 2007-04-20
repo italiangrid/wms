@@ -442,6 +442,12 @@ class WMCConfiguration {
 # SOAP Timeouts
   parameter classad::ClassAd*(SoapTimeouts) section normal;
   
+
+ parameter int( SoapSendTimeout = 360 ) section normal;
+ parameter int( SoapReceiveTimeout = 360 ) section normal; 
+
+
+
 # System Call Timeout  
   parameter int(SystemCallTimeout) section normal;
 }
