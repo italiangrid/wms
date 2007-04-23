@@ -1,8 +1,27 @@
 #!/bin/sh
 
+create_proxy()
+{
+  proxy=`"${GLOBUS_LOCATION}/bin/grid-proxy-init" -q \                                                                                    
+    -cert $GLITE_HOST_CERT \
+    -key  $GLITE_HOST_KEY \
+    -hours 24 \
+    -out  "$1.$$" 2>&1`
+  
+  [ $? -eq 0 ] || echo $proxy >> $GLITE_WMS_LOCATION_VAR/log/glite-wms-purgeStorage.log 
+  
+  move=`chmod 400 $1 &&
+    chown "${GLITE_WMS_USER}" $1 && 
+    mv "$1.$$" "$1" 2>&1`
+  [ $? -eq 0 ] || echo $move >> $GLITE_WMS_LOCATION_VAR/log/glite-wms-purgeStorage.log
+}
+
+
 GLITE_WMS_LOCATION=${GLITE_WMS_LOCATION:-@prefix@}
 . "${GLITE_WMS_LOCATION}/etc/glite-wms-vars.sh"
 export GLITE_WMS_TMP
+
+create_proxy "GLITE_WMS_TMP/purger.proxy"
 
 if [ "$1" == "hourly" ] ; then
   # Execute the "purger" command at every day except on Sunday with a frequency

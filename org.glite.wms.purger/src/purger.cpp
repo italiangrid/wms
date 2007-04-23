@@ -414,8 +414,10 @@ purgeStorageEx(const fs::path& p,
     logger::edglog << jobid.toString()  << " ->";
     
     // Reads the TYPE of the JOB...
-    bool is_jobtype_dag = job_status.jobtype == 
-      EDG_WLL_STAT_DAG || EDG_WLL_STAT_COLLECTION;
+    bool is_jobtype_dag = 
+      (job_status.jobtype == EDG_WLL_STAT_DAG ) || 
+      (job_status.jobtype == EDG_WLL_STAT_COLLECTION);
+
     bool has_parent_job = false;
     try {
       const jobid::JobId parent_jobid = job_status.parent_job;
