@@ -19,6 +19,9 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.16.2.5  2007/04/24 08:50:36  rlops
+#       increased version
+#
 #       Revision 1.16.2.4  2007/02/21 15:56:44  rlops
 #       increased version
 #
@@ -163,7 +166,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.57)
-AC_INIT([GLite WMS Purger], [3.1.4])
+AC_INIT([GLite WMS Purger], [3.1.5])
 AC_CONFIG_AUX_DIR([./project])
 AM_INIT_AUTOMAKE([1.6.3 subdir-objects])
 AC_CONFIG_SRCDIR([src/purger.cpp])
