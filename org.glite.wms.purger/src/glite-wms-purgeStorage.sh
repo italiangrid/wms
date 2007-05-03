@@ -19,21 +19,26 @@ create_proxy()
 
 check_process()
 {
-  ps=`ps ax | grep -v grep | grep "glite-wms-purgeStorage" > /dev/null`
-  [ $? -eq 0 ] || echo "glite-wms-purgeStorage already running..." >> $2 && exit 1
+  ps=`ps ax | grep -v grep | grep $1 > /dev/null`
+  if [ $? -eq 0 ] ; then
+    echo "glite-wms-purgeStorage already running..." >> $2
+    exit 1
+  fi
 }
 
-log="/dev/null"
-while getopts "l:t:c:t:p:a:b:f:e:q" arg
-do 
-  case "$arg" in 
-  l) log="$OPTARG";
+log="/dev/stdout"
+while getopts "l:t:c:p:a:bfeqh" arg
+do
+  case "$arg" in
+  l)    log="$OPTARG";;
+  [?])  ${GLITE_WMS_LOCATION}/sbin/glite-wms-purgeStorage -h > $log
+        exit 1;;
   esac
-done  
+done
 
 create_proxy  "${GLITE_WMS_TMP}/purger.proxy" $log
-check_process $log
+check_process glite-wms-purgeStorage $log
 
 # if another instance had been running the check_process
 # would have already exited
-glite-wms-purgeStorage "$@"
+${GLITE_WMS_LOCATION}/sbin/glite-wms-purgeStorage "$@"
