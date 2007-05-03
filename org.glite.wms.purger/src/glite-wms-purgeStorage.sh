@@ -33,4 +33,7 @@ done
 
 create_proxy  "${GLITE_WMS_TMP}/purger.proxy" $log
 check_process $log
+
+# if another instance had been running the check_process
+# would have already exited
 glite-wms-purgeStorage "$@"
