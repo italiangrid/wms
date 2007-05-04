@@ -390,7 +390,8 @@ purgeStorageEx(const fs::path& p,
    
     ContextPtr log_ctx;
     edg_wll_JobStat job_status;
- 
+    edg_wll_InitStatus(&job_status);
+
     bool status_retrieved = (
       create_context_from_user_x509_proxy(
         log_ctx, jobid, f_sequence_code

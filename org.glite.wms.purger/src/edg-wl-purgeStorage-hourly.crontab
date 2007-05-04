@@ -1,3 +1,0 @@
-# Execute the "purger" command at every day except on Sunday with a frequency of one hour
-# if and only if the percentage of allocated blocks is greater than 40%
-0 */1 * * mon-sat $GLITE_WMS_LOCATION/sbin/glite-wms-purgeStorage -l $GLITE_WMS_LOCATION_VAR/log/glite-wms-purgeStorage.log -t 604800 -a 40
