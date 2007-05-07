@@ -9,6 +9,7 @@ dnl - GLITE_WMS_COMMON_PROCESS_LIBS
 dnl - GLITE_WMS_COMMON_UT_UTIL_LIBS
 dnl - GLITE_WMS_COMMON_UT_FTP_LIBS
 dnl - GLITE_WMS_COMMON_UT_II_LIBS
+dnl - GLITE_WMS_COMMON_SYSLOG_CFLAGS
 
 AC_DEFUN(AC_GLITE_WMS_COMMON,
 [
@@ -50,6 +51,29 @@ AC_DEFUN(AC_GLITE_WMS_COMMON,
     AC_SUBST(GLITE_WMS_COMMON_PROCESS_LIBS)
     AC_SUBST(GLITE_WMS_COMMON_UT_UTIL_LIBS)
     AC_SUBST(GLITE_WMS_COMMON_UT_FTP_LIBS)
-    AC_SUBST(GLITE_WMS_COMMON_UT_II_LIBS)	
+    AC_SUBST(GLITE_WMS_COMMON_UT_II_LIBS)
+
+    AC_MSG_CHECKING([whether SYSLOG logging is enabled, or not])
+
+    AC_ARG_ENABLE(syslog-logging,
+        [  --enable-sysylog-logging=<option> Default is no],
+        syslogopt="$enableval",
+        syslogopt="no"
+    )
+
+    if test "x$syslogopt" = "xyes" ; then
+        AC_MSG_RESULT([$syslogopt])
+    else
+        AC_MSG_RESULT(no)
+    fi
+
+    if test "x$syslogopt" = "xyes" ; then
+       GLITE_WMS_COMMON_SYSLOG_CFLAGS="-DGLITE_WMS_HAVE_SYSLOG_LOGGING"
+    else
+       GLITE_WMS_COMMON_SYSLOG_CFLAGS=""
+    fi
+    AC_SUBST(GLITE_WMS_COMMON_SYSLOG_CFLAGS)
+
+
 ])
 
