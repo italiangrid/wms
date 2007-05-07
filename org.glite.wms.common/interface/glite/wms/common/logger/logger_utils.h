@@ -13,7 +13,68 @@
 #include "glite/wms/common/logger/edglog.h"
 #include "glite/wms/common/logger/manipulators.h"
 
+#include <syslog.h>
+#include <sstream>
+
 #ifndef GLITE_WMS_NO_LOGGING
+
+#ifdef GLITE_WMS_HAVE_SYSLOG_LOGGING
+
+
+#define MESSAGE(message) \
+__FUNCTION__ << "(" << __FILE__ << ":" << boost::lexical_cast<std::string>(__LINE__) << ")> " << message
+
+#define Debug(message) \
+do { \
+        std::ostringstream os; \
+        os << "[Debug] " << MESSAGE(message) << std::endl; \
+        syslog(LOG_DEBUG, os.str().c_str()); \
+} while (0)
+
+#define Info(message) \
+do { \
+        std::ostringstream os; \
+        os << "INFO: " << MESSAGE(message) << std::endl; \
+        syslog(LOG_INFO, os.str().c_str()); \
+} while (0)
+
+#define Warning(message) \
+do { \
+        std::ostringstream os; \
+        os << "[Warning] " << MESSAGE(message) << std::endl; \
+        syslog(LOG_WARNING, os.str().c_str()); \
+} while (0)
+
+#define Error(message) \
+do { \
+        std::ostringstream os; \
+        os << "[Error] " << MESSAGE(message) << std::endl; \
+        syslog(LOG_ERR, os.str().c_str()); \
+} while (0)
+
+#define Severe(message) \
+do { \
+        std::ostringstream os; \
+        os <<"[Sever] " <<  MESSAGE(message) << std::endl; \
+        syslog(LOG_CRIT, os.str().c_str()); \
+} while (0)
+
+#define Critical(message) \
+do { \
+        std::ostringstream os; \
+        os <<"[Critical] " <<  MESSAGE(message) << std::endl; \
+        syslog(LOG_ALERT, os.str().c_str()); \
+} while (0)
+
+#define Fatal(message) \
+do { \
+        std::ostringstream os; \
+        os << "[Fatal] " << MESSAGE(message) << std::endl; \
+        syslog(LOG_EMERG, os.str().c_str()); \
+	std::abort(); \
+} while (0)
+
+#else  //#ifndef GLITE_WMS_HAVE_SYSLOG_LOGGING
 
 #define LOG(level, message) \
 do { \
@@ -64,7 +125,12 @@ do { \
 		std::abort(); \
 } while (0)
 
-#else
+
+
+#endif //#ifdef GLITE_WMS_HAVE_SYSLOG_LOGGING
+
+
+#else  //#ifndef GLITE_WMS_NO_LOGGING
 
 #define Debug(message)
 #define Info(message)
@@ -74,9 +140,9 @@ do { \
 #define Critical(message)
 #define Fatal(message) do { abort(); } while (0)
 
-#endif
+#endif  //#ifndef GLITE_WMS_NO_LOGGING
 
-#endif
+#endif //#ifndef GLITE_WMS_COMMON_LOGGER_LOGGER_UTILS_H
 
 // Local Variables:
 // mode: c++
