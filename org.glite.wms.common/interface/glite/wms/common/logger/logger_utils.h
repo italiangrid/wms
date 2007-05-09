@@ -34,7 +34,7 @@ do { \
 #define Info(message) \
 do { \
         std::ostringstream os; \
-        os << "INFO: " << MESSAGE(message) << std::endl; \
+        os << "[Info] " << MESSAGE(message) << std::endl; \
         syslog(LOG_INFO, os.str().c_str()); \
 } while (0)
 
