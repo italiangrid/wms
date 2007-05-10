@@ -19,6 +19,9 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.16.2.7  2007/05/10 14:43:48  monforte
+#       Fix to bug #26267: The purger does not work: creation of lb context always fails.
+#
 #       Revision 1.16.2.6  2007/05/09 09:21:14  rlops
 #       increased version
 #
@@ -169,7 +172,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.57)
-AC_INIT([GLite WMS Purger], [3.1.6])
+AC_INIT([GLite WMS Purger], [3.1.7])
 AC_CONFIG_AUX_DIR([./project])
 AM_INIT_AUTOMAKE([1.6.3 subdir-objects])
 AC_CONFIG_SRCDIR([src/purger.cpp])

@@ -57,7 +57,7 @@ void purgeQuota(const fs::path& p);
 namespace 
 {
   std::string const f_sequence_code(
-    "UI=000009:NS=0000096669:WM=000000:BH=0000000000:JSS=000000:LM=000000:LRMS=000000:APP=000000" 
+    "UI=000009:NS=0000096669:WM=000000:BH=0000000000:JSS=000000:LM=000000:LRMS=000000:APP=000000:LBS=000000" 
   );
 
   const configuration::NSConfiguration* f_ns_conf = 0;
