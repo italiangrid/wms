@@ -15,7 +15,8 @@ libglite_wms_logger_la_SOURCES = \
 	manipulators.cpp \
 	logstream_ts.cpp \
 	container_ts.cpp \
-	manipulators_ts.cpp
+	manipulators_ts.cpp \
+	wms_log.cpp
 
 AM_CPPFLAGS = -I$(top_srcdir)/interface \
 	-I$(top_srcdir)/src \
