@@ -10,10 +10,10 @@
 
 #include <cstdlib>
 #include <boost/lexical_cast.hpp>
+#include "glite/wms/common/logger/wms_log.h"
 #include "glite/wms/common/logger/edglog.h"
 #include "glite/wms/common/logger/manipulators.h"
 
-#include <syslog.h>
 #include <sstream>
 
 #ifndef GLITE_WMS_NO_LOGGING
@@ -28,49 +28,49 @@ __FUNCTION__ << "(" << __FILE__ << ":" << boost::lexical_cast<std::string>(__LIN
 do { \
         std::ostringstream os; \
         os << "[Debug] " << MESSAGE(message) << std::endl; \
-        syslog(LOG_DEBUG, os.str().c_str()); \
+        glite::wms::common::logger::wms_log::get_instance()->debug(os.str()); \
 } while (0)
 
 #define Info(message) \
 do { \
         std::ostringstream os; \
         os << "[Info] " << MESSAGE(message) << std::endl; \
-        syslog(LOG_INFO, os.str().c_str()); \
+        glite::wms::common::logger::wms_log::get_instance()->info(os.str()); \
 } while (0)
 
 #define Warning(message) \
 do { \
         std::ostringstream os; \
         os << "[Warning] " << MESSAGE(message) << std::endl; \
-        syslog(LOG_WARNING, os.str().c_str()); \
+        glite::wms::common::logger::wms_log::get_instance()->warning(os.str()); \
 } while (0)
 
 #define Error(message) \
 do { \
         std::ostringstream os; \
         os << "[Error] " << MESSAGE(message) << std::endl; \
-        syslog(LOG_ERR, os.str().c_str()); \
+        glite::wms::common::logger::wms_log::get_instance()->error(os.str()); \
 } while (0)
 
 #define Severe(message) \
 do { \
         std::ostringstream os; \
         os <<"[Sever] " <<  MESSAGE(message) << std::endl; \
-        syslog(LOG_CRIT, os.str().c_str()); \
+        glite::wms::common::logger::wms_log::get_instance()->sever(os.str()); \
 } while (0)
 
 #define Critical(message) \
 do { \
         std::ostringstream os; \
         os <<"[Critical] " <<  MESSAGE(message) << std::endl; \
-        syslog(LOG_ALERT, os.str().c_str()); \
+        glite::wms::common::logger::wms_log::get_instance()->critical(os.str()); \
 } while (0)
 
 #define Fatal(message) \
 do { \
         std::ostringstream os; \
         os << "[Fatal] " << MESSAGE(message) << std::endl; \
-        syslog(LOG_EMERG, os.str().c_str()); \
+        glite::wms::common::logger::wms_log::get_instance()->fatal(os.str()); \
 	std::abort(); \
 } while (0)
 
