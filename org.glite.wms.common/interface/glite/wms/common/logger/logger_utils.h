@@ -28,49 +28,49 @@ __FUNCTION__ << "(" << __FILE__ << ":" << boost::lexical_cast<std::string>(__LIN
 do { \
         std::ostringstream os; \
         os << "[Debug] " << MESSAGE(message) << std::endl; \
-        glite::wms::common::logger::wms_log::get_instance()->debug(os.str()); \
+        boost::details::pool::singleton_default<glite::wms::common::logger::wms_log>::instance().debug(os.str()); \
 } while (0)
 
 #define Info(message) \
 do { \
         std::ostringstream os; \
         os << "[Info] " << MESSAGE(message) << std::endl; \
-        glite::wms::common::logger::wms_log::get_instance()->info(os.str()); \
+	boost::details::pool::singleton_default<glite::wms::common::logger::wms_log>::instance().info(os.str()); \
 } while (0)
 
 #define Warning(message) \
 do { \
         std::ostringstream os; \
         os << "[Warning] " << MESSAGE(message) << std::endl; \
-        glite::wms::common::logger::wms_log::get_instance()->warning(os.str()); \
+	boost::details::pool::singleton_default<glite::wms::common::logger::wms_log>::instance().warning(os.str()); \
 } while (0)
 
 #define Error(message) \
 do { \
         std::ostringstream os; \
         os << "[Error] " << MESSAGE(message) << std::endl; \
-        glite::wms::common::logger::wms_log::get_instance()->error(os.str()); \
+	boost::details::pool::singleton_default<glite::wms::common::logger::wms_log>::instance().error(os.str()); \
 } while (0)
 
 #define Severe(message) \
 do { \
         std::ostringstream os; \
         os <<"[Sever] " <<  MESSAGE(message) << std::endl; \
-        glite::wms::common::logger::wms_log::get_instance()->sever(os.str()); \
+	boost::details::pool::singleton_default<glite::wms::common::logger::wms_log>::instance().severe(os.str()); \
 } while (0)
 
 #define Critical(message) \
 do { \
         std::ostringstream os; \
         os <<"[Critical] " <<  MESSAGE(message) << std::endl; \
-        glite::wms::common::logger::wms_log::get_instance()->critical(os.str()); \
+	boost::details::pool::singleton_default<glite::wms::common::logger::wms_log>::instance().critical(os.str()); \
 } while (0)
 
 #define Fatal(message) \
 do { \
         std::ostringstream os; \
         os << "[Fatal] " << MESSAGE(message) << std::endl; \
-        glite::wms::common::logger::wms_log::get_instance()->fatal(os.str()); \
+	boost::details::pool::singleton_default<glite::wms::common::logger::wms_log>::instance().fatal(os.str()); \
 	std::abort(); \
 } while (0)
 

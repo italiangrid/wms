@@ -1,35 +1,36 @@
 #include <string>
 #include <boost/scoped_ptr.hpp>
 #include <boost/thread/mutex.hpp>
+#include <boost/pool/detail/singleton.hpp>
 
 namespace glite{
 namespace wms{
 namespace common{
 namespace logger{
 
-class wms_log
+class wms_log : public boost::details::pool::singleton_default
 {
 public:
    enum mode{ STDERR = 0, SYSLOG };
+   enum level{ DEBUG = 0, INFO, WARNING, ERROR, SEVER, CRITICAL, FATAL };
 private:
-   static boost::scoped_ptr<wms_log> wms_log_instance;
-   static boost::mutex mx;
 
    mode m_mode;
-   wms_log();
+   int m_init_flag;
+   level m_init_level;
 
 public:
-   static wms_log* get_instance();
+   wms_log();
 
-   void init(mode m);
+   void init(mode m, level l);
  
-   void debug(std::string str);
-   void info(std::string str);
-   void warning(std::string str);
-   void error(std::string str);
-   void sever(std::string str);
-   void critical(std::string str);
-   void fatal(std::string str);
+   void debug(const std::string& str);
+   void info(const std::string& str);
+   void warning(const std::string& str);
+   void error(const std::string& str);
+   void sever(const std::string& str);
+   void critical(const std::string& str);
+   void fatal(const std::string& str);
 };
 
 }

@@ -9,74 +9,88 @@ namespace wms{
 namespace common{
 namespace logger{
 
-
-boost::scoped_ptr<wms_log> wms_log::wms_log_instance;
-boost::mutex wms_log::mx;
+namespace {
+   boost::mutex mx;
+}
 
 wms_log::wms_log(){
    m_mode = wms_log::STDERR;
+   m_init_flag = 0;
+   m_init_level = wms_log::DEBUG;
 }
 
-wms_log* 
-wms_log::get_instance(){
-  boost::mutex::scoped_lock lock(mx);
-  if( wms_log_instance.get() == 0 )
-     wms_log_instance.reset( new wms_log );
-  return wms_log_instance.get();
-} 
-
-void wms_log::init(wms_log::mode m){
-   m_mode = m;
+void wms_log::init(wms_log::mode m, wms_log::level l){
+   boost::mutex::scoped_lock lock(mx);
+   if( ! m_init_flag )
+      m_mode = m;
+      m_init_level = l;
+   
+   m_init_flag = 1;
 }
 
-void wms_log::debug(std::string str){
-   if(m_mode == wms_log::SYSLOG)
-      syslog(LOG_DEBUG, str.c_str());
-   else
-      std::cerr << str;
+void wms_log::debug(const std::string& str){
+   if( m_init_level >= wms_log::DEBUG ) {
+      if(m_mode == wms_log::SYSLOG)
+         syslog(LOG_DEBUG, str.c_str());
+      else
+         std::cerr << str;
+   }
 }
 
-void wms_log::info(std::string str){
-   if(m_mode == wms_log::SYSLOG)
-      syslog(LOG_INFO, str.c_str());
-   else
-      std::cerr << str;
+void wms_log::info(const std::string& str){
+   if( m_init_level >= wms_log::INFO ) {
+      if(m_mode == wms_log::SYSLOG)
+         syslog(LOG_INFO, str.c_str());
+      else
+         std::cerr << str;
+   }
 }
 
-void wms_log::warning(std::string str){
-   if(m_mode == wms_log::SYSLOG)
-      syslog(LOG_WARNING, str.c_str());
-   else
-      std::cerr << str;
+void wms_log::warning(const std::string& str){
+   if( m_init_level >= wms_log::WARNING ) {
+      if(m_mode == wms_log::SYSLOG)
+         syslog(LOG_WARNING, str.c_str());
+      else
+         std::cerr << str;
+   }
 }
 
-void wms_log::error(std::string str){
-   if(m_mode == wms_log::SYSLOG)
-      syslog(LOG_ERR, str.c_str());
-   else
-      std::cerr << str;
+void wms_log::error(const std::string& str){
+   if( m_init_level >= wms_log::ERROR ) {
+      if(m_mode == wms_log::SYSLOG)
+         syslog(LOG_ERR, str.c_str());
+      else
+         std::cerr << str;
+   }
 }
 
-void wms_log::sever(std::string str){
-   if(m_mode == wms_log::SYSLOG)
-      syslog(LOG_CRIT, str.c_str());
-   else
-      std::cerr << str;
+void wms_log::sever(const std::string& str){
+   if ( m_init_level >= wms_log::SEVER ) {
+      if(m_mode == wms_log::SYSLOG)
+         syslog(LOG_CRIT, str.c_str());
+      else
+         std::cerr << str;
+   }
 }
 
-void wms_log::critical(std::string str){
-   if(m_mode == wms_log::SYSLOG)
-      syslog(LOG_ALERT, str.c_str());
-   else
-      std::cerr << str;
+void wms_log::critical(const std::string& str){
+   if( m_init_level >= wms_log::CRITICAL ) {
+      if(m_mode == wms_log::SYSLOG)
+         syslog(LOG_ALERT, str.c_str());
+      else
+         std::cerr << str;
+   }
 }
 
-void wms_log::fatal(std::string str){
-   if(m_mode == wms_log::SYSLOG)
-      syslog(LOG_EMERG, str.c_str());
-   else
-      std::cerr << str;
+void wms_log::fatal(const std::string& str){
+   if( m_init_level >= wms_log::CRITICAL ) {
+      if(m_mode == wms_log::SYSLOG)
+         syslog(LOG_EMERG, str.c_str());
+      else
+         std::cerr << str;
+   }
 }
+
 
 
 }
