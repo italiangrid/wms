@@ -1,7 +1,7 @@
 
 #include <boost/filesystem/operations.hpp> 
 #include <boost/filesystem/exception.hpp>
-#include <boost/progress.hpp>
+//#include <boost/progress.hpp>
 #include <boost/scoped_ptr.hpp>
 
 #include "purger.h"
@@ -10,8 +10,7 @@
 #include "glite/wmsutils/jobid/manipulation.h"
 #include "glite/wmsutils/jobid/JobIdExceptions.h"
 
-#include "glite/wms/common/logger/edglog.h"
-#include "glite/wms/common/logger/manipulators.h"
+#include "glite/wms/common/logger/logger_utils.h"
 
 #include "glite/wms/common/utilities/LineParser.h"
 #include "glite/wms/common/utilities/LineParserExceptions.h"
@@ -35,13 +34,17 @@ namespace jobid         = glite::wmsutils::jobid;
 using namespace std;
 utilities::LineOption  options[] = {
   { 'c', 1,		"conf-file",	    "\t configuration file." },
-  { 'l', 1,             "log-file",	    "\t logs any information into the specified file." },
+#ifndef GLITE_WMS_HAVE_SYSLOG_LOGGING
+  { 'l', 1,             "log-file",         "\t logs any information into the specified file" },
+#else
+  { 's', no_argument,   "syslog",           "\t logs any information on syslog" },
+#endif
   { 't', 1,		"threshold",	    "\t sets the purging threshold to the specified number of seconds." },
   { 'p', 1,		"staging-path",	    "\t defines the sandbox staging path." },
   { 'a', 1,		"allocated-limit"   "\t defines the percentange of allocated blocks which triggers the purging." }, 
   { 'b', no_argument,   "brute-rm"          "\t brute-force directory removal." },
   { 'f', no_argument,   "fake-rm"           "\t does not perform any directory removal." },
-  { 'e', no_argument,   "enable-progress",  "\t enable the progress indicator." }, 
+//  { 'e', no_argument,   "enable-progress",  "\t enable the progress indicator." }, 
   { 'q', no_argument,   "quiet",            "\t does not create any log file (any settings specified with -l will be ignored)." }
 };
 
@@ -109,8 +112,11 @@ int main( int argc, char* argv[])
     configuration::Configuration config(conf_file,
       configuration::ModuleType::network_server);
   
- 
-    if( !options.is_present('l') && options.is_present('e') ) {
+#ifndef GLITE_WMS_HAVE_SYSLOG_LOGGING 
+    if( !options.is_present('l') ) {
+#else
+    if( !options.is_present('s') ) {
+#endif
 	char* env_var;
 	string log_path;
 	if ((env_var=getenv("GLITE_WMS_TMP"))) log_path.assign( string(env_var) );
@@ -127,31 +133,61 @@ int main( int argc, char* argv[])
     else if (options.is_present('l')) log_file.assign( options['l'].getStringValue() );
     
     if( options.is_present('q') ) log_file.assign("/dev/null");
-    
-    if(options.is_present('l') || options.is_present('e')) logger::threadsafe::edglog.open( log_file.c_str(), logger::info );
-    else logger::threadsafe::edglog.open( std::cout, logger::info ); 
+
+#ifndef GLITE_WMS_HAVE_SYSLOG_LOGGING
+    if(options.is_present('l')) // || options.is_present('e'))
+       logger::threadsafe::edglog.open( log_file.c_str(), logger::info );
+#else
+    if(options.is_present('s')) // || options.is_present('e'))
+       boost::details::pool::singleton_default<
+          logger::wms_log
+       >::instance().init(
+                     logger::wms_log::SYSLOG,
+                     logger::wms_log::FATAL
+       );
+#endif
+    else 
+#ifndef GLITE_WMS_HAVE_SYSLOG_LOGGING
+       logger::threadsafe::edglog.open( std::cout, logger::info ); 
+#else
+       boost::details::pool::singleton_default<
+         logger::wms_log
+       >::instance().init(
+                       logger::wms_log::STDOUT,
+                       logger::wms_log::FATAL
+       );
+#endif
+
     
     	std::vector<fs::path> found_path;
     	fs::path from_path( staging_path, fs::native); 
     	find_directories(from_path, "https", found_path, true);
 	
-    	std::auto_ptr<boost::progress_display> show_progress;
-    	if( options.is_present('e') ) show_progress.reset( new boost::progress_display(found_path.size()) );
+//    	std::auto_ptr<boost::progress_display> show_progress;
+//    	if( options.is_present('e') ) show_progress.reset( new boost::progress_display(found_path.size()) );
 	
     	for(std::vector<fs::path>::iterator it = found_path.begin(); it != found_path.end(); it++ ) {
 		
 		bool purge_done = wl::purger::purgeStorageEx( *it, purge_threshold, fake_rm );
 		if( options.is_present('b') && ! purge_done ) {
 		      try {
-			logger::threadsafe::edglog << it->native_file_string() << " -> forcing removal" << std::endl;      
+#ifndef GLITE_WMS_HAVE_SYSLOG_LOGGING
+			logger::threadsafe::edglog << it->native_file_string() << " -> forcing removal" << std::endl;
+#else
+                        Info(it->native_file_string() << " -> forcing removal");
+#endif
 			fs::remove_all( *it );
 		      }
 		      catch( fs::filesystem_error& fse )
 		      {
+#ifndef GLITE_WMS_HAVE_SYSLOG_LOGGING
 			logger::threadsafe::edglog << fse.what() << std::endl;
+#else
+                        Error(fse.what());
+#endif
 		      }
 		}
-      	if( options.is_present('e') ) ++(*show_progress);
+//      	if( options.is_present('e') ) ++(*show_progress);
 	}
   }
   catch( utilities::LineParsingError &error ) {

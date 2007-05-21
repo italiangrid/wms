@@ -20,8 +20,7 @@
 
 #include "glite/wmsutils/classads/classad_utils.h"
 
-#include "glite/wms/common/logger/edglog.h"
-#include "glite/wms/common/logger/manipulators.h"
+#include "glite/wms/common/logger/logger_utils.h"
 #include "glite/wms/common/utilities/scope_guard.h"
 
 #include "glite/lb/Job.h"
@@ -120,10 +119,10 @@ namespace
         );
       }
       catch (CannotCreateLBContext& e) {
-        logger::edglog << id.toString()  << " ->"
+        Error( id.toString()  << " ->"
           << "CannotCreateLBContext from user proxy, error code #" 
           << e.error_code() 
-          << std::endl;
+        );
         result = false;
       }
     return result;
@@ -144,10 +143,10 @@ namespace
         );
       }
       catch (CannotCreateLBContext& e) {
-        logger::edglog << id.toString()  << " ->"
+        Error(id.toString()  << " ->"
           << "CannotCreateLBContext from host proxy, error code #" 
           << e.error_code()
-          << std::endl;
+        );
         result = false;
       }
     return result;
@@ -163,10 +162,10 @@ namespace
       )) {
         char  *etxt,*edsc;
         edg_wll_Error(log_ctx.get(),&etxt,&edsc);
-        logger::edglog << jobid.toString()  << " -> "
+        Info(jobid.toString()  << " -> "
           << "edg_wll_JobStat " 
           << etxt
-          << std::endl;
+        );
         free(etxt); free(edsc);
         return false;
     }
@@ -243,16 +242,16 @@ namespace
       result = true;
     }
     catch(utils::CannotParseClassAd& cpc) {
-      logger::edglog << "Cannot parse logging::JobStatus::JDL";
+      Error("Cannot parse logging::JobStatus::JDL");
     }
     catch(utils::InvalidValue& ive) {
-      logger::edglog << "JobProvenance attribute not found in JDL";
+      Error("JobProvenance attribute not found in JDL");
     }
     catch(jp_upload_files::init_context_exception& ice) {
-      logger::edglog << "Failed to init JobProvenance context";
+      Error("Failed to init JobProvenance context");
     }
     catch(jp_upload_files::importer_upload_exception& iup) {
-      logger::edglog << "ISB upload failure: " << iup.what();
+      Error("ISB upload failure: " << iup.what());
     }
     return result;
 #else
@@ -268,17 +267,17 @@ namespace
     bool result = false;
     try {
       if( !upload_input_sandbox(p) ) {
-        logger::edglog << " [JP ISB upload failed] ";
+        Error(" [JP ISB upload failed] ");
       }
       fs::remove_all(p);
       purgeQuota(p);
       if( !(result = !(wll_log_function( log_ctx ) != 0)) ) {
-        logger::edglog << " [LB event logging failed] " << get_lb_message(log_ctx); 
+        Error(" [LB event logging failed] " << get_lb_message(log_ctx));
       }
-      else logger::edglog << " Ok ";
+      else Info (" Ok ");
     } 
     catch(fs::filesystem_error& fse) {
-      logger::edglog << " [" << fse.what() << "]"; 
+      Error(" [" << fse.what() << "]");
     }
     return result;
   }
@@ -326,8 +325,8 @@ void purgeQuota(const fs::path& p)
 
 bool purgeStorage(const jobid::JobId& jobid, const std::string& sandboxdir)
 {
-  edglog_fn(purgeStorage);
-  logger::edglog << "Starting purging..." << std::endl;
+  //edglog_fn(purgeStorage);
+  Info("Starting purging...");
   fs::path p;
   try {
     if( sandboxdir.empty() ) {
@@ -347,24 +346,24 @@ bool purgeStorage(const jobid::JobId& jobid, const std::string& sandboxdir)
       fs::path(jobid::to_filename(jobid), fs::native);
   }
   catch( jobid::JobIdException& jide ){
-    logger::edglog << jide.what() << std::endl;
+    Error( jide.what() );
     return false; 	
   }
   catch( fs::filesystem_error& fse ) {
-    logger::edglog << fse.what() << std::endl;
+    Error( fse.what() );
     return false;	
   }
   
   try {
     if( !upload_input_sandbox(p) ) {
-      logger::edglog << " [ ISB upload to JP failure" << std::endl;
+      Error( " [ ISB upload to JP failure" );
     }
     fs::remove_all( p );
     purgeQuota(p);
     return true;
   } 
   catch( fs::filesystem_error& fse ) {
-    logger::edglog << fse.what() << std::endl;
+    Error( fse.what() );
   }
   return false;
 }
@@ -382,7 +381,7 @@ purgeStorageEx(const fs::path& p,
   int purge_threshold, bool fake_rm, bool navigating_dag, 
   wll_log_function_type wll_log_function)
 {
-  edglog_fn(purgeStorageEx);	
+  //edglog_fn(purgeStorageEx);	
   bool result = false;
   try {
     jobid::JobId jobid( jobid::from_filename( p.leaf() ) );
@@ -410,7 +409,7 @@ purgeStorageEx(const fs::path& p,
       boost::bind(edg_wll_FreeStatus, &job_status)
     );
   
-    logger::edglog << jobid.toString()  << " ->";
+    Info( jobid.toString()  << " ->");
     
     // Reads the TYPE of the JOB...
     bool is_jobtype_dag = job_status.jobtype == EDG_WLL_STAT_DAG;
@@ -428,12 +427,11 @@ purgeStorageEx(const fs::path& p,
             fs::path(jobid::to_filename(parent_jobid), fs::native);	
           
           if (!fs::exists(pp)) {
-            logger::edglog << " removing orphan dag node: ";
+            Info( " removing orphan dag node: ");
             if (!fake_rm ) result = purgeStorage(p, log_ctx.get(), wll_log_function);
-            logger::edglog << std::endl;
             return result;
           }
-          logger::edglog << " skipping dag node" << std::endl;
+          Info(" skipping dag node");
           return false;
         }
       }
@@ -445,9 +443,8 @@ purgeStorageEx(const fs::path& p,
     // on its state...since the purging condition are met for the DAG.
     if (has_parent_job && navigating_dag) {
       	
-      logger::edglog << " removing dag node: ";
+      Info( " removing dag node: ");
       if( !fake_rm )  result = purgeStorage(p, log_ctx.get(), wll_log_function);
-      logger::edglog << std::endl;
       return result;
     }
         
@@ -466,7 +463,7 @@ purgeStorageEx(const fs::path& p,
           std::back_inserter(children)
         );
 
-        logger::edglog << " browsing: #" << children.size() << " node(s)" << std::endl;
+        Info( " browsing: #" << children.size() << " node(s)" );
 	
 	std::string staging_path(extract_staging_path(p, jobid));
 	
@@ -476,14 +473,14 @@ purgeStorageEx(const fs::path& p,
 	  purge_dag_storage(staging_path, purge_threshold,fake_rm, wll_log_function)
         );
 	
-	logger::edglog << jobid.toString() << " ->";
+	Info( jobid.toString() << " ->");
       }
       
-      logger::edglog << " removing ";
+      Info( " removing ");
 
       switch(job_status.state) {
-        case EDG_WLL_JOB_CANCELLED: logger::edglog << "[CANCELLED] "; break;
-        case EDG_WLL_JOB_CLEARED:   logger::edglog << "[CLEARED]   "; break;
+        case EDG_WLL_JOB_CANCELLED: Info( "[CANCELLED] "); break;
+        case EDG_WLL_JOB_CLEARED:   Info( "[CLEARED]   "); break;
       }
 
       if( !fake_rm ) result = purgeStorage(p, log_ctx.get(), wll_log_function);
@@ -505,7 +502,7 @@ purgeStorageEx(const fs::path& p,
               std::back_inserter(children)
             );
 
-	    logger::edglog << " browsing #" << children.size() << " node(s)" << std::endl;
+	    Info( " browsing #" << children.size() << " node(s)" );
 	    
 	    std::string staging_path(extract_staging_path(p, jobid));
 	    std::for_each(
@@ -515,37 +512,36 @@ purgeStorageEx(const fs::path& p,
                 fake_rm,wll_log_function)
             );
 	    
-	    logger::edglog << jobid.toString() << " ->";
+	    Info( jobid.toString() << " ->");
 	  }
 	  
-	  logger::edglog << " removing ";
+	  Info( " removing ");
 
 	  switch(job_status.state) {
-            case EDG_WLL_JOB_ABORTED:   logger::edglog << "[ABORTED]   "; break;
-            case EDG_WLL_JOB_DONE:      logger::edglog << "[DONE]      "; break;
+            case EDG_WLL_JOB_ABORTED:   Info( "[ABORTED]   "); break;
+            case EDG_WLL_JOB_DONE:      Info( "[DONE]      "); break;
           }
 
 	  if( !fake_rm ) result = purgeStorage(p, log_ctx.get(), wll_log_function);
 	}
-	else logger::edglog << " skipping: purging threshold not overcome!";	
+	else Info( " skipping: purging threshold not overcome!");
       }
     break;
     default:
-      logger::edglog << " skipping: " << edg_wll_StatToString(job_status.state);
+      Info( " skipping: " << edg_wll_StatToString(job_status.state));
     }
-    logger::edglog << std::endl;   
   }
   catch (CannotCreateLBContext& e) {
-    logger::edglog << e.what() << std::endl;
+    Error( e.what() );
   }
   catch( fs::filesystem_error& fse ) {
-    logger::edglog << fse.what() << std::endl;
+    Error( fse.what() );
   }
   catch( jobid::JobIdException& jide ) {
-    logger::edglog << jide.what() << std::endl;
+    Error( jide.what() );
   }
   catch( std::exception&e ) {
-    logger::edglog << e.what() << std::endl;
+    Error( e.what() );
   }
   return result;
 }
