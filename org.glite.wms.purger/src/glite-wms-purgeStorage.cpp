@@ -1,7 +1,7 @@
 
 #include <boost/filesystem/operations.hpp> 
 #include <boost/filesystem/exception.hpp>
-//#include <boost/progress.hpp>
+#include <boost/program_options.hpp>
 #include <boost/scoped_ptr.hpp>
 
 #include "purger.h"
@@ -30,23 +30,9 @@ namespace logger	= glite::wms::common::logger;
 namespace utilities     = glite::wms::common::utilities;
 namespace configuration = glite::wms::common::configuration;
 namespace jobid         = glite::wmsutils::jobid;
+namespace po            = boost::program_options;
 
 using namespace std;
-utilities::LineOption  options[] = {
-  { 'c', 1,		"conf-file",	    "\t configuration file." },
-#ifndef GLITE_WMS_HAVE_SYSLOG_LOGGING
-  { 'l', 1,             "log-file",         "\t logs any information into the specified file" },
-#else
-  { 's', no_argument,   "syslog",           "\t logs any information on syslog" },
-#endif
-  { 't', 1,		"threshold",	    "\t sets the purging threshold to the specified number of seconds." },
-  { 'p', 1,		"staging-path",	    "\t defines the sandbox staging path." },
-  { 'a', 1,		"allocated-limit"   "\t defines the percentange of allocated blocks which triggers the purging." }, 
-  { 'b', no_argument,   "brute-rm"          "\t brute-force directory removal." },
-  { 'f', no_argument,   "fake-rm"           "\t does not perform any directory removal." },
-//  { 'e', no_argument,   "enable-progress",  "\t enable the progress indicator." }, 
-  { 'q', no_argument,   "quiet",            "\t does not create any log file (any settings specified with -l will be ignored)." }
-};
 
 bool find_directories( const fs::path & from_path,
 		       const std::string &prefix,
@@ -75,16 +61,39 @@ bool find_directories( const fs::path & from_path,
 
 int main( int argc, char* argv[])
 {
-  vector<utilities::LineOption>             optvec( options, options + sizeof(options)/sizeof(utilities::LineOption) );
-  utilities::LineParser                     options( optvec, utilities::ParserData::zero_args );
   string log_file, staging_path, conf_file;
   int allocated_limit, purge_threshold;
   bool fake_rm = false;
 
   try {
-    options.parse( argc, argv );
-   
-    if (options.is_present('p')) staging_path.assign ( options['p'].getStringValue() );
+    po::options_description desc("Usage");
+    desc.add_options()
+      ("help,h", "display this help and exit")
+      ("conf-file,c", po::value<std::string>(), "configuration file")
+#ifndef GLITE_WMS_HAVE_SYSLOG_LOGGING
+      ("log-file,l", po::value<std::string>(),  "logs any information into the specified file")
+#else
+      ("syslog,s", "logs any information on syslog")
+#endif
+      ("threshold,t", po::value<int>(), "sets the purging threshold to the specified number of seconds.")
+      ("staging-path,p", po::value<std::string>(), "defines the sandbox staging path.")
+      ("allocated-limit,a", po::value<int>(), "defines the percentange of allocated blocks which triggers the purging.")
+      ("brute-rm,b", "brute-force directory removal.")
+      ("fake-rm,f", "does not perform any directory removal.")
+      ("quiet,q", "does not create any log file (any settings specified with -l will be ignored)")
+    ;
+
+    po::variables_map vm;
+    po::store(po::command_line_parser(argc, argv).
+      options(desc).run(), vm);
+    po::notify(vm);
+
+    if (vm.count("help")) {
+      cout << desc << '\n';
+      return -1;
+    }
+
+    if ( vm.count("staging-path") ) staging_path.assign ( vm["staging-path"].as<std::string>() );
     else {
     	char* env_var;
 	if ((env_var=getenv("GLITE_WMS_TMP"))) staging_path.assign( string(env_var)+"/SandboxDir" );
@@ -93,8 +102,8 @@ int main( int argc, char* argv[])
 		return 0;
 	}
     }
-    allocated_limit     = options.is_present('a') ? options['a'].getIntegerValue(): 0;
-        if( allocated_limit ) {
+    allocated_limit = vm.count("allocated-limit") ? vm["allocated-limit"].as<int>(): 0;
+    if( allocated_limit ) {
     	struct statfs fs_stat;
     	if( !statfs(staging_path.c_str(), &fs_stat) ) {
 		int allocated = (int) ceil( (1.0 - (fs_stat.f_bfree / (double) fs_stat.f_blocks)) * 100.0);
@@ -105,17 +114,17 @@ int main( int argc, char* argv[])
 	}
     }
     
-    fake_rm = options.is_present('f');
-    purge_threshold = options.is_present('t') ? options['t'].getIntegerValue() : 604800;	    
-    conf_file = options.is_present('c') ? options['c'].getStringValue() : "glite_wms.conf";
+    fake_rm = vm.count("fake-rm");
+    purge_threshold = vm.count("threshold") ? vm["threshold"].as<int>() : 604800;
+    conf_file = vm.count("conf-file") ? vm["conf-file"].as<std::string>() : "glite_wms.conf";
    
     configuration::Configuration config(conf_file,
       configuration::ModuleType::network_server);
   
 #ifndef GLITE_WMS_HAVE_SYSLOG_LOGGING 
-    if( !options.is_present('l') ) {
+    if( !vm.count("log-file") ) {
 #else
-    if( !options.is_present('s') ) {
+    if( !vm.count("syslog") ) { 
 #endif
 	char* env_var;
 	string log_path;
@@ -130,20 +139,22 @@ int main( int argc, char* argv[])
 	strftime(str_time, 64, "%a-%d-%b-%H:%M:%s-%Y", localtime(&now));
 	log_file.assign( log_path + string("/edg-wl-purgeStorage-") + string(str_time) + string(".log") );
     }
-    else if (options.is_present('l')) log_file.assign( options['l'].getStringValue() );
+#ifndef GLITE_WMS_HAVE_SYSLOG_LOGGING
+    else if ( vm.count("log-file") ) log_file.assign( vm["log-file"].as<std::string>() );
+#endif
     
-    if( options.is_present('q') ) log_file.assign("/dev/null");
+    if( vm.count("quiet") ) log_file.assign("/dev/null");
 
 #ifndef GLITE_WMS_HAVE_SYSLOG_LOGGING
-    if(options.is_present('l')) // || options.is_present('e'))
+    if( vm.count("log-file") )
        logger::threadsafe::edglog.open( log_file.c_str(), logger::info );
 #else
-    if(options.is_present('s')) // || options.is_present('e'))
+    if( vm.count("syslog") )
        boost::details::pool::singleton_default<
           logger::wms_log
        >::instance().init(
                      logger::wms_log::SYSLOG,
-                     logger::wms_log::FATAL
+                     logger::wms_log::INFO
        );
 #endif
     else 
@@ -154,22 +165,18 @@ int main( int argc, char* argv[])
          logger::wms_log
        >::instance().init(
                        logger::wms_log::STDOUT,
-                       logger::wms_log::FATAL
+                       logger::wms_log::INFO
        );
 #endif
-
     
     	std::vector<fs::path> found_path;
     	fs::path from_path( staging_path, fs::native); 
     	find_directories(from_path, "https", found_path, true);
 	
-//    	std::auto_ptr<boost::progress_display> show_progress;
-//    	if( options.is_present('e') ) show_progress.reset( new boost::progress_display(found_path.size()) );
-	
     	for(std::vector<fs::path>::iterator it = found_path.begin(); it != found_path.end(); it++ ) {
 		
 		bool purge_done = wl::purger::purgeStorageEx( *it, purge_threshold, fake_rm );
-		if( options.is_present('b') && ! purge_done ) {
+                if( vm.count("staging-path")&& ! purge_done ) {
 		      try {
 #ifndef GLITE_WMS_HAVE_SYSLOG_LOGGING
 			logger::threadsafe::edglog << it->native_file_string() << " -> forcing removal" << std::endl;
@@ -187,12 +194,10 @@ int main( int argc, char* argv[])
 #endif
 		      }
 		}
-//      	if( options.is_present('e') ) ++(*show_progress);
 	}
   }
-  catch( utilities::LineParsingError &error ) {
-    cerr << error << endl;
-    exit( error.return_code() );
+  catch (boost::program_options::unknown_option& e) {
+    cerr << e.what() << endl;
   }
   catch( exception& e) {
     cerr << e.what() << endl;
