@@ -9,6 +9,7 @@
 #include <boost/filesystem/exception.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <boost/bind.hpp>
+#include <boost/algorithm/string/case_conv.hpp>
 #include "glite/wmsutils/jobid/JobId.h"
 #include "glite/wmsutils/jobid/manipulation.h"
 #include "glite/wmsutils/jobid/JobIdExceptions.h"
@@ -104,31 +105,6 @@ namespace
    return f_conf->common()->host_proxy_file();
   }
   
-  bool create_context_from_user_x509_proxy(
-    ContextPtr& log_ctx,
-    jobid::JobId const& id,
-    std::string const& sequence_code
-  )
-  {
-    bool result = true;
-    char* e = std::getenv("X509_USER_CERT");
-      try {
-        log_ctx = create_context(
-          id,
-          !e?get_user_x509_proxy(id):std::string(e),
-          f_sequence_code
-        );
-      }
-      catch (CannotCreateLBContext& e) {
-        logger::edglog << id.toString()  << " ->"
-          << "CannotCreateLBContext from user proxy, error code #" 
-          << e.error_code() 
-          << std::endl;
-        result = false;
-      }
-    return result;
-  }
-
   bool create_context_from_host_x509_proxy(
     ContextPtr& log_ctx,
     jobid::JobId const& id,
@@ -144,7 +120,7 @@ namespace
         );
       }
       catch (CannotCreateLBContext& e) {
-        logger::edglog << id.toString()  << " ->"
+        logger::edglog << id.toString()  << " -> "
           << "CannotCreateLBContext from host proxy, error code #" 
           << e.error_code()
           << std::endl;
@@ -172,6 +148,7 @@ namespace
         return false;
     }
     return true;
+
   }
 
   bool list_directory(const fs::path& p, std::vector<std::string>& v)
@@ -242,6 +219,10 @@ namespace
 
       uploader(isb_files);
       result = true;
+    }
+    catch (CannotCreateLBContext& e) 
+    {
+      logger::edglog << "Cannot create LB context " << e.what();
     }
     catch(utils::CannotParseClassAd& cpc) {
       logger::edglog << "Cannot parse logging::JobStatus::JDL";
@@ -393,14 +374,6 @@ purgeStorageEx(const fs::path& p,
     edg_wll_InitStatus(&job_status);
 
     bool status_retrieved = (
-      create_context_from_user_x509_proxy(
-        log_ctx, jobid, f_sequence_code
-      ) 
-      &&
-      query_job_status(job_status, jobid, log_ctx)
-    )
-    ||
-    (
       create_context_from_host_x509_proxy(
         log_ctx, jobid, f_sequence_code
       )
@@ -484,12 +457,7 @@ purgeStorageEx(const fs::path& p,
 	logger::edglog << jobid.toString() << " ->";
       }
       
-      logger::edglog << " removing ";
-
-      switch(job_status.state) {
-        case EDG_WLL_JOB_CANCELLED: logger::edglog << "[CANCELLED] "; break;
-        case EDG_WLL_JOB_CLEARED:   logger::edglog << "[CLEARED]   "; break;
-      }
+      logger::edglog << " removing: [" << boost::algorithm::to_upper_copy(std::string(edg_wll_StatToString(job_status.state))) << "] ";
 
       if( !fake_rm ) result = purgeStorage(p, log_ctx.get(), wll_log_function);
     break;
@@ -523,20 +491,15 @@ purgeStorageEx(const fs::path& p,
 	    logger::edglog << jobid.toString() << " ->";
 	  }
 	  
-	  logger::edglog << " removing ";
-
-	  switch(job_status.state) {
-            case EDG_WLL_JOB_ABORTED:   logger::edglog << "[ABORTED]   "; break;
-            case EDG_WLL_JOB_DONE:      logger::edglog << "[DONE]      "; break;
-          }
-
-	  if( !fake_rm ) result = purgeStorage(p, log_ctx.get(), wll_log_function);
+	  logger::edglog << " removing: [" << boost::algorithm::to_upper_copy(std::string(edg_wll_StatToString(job_status.state))) << "] ";
+	  
+          if( !fake_rm ) result = purgeStorage(p, log_ctx.get(), wll_log_function);
 	}
 	else logger::edglog << " skipping: purging threshold not overcome!";	
       }
     break;
     default:
-      logger::edglog << " skipping: " << edg_wll_StatToString(job_status.state);
+      logger::edglog << " skipping: [" << boost::algorithm::to_upper_copy(std::string(edg_wll_StatToString(job_status.state))) << "] ";
     }
     logger::edglog << std::endl;   
   }
