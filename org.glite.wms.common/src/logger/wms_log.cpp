@@ -29,7 +29,7 @@ void wms_log::init(wms_log::mode m, wms_log::level l){
 }
 
 void wms_log::debug(const std::string& str){
-   if( m_init_level <= wms_log::DEBUG ) {
+   if( m_init_level >= wms_log::DEBUG ) {
       if(m_mode == wms_log::SYSLOG)
          syslog(LOG_DEBUG, str.c_str());
       else if(m_mode == wms_log::STDERR)
@@ -40,7 +40,7 @@ void wms_log::debug(const std::string& str){
 }
 
 void wms_log::info(const std::string& str){
-   if( m_init_level <= wms_log::INFO ) {
+   if( m_init_level >= wms_log::INFO ) {
       if(m_mode == wms_log::SYSLOG)
          syslog(LOG_INFO, str.c_str());
       else if(m_mode == wms_log::STDERR)
@@ -51,7 +51,7 @@ void wms_log::info(const std::string& str){
 }
 
 void wms_log::warning(const std::string& str){
-   if( m_init_level <= wms_log::WARNING ) {
+   if( m_init_level >= wms_log::WARNING ) {
       if(m_mode == wms_log::SYSLOG)
          syslog(LOG_WARNING, str.c_str());
       else if(m_mode == wms_log::STDERR)
@@ -62,7 +62,7 @@ void wms_log::warning(const std::string& str){
 }
 
 void wms_log::error(const std::string& str){
-   if( m_init_level <= wms_log::ERROR ) {
+   if( m_init_level >= wms_log::ERROR ) {
       if(m_mode == wms_log::SYSLOG)
          syslog(LOG_ERR, str.c_str());
       else if(m_mode == wms_log::STDERR)
@@ -73,7 +73,7 @@ void wms_log::error(const std::string& str){
 }
 
 void wms_log::sever(const std::string& str){
-   if ( m_init_level <= wms_log::SEVER ) {
+   if ( m_init_level >= wms_log::SEVER ) {
       if(m_mode == wms_log::SYSLOG)
          syslog(LOG_CRIT, str.c_str());
       else if(m_mode == wms_log::STDERR)
@@ -84,7 +84,7 @@ void wms_log::sever(const std::string& str){
 }
 
 void wms_log::critical(const std::string& str){
-   if( m_init_level <= wms_log::CRITICAL ) {
+   if( m_init_level >= wms_log::CRITICAL ) {
       if(m_mode == wms_log::SYSLOG)
          syslog(LOG_ALERT, str.c_str());
       else if(m_mode == wms_log::STDERR)
@@ -95,7 +95,7 @@ void wms_log::critical(const std::string& str){
 }
 
 void wms_log::fatal(const std::string& str){
-   if( m_init_level <= wms_log::CRITICAL ) {
+   if( m_init_level >= wms_log::FATAL ) {
       if(m_mode == wms_log::SYSLOG)
          syslog(LOG_EMERG, str.c_str());
       else if(m_mode == wms_log::STDERR)
