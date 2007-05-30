@@ -11,8 +11,8 @@ namespace logger{
 class wms_log : public boost::details::pool::singleton_default
 {
 public:
-   enum mode{ STDERR = 0, SYSLOG };
-   enum level{ DEBUG = 0, INFO, WARNING, ERROR, SEVER, CRITICAL, FATAL };
+   enum mode{ STDERR = 0, STDOUT, SYSLOG };
+   enum level{ FATAL = 0, CRITICAL, SEVER, ERROR, WARNING, INFO, DEBUG };
 private:
 
    mode m_mode;
