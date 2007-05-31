@@ -19,6 +19,9 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.16.2.9  2007/05/31 11:43:08  eronchie
+#       Added new script
+#
 #       Revision 1.16.2.8  2007/05/25 11:38:09  monforte
 #       Addressing bug #26705
 #
@@ -315,6 +318,7 @@ AC_PREFIX_DEFAULT([/opt/glite])
 AM_CONFIG_HEADER([src/autogen/config.h])
 AC_CONFIG_FILES([Makefile])
 AC_CONFIG_FILES([src/Makefile])
+AC_CONFIG_FILES([config/Makefile])
 
 AC_OUTPUT
 
