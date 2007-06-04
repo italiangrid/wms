@@ -1,3 +1,3 @@
-sbin_SCRIPTS = glite-wms-purge-storage.sh
+sbin_SCRIPTS = glite-wms-purgeStorage.sh
 
 MAINTAINERCLEANFILES = Makefile.in
