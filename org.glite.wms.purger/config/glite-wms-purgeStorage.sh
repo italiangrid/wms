@@ -40,7 +40,7 @@ do
 done
 
 
-create_proxy  "${GLITE_LOCATION_VAR}/purger.proxy" $log
+create_proxy  "${GLITE_LOCATION_VAR}/wms.proxy" $log
 check_process glite-wms-purgeStorage $log
 
 # if another instance had been running the check_process

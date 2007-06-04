@@ -268,13 +268,13 @@ namespace
   class purge_dag_storage {
     std::string m_staging_path;
     int m_purge_threshold;
-    bool m_fake_rm;
+    bool m_force_rm;
     wll_log_function_type m_wll_log_function;
   public:
     purge_dag_storage(const std::string& staging_path,
-      int purge_threshold, bool fake_rm, wll_log_function_type wll_log_function
+      int purge_threshold, bool force_rm, wll_log_function_type wll_log_function
     ) : m_staging_path(staging_path), m_purge_threshold(purge_threshold),
-      m_fake_rm(fake_rm), m_wll_log_function(wll_log_function)  {}
+      m_force_rm(force_rm), m_wll_log_function(wll_log_function)  {}
     
     void operator()(const std::string& str_jobid) {
       jobid::JobId jobid(str_jobid);
@@ -284,7 +284,7 @@ namespace
         fs::path(jobid::get_reduced_part(jobid), fs::native) /
         fs::path(jobid::to_filename (jobid), fs::native)
       );
-      purgeStorageEx(p,m_purge_threshold,m_fake_rm, true, m_wll_log_function);
+      purgeStorageEx(p,m_purge_threshold,m_force_rm, true, m_wll_log_function);
     }
   };
 }
@@ -361,7 +361,7 @@ bool purgeStorageEx(const fs::path& p,wll_log_function_type wll_log_function)
   
 bool 
 purgeStorageEx(const fs::path& p, 
-  int purge_threshold, bool fake_rm, bool navigating_dag, 
+  int purge_threshold, bool force_rm, bool navigating_dag, 
   wll_log_function_type wll_log_function)
 {
   edglog_fn(purgeStorageEx);	
@@ -407,7 +407,7 @@ purgeStorageEx(const fs::path& p,
           
           if (!fs::exists(pp)) {
             logger::edglog << " removing orphan dag node: ";
-            if (!fake_rm ) result = purgeStorage(p, log_ctx.get(), wll_log_function);
+            result = purgeStorage(p, log_ctx.get(), wll_log_function);
             logger::edglog << std::endl;
             return result;
           }
@@ -424,13 +424,13 @@ purgeStorageEx(const fs::path& p,
     if (has_parent_job && navigating_dag) {
       	
       logger::edglog << " removing dag node: ";
-      if( !fake_rm )  result = purgeStorage(p, log_ctx.get(), wll_log_function);
+      result = purgeStorage(p, log_ctx.get(), wll_log_function);
       logger::edglog << std::endl;
       return result;
     }
         
     switch( job_status.state ) {
-
+    
     case EDG_WLL_JOB_CANCELLED:
     case EDG_WLL_JOB_CLEARED:
 	
@@ -451,7 +451,7 @@ purgeStorageEx(const fs::path& p,
         std::for_each(
           children.begin(), 
           children.end(), 
-	  purge_dag_storage(staging_path, purge_threshold,fake_rm, wll_log_function)
+	  purge_dag_storage(staging_path, purge_threshold,force_rm, wll_log_function)
         );
 	
 	logger::edglog << jobid.toString() << " ->";
@@ -459,14 +459,15 @@ purgeStorageEx(const fs::path& p,
       
       logger::edglog << " removing: [" << boost::algorithm::to_upper_copy(std::string(edg_wll_StatToString(job_status.state))) << "] ";
 
-      if( !fake_rm ) result = purgeStorage(p, log_ctx.get(), wll_log_function);
+      result = purgeStorage(p, log_ctx.get(), wll_log_function);
     break;
+    
     case EDG_WLL_JOB_ABORTED:
     case EDG_WLL_JOB_DONE: 
       {
         time_t now;
 	time( &now);
-	if( now -  job_status.lastUpdateTime.tv_sec > purge_threshold ) {		
+	if( force_rm || (now -  job_status.lastUpdateTime.tv_sec > purge_threshold) ) {		
 	  
 	  // If the job is a DAG we have to recursively purge (if necessary) each CHILD   	
 	  if (is_jobtype_dag) {
@@ -485,7 +486,7 @@ purgeStorageEx(const fs::path& p,
               children.begin(), 
               children.end(), 
               purge_dag_storage(staging_path, purge_threshold,
-                fake_rm,wll_log_function)
+                force_rm,wll_log_function)
             );
 	    
 	    logger::edglog << jobid.toString() << " ->";
@@ -493,15 +494,54 @@ purgeStorageEx(const fs::path& p,
 	  
 	  logger::edglog << " removing: [" << boost::algorithm::to_upper_copy(std::string(edg_wll_StatToString(job_status.state))) << "] ";
 	  
-          if( !fake_rm ) result = purgeStorage(p, log_ctx.get(), wll_log_function);
+          result = purgeStorage(p, log_ctx.get(), wll_log_function);
 	}
 	else logger::edglog << " skipping: purging threshold not overcome!";	
       }
     break;
+    case EDG_WLL_JOB_SUBMITTED:
+    case EDG_WLL_JOB_WAITING:
+    case EDG_WLL_JOB_READY:
+    case EDG_WLL_JOB_SCHEDULED:
+    case EDG_WLL_JOB_RUNNING:
+       {
+        time_t now;
+	time( &now);
+	if( force_rm && (now -  job_status.lastUpdateTime.tv_sec > purge_threshold) ) {		
+	  
+	  // If the job is a DAG we have to recursively purge (if necessary) each CHILD   	
+	  if (is_jobtype_dag) {
+	    
+            std::vector<std::string> children;
+            std::copy(
+              &job_status.children[0],
+              &job_status.children[job_status.children_num],
+              std::back_inserter(children)
+            );
+
+	    logger::edglog << " browsing #" << children.size() << " node(s)" << std::endl;
+	    
+	    std::string staging_path(extract_staging_path(p, jobid));
+	    std::for_each(
+              children.begin(), 
+              children.end(), 
+              purge_dag_storage(staging_path, purge_threshold,
+                force_rm,wll_log_function)
+            );
+	    
+	    logger::edglog << jobid.toString() << " ->";
+	  }
+	  
+	  logger::edglog << " removing: [" << boost::algorithm::to_upper_copy(std::string(edg_wll_StatToString(job_status.state))) << "] ";
+	  
+          result = purgeStorage(p, log_ctx.get(), wll_log_function);
+	}
+    }
     default:
       logger::edglog << " skipping: [" << boost::algorithm::to_upper_copy(std::string(edg_wll_StatToString(job_status.state))) << "] ";
-    }
     logger::edglog << std::endl;   
+    break;
+   }
   }
   catch (CannotCreateLBContext& e) {
     logger::edglog << e.what() << std::endl;
@@ -520,4 +560,4 @@ purgeStorageEx(const fs::path& p,
 
 } // namespace purger
 } // namespace wms
-} // namesapce glite
+} // namesnapce glite

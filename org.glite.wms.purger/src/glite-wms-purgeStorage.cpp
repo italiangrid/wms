@@ -42,7 +42,7 @@ utilities::LineOption  options[] = {
   { 'p', 1,		"staging-path",	    "\t defines the sandbox staging path." },
   { 'a', 1,		"allocated-limit"   "\t defines the percentange of allocated blocks which triggers the purging." }, 
   { 'b', no_argument,   "brute-rm"          "\t brute-force directory removal." },
-  { 'f', no_argument,   "fake-rm"           "\t does not perform any directory removal." },
+  { 'f', no_argument,   "force"             "\t does not perform any status check on the job forcing directory removal." },
   { 'e', no_argument,   "enable-progress",  "\t enable the progress indicator." }, 
   { 'q', no_argument,   "quiet",            "\t does not create any log file (any settings specified with -l will be ignored)." }
 };
@@ -78,12 +78,12 @@ int main( int argc, char* argv[])
   utilities::LineParser                     options( optvec, utilities::ParserData::zero_args );
   string log_file, staging_path, conf_file;
   int allocated_limit, purge_threshold;
-  bool fake_rm = false;
+  bool force_rm = false;
 
   try {
     options.parse( argc, argv );
    
-    fake_rm = options.is_present('f');
+    force_rm = options.is_present('f');
     purge_threshold = options.is_present('t') ? options['t'].getIntegerValue() : 604800;	    
     conf_file = options.is_present('c') ? options['c'].getStringValue() : "glite_wms.conf";
    
@@ -138,7 +138,7 @@ int main( int argc, char* argv[])
 	
     	for(std::vector<fs::path>::iterator it = found_path.begin(); it != found_path.end(); it++ ) {
 		
-		bool purge_done = wl::purger::purgeStorageEx( *it, purge_threshold, fake_rm );
+		bool purge_done = wl::purger::purgeStorageEx( *it, purge_threshold, force_rm );
 		if( options.is_present('b') && ! purge_done ) {
 		      try {
 			logger::threadsafe::edglog << it->native_file_string() << " -> forcing removal" << std::endl;      
