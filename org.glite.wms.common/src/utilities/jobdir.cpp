@@ -20,16 +20,18 @@
 // $Id$
  
 #include "jobdir.h"
+#include <cerrno>
 #include <sstream>
 #include <iomanip>
-#include <unistd.h>             // getpid()
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/fstream.hpp>
 #include <boost/filesystem/convenience.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/thread/mutex.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
 
 namespace fs = boost::filesystem;
+namespace pt = boost::posix_time;
 
 namespace glite {
 namespace wms {
@@ -70,18 +72,13 @@ struct JobDir::Impl
       tmp_dir(base_dir / tmp_tag),
       new_dir(base_dir / new_tag),
       old_dir(base_dir / old_tag),
-      last_time(::time(0)),
-      counter(0),
-      pid_str(boost::lexical_cast<std::string>(getpid()))
+      id_str(boost::lexical_cast<std::string>(pthread_self()))
   {}
   fs::path const base_dir;
   fs::path const tmp_dir;
   fs::path const new_dir;
   fs::path const old_dir;
-  ::time_t last_time;
-  int counter;
-  boost::mutex::mutex mx;  // to protect last_time and counter
-  std::string const pid_str;
+  std::string const id_str;
 };
 
 JobDir::JobDir(fs::path const& base_dir)
@@ -108,23 +105,20 @@ fs::path JobDir::deliver(
   std::string const& tag
 )
 {
-  ::time_t t = ::time(0);
-  std::string file_name(boost::lexical_cast<std::string>(t));
-  file_name += '_';
-  boost::mutex::scoped_lock l(m_impl->mx);
-  if (t > m_impl->last_time) {
-    m_impl->last_time = t;
-    m_impl->counter = 0;
-  } else {
-    ++m_impl->counter;
+  pt::ptime t = pt::microsec_clock::universal_time();
+  std::string file_name(to_iso_string(t));
+  assert(
+    file_name.size() == 15
+    || file_name.size() == (unsigned)16 + pt::time_duration::num_fractional_digits()
+  );
+
+  if (file_name.size() == 15) { // without fractional seconds
+    file_name += '.';
+    file_name += std::string(pt::time_duration::num_fractional_digits(), '0');
   }
-  int counter = m_impl->counter;
-  l.unlock();
-  std::ostringstream os;
-  os << std::setw(6) << std::setfill('0') << counter;
-  file_name += os.str();
+
   file_name += '_';
-  file_name += m_impl->pid_str;
+  file_name += m_impl->id_str;
   if (!tag.empty()) {
     file_name += '_';
     file_name += tag;
@@ -135,22 +129,29 @@ fs::path JobDir::deliver(
 
   fs::ofstream tmp_file(tmp_path);
   if (!tmp_file) {
-    throw JobDirError("cannot create the tmp file");
+    std::string msg("create failed for ");
+    msg += tmp_path.string();
+    msg += " (" + boost::lexical_cast<std::string>(errno) + ')';
+    throw JobDirError(msg);
   }
 
   tmp_file << contents << std::flush;
   if (!tmp_file) {
-    throw JobDirError("cannot write the tmp file");
+    std::string msg("write failed for ");
+    msg += tmp_path.string();
+    msg += " (" + boost::lexical_cast<std::string>(errno) + ')';
+    throw JobDirError(msg);
   }
 
   tmp_file.close(); // synch too?
 
-  bool link_result = link(tmp_path, new_path);
-  if (!link_result) {
-    throw JobDirError("cannot link tmp and new files");
+  bool e = std::rename(tmp_path.string().c_str(), new_path.string().c_str());
+  if (e) {
+    std::string msg("rename failed for ");
+    msg += tmp_path.string();
+    msg += " (" + boost::lexical_cast<std::string>(errno) + ')';
+    throw JobDirError(msg);
   }
-
-  fs::remove(tmp_path);
 
   return new_path;
 }
@@ -160,12 +161,13 @@ fs::path JobDir::set_old(fs::path const& file)
   fs::path const new_path(m_impl->new_dir / file.leaf());
   fs::path const old_path(m_impl->old_dir / file.leaf());
 
-  bool link_result = link(new_path, old_path);
-  if (!link_result) {
-    throw JobDirError("cannot link new and old files");
+  bool e = std::rename(new_path.string().c_str(), old_path.string().c_str());
+  if (e) {
+    std::string msg("rename failed for ");
+    msg += new_path.string();
+    msg += " (" + boost::lexical_cast<std::string>(errno) + ')';
+    throw JobDirError(msg);
   }
-
-  fs::remove(new_path);
 
   return old_path;
 }
