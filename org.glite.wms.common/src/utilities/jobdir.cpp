@@ -29,6 +29,7 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/thread/mutex.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
+#include <time.h>
 
 namespace fs = boost::filesystem;
 namespace pt = boost::posix_time;
@@ -39,6 +40,30 @@ namespace common {
 namespace utilities {
 
 namespace {
+
+pt::ptime universal_time()
+{
+  timeval tv;
+  gettimeofday(&tv, 0);
+  std::time_t t = tv.tv_sec;
+  int fs = tv.tv_usec;
+  std::tm curr;
+  std::tm* curr_ptr = ::gmtime_r(&t, &curr);
+  boost::gregorian::date d(
+    curr_ptr->tm_year + 1900,
+    curr_ptr->tm_mon + 1,
+    curr_ptr->tm_mday
+  );
+
+  pt::time_duration td(
+    curr_ptr->tm_hour,
+    curr_ptr->tm_min,
+    curr_ptr->tm_sec,
+    fs
+  );
+
+  return pt::ptime(d,td);
+}
 
 bool link(fs::path const& old_path, fs::path const& new_path)
 {
@@ -105,7 +130,7 @@ fs::path JobDir::deliver(
   std::string const& tag
 )
 {
-  pt::ptime t = pt::microsec_clock::universal_time();
+  pt::ptime t = universal_time();
   std::string file_name(to_iso_string(t));
   assert(
     file_name.size() == 15
