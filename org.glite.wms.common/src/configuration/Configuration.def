@@ -389,6 +389,7 @@ class WMConfiguration {
   parameter int(MatchRetryPeriod = 1000) section normal;
   parameter int(ExpiryPeriod = 86400) section normal;
   parameter bool(EnableBulkMM = false) section normal;
+  parameter double( MaxOutputSandboxSize = 100000000 ) section normal;
 }
 class WMCConfiguration {
 
