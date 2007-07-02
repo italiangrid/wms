@@ -8,7 +8,7 @@ namespace wms{
 namespace common{
 namespace logger{
 
-class wms_log : public boost::details::pool::singleton_default
+class wms_log
 {
 public:
    enum mode{ STDERR = 0, STDOUT, SYSLOG };
