@@ -5,7 +5,7 @@
 #ifdef GLITE_WMS_HAVE_RENEWAL
 #include "glite/security/proxyrenewal/renewal.h"
 #endif
-#include "../jobcontrol_namespace.h"
+#include "jobcontrol_namespace.h"
 
 #include "ProxyUnregistrar.h"
 

@@ -5,8 +5,8 @@
 
 #include "glite/wms/common/logger/logstream.h"
 #include "glite/wms/common/logger/manipulators.h"
-#include "../../jobcontrol_namespace.h"
-#include "../../common/EventLogger.h"
+#include "jobcontrol_namespace.h"
+#include "common/EventLogger.h"
 
 #include "EventUnhandled.h"
 #include "MonitorData.h"

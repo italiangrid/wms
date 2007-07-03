@@ -10,8 +10,8 @@
 
 #include <boost/lexical_cast.hpp>
 
-#include "../jobcontrol_namespace.h"
-#include "../common/SignalChecker.h"
+#include "jobcontrol_namespace.h"
+#include "common/SignalChecker.h"
 
 #include "handler.h"
 

@@ -7,7 +7,7 @@
 #include "glite/lb/context.h"
 #endif
 
-#include "../jobcontrol_namespace.h"
+#include "jobcontrol_namespace.h"
 
 typedef  struct _edg_wll_Context  *edg_wll_Context;
 

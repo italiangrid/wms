@@ -19,8 +19,8 @@ namespace fs = boost::filesystem;
 #ifdef GLITE_WMS_HAVE_PURGER
 #include "glite/wms/purger/purger.h"
 #endif
-#include "../jobcontrol_namespace.h"
-#include "../common/files.h"
+#include "jobcontrol_namespace.h"
+#include "common/files.h"
 
 #include "JobFilePurger.h"
 
@@ -116,6 +116,9 @@ void JobFilePurger::do_purge( bool everything )
 
 #ifdef GLITE_WMS_HAVE_PURGER
     purge = purger::purgeStorage( this->jfp_jobId );
+
+    // New purger....
+    // purge = purger::Purger()(this->jfp_jobId );
 
     elog::cedglog << logger::setlevel( logger::verylow ) << "Purging command returned " << (purge ? "ok" : "an error") << endl;
 #else

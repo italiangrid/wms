@@ -16,7 +16,7 @@
 #include <config.h>
 #endif
 
-#include "../jobcontrol_namespace.h"
+#include "jobcontrol_namespace.h"
 #include "Timer.h"
 
 using namespace std;

@@ -11,8 +11,8 @@
 #include "glite/wms/common/logger/logstream.h"
 #include "glite/wms/common/logger/manipulators.h"
 #include "glite/wms/common/process/process.h"
-#include "../jobcontrol_namespace.h"
-#include "../common/LockFile.h"
+#include "jobcontrol_namespace.h"
+#include "common/LockFile.h"
 
 #include "ControllerLoop.h"
 #include "exceptions.h"

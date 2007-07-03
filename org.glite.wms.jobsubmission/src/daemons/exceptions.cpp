@@ -1,6 +1,6 @@
 #include <string>
 
-#include "../jobcontrol_namespace.h"
+#include "jobcontrol_namespace.h"
 #include "exceptions.h"
 
 using namespace std;

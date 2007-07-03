@@ -18,7 +18,7 @@
 #include "glite/wms/common/utilities/streamdescriptor.h"
 #include "glite/wms/common/utilities/LineParser.h"
 #include "glite/wms/common/utilities/LineParserExceptions.h"
-#include "../jobcontrol_namespace.h"
+#include "jobcontrol_namespace.h"
 
 #include "JobStatusExtractor.h"
 

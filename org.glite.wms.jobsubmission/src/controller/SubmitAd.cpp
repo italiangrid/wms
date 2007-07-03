@@ -14,7 +14,7 @@
 
 namespace fs = boost::filesystem;
 
-#include "../jobcontrol_namespace.h"
+#include "jobcontrol_namespace.h"
 #include "glite/wms/common/logger/logstream.h"
 #include "glite/wms/common/logger/manipulators.h"
 #include "glite/wms/common/configuration/Configuration.h"
@@ -28,7 +28,7 @@ namespace fs = boost::filesystem;
 #include "glite/wmsutils/jobid/manipulation.h"
 
 #include "glite/wms/common/utilities/boost_fs_add.h"
-#include "../common/files.h"
+#include "common/files.h"
 
 #include "SubmitAd.h"
 #include "SubmitAdExceptions.h"

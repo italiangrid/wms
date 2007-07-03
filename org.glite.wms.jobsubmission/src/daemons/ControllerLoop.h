@@ -1,17 +1,10 @@
 #ifndef EDG_WORKLOAD_JOBCONTROL_DAEMONS_CONTROLLERLOOP_H
 #define EDG_WORKLOAD_JOBCONTROL_DAEMONS_CONTROLLERLOOP_H
 
-#include <ctime>
-
 #include <string>
-#include <memory>
-#include <iosfwd>
-
-
 
 #include "glite/wms/common/logger/logstream.h"
-#include "../jobcontrol_namespace.h"
-#include "../common/constants.h"
+#include "jobcontrol_namespace.h"
 
 COMMON_SUBNAMESPACE_CLASS( utilities, LineParser );
 

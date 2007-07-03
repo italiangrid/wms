@@ -12,7 +12,7 @@
 
 #include <classad_distribution.h>
 
-#include "../jobcontrol_namespace.h"
+#include "jobcontrol_namespace.h"
 #include "glite/wms/common/utilities/FileList.h"
 #include "glite/wms/common/utilities/FileListLock.h"
 

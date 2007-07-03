@@ -11,7 +11,7 @@
 #include "glite/wms/common/utilities/streamdescriptor.h"
 #include "glite/wms/common/logger/logstream.h"
 #include "glite/wms/common/logger/manipulators.h"
-#include "../jobcontrol_namespace.h"
+#include "jobcontrol_namespace.h"
 
 #include "SizeFile.h"
 
@@ -542,7 +542,8 @@ SizeFile &SizeFile::decrement_pending( void )
       old -= 1;
       this->sf_current.pending( old );
     }
-    else this->sf_good = false;
+    // Something goes wrong but this is not a good reason for stopping
+    //else this->sf_good = false;
   }
 
   return *this;

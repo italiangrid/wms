@@ -12,8 +12,8 @@ namespace fs = boost::filesystem;
 #include "glite/wms/common/configuration/Configuration.h"
 #include "glite/wms/common/configuration/JCConfiguration.h"
 #include "glite/wms/common/logger/manipulators.h"
-#include "../jobcontrol_namespace.h"
-#include "../common/SignalChecker.h"
+#include "jobcontrol_namespace.h"
+#include "common/SignalChecker.h"
 
 #include "JobControllerClientJD.h"
 #include "JobControllerExceptions.h"
@@ -34,7 +34,7 @@ JobControllerClientJD::JobControllerClientJD( void ) : JobControllerClientImpl()
   logger::StatePusher                         pusher( clog, "JobControllerClientJD::JobControllerClientJD()" );
 
   try {
-    this->jccjd_jd=  new utilities::JobDir( listname );
+    this->jccjd_jd =  new utilities::JobDir( listname );
     clog << logger::setlevel( logger::info ) << "Create jobdir queue object." << endl;
  
    // Check if there are "old" requests not managed
@@ -45,6 +45,7 @@ JobControllerClientJD::JobControllerClientJD( void ) : JobControllerClientImpl()
       this->jccjd_queue.push( *b );    
 
   }
+
   catch( utilities::JobDirError &error ) {
     clog << logger::setlevel( logger::fatal )
 	 << "Error while setting jobdir." << endl

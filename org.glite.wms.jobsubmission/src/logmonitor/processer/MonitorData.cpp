@@ -3,10 +3,10 @@
 #include <boost/filesystem/path.hpp>
 
 #include "glite/wms/common/utilities/boost_fs_add.h"
-#include "../../jobcontrol_namespace.h"
-#include "../../logmonitor/exceptions.h"
-#include "../../logmonitor/Timer.h"
-#include "../../logmonitor/SizeFile.h"
+#include "jobcontrol_namespace.h"
+#include "logmonitor/exceptions.h"
+#include "logmonitor/Timer.h"
+#include "logmonitor/SizeFile.h"
 
 #include "MonitorData.h"
 

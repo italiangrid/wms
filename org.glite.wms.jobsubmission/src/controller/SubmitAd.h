@@ -6,7 +6,7 @@
 #include <memory>
 #include <string>
 
-#include "../jobcontrol_namespace.h"
+#include "jobcontrol_namespace.h"
 
 namespace classad { class ClassAd; }
 

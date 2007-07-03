@@ -13,7 +13,7 @@
 #include <config.h>
 #endif
 
-#include "../jobcontrol_namespace.h"
+#include "jobcontrol_namespace.h"
 #include "EventAd.h"
 
 using namespace std;

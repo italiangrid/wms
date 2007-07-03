@@ -12,8 +12,8 @@
 
 #include "glite/wms/common/logger/logstream.h"
 #include "glite/wms/common/logger/manipulators.h"
-#include "../jobcontrol_namespace.h"
-#include "../common/files.h"
+#include "jobcontrol_namespace.h"
+#include "common/files.h"
 
 #include "JobWrapperOutputParser.h"
 

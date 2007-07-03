@@ -5,7 +5,7 @@
 
 #include "glite/wms/common/logger/logstream.h"
 #include "glite/wms/common/logger/manipulators.h"
-#include "../..//common/EventLogger.h"
+#include "common/EventLogger.h"
 
 #include "EventGlobusResourceUp.h"
 #include "MonitorData.h"

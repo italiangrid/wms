@@ -7,7 +7,7 @@
 #include "glite/wmsutils/jobid/JobId.h"
 #include "glite/wms/common/logger/logstream.h"
 #include "glite/wms/common/logger/manipulators.h"
-#include "../../jobcontrol_namespace.h"
+#include "jobcontrol_namespace.h"
 
 #include "SubmitReader.h"
 

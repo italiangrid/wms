@@ -3,8 +3,8 @@
 
 #include <string>
 
-#include "../../jobcontrol_namespace.h"
-#include "../../logmonitor/Timer.h"
+#include "jobcontrol_namespace.h"
+#include "logmonitor/Timer.h"
 
 class ULogEvent;
 

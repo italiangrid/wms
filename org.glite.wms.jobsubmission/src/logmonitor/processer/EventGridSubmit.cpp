@@ -15,8 +15,8 @@
 #include "glite/wmsutils/jobid/JobId.h"
 #include "glite/wms/common/logger/logstream.h"
 #include "glite/wms/common/logger/manipulators.h"
-#include "../../common/IdContainer.h"
-#include "../../common/EventLogger.h"
+#include "common/IdContainer.h"
+#include "common/EventLogger.h"
 
 #include "EventGridSubmit.h"
 #include "MonitorData.h"

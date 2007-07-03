@@ -28,23 +28,22 @@
 #include "glite/wmsutils/jobid/JobId.h"
 #include "glite/wmsutils/jobid/JobIdExceptions.h"
 
+#include "glite/wms/common/process/process.h"
+#include "glite/wms/common/process/user.h"
 #include "glite/wms/common/logger/manipulators.h"
 #include "glite/wms/common/logger/logstream.h"
 #include "glite/wms/common/logger/edglog.h"
 #include "glite/jdl/JobAdManipulation.h"
 #include "glite/jdl/PrivateAdManipulation.h"
 #include "glite/jdl/ManipulationExceptions.h"
-#include "glite/wms/common/process/process.h"
-#include "glite/wms/common/process/user.h"
-#include "../common/EventLogger.h"
-#include "../common/SignalChecker.h"
-#include "../controller/CondorG.h"
-#include "../controller/JobController.h"
-#include "../controller/JobControllerClient.h"
-#include "../controller/JobControllerExceptions.h"
-#include "../controller/Request.h"
-#include "../controller/RequestExceptions.h"
-#include "../common/EventLogger.h"
+#include "common/EventLogger.h"
+#include "common/SignalChecker.h"
+#include "controller/CondorG.h"
+#include "controller/JobController.h"
+#include "controller/JobControllerClient.h"
+#include "controller/JobControllerExceptions.h"
+#include "controller/Request.h"
+#include "controller/RequestExceptions.h"
 
 #include "ControllerLoop.h"
 #include "exceptions.h"
@@ -310,6 +309,7 @@ try {
 
     if( loop ) {
       try {
+      usleep(1000);
 	this->cl_client->extract_next_request();
 
 	this->cl_stream << logger::setlevel( logger::debug ) << "Got new request..." << endl;

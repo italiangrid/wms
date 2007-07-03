@@ -1,4 +1,4 @@
-#include "../jobcontrol_namespace.h"
+#include "jobcontrol_namespace.h"
 
 #include "SubmitAdExceptions.h"
 

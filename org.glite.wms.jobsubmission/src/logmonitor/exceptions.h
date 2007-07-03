@@ -5,7 +5,7 @@
 #include <iostream>
 #include <string>
 
-#include "../jobcontrol_namespace.h"
+#include "jobcontrol_namespace.h"
 
 JOBCONTROL_NAMESPACE_BEGIN {
 

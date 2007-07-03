@@ -14,7 +14,7 @@
 
 #include "glite/jdl/PrivateAdManipulation.h"
 #include "glite/wms/common/utilities/boost_fs_add.h"
-#include "../jobcontrol_namespace.h"
+#include "jobcontrol_namespace.h"
 
 #include "constants.h"
 #include "files.h"

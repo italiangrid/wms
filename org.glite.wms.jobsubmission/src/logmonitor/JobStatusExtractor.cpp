@@ -10,8 +10,8 @@
 #include "glite/wms/common/configuration/Configuration.h"
 #include "glite/wms/common/configuration/LMConfiguration.h"
 #include "glite/wms/common/utilities/LineParser.h"
-#include "../jobcontrol_namespace.h"
-#include "../common/IdContainer.h"
+#include "jobcontrol_namespace.h"
+#include "common/IdContainer.h"
 
 #include "exceptions.h"
 #include "JobStatusExtractor.h"

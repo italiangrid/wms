@@ -11,8 +11,8 @@ namespace fs = boost::filesystem;
 #include "glite/wms/common/configuration/Configuration.h"
 #include "glite/wms/common/configuration/JCConfiguration.h"
 #include "glite/wms/common/logger/manipulators.h"
-#include "../jobcontrol_namespace.h"
-#include "../common/SignalChecker.h"
+#include "jobcontrol_namespace.h"
+#include "common/SignalChecker.h"
 
 #include "JobControllerClientReal.h"
 #include "JobControllerExceptions.h"

@@ -11,7 +11,7 @@
 
 #include <cstdio>
 
-#include "../jobcontrol_namespace.h"
+#include "jobcontrol_namespace.h"
 #include <glite/wmsutils/jobid/JobId.h>
 
 typedef  struct _edg_wll_Context  *edg_wll_Context;

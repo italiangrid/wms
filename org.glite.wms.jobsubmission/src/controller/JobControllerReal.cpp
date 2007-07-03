@@ -44,10 +44,10 @@ namespace fs = boost::filesystem;
 #include "glite/jdl/JobAdManipulation.h"
 #include "glite/wms/common/logger/logstream.h"
 #include "glite/wms/common/logger/manipulators.h"
-#include "../common/IdContainer.h"
-#include "../common/RamContainer.h"
-#include "../common/JobFilePurger.h"
-#include "../common/ProxyUnregistrar.h"
+#include "common/IdContainer.h"
+#include "common/RamContainer.h"
+#include "common/JobFilePurger.h"
+#include "common/ProxyUnregistrar.h"
 
 #include "JobControllerReal.h"
 #include "JobControllerExceptions.h"
@@ -136,13 +136,13 @@ bool cancelJob( const string &condorid, string &info )
     }
     // force removal must be used only for globus jobs
     parameters.append( " && JobUniverse==9 && JobGridType==\"globus\"'" );
-                                           
+                                                                                                                                                            
     result = CondorG::instance()->set_command( CondorG::remove, parameters )->execute( info );
   }
 
   if( !result )
     elog::cedglog << logger::setlevel( logger::info ) << "Job has been succesfully removed." << endl;
-  
+                                                                                                                                                          
   return !result;
 }
 
@@ -206,7 +206,8 @@ JobControllerReal::~JobControllerReal( void )
 
 int JobControllerReal::submit( const classad::ClassAd *pad )
 try {
-  int                                result, numberId = -1;
+  int                                result = 1;
+  int  															 numberId = -1;
   string                             rsl, parameters, info, condorid, seqcode;
   SubmitAdapter                      sad( *pad );
   logger::StatePusher                pusher( elog::cedglog, "JobControllerReal::submit(...)" );
@@ -268,7 +269,13 @@ try {
 
       parameters.assign( "-d " ); parameters.append( sad->submit_file() ); parameters.append( " 2>&1" );
 
-      result = CondorG::instance()->set_command( CondorG::submit, parameters )->execute( info );
+      int count = 3;	      
+
+      while ( ( count > 0 ) && ( result ) ) { // fix for bug #23401
+      	result = CondorG::instance()->set_command( CondorG::submit, parameters )->execute( info );
+				count--;
+        if ( result ) sleep( 2 * count );
+      }	
 
       if( result || !boost::regex_match(info, pieces, expr) ) {
 	// The condor command has failed... Do the right thing
@@ -369,8 +376,11 @@ bool JobControllerReal::cancel( const glite::wmsutils::jobid::JobId &id, const c
       this->jcr_logger.job_cancel_refused_event( info );
     }
   }
-  else
+  else {
     elog::cedglog << logger::setlevel( logger::null ) << "I'm not able to retrieve the condor ID." << endl;
+    this->jcr_logger.job_cancel_refused_event( "I'm not able to retrieve the condor ID." );
+    good = false;
+  }
 
   return good;
 }

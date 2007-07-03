@@ -12,11 +12,11 @@
 #include "glite/wms/common/logger/logstream.h"
 #include "glite/wms/common/logger/manipulators.h"
 #include "glite/wmsutils/jobid/JobId.h"
-#include "../../common/EventLogger.h"
-#include "../../common/IdContainer.h"
-#include "../../logmonitor/exceptions.h"
-#include "../../logmonitor/SizeFile.h"
-#include "../../logmonitor/AbortedContainer.h"
+#include "common/EventLogger.h"
+#include "common/IdContainer.h"
+#include "logmonitor/exceptions.h"
+#include "logmonitor/SizeFile.h"
+#include "logmonitor/AbortedContainer.h"
 
 #include "EventSubmit.h"
 #include "MonitorData.h"
@@ -118,17 +118,18 @@ void EventSubmit::process_event( void )
     this->ei_data->md_sizefile->set_last( boost::lexical_cast<bool>(islast) || this->ei_data->md_isDagLog ).increment_pending();
 
 
-    if( this->ei_data->md_isDagLog )
+    if( this->ei_data->md_isDagLog ) {
       elog::cedglog << logger::setlevel( logger::info )
 		    << ei_s_subnodeof << this->ei_data->md_dagId << endl;
     
-    // Check if the node has been resubmitted (This check is not need if condor log always the post script event)
-    position = this->ei_data->md_container->position_by_edg_id( edgid );
-    if( position != this->ei_data->md_container->end() ) { // Job already exist in our database
-      elog::cedglog << logger::setlevel( logger::info ) << "This node seems to be resubmitted." << endl;
-      this->ei_data->md_sizefile->decrement_pending();
-      this->ei_data->md_container->update_pointer( position, this->ei_data->md_logger->sequence_code(), 5 );	
-      this->ei_data->md_container->remove( position ); // remove it
+      // Check if the node has been resubmitted (This check is not need if condor logs always the post script event)
+      position = this->ei_data->md_container->position_by_edg_id( edgid );
+      if( position != this->ei_data->md_container->end() ) { // Job already exist in our database
+        elog::cedglog << logger::setlevel( logger::info ) << "This node seems to be resubmitted." << endl;
+        this->ei_data->md_sizefile->decrement_pending();
+        this->ei_data->md_container->update_pointer( position, this->ei_data->md_logger->sequence_code(), 5 );	
+        this->ei_data->md_container->remove( position ); // remove it
+      }
     }
     this->finalProcess( edgid, seqcode );
   }

@@ -1,7 +1,7 @@
 #ifndef EDG_WORKLOAD_JOBCONTROL_CONTROLLER_JOBCONTROLLERFAKE_H
 #define EDG_WORKLOAD_JOBCONTROL_CONTROLLER_JOBCONTROLLERFAKE_H
 
-#include "../jobcontrol_namespace.h"
+#include "jobcontrol_namespace.h"
 #include "JobControllerImpl.h"
 
 JOBCONTROL_NAMESPACE_BEGIN {

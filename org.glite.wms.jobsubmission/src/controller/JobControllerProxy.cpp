@@ -24,8 +24,8 @@
 #include "glite/jdl/JobAdManipulation.h"
 #include "glite/jdl/PrivateAdManipulation.h"
 #include "glite/jdl/ManipulationExceptions.h"
-#include "../jobcontrol_namespace.h"
-#include "../common/files.h"
+#include "jobcontrol_namespace.h"
+#include "common/files.h"
 
 #include "JobControllerProxy.h"
 #include "JobControllerExceptions.h"

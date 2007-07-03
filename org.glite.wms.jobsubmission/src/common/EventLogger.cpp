@@ -28,7 +28,7 @@ namespace fs = boost::filesystem;
 #include "glite/wms/common/logger/manipulators.h"
 #include "glite/wms/common/logger/edglog.h"
 
-#include "../jobcontrol_namespace.h"
+#include "jobcontrol_namespace.h"
 
 #include "SignalChecker.h"
 #include "EventLogger.h"

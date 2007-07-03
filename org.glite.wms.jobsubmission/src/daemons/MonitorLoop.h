@@ -4,10 +4,8 @@
 #include <memory>
 #include <iosfwd>
 
-
-
 #include "glite/wms/common/logger/logstream.h"
-#include "../jobcontrol_namespace.h"
+#include "jobcontrol_namespace.h"
 
 COMMON_SUBNAMESPACE_CLASS( utilities, LineParser );
 

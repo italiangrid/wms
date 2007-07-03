@@ -4,7 +4,8 @@
 #include <classad_distribution.h>
 
 #include "glite/wms/common/utilities/FileList.h"
-#include "../../common/IdContainer.h"
+#include "glite/wms/common/utilities/jobdir.h"
+#include "common/IdContainer.h"
 
 JOBCONTROL_NAMESPACE_BEGIN {
 
@@ -16,6 +17,7 @@ namespace logmonitor { namespace processer {
 
 class JobResubmitter {
   typedef  glite::wms::common::utilities::FileList<classad::ClassAd>   FileList;
+  typedef  glite::wms::common::utilities::JobDir                       JD;
 
 public:
   JobResubmitter( jccommon::EventLogger *logger );
@@ -25,6 +27,7 @@ public:
 
 private:
   FileList                 jr_list;
+  JD                      *jr_jobdir;
   jccommon::EventLogger   *jr_logger;
 };
 

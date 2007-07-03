@@ -6,7 +6,7 @@
 #include "glite/jdl/JobAdManipulation.h"
 #include "glite/jdl/PrivateAdManipulation.h"
 #include "glite/jdl/ManipulationExceptions.h"
-#include "../jobcontrol_namespace.h"
+#include "jobcontrol_namespace.h"
 #include "Request.h"
 #include "RequestExceptions.h"
 #include "CondorG.h"

@@ -11,7 +11,7 @@
 
 #include <memory>
 
-#include "../common/EventLogger.h"
+#include "common/EventLogger.h"
 #include "JobControllerImpl.h"
 
 typedef  struct _edg_wll_Context  *edg_wll_Context;

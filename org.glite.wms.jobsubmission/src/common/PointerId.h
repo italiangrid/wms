@@ -7,7 +7,7 @@
 #include <boost/shared_ptr.hpp>
 
 #include "glite/wms/common/utilities/FileList.h"
-#include "../jobcontrol_namespace.h"
+#include "jobcontrol_namespace.h"
 
 JOBCONTROL_NAMESPACE_BEGIN {
 

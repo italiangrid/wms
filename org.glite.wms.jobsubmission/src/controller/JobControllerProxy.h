@@ -14,7 +14,7 @@
 #include "glite/wms/common/utilities/FileList.h"
 #include "glite/wms/common/utilities/FileListLock.h"
 
-#include "../common/EventLogger.h"
+#include "common/EventLogger.h"
 #include "JobControllerImpl.h"
 
 JOBCONTROL_NAMESPACE_BEGIN {

@@ -4,7 +4,7 @@
 #include "glite/wms/common/logger/manipulators.h"
 #include "glite/wms/common/utilities/FileList.h"
 
-#include "../jobcontrol_namespace.h"
+#include "jobcontrol_namespace.h"
 #include "AbortedContainer.h"
 
 using namespace std;

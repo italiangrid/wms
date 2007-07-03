@@ -2,7 +2,7 @@
 
 #include <classad_distribution.h>
 
-#include "../jobcontrol_namespace.h"
+#include "jobcontrol_namespace.h"
 #include "RequestExceptions.h"
 
 using namespace std;

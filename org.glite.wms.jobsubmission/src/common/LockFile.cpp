@@ -8,7 +8,7 @@
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/exception.hpp>
 
-#include "../jobcontrol_namespace.h"
+#include "jobcontrol_namespace.h"
 #include "glite/wms/common/utilities/boost_fs_add.h"
 
 #include "LockFile.h"
