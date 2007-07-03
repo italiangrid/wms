@@ -6,11 +6,6 @@
 ## *
 ## *********************************************************************
 
-bin_PROGRAMS = t_log
-
-t_log_SOURCES = t_log.cpp
-t_log_LDADD = libglite_wms_logger.la
-
 lib_LTLIBRARIES = libglite_wms_logger.la
 
 libglite_wms_logger_la_SOURCES = \
