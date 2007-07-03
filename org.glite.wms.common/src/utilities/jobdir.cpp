@@ -1,11 +1,26 @@
 // File: jobdir.cpp
 // Author: Francesco Giacomini
-// Copyright (c) Members of the EGEE Collaboration 2004
-// For license conditions see http://public.eu-egee.org/license/license.html
+// 
+// Copyright (c) Members of the EGEE Collaboration. 2004. 
+// See http://www.eu-egee.org/partners/ for details on the copyright
+// holders.  
+// 
+// Licensed under the Apache License, Version 2.0 (the "License"); 
+// you may not use this file except in compliance with the License. 
+// You may obtain a copy of the License at 
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0 
+// 
+// Unless required by applicable law or agreed to in writing, software 
+// distributed under the License is distributed on an "AS IS" BASIS, 
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+// See the License for the specific language governing permissions and 
+// limitations under the License.
 
 // $Id$
  
 #include "jobdir.h"
+#include <cerrno>
 #include <sstream>
 #include <iomanip>
 #include <boost/filesystem/operations.hpp>
@@ -13,8 +28,11 @@
 #include <boost/filesystem/convenience.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/thread/mutex.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
+#include <time.h>
 
 namespace fs = boost::filesystem;
+namespace pt = boost::posix_time;
 
 namespace glite {
 namespace wms {
@@ -23,12 +41,38 @@ namespace utilities {
 
 namespace {
 
+pt::ptime universal_time()
+{
+  timeval tv;
+  gettimeofday(&tv, 0);
+  std::time_t t = tv.tv_sec;
+  int fs = tv.tv_usec;
+  std::tm curr;
+  std::tm* curr_ptr = ::gmtime_r(&t, &curr);
+  boost::gregorian::date d(
+    curr_ptr->tm_year + 1900,
+    curr_ptr->tm_mon + 1,
+    curr_ptr->tm_mday
+  );
+
+  pt::time_duration td(
+    curr_ptr->tm_hour,
+    curr_ptr->tm_min,
+    curr_ptr->tm_sec,
+    fs
+  );
+
+  return pt::ptime(d,td);
+}
+
 bool link(fs::path const& old_path, fs::path const& new_path)
 {
   std::string const old_path_str = old_path.native_file_string();
   std::string const new_path_str = new_path.native_file_string();
 
-  return ::link(old_path_str.c_str(), new_path_str.c_str()) == 0;
+  int const e = ::link(old_path_str.c_str(), new_path_str.c_str());
+
+  return e == 0;
 }
 
 }
@@ -53,16 +97,13 @@ struct JobDir::Impl
       tmp_dir(base_dir / tmp_tag),
       new_dir(base_dir / new_tag),
       old_dir(base_dir / old_tag),
-      last_time(::time(0)),
-      counter(0)
+      id_str(boost::lexical_cast<std::string>(pthread_self()))
   {}
   fs::path const base_dir;
   fs::path const tmp_dir;
   fs::path const new_dir;
   fs::path const old_dir;
-  ::time_t last_time;
-  int counter;
-  boost::mutex::mutex mx;  // to protect last_time and counter
+  std::string const id_str;
 };
 
 JobDir::JobDir(fs::path const& base_dir)
@@ -89,21 +130,20 @@ fs::path JobDir::deliver(
   std::string const& tag
 )
 {
-  ::time_t t = ::time(0);
-  std::string file_name(boost::lexical_cast<std::string>(t));
-  file_name += '_';
-  boost::mutex::scoped_lock l(m_impl->mx);
-  if (t > m_impl->last_time) {
-    m_impl->last_time = t;
-    m_impl->counter = 0;
-  } else {
-    ++m_impl->counter;
+  pt::ptime t = universal_time();
+  std::string file_name(to_iso_string(t));
+  assert(
+    file_name.size() == 15
+    || file_name.size() == (unsigned)16 + pt::time_duration::num_fractional_digits()
+  );
+
+  if (file_name.size() == 15) { // without fractional seconds
+    file_name += '.';
+    file_name += std::string(pt::time_duration::num_fractional_digits(), '0');
   }
-  int counter = m_impl->counter;
-  l.unlock();
-  std::ostringstream os;
-  os << std::setw(6) << std::setfill('0') << counter;
-  file_name += os.str();
+
+  file_name += '_';
+  file_name += m_impl->id_str;
   if (!tag.empty()) {
     file_name += '_';
     file_name += tag;
@@ -114,22 +154,29 @@ fs::path JobDir::deliver(
 
   fs::ofstream tmp_file(tmp_path);
   if (!tmp_file) {
-    throw JobDirError("cannot create the tmp file");
+    std::string msg("create failed for ");
+    msg += tmp_path.string();
+    msg += " (" + boost::lexical_cast<std::string>(errno) + ')';
+    throw JobDirError(msg);
   }
 
   tmp_file << contents << std::flush;
   if (!tmp_file) {
-    throw JobDirError("cannot write the tmp file");
+    std::string msg("write failed for ");
+    msg += tmp_path.string();
+    msg += " (" + boost::lexical_cast<std::string>(errno) + ')';
+    throw JobDirError(msg);
   }
 
   tmp_file.close(); // synch too?
 
-  bool link_result = link(tmp_path, new_path);
-  if (!link_result) {
-    throw JobDirError("cannot link tmp and new files");
+  bool e = std::rename(tmp_path.string().c_str(), new_path.string().c_str());
+  if (e) {
+    std::string msg("rename failed for ");
+    msg += tmp_path.string();
+    msg += " (" + boost::lexical_cast<std::string>(errno) + ')';
+    throw JobDirError(msg);
   }
-
-  fs::remove(tmp_path);
 
   return new_path;
 }
@@ -139,14 +186,24 @@ fs::path JobDir::set_old(fs::path const& file)
   fs::path const new_path(m_impl->new_dir / file.leaf());
   fs::path const old_path(m_impl->old_dir / file.leaf());
 
-  bool link_result = link(new_path, old_path);
-  if (!link_result) {
-    throw JobDirError("cannot link new and old files");
+  bool e = std::rename(new_path.string().c_str(), old_path.string().c_str());
+  if (e) {
+    std::string msg("rename failed for ");
+    msg += new_path.string();
+    msg += " (" + boost::lexical_cast<std::string>(errno) + ')';
+    throw JobDirError(msg);
   }
 
-  fs::remove(new_path);
-
   return old_path;
+}
+
+namespace {
+
+inline bool leaf_less(fs::path const& lhs, fs::path const& rhs)
+{
+  return lhs.leaf() < rhs.leaf();
+}
+
 }
 
 std::pair<JobDir::iterator, JobDir::iterator> JobDir::new_entries()
@@ -155,7 +212,7 @@ std::pair<JobDir::iterator, JobDir::iterator> JobDir::new_entries()
   fs::directory_iterator const e;
   typedef std::vector<fs::path> container;
   boost::shared_ptr<container> entries(new container(b, e));
-  sort(entries->begin(), entries->end());
+  sort(entries->begin(), entries->end(), leaf_less);
   return boost::make_shared_container_range(entries);
 }
 

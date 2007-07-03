@@ -106,4 +106,3 @@ ostream &operator<<( ostream &os, const logger::setshowseverity &ss )
 } // wms namespace
 } // glite namespace
 
-using glite::wms::common;

@@ -8,7 +8,7 @@
 #include "filelist_reader.h"
 #include "glite/wms/common/utilities/FLExtractor.h"
 #include "glite/wms/common/logger/logger_utils.h"
-#include "glite/wms/common/utilities/scope_guard.h"
+#include "scope_guard.h"
 
 namespace glite {
 namespace wms {
@@ -17,22 +17,46 @@ namespace utilities {
 
 namespace {
 
-typedef glite::wms::common::utilities::FLExtractor<std::string> Extractor;
+typedef FLExtractor<std::string> Extractor;
 typedef boost::shared_ptr<Extractor> ExtractorPtr;
+typedef Extractor::iterator extractor_iterator;
 
+}
+
+struct FileListItem::Impl
+{
+  ExtractorPtr extractor;
+  extractor_iterator it;
+};
+
+FileListItem::FileListItem(ExtractorPtr extractor, extractor_iterator it)
+  : m_impl(new Impl)
+{
+  m_impl->extractor = extractor;
+  m_impl->it = it;
+}
+
+std::string FileListItem::value() const
+{
+  return *m_impl->it;
+}
+
+void FileListItem::remove_from_input()
+{
+  m_impl->extractor->erase(m_impl->it);
 }
 
 struct FileListReader::Impl
 {
-  ExtractorPtr extractor;
   std::string source;
+  ExtractorPtr extractor;
 };
 
 FileListReader::FileListReader(std::string const& source)
   : m_impl(new Impl)
 {
-  m_impl->extractor.reset(new Extractor(source));
   m_impl->source = source;
+  m_impl->extractor.reset(new Extractor(source));
 }
 
 std::string FileListReader::name() const
@@ -45,34 +69,11 @@ std::string FileListReader::source() const
   return m_impl->source;
 }
 
-namespace {
-
-typedef Extractor::iterator extractor_iterator;
-typedef std::vector<extractor_iterator> extracted_requests_type;
-
-class CleanUp
+FileListReader::InputItems FileListReader::read()
 {
-  ExtractorPtr m_extractor;
-  extractor_iterator m_it;
+  InputItems result;
 
-public:
-  CleanUp(ExtractorPtr e, extractor_iterator i)
-    : m_extractor(e), m_it(i)
-  {
-  }
-  void operator()()
-  {
-    m_extractor->erase(m_it);
-  }
-};
-
-
-}
-
-FileListReader::requests_type FileListReader::read()
-{
-  requests_type result;
-
+  //typedef std::vector<extractor_iterator> extracted_requests_type;
   std::vector<extractor_iterator> new_requests(
     m_impl->extractor->get_all_available()
   );
@@ -81,9 +82,8 @@ FileListReader::requests_type FileListReader::read()
   std::vector<extractor_iterator>::iterator const end = new_requests.end();
   for ( ; it != end; ++it) {
     extractor_iterator request_it = *it;
-    std::string const& contents = *request_it;
-    cleanup_type cleanup(CleanUp(m_impl->extractor, request_it));
-    result.push_back(std::make_pair(contents, cleanup));
+    InputItemPtr item(new FileListItem(m_impl->extractor, request_it));
+    result.push_back(item);
   }
 
   return result;

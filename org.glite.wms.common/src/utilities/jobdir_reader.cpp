@@ -12,8 +12,8 @@
 #include <boost/bind.hpp>
 #include <classad_distribution.h>
 #include "glite/wms/common/logger/logger_utils.h"
-#include "glite/wms/common/utilities/scope_guard.h"
-#include "glite/wms/common/utilities/jobdir.h"
+#include "scope_guard.h"
+#include "jobdir.h"
 
 namespace utilities = glite::wms::common::utilities;
 namespace fs = boost::filesystem;
@@ -23,13 +23,40 @@ namespace wms {
 namespace common {
 namespace utilities {
 
+struct JobDirItem::Impl
+{
+  fs::path item_path;
+};
+
+JobDirItem::JobDirItem(fs::path const& p)
+  : m_impl(new Impl)
+{
+  m_impl->item_path = p;
+}
+
+std::string
+JobDirItem::value() const
+{
+  std::string result;
+  result.reserve(fs::file_size(m_impl->item_path));
+  fs::ifstream is(m_impl->item_path);
+  getline(is, result, '\0');
+  return result;
+}
+
+void
+JobDirItem::remove_from_input()
+{
+  fs::remove(m_impl->item_path);
+}
+
 struct JobDirReader::Impl
 {
   Impl(std::string const& source)
     : jd(fs::path(source, fs::native))
   {
   }
-  utilities::JobDir jd;
+  JobDir jd;
 };
 
 JobDirReader::JobDirReader(std::string const& source)
@@ -47,9 +74,9 @@ std::string JobDirReader::source() const
   return m_impl->jd.base_dir().native_file_string();
 }
 
-JobDirReader::requests_type JobDirReader::read()
+JobDirReader::InputItems JobDirReader::read()
 {
-  requests_type result;
+  InputItems result;
 
   std::pair<utilities::JobDir::iterator, utilities::JobDir::iterator> p(
     m_impl->jd.new_entries()
@@ -57,20 +84,11 @@ JobDirReader::requests_type JobDirReader::read()
   utilities::JobDir::iterator b = p.first;
   utilities::JobDir::iterator const e = p.second;
 
-  classad::ClassAdParser parser;
-
   for ( ; b != e; ++b) {
-
     fs::path const& new_file = *b;
     fs::path const old_file = m_impl->jd.set_old(new_file);
-    cleanup_type cleanup(boost::bind(fs::remove, old_file));
-    fs::ifstream is(old_file);
-    std::string contents;
-    for (std::string line; getline(is, line); ) {
-      contents += line;
-    }
-    result.push_back(std::make_pair(contents, cleanup));
-
+    InputItemPtr item(new JobDirItem(old_file));
+    result.push_back(item);
   }
 
   return result;

@@ -11,23 +11,32 @@
 #include <string>
 #include <vector>
 #include <utility>
-#include <boost/function.hpp>
+#include <boost/shared_ptr.hpp>
 
 namespace glite {
 namespace wms {
 namespace common {
 namespace utilities {
 
+class InputItem
+{
+public:
+  virtual ~InputItem();
+  virtual std::string value() const = 0;
+  virtual void remove_from_input() = 0;
+};
+
+typedef boost::shared_ptr<InputItem> InputItemPtr;
+
 class InputReader
 {
 public:
-  typedef boost::function<void()> cleanup_type;
-  typedef std::vector<std::pair<std::string, cleanup_type> > requests_type;
+  typedef std::vector<InputItemPtr> InputItems;
   
   virtual ~InputReader();
   virtual std::string name() const = 0;
   virtual std::string source() const = 0;
-  virtual requests_type read() = 0;
+  virtual InputItems read() = 0;
 };
 
 }}}}

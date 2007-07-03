@@ -158,19 +158,19 @@ int Logbuf::internalSync( bool overflow )
   return res;
 }
 
-Logbuf::Logbuf( void ) : streambuf(), lb_remove( false ), lb_rotate( false ), lb_maxfiles( 0 ),
+Logbuf::Logbuf( void ) : streambuf(), lb_remove( false ), lb_rotate( false ), lb_bad_file( false ), lb_maxfiles( 0 ),
 			 lb_current( 0 ), lb_maxsize( 0 ),
 			 lb_buffer( cout.rdbuf() ),
 			 lb_basename(),
-			 lb_data(), lb_bad_file( false )
+			 lb_data()
 {
   this->setp( this->lb_data.buffer_base(), this->lb_data.buffer_base() + this->lb_data.buffer_size() );
 }
 
 Logbuf::Logbuf( const char *name, level_t lev, const char *format ) : streambuf(), lb_remove( true ), lb_rotate( false ),
-								      lb_maxfiles( 0 ), lb_current( 0 ), lb_maxsize( 0 ),
+								      lb_bad_file(false), lb_maxfiles(0), lb_current(0), lb_maxsize(0),
 								      lb_buffer( new filebuf ), lb_basename(),
-								      lb_data( name, lev, format ), lb_bad_file( false )
+								      lb_data( name, lev, format )
 {
   if ( utilities::create_file( name ) ) lb_bad_file=true;
 
@@ -182,9 +182,8 @@ Logbuf::Logbuf( const char *name, level_t lev, const char *format ) : streambuf(
 }
 
 Logbuf::Logbuf( streambuf *buffer, level_t lev, const char *format ) : streambuf(), lb_remove( false ), lb_rotate( false ),
-								       lb_maxfiles( 0 ), lb_current( 0 ), lb_maxsize( 0 ),
-								       lb_buffer( buffer ), lb_data( "", lev, format ),
-								       lb_bad_file( false )
+								       lb_bad_file(false), lb_maxfiles(0), lb_current(0), lb_maxsize(0),
+								       lb_buffer( buffer ), lb_data( "", lev, format )
 {
   this->lb_data.bad( false );
 

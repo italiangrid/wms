@@ -12,6 +12,10 @@ namespace wms {
 namespace common {
 namespace utilities {
 
+InputItem::~InputItem()
+{
+}
+
 InputReader::~InputReader()
 {
 }

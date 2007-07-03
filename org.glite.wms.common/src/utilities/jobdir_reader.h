@@ -10,11 +10,22 @@
 
 #include "input_reader.h"
 #include <boost/shared_ptr.hpp>
+#include <boost/filesystem/path.hpp>
 
 namespace glite {
 namespace wms {
 namespace common {
 namespace utilities {
+
+class JobDirItem: public InputItem
+{
+  class Impl;
+  boost::shared_ptr<Impl> m_impl;
+public:
+  JobDirItem(boost::filesystem::path const&);
+  std::string value() const;
+  void remove_from_input();
+};
 
 class JobDirReader: public InputReader
 {
@@ -25,7 +36,7 @@ public:
   JobDirReader(std::string const& source);
   std::string name() const;
   std::string source() const;
-  requests_type read();
+  InputItems read();
 };
 
 }}}}

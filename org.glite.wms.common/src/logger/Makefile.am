@@ -6,17 +6,15 @@
 ## *
 ## *********************************************************************
 
+bin_PROGRAMS = t_log
+
+t_log_SOURCES = t_log.cpp
+t_log_LDADD = libglite_wms_logger.la
+
 lib_LTLIBRARIES = libglite_wms_logger.la
 
 libglite_wms_logger_la_SOURCES = \
-	common.cpp \
-	logbuf.cpp \
-	logstream.cpp \
-	manipulators.cpp \
-	logstream_ts.cpp \
-	container_ts.cpp \
-	manipulators_ts.cpp \
-	wms_log.cpp
+	log.cpp
 
 AM_CPPFLAGS = -I$(top_srcdir)/interface \
 	-I$(top_srcdir)/src \

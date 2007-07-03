@@ -10,7 +10,8 @@
 #include <cctype>
 
 #include <classad_distribution.h>
-
+#include <boost/bind.hpp>
+#include <boost/lexical_cast.hpp>
 #include "glite/wms/common/ldif2classad/LDIFObject.h"
 
 using namespace std;
@@ -24,7 +25,19 @@ namespace ldif2classad {
 
 using namespace classad;
 namespace utilities = glite::wms::common::utilities;
-	
+
+namespace {
+  	 
+ int
+ compare_case_insensitive(
+   string const& s1,
+   string const& s2) {
+  
+   return !::strcasecmp(s1.c_str(), s2.c_str());
+ }
+
+}
+  	 	
 LDIFObject::LDIFObject()
 {
 }
@@ -202,41 +215,42 @@ double RankClassifiedAd(ClassAd *left, ClassAd *right, int where)
   }
   return rank;
 }
+
 void LDIFObject::ParseValue(const string& v, utilities::edgstrstream& s) const
 {
+ 
  utilities::edgstrstream vstream;
- string value, unit; 
-  
  vstream << v;
- vstream >> value >> unit;
 
-  if(isdigit(value[0])) { //...if numeric value... 
-   
-    // append .0 if needed
-    // if( value.find(".")==string::npos ) value.append(".0");
-   
-    s << value;
+ string value;
+ vstream >> value;
 
-    switch(unit[0] ) { //...parse the unit factor, if any.
-	  
-    case 'B': 
-    case 'K': 
-    case 'M': 
-    case 'G': 
-    case 'T': s << unit[0]; break;
-    
-    }
-  }
-  else {				 				
-
+ try {
+   double dvalue(
+     boost::lexical_cast<double>(value)
+   );
+   s << dvalue;
+   char unit = 0; 
+   //...parse unit factor, if any
+   vstream >> unit;
+   switch(unit) {
+     case 'B': case 'K': 
+     case 'M': case 'G': 
+     case 'T': 
+       s << unit; 
+       break;
+   }  
+ } 
+ catch(boost::bad_lexical_cast&)
+ {
 #ifdef DONT_QUOTE_TRUE_FALSE
-    // Change everything back into upper case, but store the
-   // result in a different string
-   string  lower_v(v);
-   transform (lower_v.begin(), lower_v.end(), lower_v.begin(), ::tolower);
+     // Change everything back into upper case, but store the
+     // result in a different string
+     string  lower_v(v);
+     transform (lower_v.begin(), lower_v.end(), lower_v.begin(), ::tolower);
    
-   if( lower_v == "true" || lower_v == "false" || lower_v == "undefined" ) {
-	s << lower_v;
+     if( lower_v == "true" || lower_v == "false" || lower_v == "undefined" ) {
+     s << lower_v;
     }
     else {
 #endif // DONT_QUOTE_TRUE_FALSE
@@ -253,12 +267,14 @@ void LDIFObject::ParseValue(const string& v, utilities::edgstrstream& s) const
 void LDIFObject::ParseMultiValue(const LDIFValue& v, utilities::edgstrstream& s) const
 {
   s << "{";  
-  
-  for(LDIFValue::const_iterator it = v.begin(); it != v.end(); ) {
+
+  LDIFValue::const_iterator it = v.begin();
+  LDIFValue::const_iterator const it_end = v.end();
+  while (it != it_end) {
     
     ParseValue(*it, s);
     
-    s << ((++it != v.end()) ? "," : "}" );     
+    s << ((++it != it_end) ? "," : "}" );     
   }
 }
 
@@ -266,9 +282,10 @@ ClassAd* LDIFObject::ExportClassAd( void ) const
 {
   ClassAdParser parser;
   ClassAd* ad = new ClassAd;
-  
-  for (LDIFAttributes::const_iterator it = this->attributes.begin(); 
-       it !=  this->attributes.end(); it++) {
+
+  LDIFAttributes::const_iterator it = this->attributes.begin();
+  LDIFAttributes::const_iterator const it_end = this->attributes.end();
+  for ( ; it != it_end; ++it) {
     
     utilities::edgstrstream exprstream;  
     string name = (*it).first;
@@ -296,23 +313,26 @@ ClassAd* LDIFObject::ExportClassAd(vector<string>::const_iterator attrs_begin, v
 { 
   ClassAdParser parser; 
   ClassAd* ad = new ClassAd; 
-   
-  for (LDIFAttributes::const_iterator it = this->attributes.begin();  
-       it !=  this->attributes.end(); it++) { 
+
+  LDIFAttributes::const_iterator it = this->attributes.begin();
+  LDIFAttributes::const_iterator const it_end = this->attributes.end();   
+  for ( ; it != it_end; ++it) {
      
     utilities::edgstrstream exprstream;   
-    string name = (*it).first; 
+    string const name = (*it).first; 
     LDIFValue values = (*it).second; 
      
-    if(values.size()==1 &&  
-		find(attrs_begin,attrs_end,name) == attrs_end ) 
+    if(values.size()>=1 &&
+       find_if(attrs_begin, attrs_end,
+         boost::bind(compare_case_insensitive, _1, name)
+       ) == attrs_end ) {  
        
       ParseValue(values[0], exprstream); 
-     
-    else 
+    } 
+    else {
  
       ParseMultiValue(values, exprstream); 
-     
+    } 
     exprstream << ends; 
      
     ExprTree* exptree = 0; 

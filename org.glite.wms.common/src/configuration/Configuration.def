@@ -388,6 +388,8 @@ class WMConfiguration {
   parameter std::vector<std::string>(CeForwardParameters) section normal;
   parameter int(MatchRetryPeriod = 1000) section normal;
   parameter int(ExpiryPeriod = 86400) section normal;
+  parameter bool(EnableBulkMM = false) section normal;
+  parameter double( MaxOutputSandboxSize = 100000000 ) section normal;
 }
 class WMCConfiguration {
 
@@ -432,6 +434,7 @@ class WMCConfiguration {
   parameter std::string ( WMProxyServiceDiscoveryType = "org.glite.wms.WMProxy") section normal;
   parameter bool ( EnableServiceDiscovery = false ) section normal;
 
+
   parameter std::vector<std::string>(WmProxyEndPoints) section normal;
 # LB WS-based interface not yet used:
 # parameter std::vector<std::string>(LBEndPoints) section normal;
@@ -439,6 +442,15 @@ class WMCConfiguration {
 
 # SOAP Timeouts
   parameter classad::ClassAd*(SoapTimeouts) section normal;
+  
+
+ parameter int( SoapSendTimeout = 360 ) section normal;
+ parameter int( SoapReceiveTimeout = 360 ) section normal; 
+
+
+
+# System Call Timeout  
+  parameter int(SystemCallTimeout) section normal;
 }
 class WMPConfiguration {
 
@@ -478,6 +490,7 @@ class WMPConfiguration {
   parameter classad::ExprTree*(SDJRequirements) section normal;
   parameter classad::ClassAd*( OperationLoadScripts ) section normal;
   parameter bool ( AsyncJobStart = true ) section normal;
+  parameter long ( MaxServedRequests = 300 ) section normal;
 }
 
 class ICEConfiguration {
@@ -506,7 +519,7 @@ class ICEConfiguration {
   parameter std::string( cache_persist_file = "/tmp/ice_cache_persist_file") section fileparse;
   parameter std::string( logfile = "${GLITE_LOCATION_LOG}/ice.log") section fileparse;
   parameter bool( start_poller = true ) section normal;
-  parameter bool( poller_purges_jobs = true ) section normal;
+  parameter bool( purge_jobs = true ) section normal;
   parameter bool( start_listener = true ) section normal;
   parameter bool( start_subscription_updater = true ) section normal;
   parameter int( poller_delay = 60 ) section normal;
@@ -520,10 +533,8 @@ class ICEConfiguration {
   parameter int( poller_status_threshold_time = 60 ) section normal;
   parameter bool( log_on_console = true ) section normal;
   parameter bool( log_on_file = true) section normal;
-  parameter int( max_jobcache_operation_before_dump = 10 ) section normal;
   parameter int( notification_frequency = 60 ) section normal;
   parameter int( lease_delta_time = 3600 ) section normal;
-  parameter int( lease_threshold_time = 1200 ) section normal;
   parameter int( ice_log_level = 400 ) section normal;
   parameter bool( listener_enable_authn = true ) section normal;
   parameter bool( listener_enable_authz = true ) section normal;
@@ -537,12 +548,12 @@ class ICEConfiguration {
   parameter unsigned int( max_logfile_rotations = 10 ) section normal;
   parameter unsigned int( max_ice_threads = 10 ) section normal;
   parameter std::string( persist_dir = "${GLITE_LOCATION_VAR}/ice/ice_db" ) section fileparse;
-  parameter int( soap_timeout = 60 ) section normal;
-  parameter int( max_retries = 3 ) section normal;
+  parameter int( soap_timeout = 60) section normal;
   parameter std::string( InputType = "filelist" ) section normal;
-  parameter int( poll_query_size = 100 ) section normal;
-  parameter int( lease_query_size = 100 ) section normal;
-  parameter int( proxy_renewal_frequency = 300 ) section normal;
+  parameter int( proxy_renewal_frequency = 600 ) section normal;
+  parameter int( bulk_query_size = 100 ) section normal;
+  parameter int( lease_update_frequency = 1800 ) section normal;
+  
 
 #  parameter int( MainLoopDuration = 3 ) section normal;
 #  parameter int( AbortedJobsTimeout = 600 ) section normal;

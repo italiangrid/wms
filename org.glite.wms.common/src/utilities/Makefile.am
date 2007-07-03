@@ -8,13 +8,22 @@
 
 CONF = $(top_builddir)/src/configuration/libglite_wms_conf.la
 
-noinst_LTLIBRARIES = libglite_wms_quota.la
 sbin_PROGRAMS      = glite-wms-quota-adjust
 
 lib_LTLIBRARIES    = \
 	libglite_wms_util.la \
 	libglite_wms_globus_ftp_util.la \
-	libglite_wms_iiattrutil.la
+	libglite_wms_iiattrutil.la \
+	libglite_wms_quota.la
+
+libexec_PROGRAMS   = glite-wms-eval_ad_expr
+
+glite_wms_eval_ad_expr_SOURCES = glite-wms-eval_ad_expr.cpp
+glite_wms_eval_ad_expr_LDADD   = \
+        ./libglite_wms_util.la \
+	$(GLITE_WMSUTILS_CLASSADS_LIBS) \
+	$(BOOST_LIBS) \
+	$(CLASSAD_LIBS)
 
 glite_wms_quota_adjust_SOURCES = glite_wms_quota_adjust.cpp
 glite_wms_quota_adjust_LDADD = \
@@ -41,15 +50,15 @@ libglite_wms_util_la_SOURCES = \
 	LineParser.cpp \
 	LineParserExceptions.cpp \
 	mixed.cpp \
-  lb_utils.cpp \
-  lb_proxy.cpp \
-  lb_server.cpp \
 	boost_fs_add.cpp \
 	wm_commands.cpp \
 	jobdir.cpp \
 	input_reader.cpp \
-	filelist_reader.cpp \
-	jobdir_reader.cpp
+	jobdir_reader.cpp \
+	filelist_reader.cpp
+
+libglite_wms_util_la_LIBADD = -lstdc++ \
+	$(BOOST_DATE_LIBS)
 
 libglite_wms_iiattrutil_la_SOURCES = \
 	ii_attr_utils.cpp
@@ -70,8 +79,8 @@ utilitiesinclude_HEADERS = \
 	scope_guard.h \
 	jobdir.h \
 	input_reader.h \
-	filelist_reader.h \
-	jobdir_reader.h
+	jobdir_reader.h \
+	filelist_reader.h
 
 AM_CPPFLAGS = -I$(top_srcdir)/interface \
 	-I$(top_srcdir)/src \
@@ -85,3 +94,4 @@ EXTRA_DIST = \
 	triple.h 
 
 MAINTAINERCLEANFILES = Makefile.in *.*~
+
