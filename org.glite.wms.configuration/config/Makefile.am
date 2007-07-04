@@ -23,7 +23,7 @@ wletcwmsdir = $(sysconfdir)/profile.d
 wletcwms_SCRIPTS = glite-wms-config.sh
 
 install-data-hook:
-	/bin/cp $(DESTDIR)$(sysconfdir)/glite_wms.conf $(DESTDIR)$(sysconfdir)/glite_wms.conf.template
+	/bin/mv $(DESTDIR)$(sysconfdir)/glite_wms.conf $(DESTDIR)$(sysconfdir)/glite_wms.conf.template
 
 EXTRA_DIST = \
         glite_wms.conf \
