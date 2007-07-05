@@ -28,8 +28,8 @@
 #include "glite/wmsutils/jobid/JobId.h"
 #include "glite/wmsutils/jobid/JobIdExceptions.h"
 
-#include "glite/wms/common/process/process.h"
-#include "glite/wms/common/process/user.h"
+#include "common/process.h"
+#include "common/user.h"
 #include "glite/wms/common/logger/manipulators.h"
 #include "glite/wms/common/logger/logstream.h"
 #include "glite/wms/common/logger/edglog.h"

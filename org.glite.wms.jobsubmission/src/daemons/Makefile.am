@@ -17,6 +17,9 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.19  2007/07/05 10:20:21  gianelle
+#       Add the "process" utility; it can now be removed from the org.glite.wms.common component
+#
 #       Revision 1.18  2006/03/28 10:23:16  eronchie
 #       Updated
 #
@@ -105,7 +108,6 @@ glite_wms_job_controller_LDADD = ../controller/libglite_wms_jss_controller.la \
 	$(GLITE_WMSUTILS_CLASSADS_LIBS) \
         $(GLITE_WMS_COMMON_UT_UTIL_LIBS) \
 	$(GLITE_WMSUTILS_EXCEPTION_LIBS) \
-	$(GLITE_WMS_COMMON_PROCESS_LIBS) \
 	$(GLITE_LB_NOTHR_CLIENT_LIBS) $(GLITE_LB_NOTHR_CLIENTPP_LIBS) \
 	$(GLITE_LB_NOTHR_COMMON_LIBS) \
 	$(GLOBUS_LIBS) $(GLOBUS_SSL_NOTHR_LIBS) \
@@ -132,7 +134,6 @@ glite_wms_log_monitor_LDADD = ../controller/libglite_wms_jss_controller.la \
 	$(GLITE_WMSUTILS_CLASSADS_LIBS) \
         $(GLITE_WMS_COMMON_UT_UTIL_LIBS) \
 	$(GLITE_WMSUTILS_EXCEPTION_LIBS) \
-	$(GLITE_WMS_COMMON_PROCESS_LIBS) \
 	$(GLITE_LB_NOTHR_CLIENT_LIBS) $(GLITE_LB_NOTHR_CLIENTPP_LIBS) \
 	$(GLITE_LB_NOTHR_COMMON_LIBS) \
 	$(GLOBUS_LIBS) $(GLOBUS_SSL_NOTHR_LIBS) \

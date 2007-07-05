@@ -17,6 +17,9 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.12  2007/07/05 10:20:20  gianelle
+#       Add the "process" utility; it can now be removed from the org.glite.wms.common component
+#
 #       Revision 1.11  2006/03/16 17:28:39  gianelle
 #       Migration to "new" jdl library
 #
@@ -70,7 +73,10 @@ noinst_HEADERS = \
 	ProxyUnregistrar.h \
 	LockFile.h \
 	SignalChecker.h \
-	handler.h
+	handler.h \
+  process.h \
+  subprocess.h \
+  user.h
 
 libglite_wms_jss_common_la_SOURCES = IdContainer.cpp \
 	RamContainer.cpp \
@@ -82,7 +88,10 @@ libglite_wms_jss_common_la_SOURCES = IdContainer.cpp \
 	files.cpp \
 	LockFile.cpp \
 	SignalChecker.cpp \
-	handler.c
+	handler.c \
+  process.cpp \
+  subprocess.cpp \
+  user.cpp
 
 AM_CPPFLAGS = -I$(top_srcdir)/src \
 	$(GLITE_CFLAGS) \
