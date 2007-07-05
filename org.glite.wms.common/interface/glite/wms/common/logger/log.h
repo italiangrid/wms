@@ -50,6 +50,7 @@ public:
 
 #define Debug(message) \
 do { \
+  using namespace glite::wms::common::logger; \
   if (Log::DEBUG <= Log().level()) { \
     std::ostringstream os; \
     os << DEBUG_INFO << message; \
@@ -59,43 +60,61 @@ do { \
 
 #define Info(message) \
 do { \
+  using namespace glite::wms::common::logger; \
   if (Log::INFO <= Log().level()) { \
-    Log().log(Log::INFO, message); \
+    std::ostringstream os; \
+    os << message; \
+    Log().log(Log::INFO, os.str()); \
   } \
 } while (0)
 
 #define Notice(message) \
 do { \
+  using namespace glite::wms::common::logger; \
   if (Log::NOTICE <= Log().level()) { \
-    Log().log(Log::NOTICE, message); \
+    std::ostringstream os; \
+    os << message; \
+    Log().log(Log::NOTICE, os.str()); \
   } \
 } while (0)
 
 #define Warning(message) \
 do { \
+  using namespace glite::wms::common::logger; \
   if (Log::WARNING <= Log().level()) { \
-    Log().log(Log::WARNING, message); \
+    std::ostringstream os; \
+    os << message; \
+    Log().log(Log::WARNING, os.str()); \
   } \
 } while (0)
 
 #define Error(message) \
 do { \
-  if (Log::Error <= Log().level()) { \
-    Log().log(Log::ERROR, message); \
+  using namespace glite::wms::common::logger; \
+  if (Log::ERROR <= Log().level()) { \
+    std::ostringstream os; \
+    os << message; \
+    Log().log(Log::ERROR, os.str()); \
   } \
 } while (0)
 
 #define Critical(message) \
 do { \
+  using namespace glite::wms::common::logger; \
   if (Log::CRITICAL <= Log().level()) { \
-    Log().log(Log::CRITICAL, message); \
+    std::ostringstream os; \
+    os << message; \
+    Log().log(Log::CRITICAL, os.str()); \
   } \
 } while (0)
 
 #define Alert(message) \
 do { \
+  using namespace glite::wms::common::logger; \
   if (Log::ALERT <= Log().level()) { \
-    Log().log(Log::ALERT, message); \
+    std::ostringstream os; \
+    os << message; \
+    Log().log(Log::ALERT, os.str()); \
   } \
 } while (0)
 
