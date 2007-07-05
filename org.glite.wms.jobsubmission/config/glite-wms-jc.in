@@ -45,7 +45,7 @@ init_variables()
     CONDOR_SCHEDD=${CONDORG_INSTALL_PATH}/sbin/condor_schedd
     JOBCONTROLLER=${GLITE_WMS_BIN_DIR}/${CONTROLLERBASE}
 
-    LOCKFILE=`${GLITE_WMS_BIN_DIR}/glite-wms-get-configuration JobController.LockFile`
+    LOCKFILE=${GLITE_LOCATION_VAR}/jobcontroller.pid
     SCRIPT_UID=`/usr/bin/id -u`
 
     GLITEUSER_HOME=`eval echo ~${GLITE_WMS_USER}`
@@ -73,7 +73,7 @@ start()
 {
     if [ "x$1" = "xJobController" -o "x$1" = "x" ]; then
 	echo -ne "\tStarting JobController..."
-	daemon ${JOBCONTROLLER} -c ${CONFIGURATION_FILE}
+	daemon ${JOBCONTROLLER} -c ${CONFIGURATION_FILE} -k ${LOCKFILE}
 	local result=$?
 	echo ""
 

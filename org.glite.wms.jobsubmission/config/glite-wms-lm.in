@@ -35,7 +35,7 @@ init_variables()
     MONITORBASE=glite-wms-log_monitor
     LOGMONITOR=${GLITE_WMS_BIN_DIR}/${MONITORBASE}
 
-    LOCKFILE=`${GLITE_WMS_BIN_DIR}/glite-wms-get-configuration LogMonitor.LockFile`
+    LOCKFILE=${GLITE_LOCATION_VAR}/logmonitor.pid
     SCRIPT_UID=`/usr/bin/id -u`
 
     GLITEUSER_HOME=`eval echo ~${GLITE_WMS_USER}`
@@ -61,7 +61,7 @@ do_failure()
 
 start()
 {
-    daemon ${LOGMONITOR} -c ${CONFIGURATION_FILE}
+    daemon ${LOGMONITOR} -c ${CONFIGURATION_FILE} -k ${LOCKFILE}
     local result=$?
     echo ""
 

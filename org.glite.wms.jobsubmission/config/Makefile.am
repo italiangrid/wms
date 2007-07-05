@@ -7,14 +7,12 @@
 ## *********************************************************************
 
 EXTRA_DIST = \
-	glite-wms-clean-lm-recycle.sh.in \
 	glite-wms-jc.in \
 	glite-wms-lm.in
 
 jsdir = $(sysconfdir)/init.d
 js_SCRIPTS = glite-wms-jc glite-wms-lm
 
-libexec_SCRIPTS = glite-wms-clean-lm-recycle.sh
 
 MAINTAINERCLEANFILES = Makefile.in *~ *.*~
 

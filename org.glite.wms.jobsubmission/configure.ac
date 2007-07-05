@@ -17,6 +17,10 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.25  2007/07/05 12:28:30  gianelle
+#       Removed unused script
+#       Removed the dependence from programs/get-configuration (in org.glite.wms.commons)
+#
 #       Revision 1.24  2007/01/22 15:47:18  gianelle
 #       Sincronize HEAD repository with the 3.1 branch
 #       Add the JobDir support
@@ -204,7 +208,6 @@ AC_PREFIX_DEFAULT([/opt/glite])
 AM_CONFIG_HEADER([src/autogen/config.h])
 AC_CONFIG_FILES([Makefile])
 AC_CONFIG_FILES([config/Makefile])
-AC_CONFIG_FILES([config/glite-wms-clean-lm-recycle.sh])
 AC_CONFIG_FILES([config/glite-wms-jc])
 AC_CONFIG_FILES([config/glite-wms-lm])
 AC_CONFIG_FILES([src/Makefile])
