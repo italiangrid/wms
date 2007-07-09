@@ -17,6 +17,9 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.13  2007/07/09 15:51:50  gianelle
+#       Added globus lib
+#
 #       Revision 1.12  2007/07/05 10:20:20  gianelle
 #       Add the "process" utility; it can now be removed from the org.glite.wms.common component
 #
@@ -97,6 +100,7 @@ AM_CPPFLAGS = -I$(top_srcdir)/src \
 	$(GLITE_CFLAGS) \
 	$(CLASSAD_CFLAGS) \
 	$(BOOST_CFLAGS) \
+  $(GLOBUS_NOTHR_CFLAGS) \
 	-DGLITE_WMS_HAVE_LOGGING -DGLITE_WMS_HAVE_PURGER \
         -DGLITE_WMS_HAVE_RENEWAL -DGLITE_WMS_HAVE_LBPROXY
 
