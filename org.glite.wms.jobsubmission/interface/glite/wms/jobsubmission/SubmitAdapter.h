@@ -4,13 +4,12 @@
 #include <string>
 #include <memory>
 
-#include "../jobcontrol_namespace.h"
 
 namespace classad {
   class ClassAd;
 };
 
-JOBCONTROL_NAMESPACE_BEGIN {
+namespace glite { namespace wms { namespace jobsubmission {
 
 namespace controller {
 
@@ -40,9 +39,9 @@ inline classad::ClassAd *adapt_for_submission( const classad::ClassAd &inad )
   return adapter.adapt_for_submission();
 }
 
-}; // Namespace controlelr
+}; // Namespace controller
 
-} JOBCONTROL_NAMESPACE_END;
+}}} // Namespace jobsubmission wms glite
 
 #endif /* EDG_WORKLOAD_JOBCONTROL_CONTROLLER_SUBMITADAPTER_H */
 
