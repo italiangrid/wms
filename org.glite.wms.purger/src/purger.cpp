@@ -244,13 +244,15 @@ Purger::operator()(jobid::JobId const& id)
       (m_skip_status_checking || is_status_removable(job_status)) &&
       (m_skip_threshold_checking || is_threshold_overcome(job_status, m_threshold))
   ) { // removing dag and children
+    
     std::vector<std::string> children;
-    std::copy(
-      &job_status.children[0],
-      &job_status.children[job_status.children_num],
-      std::back_inserter(children)
-    );
- 
+    if (job_status.children) {
+      std::copy(
+        &job_status.children[0],
+        &job_status.children[job_status.children_num],
+        std::back_inserter(children)
+      );
+    }
     std::vector<std::string>::const_iterator i = children.begin();
     std::vector<std::string>::const_iterator const e = children.end();
     size_t n = 0;
