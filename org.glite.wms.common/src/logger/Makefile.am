@@ -9,7 +9,13 @@
 lib_LTLIBRARIES = libglite_wms_logger.la
 
 libglite_wms_logger_la_SOURCES = \
-	log.cpp
+	common.cpp \
+	logbuf.cpp \
+	logstream.cpp \
+	manipulators.cpp \
+	logstream_ts.cpp \
+	container_ts.cpp \
+	manipulators_ts.cpp
 
 AM_CPPFLAGS = -I$(top_srcdir)/interface \
 	-I$(top_srcdir)/src \
