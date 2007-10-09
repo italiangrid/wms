@@ -438,11 +438,13 @@ purgeStorageEx(const fs::path& p,
       if (is_jobtype_dag) {
 		
 	std::vector<std::string> children;
-	std::copy(
-          &job_status.children[0],
-          &job_status.children[job_status.children_num],
-          std::back_inserter(children)
-        );
+        if (job_status.children) {
+	  std::copy(
+            &job_status.children[0],
+            &job_status.children[job_status.children_num],
+            std::back_inserter(children)
+          );
+        }
 
         logger::edglog << " browsing: #" << children.size() << " node(s)" << std::endl;
 	
@@ -473,12 +475,13 @@ purgeStorageEx(const fs::path& p,
 	  if (is_jobtype_dag) {
 	    
             std::vector<std::string> children;
-            std::copy(
-              &job_status.children[0],
-              &job_status.children[job_status.children_num],
-              std::back_inserter(children)
-            );
-
+            if (job_status.children) {
+              std::copy(
+                &job_status.children[0],
+                &job_status.children[job_status.children_num],
+                std::back_inserter(children)
+              );
+            }
 	    logger::edglog << " browsing #" << children.size() << " node(s)" << std::endl;
 	    
 	    std::string staging_path(extract_staging_path(p, jobid));
@@ -513,12 +516,13 @@ purgeStorageEx(const fs::path& p,
 	  if (is_jobtype_dag) {
 	    
             std::vector<std::string> children;
-            std::copy(
-              &job_status.children[0],
-              &job_status.children[job_status.children_num],
-              std::back_inserter(children)
-            );
-
+            if (job_status.children) {
+              std::copy(
+                &job_status.children[0],
+                &job_status.children[job_status.children_num],
+                std::back_inserter(children)
+              );
+            }
 	    logger::edglog << " browsing #" << children.size() << " node(s)" << std::endl;
 	    
 	    std::string staging_path(extract_staging_path(p, jobid));
