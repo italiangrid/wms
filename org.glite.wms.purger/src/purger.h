@@ -9,6 +9,8 @@
 #define GLITE_WMS_PURGER_PURGER_H
 
 #include <boost/utility.hpp>
+#include <boost/type_traits.hpp>
+#include <boost/shared_ptr.hpp>
 #include <boost/filesystem/operations.hpp> 
 #include <boost/function.hpp>
 
@@ -25,7 +27,9 @@ class JobId;
 
 namespace wms {
 namespace purger {
-
+ 
+ typedef boost::shared_ptr<boost::remove_pointer<edg_wll_Context>::type> ContextPtr;
+ 
  class Purger : public boost::noncopyable
  {
    boost::function<int(edg_wll_Context)> m_logging_fn;

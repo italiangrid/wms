@@ -34,8 +34,9 @@ namespace po            = boost::program_options;
 using namespace std;
 namespace {
 
+boost::shared_ptr<std::ofstream> f_log_stream;
 const configuration::Configuration* f_conf = 0;
-
+   
 bool 
 find_directories( 
   const fs::path & from_path,
@@ -153,12 +154,14 @@ int main( int argc, char* argv[])
 	log_file.assign( log_path + string("/glite-wms-purgeStorage-") + string(str_time) + string(".log") );
     }
     else if ( vm.count("log-file") ) log_file.assign( vm["log-file"].as<std::string>() );
-    
-//    if( vm.count("log-file") )
-//       logger::threadsafe::logstream.open( log_file.c_str(), logger::info );
-//    else 
-//       logger::threadsafe::logstream.open( std::cout, logger::info ); 
-    
+  
+   if( vm.count("log-file") ) {
+     f_log_stream.reset(new std::ofstream(log_file.c_str()));
+     logger::Log::init(*f_log_stream, logger::Log::INFO);
+   }
+   else {
+     logger::Log::init(std::cout, logger::Log::INFO);
+   }
    std::vector<fs::path> found_path;
    fs::path from_path( get_staging_path(), fs::native); 
    find_directories(from_path, "https", found_path, true);
@@ -172,13 +175,13 @@ int main( int argc, char* argv[])
    }
   }
   catch (boost::program_options::unknown_option& e) {
-    cerr << e.what() << endl;
+    Error(e.what());
   }
   catch( exception& e) {
-    cerr << e.what() << endl;
+    Error(e.what());
   }
   catch( ... ) {
-    cerr << "Uncaught exception..." << endl;
+    Error("Uncaught exception...");
   }
   exit(-1);
 }
