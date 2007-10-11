@@ -11,6 +11,7 @@
 #include "glite/wmsutils/jobid/JobIdExceptions.h"
 
 #include "glite/wms/common/logger/logger_utils.h"
+#include "glite/wms/common/logger/logstream_ts.h"
 
 #include "glite/wms/common/configuration/Configuration.h"
 #include "glite/wms/common/configuration/WMPConfiguration.h"
@@ -18,7 +19,7 @@
 #include <iostream>                        // for cout
 #include <string>
 #include <vector>
-
+#include <cmath>
 #include <time.h>
 #include <fstream>
 #include <sys/vfs.h>
@@ -153,10 +154,10 @@ int main( int argc, char* argv[])
     }
     else if ( vm.count("log-file") ) log_file.assign( vm["log-file"].as<std::string>() );
     
-    if( vm.count("log-file") )
-       logger::threadsafe::edglog.open( log_file.c_str(), logger::info );
-    else 
-       logger::threadsafe::edglog.open( std::cout, logger::info ); 
+//    if( vm.count("log-file") )
+//       logger::threadsafe::logstream.open( log_file.c_str(), logger::info );
+//    else 
+//       logger::threadsafe::logstream.open( std::cout, logger::info ); 
     
    std::vector<fs::path> found_path;
    fs::path from_path( get_staging_path(), fs::native); 
