@@ -22,7 +22,7 @@
 
 #include "glite/wmsutils/classads/classad_utils.h"
 
-#include "glite/wms/common/logger/logger_utils.h"
+#include "glite/wms/common/logger/logging.h"
 #include "glite/wms/common/utilities/scope_guard.h"
 
 #include "glite/lb/Job.h"
@@ -41,7 +41,22 @@ namespace logging       = glite::lb;
 namespace configuration = glite::wms::common::configuration;
 namespace utilities     = glite::wms::common::utilities;
 
-#define StatToString(s) boost::algorithm::to_upper_copy(std::string(edg_wll_StatToString(s.state)))
+namespace {
+
+inline std::string StatToString(edg_wll_JobStat const& status)
+{
+  std::string result;
+  char* const s = edg_wll_StatToString(status.state);
+  if (s) {
+    result = s;
+    free(s);
+    result = boost::algorithm::to_upper_copy(result);
+  }
+
+  return result;
+}
+
+}
 
 namespace glite {
 namespace wms {
@@ -88,17 +103,22 @@ query_job_status(
   ContextPtr const& log_ctx 
 ) 
 {
- if (edg_wll_JobStatus(
-     log_ctx.get(),jobid,
-     EDG_WLL_STAT_CLASSADS | EDG_WLL_STAT_CHILDREN,
-     &job_status)
- ) {
-     char  *etxt,*edsc;
-     edg_wll_Error(log_ctx.get(),&etxt,&edsc);
-     Info(jobid.toString() << ": " << "edg_wll_JobStat " << etxt);
-     free(etxt); free(edsc);
-     return false;
+  if (edg_wll_JobStatus(
+        log_ctx.get(),jobid,
+        EDG_WLL_STAT_CLASSADS | EDG_WLL_STAT_CHILDREN,
+        &job_status
+      )
+     ) {
+    char* etxt = 0;
+    char* edsc = 0;
+    edg_wll_Error(log_ctx.get(), &etxt, &edsc);
+    GLITE_LOG_ACCESS_ERROR
+      << jobid.toString() << ": edg_wll_JobStat " << etxt;
+    free(etxt);
+    free(edsc);
+    return false;
   }
+
   return true;
 }
 
@@ -115,20 +135,18 @@ jobid_to_absolute_path(jobid::JobId const& id)
 fs::path 
 strid_to_absolute_path(std::string const& id)
 {
-  const jobid::JobId _(id);
-  return jobid_to_absolute_path(_);
+  jobid::JobId const jobid(id);
+  return jobid_to_absolute_path(jobid);
 }
 
 bool is_threshold_overcome(edg_wll_JobStat const& job_status, time_t threshold)
 {
-  time_t now;
-  time( &now);
-  return (now -  job_status.lastUpdateTime.tv_sec > threshold);
+  return std::time(0) - job_status.lastUpdateTime.tv_sec > threshold;
 }
 
 bool is_status_removable(edg_wll_JobStat const& job_status)
 {
-  switch( job_status.state ) {
+  switch (job_status.state) {
   
   case EDG_WLL_JOB_CANCELLED:
   case EDG_WLL_JOB_CLEARED:
@@ -199,12 +217,12 @@ Purger::remove_path(
   bool result = false;
   try {
     fs::remove_all(p);
-    if( !(result = !(m_logging_fn( log_ctx.get() ) != 0)) ) {
-      Error("LB event logging failed" << get_lb_message(log_ctx));
+    if (!(result = !(m_logging_fn( log_ctx.get() ) != 0))) {
+      GLITE_LOG_ACCESS_ERROR
+        << "LB event logging failed " << get_lb_message(log_ctx);
     }
-  } 
-  catch(fs::filesystem_error& fse) {
-    Error(fse.what());
+  } catch(fs::filesystem_error& fse) {
+    GLITE_LOG_ACCESS_ERROR << fse.what();
   }
   return result;
 }
@@ -217,11 +235,10 @@ Purger::operator()(jobid::JobId const& id)
     log_ctx = create_context(id, get_host_x509_proxy(), f_sequence_code);
   }
   catch (CannotCreateLBContext& e) {
-    Error(
-      id.toString() << ": "
-      << "CannotCreateLBContext from host proxy, error code #" 
-      << e.error_code()
-    );
+    GLITE_LOG_ACCESS_ERROR
+      << id.toString()
+      << ": CannotCreateLBContext from host proxy, error code #"
+      << e.error_code();
     return false;
   }
   edg_wll_JobStat job_status;
@@ -261,71 +278,67 @@ Purger::operator()(jobid::JobId const& id)
         ++n;
       }
     }
-    Info(
-      id.toString() << ": " 
-      << children.size() - n << "/" << children.size() << " nodes removed"
-    );
-    bool _(
+    GLITE_LOG_ACCESS_INFO
+      << id.toString() << ": " 
+      << children.size() - n << '/' << children.size() << " nodes removed";
+
+    bool const path_removed(
       remove_path(jobid_to_absolute_path(id), log_ctx)
     );
-    if (_) {
-      Info(
-        id.toString()<< ": removed " << StatToString(job_status) << " dag "
-      );
+    if (path_removed) {
+      GLITE_LOG_ACCESS_INFO
+        << id.toString()<< ": removed " << StatToString(job_status) << " dag ";
     }
-    return _;
+    return path_removed;
   }
   
-  bool is_dag_node = (job_status.parent_job != 0);
+  bool const is_dag_node = job_status.parent_job != 0;
   
   // if the job is a dag node we should skip its removal
   // unless it is an orphan node or so requested
-  if ( is_dag_node &&
-       m_force_dag_node_removal )
-  {
-    bool _(
+  if (is_dag_node && m_force_dag_node_removal ) {
+    bool const path_removed(
       remove_path(jobid_to_absolute_path(id), log_ctx)
     );
-    if (_) {
-      Info(
-        id.toString() << ": removed " << StatToString(job_status) << " node "
-      );
+    if (path_removed) {
+      GLITE_LOG_ACCESS_INFO
+        << id.toString() << ": removed "
+        << StatToString(job_status) << " node";
     }
-    return _;
-  } 
+    return path_removed;
+  }
   
-  if ( is_dag_node &&
-       m_force_orphan_node_removal ) try {
+  if (is_dag_node && m_force_orphan_node_removal) try {
 
     jobid::JobId const p_id(job_status.parent_job);
     fs::path pp(jobid_to_absolute_path(p_id));
     if (!fs::exists(pp)) {
-      bool _(
+      bool const path_removed(
         remove_path(jobid_to_absolute_path(id), log_ctx)
       );
-      if (_) {
-        Info(
-          id.toString() << ": removed " << StatToString(job_status) << " orphan node "
-        );
+      if (path_removed) {
+        GLITE_LOG_ACCESS_INFO
+          << id.toString() << ": removed "
+          << StatToString(job_status) << " orphan node";
       }
-      return _;
+      return path_removed;
     }
-  }
-  catch(...) {
+  } catch(...) {                // TODO: refine catch
     return false;
   }
 
-  if ((m_skip_status_checking || is_status_removable(job_status)) &&
-      (m_skip_threshold_checking || is_threshold_overcome(job_status, m_threshold))
-  ) { // removing normal job
-    bool _(
+  if ((m_skip_status_checking || is_status_removable(job_status))
+      && (m_skip_threshold_checking
+          || is_threshold_overcome(job_status, m_threshold)
+         )
+     ) { // removing normal job
+    bool const path_removed(
       remove_path(jobid_to_absolute_path(id), log_ctx)
     );
-    if (_) {
-      Info(
-        id.toString() << ": removed " << StatToString(job_status) << " job "
-      );
-      return _;
+    if (path_removed) {
+      GLITE_LOG_ACCESS_INFO
+        << id.toString() << ": removed " << StatToString(job_status) << " job";
+      return path_removed;
     }
   }
   return false;

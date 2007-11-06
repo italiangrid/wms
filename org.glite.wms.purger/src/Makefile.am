@@ -26,7 +26,7 @@ sbin_PROGRAMS      = glite-wms-purgeStorage
 libglite_wms_purger_la_SOURCES = \
 	purger.cpp \
 	lb_utils.cpp
-
+libglite_wms_purger_la_LIBADD = $(GLITE_WMS_COMMON_LOGGER_LIBS)
 glite_wms_purgeStorage_SOURCES = \
 	glite-wms-purgeStorage.cpp
 
@@ -37,7 +37,6 @@ glite_wms_purgeStorage_LDADD = \
 	$(GLITE_WMSUTILS_CLASSADS_LIBS) \
 	$(GLITE_WMS_COMMON_CONF_LIBS) \
 	$(GLITE_WMS_COMMON_UT_UTIL_LIBS) \
-	$(GLITE_WMS_COMMON_LOGGER_LIBS) \
 	$(GLITE_LB_NOTHR_CLIENT_LIBS) \
 	$(GLITE_LB_NOTHR_CLIENTPP_LIBS) \
 	$(GLITE_LB_NOTHR_COMMON_LIBS) \
