@@ -19,6 +19,9 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.16.2.13  2007/11/06 11:21:20  monforte
+#       Increased version numbers
+#
 #       Revision 1.16.2.12  2007/11/06 09:52:34  monforte
 #       Removed libtar and jp dependencies + some minor cleanup
 #
@@ -187,7 +190,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.57)
-AC_INIT([GLite WMS Purger], [3.1.8])
+AC_INIT([GLite WMS Purger], [3.1.9])
 AC_CONFIG_AUX_DIR([./project])
 AM_INIT_AUTOMAKE([1.6.3 subdir-objects])
 AC_CONFIG_SRCDIR([src/purger.cpp])
@@ -295,7 +298,6 @@ fi
 have_glite_wms_common=no
 have_glite_wmsutils=no
 have_glite_lb=no
-have_glite_jp=no
 
 AC_GLITE
 AC_OPTIMIZE
