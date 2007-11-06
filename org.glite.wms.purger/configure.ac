@@ -19,6 +19,9 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.16.2.12  2007/11/06 09:52:34  monforte
+#       Removed libtar and jp dependencies + some minor cleanup
+#
 #       Revision 1.16.2.11  2007/06/05 09:32:02  rlops
 #       decreased version
 #
@@ -236,13 +239,9 @@ have_boost=no
 have_classads=no
 have_globus=no
 have_expat=no
-have_libtar=no
 
 AC_BOOST([], have_boost=yes, have_boost=no)
 AC_MSG_RESULT(["BOOST found $have_boost"])
-
-AC_LIBTAR([], have_libtar=yes, have_libtar=no)
-AC_MSG_RESULT(["BOOST found $have_libtar"])
 
 AC_CLASSADS([], have_classads=yes, have_classads=no)
 AC_MSG_RESULT(["CLASSADS found $have_classads"])
@@ -255,10 +254,6 @@ AC_MSG_RESULT(["EXPAT found $have_expat"])
 
 if test "$have_globus" = "no"; then
   AC_MSG_RESULT(["Please verify GLOBUS package"])
-fi
-
-if test "$have_libtar" = "no"; then
-  AC_MSG_RESULT(["Please verify LIBTAR package"])
 fi
 
 if test "$have_boost" = "no"; then
@@ -313,11 +308,6 @@ AC_MSG_RESULT(["GLITE_WMSUTILS found $have_glite_wmsutils"])
 
 AC_GLITE_LB([], have_glite_lb=yes, have_glite_lb=no)
 AC_MSG_RESULT(["GLITE_LB found $have_glite_lb"])
-
-AC_GLITE_JP([], have_glite_jp=yes, have_glite_jp=no)
-AC_MSG_RESULT(["GLITE_JP found $have_glite_jp"])
-
-AC_GLITE_WMS_OPTIONAL
 
 # Configuration items
 AC_PREFIX_DEFAULT([/opt/glite])

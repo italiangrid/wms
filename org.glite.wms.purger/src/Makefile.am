@@ -50,8 +50,7 @@ glite_wms_purgeStorage_LDADD = \
 	$(GLOBUS_COMMON_NOTHR_LIBS) \
 	$(GLOBUS_GSS_NOTHR_LIBS) \
 	$(CLASSAD_LIBS) \
-	$(EXPAT_LIBS) \
-	-lstdc++ 
+	$(EXPAT_LIBS)
 
 AM_CPPFLAGS = \
 	$(GLITE_CFLAGS) \
@@ -59,8 +58,7 @@ AM_CPPFLAGS = \
 	$(BOOST_CFLAGS) \
 	$(CLASSAD_CFLAGS) \
 	$(GLOBUS_THR_CFLAGS) \
-	-DWITH_LDAP_EXCEPTIONS \
-        $(GLITE_WMS_OPTIONAL_JP_CFLAGS)
+	$(GLITE_WMS_OPTIONAL_JP_CFLAGS)
 
 #EXTRA_DIST = edg-wl-purgeStorage-weekly.crontab \
 #       edg-wl-purgeStorage-hourly.crontab \

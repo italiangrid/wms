@@ -29,10 +29,6 @@
 #include "lb_utils.h"
 #include "purger.h"
 
-#ifndef GLITE_WMS_DONT_HAVE_JP
-#include "jp_upload_files.h"
-#endif
-
 #include "glite/lb/context.h"
 #include "glite/lb/producer.h"
 #include "glite/lb/LoggingExceptions.h"
@@ -171,75 +167,7 @@ namespace
 
   bool upload_input_sandbox(const fs::path& p)
   {
-#ifndef GLITE_WMS_DONT_HAVE_JP
-    bool result = false;
-    try {
-      ContextPtr lb_context;
-      jobid::JobId jobid( jobid::from_filename( p.leaf() ) );
-      
-      lb_context = create_context(
-        jobid,
-        get_user_x509_proxy(jobid),
-        f_sequence_code
-      );
-   
-      boost::scoped_ptr<classad::ClassAd> jdlad;
-      std::string jdlstr(
-        get_original_jdl(lb_context.get(), jobid)
-      );
-      jdlad.reset(utils::parse_classad(jdlstr));
-      
-      std::string job_provenance(
-        utils::evaluate_attribute(*jdlad, "JobProvenance")
-      );
-      
-      fs::path proxy_path(
-        p / fs::path("user.proxy", fs::native)
-      );
-      std::string proxy_file(proxy_path.native_file_string());
-      std::vector<std::string> isb_files;
-      list_directory(p/fs::path("input", fs::native), isb_files);
-      jp_upload_files uploader(
-        jobid.toString(), proxy_file, "", job_provenance
-      );
-      fs::path jdl_original_path(
-        p / fs::path("JDLOriginal", fs::native)
-      );
-      
-      if (fs::exists(jdl_original_path)) {
-        isb_files.push_back(jdl_original_path.native_file_string());
-      }
-
-      fs::path jdl_to_start_path(
-        p / fs::path("JDLToStart", fs::native)
-      );
-      if (fs::exists(jdl_to_start_path)) {
-        isb_files.push_back(jdl_to_start_path.native_file_string());
-      }
-
-      uploader(isb_files);
-      result = true;
-    }
-    catch (CannotCreateLBContext& e) 
-    {
-      logger::edglog << "Cannot create LB context " << e.what();
-    }
-    catch(utils::CannotParseClassAd& cpc) {
-      logger::edglog << "Cannot parse logging::JobStatus::JDL";
-    }
-    catch(utils::InvalidValue& ive) {
-      logger::edglog << "JobProvenance attribute not found in JDL";
-    }
-    catch(jp_upload_files::init_context_exception& ice) {
-      logger::edglog << "Failed to init JobProvenance context";
-    }
-    catch(jp_upload_files::importer_upload_exception& iup) {
-      logger::edglog << "ISB upload failure: " << iup.what();
-    }
-    return result;
-#else
   return true; 
-#endif
   }
 
   bool 
