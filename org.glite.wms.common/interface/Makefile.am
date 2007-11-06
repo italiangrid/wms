@@ -18,10 +18,14 @@ nobase_commonut_HEADERS = \
 	glite/wms/common/logger/edglog.h \
 	glite/wms/common/logger/logbuf.h \
 	glite/wms/common/logger/logger_utils.h \
-	glite/wms/common/logger/log.h \
+	glite/wms/common/logger/wms_log.h \
 	glite/wms/common/logger/logstream.h \
 	glite/wms/common/logger/logstream_ts.h \
 	glite/wms/common/logger/manipulators.h \
+	glite/wms/common/logger/key_value.h \
+	glite/wms/common/logger/logging.h \
+	glite/wms/common/logger/logging_init.h \
+	glite/wms/common/logger/logging_defs.h \
 	glite/wms/common/utilities/edgstrstream.h \
 	glite/wms/common/utilities/Extractor.h \
 	glite/wms/common/utilities/filecontainer.h \
