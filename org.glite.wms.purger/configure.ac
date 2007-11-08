@@ -19,6 +19,9 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.16.2.15  2007/11/08 14:24:03  giaco
+#       increased version
+#
 #       Revision 1.16.2.14  2007/11/08 11:22:04  giaco
 #       clean up expat and jp deps
 #
@@ -193,7 +196,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.57)
-AC_INIT([GLite WMS Purger], [3.1.9])
+AC_INIT([GLite WMS Purger], [3.1.10])
 AC_CONFIG_AUX_DIR([./project])
 AM_INIT_AUTOMAKE([1.6.3 subdir-objects])
 AC_CONFIG_SRCDIR([src/purger.cpp])
