@@ -19,6 +19,9 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.16.2.14  2007/11/08 11:22:04  giaco
+#       clean up expat and jp deps
+#
 #       Revision 1.16.2.13  2007/11/06 11:21:20  monforte
 #       Increased version numbers
 #
@@ -241,7 +244,6 @@ AC_CHECK_FUNCS([bzero endpwent ftruncate getmntent memset mkdir pow strerror str
 have_boost=no
 have_classads=no
 have_globus=no
-have_expat=no
 
 AC_BOOST([], have_boost=yes, have_boost=no)
 AC_MSG_RESULT(["BOOST found $have_boost"])
@@ -251,9 +253,6 @@ AC_MSG_RESULT(["CLASSADS found $have_classads"])
 
 AC_GLOBUS([], have_globus=yes, have_globus=no)
 AC_MSG_RESULT(["GLOBUS found $have_globus"])
-
-AC_EXPAT([], have_expat=yes, have_expat=no)
-AC_MSG_RESULT(["EXPAT found $have_expat"])
 
 if test "$have_globus" = "no"; then
   AC_MSG_RESULT(["Please verify GLOBUS package"])
@@ -267,15 +266,7 @@ if test "$have_classads" = "no"; then
   AC_MSG_RESULT(["Please verify CLASSADS package"])
 fi
 
-if test "$have_expat" = "no"; then
-  AC_MSG_RESULT(["Please verify EXPAT package"])
-fi
-
 if test "$have_globus" = "no"; then
-  AC_MSG_ERROR([Cannot continue building])
-fi
-
-if test "$have_libtar" = "no"; then
   AC_MSG_ERROR([Cannot continue building])
 fi
 
@@ -284,14 +275,6 @@ if test "$have_boost" = "no"; then
 fi
 
 if test "$have_classads" = "no"; then
-  AC_MSG_ERROR([Cannot continue building])
-fi
-
-if test "$have_ares" = "no"; then
-  AC_MSG_ERROR([Cannot continue building])
-fi
-
-if test "$have_expat" = "no"; then
   AC_MSG_ERROR([Cannot continue building])
 fi
 

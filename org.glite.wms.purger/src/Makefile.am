@@ -25,10 +25,7 @@ sbin_PROGRAMS      = glite-wms-purgeStorage
 
 libglite_wms_purger_la_SOURCES = \
 	purger.cpp \
-	lb_utils.cpp \
-	jp_upload_files.cpp
-libglite_wms_purger_la_LIBADD = \
-        $(GLITE_WMS_OPTIONAL_JP_LIBS)
+	lb_utils.cpp
 
 glite_wms_purgeStorage_SOURCES = \
 	glite-wms-purgeStorage.cpp
@@ -49,16 +46,13 @@ glite_wms_purgeStorage_LDADD = \
 	$(GLOBUS_SSL_NOTHR_LIBS) \
 	$(GLOBUS_COMMON_NOTHR_LIBS) \
 	$(GLOBUS_GSS_NOTHR_LIBS) \
-	$(CLASSAD_LIBS) \
-	$(EXPAT_LIBS)
+	$(CLASSAD_LIBS)
 
 AM_CPPFLAGS = \
 	$(GLITE_CFLAGS) \
-	-I$(top_srcdir)/src \
 	$(BOOST_CFLAGS) \
 	$(CLASSAD_CFLAGS) \
-	$(GLOBUS_THR_CFLAGS) \
-	$(GLITE_WMS_OPTIONAL_JP_CFLAGS)
+	$(GLOBUS_THR_CFLAGS)
 
 #EXTRA_DIST = edg-wl-purgeStorage-weekly.crontab \
 #       edg-wl-purgeStorage-hourly.crontab \
