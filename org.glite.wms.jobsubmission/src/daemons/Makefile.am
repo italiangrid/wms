@@ -17,6 +17,9 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.20  2007/11/12 10:36:45  giaco
+#       cleanup deps
+#
 #       Revision 1.19  2007/07/05 10:20:21  gianelle
 #       Add the "process" utility; it can now be removed from the org.glite.wms.common component
 #
@@ -114,7 +117,7 @@ glite_wms_job_controller_LDADD = ../controller/libglite_wms_jss_controller.la \
 	$(GLOBUS_GSS_NOTHR_LIBS) \
 	$(GLOBUS_COMMON_NOTHR_LIBS) \
 	$(CLASSAD_LIBS) $(BOOST_LIBS) \
-	$(EXPAT_LIBS) $(CONDORG_LIBS) \
+	$(CONDORG_LIBS) \
 	$(GLITE_SECURITY_RENEWAL_NOTHR_LIBS) \
 	$(GLITE_WMS_PURGER_LIBS) \
         $(GLITE_WMS_OPTIONAL_JP_LIBS)
@@ -140,7 +143,7 @@ glite_wms_log_monitor_LDADD = ../controller/libglite_wms_jss_controller.la \
 	$(GLOBUS_GSS_NOTHR_LIBS) \
 	$(GLOBUS_COMMON_NOTHR_LIBS) \
 	$(CLASSAD_LIBS) $(BOOST_LIBS) \
-	$(CONDORG_LIBS) $(EXPAT_LIBS) \
+	$(CONDORG_LIBS) \
         $(GLITE_SECURITY_RENEWAL_NOTHR_LIBS) \
 	$(GLITE_WMS_PURGER_LIBS) \
         $(GLITE_WMS_OPTIONAL_JP_LIBS)
@@ -150,7 +153,6 @@ AM_CPPFLAGS = -I$(top_srcdir)/src \
 	$(GLOBUS_CFLAGS) \
 	$(BOOST_CFLAGS) \
 	$(CLASSAD_CFLAGS) \
-	$(EXPAT_CFLAGS) \
 	$(CONDORG_CFLAGS) -DGLITE_WMS_HAVE_LBPROXY
 
 MAINTAINERCLEANFILES = Makefile.in *~

@@ -17,6 +17,9 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.7  2007/11/12 10:36:46  giaco
+#       cleanup deps
+#
 #       Revision 1.6  2006/03/15 13:19:55  gianelle
 #       Drops any explicit references to ares.
 #
@@ -75,9 +78,6 @@ noinst_HEADERS = \
 	MonitorData.h \
 	SubmitReader.h \
 	JobResubmitter.h
-
-LOCAL_CFLAGS = $(EXPAT_CFLAGS)
-LOCAL_LIBS = $(EXPAT_LIBS)
 
 EXTRA_DIST = EventFactory.cpp \
 	EventInterface.cpp \
