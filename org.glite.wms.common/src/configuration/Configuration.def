@@ -491,6 +491,8 @@ class WMPConfiguration {
   parameter classad::ClassAd*( OperationLoadScripts ) section normal;
   parameter bool ( AsyncJobStart = true ) section normal;
   parameter long ( MaxServedRequests = 300 ) section normal;
+
+  parameter int(listMatchTimeout = 600) section normal;
 }
 
 class ICEConfiguration {
