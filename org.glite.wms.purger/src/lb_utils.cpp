@@ -13,15 +13,14 @@
 #include <boost/lexical_cast.hpp>
 #include <openssl/pem.h>
 #include <openssl/x509.h>
-#include "glite/wmsutils/jobid/JobId.h"
-#include "glite/wmsutils/jobid/manipulation.h"
+#include "glite/jobid/JobId.h"
 #include "glite/lb/producer.h"
 #include "glite/security/proxyrenewal/renewal.h"
 #include "glite/wms/common/configuration/Configuration.h"
 #include "glite/wms/common/configuration/NSConfiguration.h"
 #include "glite/wms/common/configuration/CommonConfiguration.h"
 
-namespace jobid = glite::wmsutils::jobid;
+namespace jobid = glite::jobid;
 
 namespace configuration = glite::wms::common::configuration;
 

@@ -11,9 +11,7 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/bind.hpp>
 
-#include "glite/wmsutils/jobid/JobId.h"
-#include "glite/wmsutils/jobid/manipulation.h"
-#include "glite/wmsutils/jobid/JobIdExceptions.h"
+#include "glite/jobid/JobId.h"
 
 #include "glite/wms/common/configuration/Configuration.h"
 #include "glite/wms/common/configuration/WMPConfiguration.h"
@@ -36,7 +34,7 @@
 #include <time.h>
 
 namespace fs            = boost::filesystem;
-namespace jobid         = glite::wmsutils::jobid;
+namespace jobid         = glite::jobid;
 namespace logging       = glite::lb;
 namespace configuration = glite::wms::common::configuration;
 namespace utilities     = glite::wms::common::utilities;
@@ -103,8 +101,10 @@ query_job_status(
   ContextPtr const& log_ctx 
 ) 
 {
+  glite_jobid_t c_id;
+  glite_jobid_dup(jobid.c_jobid(), &c_id);
   if (edg_wll_JobStatus(
-        log_ctx.get(),jobid,
+        log_ctx.get(), c_id,
         EDG_WLL_STAT_CLASSADS | EDG_WLL_STAT_CHILDREN,
         &job_status
       )
@@ -116,19 +116,23 @@ query_job_status(
       << jobid.toString() << ": edg_wll_JobStat " << etxt;
     free(etxt);
     free(edsc);
+
+    glite_jobid_free(c_id);
     return false;
   }
 
+  glite_jobid_free(c_id);
   return true;
 }
 
 fs::path
 jobid_to_absolute_path(jobid::JobId const& id)
 {
+  std::string const unique(id.unique());
   return fs::path(
     fs::path(get_staging_path(), fs::native) /
-    fs::path(jobid::get_reduced_part(id), fs::native) /
-    fs::path(jobid::to_filename (id), fs::native)
+    fs::path(unique.substr(0,2), fs::native) /
+    fs::path(unique, fs::native)
   );
 }
 

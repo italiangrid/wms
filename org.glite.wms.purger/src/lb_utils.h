@@ -18,10 +18,9 @@
 
 namespace glite {
 
-namespace wmsutils {
 namespace jobid {
 class JobId;
-}}
+}
 
 namespace wms {
 namespace purger {
@@ -30,7 +29,7 @@ typedef boost::shared_ptr<boost::remove_pointer<edg_wll_Context>::type> ContextP
 
 ContextPtr
 create_context(
-  wmsutils::jobid::JobId const& id,
+  jobid::JobId const& id,
   std::string const& x509_proxy,
   std::string const& sequence_code
 );
@@ -62,7 +61,7 @@ public:
 
 ContextPtr
 create_context_proxy(
-  wmsutils::jobid::JobId const& id,
+  jobid::JobId const& id,
   std::string const& x509_proxy,
   std::string const& sequence_code
 );
@@ -124,7 +123,7 @@ public:
   }
 };
 
-std::string get_original_jdl(edg_wll_Context context, wmsutils::jobid::JobId const& id);
+std::string get_original_jdl(edg_wll_Context context, jobid::JobId const& id);
 std::string get_lb_message(ContextPtr const& context_ptr);
 std::string get_lb_message(edg_wll_Context context);
 

@@ -19,11 +19,9 @@
 
 namespace glite {
 
-namespace wmsutils {
 namespace jobid {
 class JobId;
 } // namespace jobid
-} // namespace wmsutils
 
 namespace wms {
 namespace purger {
@@ -46,7 +44,7 @@ namespace purger {
 
  public:
    Purger();   
-   bool operator()(glite::wmsutils::jobid::JobId const&);
+   bool operator()(glite::jobid::JobId const&);
 
    Purger& log_using(boost::function<int(edg_wll_Context)>);
    Purger& threshold(time_t);
@@ -56,13 +54,6 @@ namespace purger {
    Purger& force_dag_node_removal(bool = true);
  };
 
-} // namespace purger
-} // namespace wms
-} // namespace glite
+}}}
 
-// Local Variables:
-// mode: c++
-// End:
-// 
-
-#endif /* GLITE_WMS_PURGER_PURGER_H */
+#endif

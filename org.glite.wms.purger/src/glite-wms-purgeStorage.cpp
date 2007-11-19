@@ -5,7 +5,7 @@
 #include "lb_utils.h"
 #include "purger.h"
 
-#include "glite/wmsutils/jobid/JobId.h"
+#include "glite/jobid/JobId.h"
 #include "glite/wmsutils/jobid/manipulation.h"
 #include "glite/wmsutils/jobid/JobIdExceptions.h"
 
@@ -23,7 +23,7 @@
 namespace fs            = boost::filesystem;
 namespace wl	        = glite::wms;
 namespace configuration = glite::wms::common::configuration;
-namespace jobid         = glite::wmsutils::jobid;
+namespace jobid         = glite::jobid;
 namespace po            = boost::program_options;
 
 namespace {
