@@ -26,37 +26,30 @@ sbin_PROGRAMS      = glite-wms-purgeStorage
 libglite_wms_purger_la_SOURCES = \
 	purger.cpp \
 	lb_utils.cpp
-libglite_wms_purger_la_LIBADD = $(GLITE_WMS_COMMON_LOGGER_LIBS)
+libglite_wms_purger_la_LDFLAGS = $(GLITE_LDFLAGS)
+libglite_wms_purger_la_LIBADD = $(GLITE_WMS_COMMON_LIBS)
+
 glite_wms_purgeStorage_SOURCES = \
 	glite-wms-purgeStorage.cpp
-
+glite_wms_purgeStorage_LDFLAGS = $(GLITE_LDFLAGS) $(CLASSAD_LDFLAGS)
 glite_wms_purgeStorage_LDADD = \
-	$(GLITE_WMSUTILS_JOBID_LIBS) \
-	$(GLITE_WMSUTILS_CJOBID_LIBS) \
-	$(GLITE_WMSUTILS_EXCEPTION_LIBS) \
+	./libglite_wms_purger.la \
 	$(GLITE_WMSUTILS_CLASSADS_LIBS) \
-	$(GLITE_WMS_COMMON_CONF_LIBS) \
-	$(GLITE_WMS_COMMON_UT_UTIL_LIBS) \
 	$(GLITE_LB_NOTHR_CLIENT_LIBS) \
 	$(GLITE_LB_NOTHR_CLIENTPP_LIBS) \
 	$(GLITE_LB_NOTHR_COMMON_LIBS) \
-	./libglite_wms_purger.la \
 	$(BOOST_LIBS) \
 	$(GLOBUS_SSL_NOTHR_LIBS) \
 	$(GLOBUS_COMMON_NOTHR_LIBS) \
 	$(GLOBUS_GSS_NOTHR_LIBS) \
-	$(CLASSAD_LIBS) \
-	$(EXPAT_LIBS) \
-	-lstdc++ 
+	$(CLASSAD_LIBS)
 
 AM_CPPFLAGS = \
-	$(GLITE_CFLAGS) \
-	-I$(top_srcdir)/src \
+	$(GLITE_CPPFLAGS) \
 	$(BOOST_CFLAGS) \
-	$(CLASSAD_CFLAGS) \
+	$(CLASSAD_CPPFLAGS) \
 	$(GLOBUS_THR_CFLAGS) \
-	-DWITH_LDAP_EXCEPTIONS \
-        $(GLITE_WMS_OPTIONAL_JP_CFLAGS)
+	-DWITH_LDAP_EXCEPTIONS
 
 #EXTRA_DIST = edg-wl-purgeStorage-weekly.crontab \
 #       edg-wl-purgeStorage-hourly.crontab \

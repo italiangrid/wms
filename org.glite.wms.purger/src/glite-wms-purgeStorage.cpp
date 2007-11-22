@@ -6,8 +6,6 @@
 #include "purger.h"
 
 #include "glite/jobid/JobId.h"
-#include "glite/wmsutils/jobid/manipulation.h"
-#include "glite/wmsutils/jobid/JobIdExceptions.h"
 
 #include "glite/wms/common/configuration/Configuration.h"
 #include "glite/wms/common/configuration/WMPConfiguration.h"
@@ -165,7 +163,8 @@ int main( int argc, char* argv[])
    std::vector<fs::path>::const_iterator const e = found_path.end();
 
    for( ; i != e ; ++i) {
-     jobid::JobId id(jobid::from_filename( i->leaf()));
+#warning FIXME extract the id from somewhere
+     jobid::JobId id;//(jobid::from_filename( i->leaf()));
      thePurger( id );
    }
   }

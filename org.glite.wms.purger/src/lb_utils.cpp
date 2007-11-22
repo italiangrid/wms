@@ -53,7 +53,9 @@ create_context(
   
   const int flag = EDG_WLL_SEQ_NORMAL;
   // the following fails if the sequence code is not formally correct
-  errcode |= edg_wll_SetLoggingJob(context, id, sequence_code.c_str(), flag);
+  glite_jobid_t id_;
+  glite_jobid_dup(id.c_jobid(), &id_);
+  errcode |= edg_wll_SetLoggingJob(context, id_, sequence_code.c_str(), flag);
 
   if (errcode) {
     throw CannotCreateLBContext(errcode);
@@ -116,9 +118,11 @@ create_context_proxy(
 
   std::string const user_dn = get_proxy_subject(x509_proxy);
   int const flag = EDG_WLL_SEQ_NORMAL;
+  glite_jobid_t id_;
+  glite_jobid_dup(id.c_jobid(), &id_);
   errcode |= edg_wll_SetLoggingJobProxy(
     context,
-    id,
+    id_,
     sequence_code.empty() ? 0 : sequence_code.c_str(),
     user_dn.c_str(),
     flag
@@ -139,7 +143,9 @@ get_original_jdl(edg_wll_Context context, jobid::JobId const& id)
   edg_wll_QueryRec job_conditions[2];
   job_conditions[0].attr    = EDG_WLL_QUERY_ATTR_JOBID;
   job_conditions[0].op      = EDG_WLL_QUERY_OP_EQUAL;
-  job_conditions[0].value.j = id.getId();
+  glite_jobid_t id_;
+  glite_jobid_dup(id.c_jobid(), &id_);
+  job_conditions[0].value.j = id_;
   job_conditions[1].attr    = EDG_WLL_QUERY_ATTR_UNDEF;
 
   edg_wll_QueryRec event_conditions[3];
