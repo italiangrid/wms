@@ -17,6 +17,13 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.12  2007/11/22 22:40:03  giaco
+#       - general cleanup of the build system
+#       - now a single library libglite_wms_common instead of N, as it was before.
+#         The single lib contains only utilities, configuration and logger. All
+#         the other functionality will be embedded in the component that makes
+#         direct use of it
+#
 #       Revision 1.11  2005/06/10 15:07:21  giaco
 #       - exclude test from SUBDIRS, it doesn't build
 #
@@ -46,7 +53,7 @@ docdir = $(datadir)/doc/@PACKAGE@-@VERSION@
 doc_DATA = LICENSE
 
 ## Subdirectories list
-SUBDIRS = interface src
+SUBDIRS = src interface
 
 ## Default flags to run aclocal
 ACLOCAL_AMFLAGS = -I project
