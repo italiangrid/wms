@@ -26,6 +26,14 @@ glite_wms_eval_ad_expr_LDADD   = \
 
 configuration_cpp_files = \
 	configuration/Configuration.cpp \
+	configuration/JCConfiguration.cpp \
+	configuration/NSConfiguration.cpp \
+	configuration/LMConfiguration.cpp \
+	configuration/ICEConfiguration.cpp \
+	configuration/WMConfiguration.cpp \
+	configuration/WMCConfiguration.cpp \
+	configuration/WMPConfiguration.cpp \
+	configuration/CommonConfiguration.cpp \
 	configuration/confbase.cpp \
 	configuration/exceptions.cpp \
 	configuration/ModuleType.cpp \
