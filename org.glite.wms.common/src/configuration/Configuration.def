@@ -471,7 +471,7 @@ class WMPConfiguration {
   parameter int ( HTTPSPort ) section normal;
   parameter int ( GridFTPPort ) section normal;
 
-  parameter int ( MinPerusalTimeInterval ) section normal;
+  parameter int ( MinPerusalTimeInterval = 1000 ) section normal;
 
   parameter std::string ( DefaultProtocol ) section normal;
 
@@ -493,6 +493,8 @@ class WMPConfiguration {
   parameter long ( MaxServedRequests = 300 ) section normal;
 
   parameter int(listMatchTimeout = 600) section normal;
+  parameter int(maxPerusalFiles = 15) section normal;
+
 }
 
 class ICEConfiguration {
