@@ -494,7 +494,8 @@ class WMPConfiguration {
 
   parameter int(listMatchTimeout = 600) section normal;
   parameter int(maxPerusalFiles = 15) section normal;
-
+  parameter int(maxInputSandboxFiles = 10) section normal;
+  parameter int(maxOutputSandboxFiles = 10) section normal;
 }
 
 class ICEConfiguration {
