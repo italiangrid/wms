@@ -370,6 +370,8 @@ class WMConfiguration {
   parameter std::vector<std::string>(CeMonitorServices) section normal;
   parameter int(CeMonitorAsynchPort = -1) section normal;
   parameter int(IsmIiPurchasingRate = 240) section normal;
+  parameter std::string(IsmIiLDAPCEFilterExt = "") section normal;
+  parameter bool(IsmIiLDAPSearchAsync = false) section normal;
   parameter int(IsmCEMonPurchasingRate = 120) section normal;
   parameter int(IsmCEMonAsynchPurchasingRate = 30) section normal;
   parameter bool(DisablePurchasingFromGris = false) section normal;
