@@ -8,7 +8,6 @@
 /* Tmpl: wrap class LMConfiguration */
 /* Tmpl: wrap class NSConfiguration */
 /* Tmpl: wrap class WMConfiguration */
-/* Tmpl: wrap class WMCConfiguration */
 /* Tmpl: wrap class WMPConfiguration */
 /* Tmpl: wrap class ICEConfiguration *
 

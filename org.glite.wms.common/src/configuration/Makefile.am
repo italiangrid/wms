@@ -16,7 +16,6 @@ libglite_wms_conf_la_SOURCES = \
 	LMConfiguration.cpp \
 	ICEConfiguration.cpp \
 	WMConfiguration.cpp \
-	WMCConfiguration.cpp \
         WMPConfiguration.cpp \
 	CommonConfiguration.cpp \
 	confbase.cpp \
@@ -36,7 +35,6 @@ configurationinclude_HEADERS = \
 	ICEConfiguration.h \
 	NSConfiguration.h \
 	WMConfiguration.h \
-	WMCConfiguration.h \
         WMPConfiguration.h
 
 EXTRA_DIST = JCConfiguration.h.G \
@@ -44,7 +42,6 @@ EXTRA_DIST = JCConfiguration.h.G \
 	ICEConfiguration.h.G \
 	NSConfiguration.h.G \
 	WMConfiguration.h.G \
-	WMCConfiguration.h.G \
         WMPConfiguration.h.G \
 	CommonConfiguration.h.G \
 	cwrapper.h.G \
@@ -62,7 +59,6 @@ CLEANFILES = $(srcdir)/JCConfiguration.h \
 	$(srcdir)/ICEConfiguration.h \
         $(srcdir)/NSConfiguration.h \
         $(srcdir)/WMConfiguration.h \
-        $(srcdir)/WMCConfiguration.h \
         $(srcdir)/WMPConfiguration.h \
         $(srcdir)/CommonConfiguration.h \
         $(srcdir)/cwrapper.{cpp,h}
@@ -73,7 +69,7 @@ MAINTAINERCLEANFILES = \
 
 GENERATOR_DEFINITION_FILE = $(srcdir)/Configuration.def
 
-Configuration.cpp:	JCConfiguration.h LMConfiguration.h ICEConfiguration.h NSConfiguration.h WMConfiguration.h WMCConfiguration.h WMPConfiguration.h CommonConfiguration.h
+Configuration.cpp:	JCConfiguration.h LMConfiguration.h ICEConfiguration.h NSConfiguration.h WMConfiguration.h WMPConfiguration.h CommonConfiguration.h
 initializer.cpp:	cwrapper.h cwrapper.cpp
 
 include $(top_srcdir)/src/scripts/Makefile.gen

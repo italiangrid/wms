@@ -31,7 +31,6 @@ configuration_cpp_files = \
 	configuration/LMConfiguration.cpp \
 	configuration/ICEConfiguration.cpp \
 	configuration/WMConfiguration.cpp \
-	configuration/WMCConfiguration.cpp \
 	configuration/WMPConfiguration.cpp \
 	configuration/CommonConfiguration.cpp \
 	configuration/confbase.cpp \
@@ -116,7 +115,6 @@ EXTRA_DIST = \
 	configuration/ICEConfiguration.h.G \
 	configuration/NSConfiguration.h.G \
 	configuration/WMConfiguration.h.G \
-	configuration/WMCConfiguration.h.G \
         configuration/WMPConfiguration.h.G \
 	configuration/CommonConfiguration.h.G \
 	configuration/cwrapper.h.G \
