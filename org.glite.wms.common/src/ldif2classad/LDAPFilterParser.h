@@ -40,8 +40,8 @@ struct token_t
 		simple_string,
 		extended_string
   };
-  token_t::token_t() { type = none; }
-  token_t::token_t(token_t::type_t t, const std::string& v) { 
+  token_t() { type = none; }
+  token_t(token_t::type_t t, const std::string& v) { 
     type = t; 
     value = v; 
   }
