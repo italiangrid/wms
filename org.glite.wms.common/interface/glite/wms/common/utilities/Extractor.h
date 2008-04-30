@@ -36,15 +36,15 @@ private:
 };
 
 template <class Container>
-ForwardExtractor<Container>::ForwardExtractor<Container>( Container &cont ) : fe_container( &cont ), fe_list()
+ForwardExtractor<Container>::ForwardExtractor( Container &cont ) : fe_container( &cont ), fe_list()
 {}
 
 template <class Container>
-ForwardExtractor<Container>::ForwardExtractor<Container>( void ) : fe_container(), fe_list()
+ForwardExtractor<Container>::ForwardExtractor( void ) : fe_container(), fe_list()
 {}
 
 template <class Container>
-ForwardExtractor<Container>::~ForwardExtractor<Container>( void )
+ForwardExtractor<Container>::~ForwardExtractor( void )
 {}
 
 template <class Container>
@@ -103,3 +103,4 @@ void ForwardExtractor<Container>::remove( const value_type &val )
 // Local Variables:
 // mode: c++
 // End:
+

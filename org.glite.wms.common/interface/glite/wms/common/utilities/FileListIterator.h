@@ -160,24 +160,24 @@ template <class Type, class Converter>
 Converter  FLIterator<Type, Converter>::fli_s_converter;
 
 template <class Type, class Converter>
-FLIterator<Type, Converter>::FLIterator<Type, Converter>( void ) : _base_iterator_t(), fli_object() {}
+FLIterator<Type, Converter>::FLIterator( void ) : _base_iterator_t(), fli_object() {}
 
 template <class Type, class Converter>
-FLIterator<Type, Converter>::FLIterator<Type, Converter>( const FLIterator<Type, Converter> &fli ) :
+FLIterator<Type, Converter>::FLIterator( const FLIterator<Type, Converter> &fli ) :
   _base_iterator_t( fli ), fli_object()
 {}
 
 template <class Type, class Converter>
-FLIterator<Type, Converter>::FLIterator<Type, Converter>( const _base_iterator_t &bi ) : _base_iterator_t( bi ), fli_object()
+FLIterator<Type, Converter>::FLIterator( const _base_iterator_t &bi ) : _base_iterator_t( bi ), fli_object()
 { this->read_string( false ); }
 
 template <class Type, class Converter>
-FLIterator<Type, Converter>::FLIterator<Type, Converter>( const FileIterator &it, _file_sequence_t &seq ) : _base_iterator_t( it, seq ),
+FLIterator<Type, Converter>::FLIterator( const FileIterator &it, _file_sequence_t &seq ) : _base_iterator_t( it, seq ),
 													    fli_object()
 { this->read_string( false ); }
 
 template <class Type, class Converter>
-FLIterator<Type, Converter>::~FLIterator<Type, Converter>( void ) {}
+FLIterator<Type, Converter>::~FLIterator( void ) {}
 
 template<> inline const std::string &FLIterator<std::string>::operator*( void ) const 
 { 
@@ -200,3 +200,4 @@ template<> inline const std::string *FLIterator<std::string>::operator->( void )
 // Local Variables:
 // mode: c++
 // End:
+

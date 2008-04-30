@@ -127,20 +127,20 @@ public:
 };
 
 template<class Type, class Converter>
-FileList<Type, Converter>::FileList<Type, Converter>( void ) : _file_sequence_t() {}
+FileList<Type, Converter>::FileList( void ) : _file_sequence_t() {}
 
 template<class Type, class Converter>
-FileList<Type, Converter>::FileList<Type, Converter>( const std::string &filename ) :
+FileList<Type, Converter>::FileList( const std::string &filename ) :
   _file_sequence_t( filename.c_str() )
 {}
 
 template<class Type, class Converter>
-FileList<Type, Converter>::FileList<Type, Converter>( const char *filename ) :
+FileList<Type, Converter>::FileList( const char *filename ) :
   _file_sequence_t( filename )
 {}
 
 template<class Type, class Converter>
-FileList<Type, Converter>::~FileList<Type, Converter>( void ) {}
+FileList<Type, Converter>::~FileList( void ) {}
 
 template<> 
 inline void FileList<std::string>::push_front( const std::string &data ) { this->insertData( this->getBegin(), data ); }
@@ -166,3 +166,4 @@ inline void FileList<std::string>::remove( const std::string &val ) { this->remo
 // Local Variables:
 // mode: c++
 // End:
+
