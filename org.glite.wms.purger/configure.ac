@@ -19,6 +19,11 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.16.2.16  2008/05/14 08:47:08  monforte
+#       Fix for:
+#       - bug #36536: The glite wms purge storage library should rely on LBProxy while logging CLEAR events.
+#       - bug #35156: glite-wms-purgeStorage.sh hardcodes proxy file name
+#
 #       Revision 1.16.2.15  2007/11/08 14:24:03  giaco
 #       increased version
 #

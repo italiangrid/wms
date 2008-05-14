@@ -7,21 +7,22 @@
 
 #include <boost/filesystem/operations.hpp> 
 #include <boost/filesystem/exception.hpp>
-#include <boost/scoped_ptr.hpp>
-#include <boost/bind.hpp>
 #include <boost/algorithm/string/case_conv.hpp>
+#include <boost/shared_ptr.hpp>
+#include <boost/bind.hpp>
+
 #include "glite/wmsutils/jobid/JobId.h"
 #include "glite/wmsutils/jobid/manipulation.h"
 #include "glite/wmsutils/jobid/JobIdExceptions.h"
 
 #include "glite/wms/common/configuration/Configuration.h"
-#include "glite/wms/common/configuration/NSConfiguration.h"
+#include "glite/wms/common/configuration/WMPConfiguration.h"
 #include "glite/wms/common/configuration/CommonConfiguration.h"
 #include "glite/wms/common/configuration/exceptions.h"
 
 #include "glite/wmsutils/classads/classad_utils.h"
 
-#include "glite/wms/common/logger/edglog.h"
+#include "glite/wms/common/logger/logger_utils.h"
 #include "glite/wms/common/logger/manipulators.h"
 #include "glite/wms/common/utilities/scope_guard.h"
 
@@ -43,453 +44,370 @@ namespace configuration = glite::wms::common::configuration;
 namespace utilities     = glite::wms::common::utilities;
 namespace utils		= glite::wmsutils::classads;
 
-#define edglog_fn(name) glite::wms::common::logger::StatePusher    pusher(logger::edglog, #name);
+namespace {
+
+inline std::string StatToString(edg_wll_JobStat const& status)
+{
+  std::string result;
+  char* const s = edg_wll_StatToString(status.state);
+  if (s) {
+    result = s;
+    free(s);
+    result = boost::algorithm::to_upper_copy(result);
+  }
+
+  return result;
+}
+
+}
 
 namespace glite {
 namespace wms {
 namespace purger {
 
-void purgeQuota(const fs::path& p);
-
 namespace 
 {
-  std::string const f_sequence_code(
-    "UI=000009:NS=0000096669:WM=000000:BH=0000000000:JSS=000000:LM=000000:LRMS=000000:APP=000000:LBS=000000" 
+
+std::string const f_sequence_code(
+  "UI=000009:NS=0000096669:WM=000000:BH=0000000000:JSS=000000:LM=000000:LRMS=000000:APP=000000:LBS=000000" 
+);
+
+const configuration::Configuration* f_conf = 0;
+
+std::string 
+get_host_x509_proxy()
+{
+  if (!f_conf) {
+    f_conf = configuration::Configuration::instance();
+    assert(f_conf);
+  }
+  static std::string const host_proxy_file(
+    f_conf->common()->host_proxy_file()
   );
+  return host_proxy_file;
+}
 
-  const configuration::NSConfiguration* f_ns_conf = 0;
-  const configuration::Configuration* f_conf = 0;
-
-  std::string 
-  extract_staging_path(const fs::path& p, const jobid::JobId& jobid) 
-  {
-    int staging_path_length = p.native_file_string().length() -
-      (jobid::get_reduced_part(jobid).length() + 
-       jobid::to_filename(jobid).length()+2);
-    return p.native_file_string().substr(0,staging_path_length);
- }
- 
- std::string
- get_user_x509_proxy(jobid::JobId const& jobid)
- {
-   if (!f_conf) {
-     f_conf = configuration::Configuration::instance();
-     assert(f_conf);
-   } 
-   if (!f_ns_conf) {
-     f_ns_conf = f_conf->ns();
-     assert(f_ns_conf);
-   }
-
-   std::string x509_proxy(f_ns_conf->sandbox_staging_path());
-   x509_proxy += "/"
-     + jobid::get_reduced_part(jobid)
-     + "/"
-     + jobid::to_filename(jobid)
-     + "/user.proxy";
-
-    return x509_proxy;
+std::string get_staging_path()
+{
+  if (!f_conf) {
+    f_conf = configuration::Configuration::instance();
+    assert(f_conf);
   }
-  
-  std::string 
-  get_host_x509_proxy()
-  {
-   if (!f_conf) {
-     f_conf = configuration::Configuration::instance();
-     assert(f_conf);
-   }
-   return f_conf->common()->host_proxy_file();
-  }
-  
-  bool create_context_from_host_x509_proxy(
-    ContextPtr& log_ctx,
-    jobid::JobId const& id,
-    std::string const& sequence_code
-  )
-  {
-    bool result = true;
-      try {
-        log_ctx = create_context(
-          id,
-          get_host_x509_proxy(),
-          f_sequence_code
-        );
-      }
-      catch (CannotCreateLBContext& e) {
-        logger::edglog << id.toString()  << " -> "
-          << "CannotCreateLBContext from host proxy, error code #" 
-          << e.error_code()
-          << std::endl;
-        result = false;
-      }
-    return result;
-  }
+  static std::string const sandbox_staging_path(
+    f_conf->wp()->sandbox_staging_path()
+  );
+  return sandbox_staging_path;
+}
 
-  bool query_job_status(edg_wll_JobStat& job_status, jobid::JobId const& jobid, ContextPtr const& log_ctx)
-  {
-    edg_wll_InitStatus(&job_status);
-    if (edg_wll_JobStatus(
-        log_ctx.get(),jobid,
+bool
+query_job_status(
+  edg_wll_JobStat& job_status, 
+  jobid::JobId const& jobid, 
+  ContextPtr const& log_ctx 
+) 
+{
+  if (edg_wll_JobStatus(
+        log_ctx.get(), jobid,
         EDG_WLL_STAT_CLASSADS | EDG_WLL_STAT_CHILDREN,
         &job_status
-      )) {
-        char  *etxt,*edsc;
-        edg_wll_Error(log_ctx.get(),&etxt,&edsc);
-        logger::edglog << jobid.toString()  << " -> "
-          << "edg_wll_JobStat " 
-          << etxt
-          << " " << edsc
-          << std::endl;
-        free(etxt); free(edsc);
-        return false;
-    }
-    return true;
+      )
+     ) {
+    char* etxt = 0;
+    char* edsc = 0;
+    edg_wll_Error(log_ctx.get(), &etxt, &edsc);
+    Error(
+       jobid.toString() << ": edg_wll_JobStat " << std::string(etxt)
+    );
+     free(etxt);
+    free(edsc);
 
+    return false;
   }
 
-  bool list_directory(const fs::path& p, std::vector<std::string>& v)
-  {
-    if(!fs::is_directory(p)) return false;
- 
-    fs::directory_iterator end_itr; // default construction yields past-the-end
-    for ( fs::directory_iterator itr( p );
-          itr != end_itr; ++itr ) {
-      if (fs::exists(*itr)) try {
-          if (!fs::is_directory( *itr )) 
-            v.push_back(itr->native_file_string());
-      }
-      catch( fs::filesystem_error& e) {
-        std::cerr << e.what() << std::endl;
-      }
-    }
-    return true;
-  }
+  return true;
+} 
 
-  bool upload_input_sandbox(const fs::path& p)
-  {
-  return true; 
-  }
-
-  bool 
-  purgeStorage(const fs::path& p, 
-    const edg_wll_Context& log_ctx, wll_log_function_type wll_log_function
-  )
-  { 
-    bool result = false;
-    try {
-      if( !upload_input_sandbox(p) ) {
-        logger::edglog << " [JP ISB upload failed] ";
-      }
-      fs::remove_all(p);
-      purgeQuota(p);
-      if( !(result = !(wll_log_function( log_ctx ) != 0)) ) {
-        logger::edglog << " [LB event logging failed] " << get_lb_message(log_ctx); 
-      }
-      else logger::edglog << " Ok ";
-    } 
-    catch(fs::filesystem_error& fse) {
-      logger::edglog << " [" << fse.what() << "]"; 
-    }
-    return result;
-  }
-
-  class purge_dag_storage {
-    std::string m_staging_path;
-    int m_purge_threshold;
-    bool m_force_rm;
-    wll_log_function_type m_wll_log_function;
-  public:
-    purge_dag_storage(const std::string& staging_path,
-      int purge_threshold, bool force_rm, wll_log_function_type wll_log_function
-    ) : m_staging_path(staging_path), m_purge_threshold(purge_threshold),
-      m_force_rm(force_rm), m_wll_log_function(wll_log_function)  {}
-    
-    void operator()(const std::string& str_jobid) {
-      jobid::JobId jobid(str_jobid);
-      // Creates the absolute path to the job staging location
-      fs::path p(
-        fs::path(m_staging_path, fs::native) /
-        fs::path(jobid::get_reduced_part(jobid), fs::native) /
-        fs::path(jobid::to_filename (jobid), fs::native)
-      );
-      purgeStorageEx(p,m_purge_threshold,m_force_rm, true, m_wll_log_function);
-    }
-  };
-}
-  
-void purgeQuota(const fs::path& p)
+fs::path
+jobid_to_absolute_path(jobid::JobId const& id)
 {
-  std::string uid;
-  fs::path quotafile(
-     p / fs::path(".quid", fs::native) 
+  std::string const unique(id.getUnique());
+  return fs::path(
+    fs::path(get_staging_path(), fs::native) /
+    fs::path(unique.substr(0,2), fs::native) /
+    fs::path(jobid::to_filename(id), fs::native)
   );
-  std::ifstream quidfilestream( quotafile.native_file_string().c_str() );
-  if( quidfilestream ) {
-    quidfilestream >> uid;
-    std::string cmdline("edg-wl-quota-adjustment -d - ");
-    cmdline.append(uid);
-    if (!system(cmdline.c_str())) {
-      logger::edglog << " [Error during quota purging] ";
-    }	
-  } 
 }
 
-bool purgeStorage(const jobid::JobId& jobid, const std::string& sandboxdir)
+fs::path 
+strid_to_absolute_path(std::string const& id)
 {
-  edglog_fn(purgeStorage);
-  logger::edglog << "Starting purging..." << std::endl;
-  fs::path p;
-  try {
-    if( sandboxdir.empty() ) {
-
-      if( !f_ns_conf ) {
-
-	f_ns_conf = configuration::Configuration::instance() -> ns();
-      }
-
-      p = fs::path(f_ns_conf->sandbox_staging_path(), fs::native);
-    }
-    else {
-
-      p = fs::path(sandboxdir, fs::native);
-    }
-    p = p / fs::path(jobid::get_reduced_part(jobid), fs::native) / 
-      fs::path(jobid::to_filename(jobid), fs::native);
-  }
-  catch( jobid::JobIdException& jide ){
-    logger::edglog << jide.what() << std::endl;
-    return false; 	
-  }
-  catch( fs::filesystem_error& fse ) {
-    logger::edglog << fse.what() << std::endl;
-    return false;	
-  }
-  
-  try {
-    if( !upload_input_sandbox(p) ) {
-      logger::edglog << " [ ISB upload to JP failure" << std::endl;
-    }
-    fs::remove_all( p );
-    purgeQuota(p);
-    return true;
-  } 
-  catch( fs::filesystem_error& fse ) {
-    logger::edglog << fse.what() << std::endl;
-  }
-  return false;
+  jobid::JobId const jobid(id);
+  return jobid_to_absolute_path(jobid);
 }
 
-bool purgeStorageEx(const fs::path& p,wll_log_function_type wll_log_function)
+bool is_threshold_overcome(edg_wll_JobStat const& job_status, time_t threshold)
 {
-  return purgeStorageEx(p, 0, false, false, wll_log_function);
+  return std::time(0) - job_status.lastUpdateTime.tv_sec > threshold;
 }
 
-
-
+bool is_status_removable(edg_wll_JobStat const& job_status)
+{
+  switch (job_status.state) {
   
+  case EDG_WLL_JOB_CANCELLED:
+  case EDG_WLL_JOB_CLEARED:
+  case EDG_WLL_JOB_ABORTED:
+  case EDG_WLL_JOB_DONE: 
+    return true; 
+  default:
+    return false;
+  }
+}
+
+} // anonymous namespace
+
+Purger::Purger() :
+  m_logging_fn(
+#ifdef GLITE_WMS_HAVE_LBPROXY
+    edg_wll_LogClearUSERProxy
+#else
+    edg_wll_LogClearUSER
+#endif
+  ), m_threshold(0),
+  m_skip_status_checking(true),
+  m_force_orphan_node_removal(false), m_force_dag_node_removal(false)
+{
+}
+
+Purger&
+Purger::log_using(boost::function<int(edg_wll_Context)> fn)
+{
+  m_logging_fn = fn;
+  return *this;
+}
+
+Purger&
+Purger::threshold(time_t t)
+{
+  m_threshold = t;
+  return *this;
+}
+
+Purger&
+Purger::skip_status_checking(bool b)
+{
+  m_skip_status_checking = b;
+  return *this;
+}
+
+Purger&
+Purger::force_orphan_node_removal(bool b)
+{
+  m_force_orphan_node_removal = b;
+  return *this;
+}
+
+Purger&
+Purger::force_dag_node_removal(bool b)
+{
+  m_force_dag_node_removal = b;
+  return *this;
+}
 bool 
-purgeStorageEx(const fs::path& p, 
-  int purge_threshold, bool force_rm, bool navigating_dag, 
-  wll_log_function_type wll_log_function)
+Purger::remove_path(
+ fs::path const& p,
+ ContextPtr log_ctx
+) 
 {
-  edglog_fn(purgeStorageEx);	
   bool result = false;
   try {
-    jobid::JobId jobid( jobid::from_filename( p.leaf() ) );
-   
-    ContextPtr log_ctx;
-    edg_wll_JobStat job_status;
-    edg_wll_InitStatus(&job_status);
-
-    bool status_retrieved = (
-      create_context_from_host_x509_proxy(
-        log_ctx, jobid, f_sequence_code
-      )
-      &&
-      query_job_status(job_status, jobid, log_ctx)
-    );
-
-    utilities::scope_guard free_job_status(
-      boost::bind(edg_wll_FreeStatus, &job_status)
-    );
-  
-    logger::edglog << jobid.toString()  << " ->";
-    
-    // Reads the TYPE of the JOB...
-    bool is_jobtype_dag = 
-      (job_status.jobtype == EDG_WLL_STAT_DAG ) || 
-      (job_status.jobtype == EDG_WLL_STAT_COLLECTION);
-
-    bool has_parent_job = false;
-    try {
-      const jobid::JobId parent_jobid = job_status.parent_job;
-      if (parent_jobid != 0) {
-        has_parent_job = true;
-        // If the job is a dag node and we are not purging a dag the node should be skipped...
-        if (!navigating_dag) {
-          // Before skipping let's check if the node is an orphan...
-          fs::path pp = 
-            fs::path(extract_staging_path(p,jobid), fs::native) /
-            fs::path(jobid::get_reduced_part(parent_jobid), fs::native) / 
-            fs::path(jobid::to_filename(parent_jobid), fs::native);	
-          
-          if (!fs::exists(pp)) {
-            logger::edglog << " removing orphan dag node: ";
-            result = purgeStorage(p, log_ctx.get(), wll_log_function);
-            logger::edglog << std::endl;
-            return result;
-          }
-          logger::edglog << " skipping dag node" << std::endl;
-          return false;
-        }
-      }
+    fs::remove_all(p);
+    assert( !exists(p) );
+    if (!(result = !(m_logging_fn( log_ctx.get() ) != 0))) {
+      Error(
+        "LB event logging failed " << get_lb_message(log_ctx)
+      );
     }
-    catch(...) {
-    }
-    
-    // if we are purging a dag node we have to force it's removal not depending
-    // on its state...since the purging condition are met for the DAG.
-    if (has_parent_job && navigating_dag) {
-      	
-      logger::edglog << " removing dag node: ";
-      result = purgeStorage(p, log_ctx.get(), wll_log_function);
-      logger::edglog << std::endl;
-      return result;
-    }
-        
-    switch( job_status.state ) {
-    
-    case EDG_WLL_JOB_CANCELLED:
-    case EDG_WLL_JOB_CLEARED:
-	
-      // If the job is a DAG we have to recursively purge (if necessary) each CHILD   	
-      if (is_jobtype_dag) {
-		
-	std::vector<std::string> children;
-        if (job_status.children) {
-	  std::copy(
-            &job_status.children[0],
-            &job_status.children[job_status.children_num],
-            std::back_inserter(children)
-          );
-        }
-
-        logger::edglog << " browsing: #" << children.size() << " node(s)" << std::endl;
-	
-	std::string staging_path(extract_staging_path(p, jobid));
-	
-        std::for_each(
-          children.begin(), 
-          children.end(), 
-	  purge_dag_storage(staging_path, purge_threshold,force_rm, wll_log_function)
-        );
-	
-	logger::edglog << jobid.toString() << " ->";
-      }
-      
-      logger::edglog << " removing: [" << boost::algorithm::to_upper_copy(std::string(edg_wll_StatToString(job_status.state))) << "] ";
-
-      result = purgeStorage(p, log_ctx.get(), wll_log_function);
-    break;
-    
-    case EDG_WLL_JOB_ABORTED:
-    case EDG_WLL_JOB_DONE: 
-      {
-        time_t now;
-	time( &now);
-	if( force_rm || (now -  job_status.lastUpdateTime.tv_sec > purge_threshold) ) {		
-	  
-	  // If the job is a DAG we have to recursively purge (if necessary) each CHILD   	
-	  if (is_jobtype_dag) {
-	    
-            std::vector<std::string> children;
-            if (job_status.children) {
-              std::copy(
-                &job_status.children[0],
-                &job_status.children[job_status.children_num],
-                std::back_inserter(children)
-              );
-            }
-	    logger::edglog << " browsing #" << children.size() << " node(s)" << std::endl;
-	    
-	    std::string staging_path(extract_staging_path(p, jobid));
-	    std::for_each(
-              children.begin(), 
-              children.end(), 
-              purge_dag_storage(staging_path, purge_threshold,
-                force_rm,wll_log_function)
-            );
-	    
-	    logger::edglog << jobid.toString() << " ->";
-	  }
-	  
-	  logger::edglog << " removing: [" << boost::algorithm::to_upper_copy(std::string(edg_wll_StatToString(job_status.state))) << "] ";
-	  
-          result = purgeStorage(p, log_ctx.get(), wll_log_function);
-	}
-	else logger::edglog << " skipping: purging threshold not overcome!";	
-      }
-    break;
-    case EDG_WLL_JOB_SUBMITTED:
-    case EDG_WLL_JOB_WAITING:
-    case EDG_WLL_JOB_READY:
-    case EDG_WLL_JOB_SCHEDULED:
-    case EDG_WLL_JOB_RUNNING:
-       {
-        time_t now;
-	time( &now);
-	if( force_rm && (now -  job_status.lastUpdateTime.tv_sec > purge_threshold) ) {		
-	  
-	  // If the job is a DAG we have to recursively purge (if necessary) each CHILD   	
-	  if (is_jobtype_dag) {
-	    
-            std::vector<std::string> children;
-            if (job_status.children) {
-              std::copy(
-                &job_status.children[0],
-                &job_status.children[job_status.children_num],
-                std::back_inserter(children)
-              );
-            }
-	    logger::edglog << " browsing #" << children.size() << " node(s)" << std::endl;
-	    
-	    std::string staging_path(extract_staging_path(p, jobid));
-	    std::for_each(
-              children.begin(), 
-              children.end(), 
-              purge_dag_storage(staging_path, purge_threshold,
-                force_rm,wll_log_function)
-            );
-	    
-	    logger::edglog << jobid.toString() << " ->";
-	  }
-	  
-	  logger::edglog << " removing: [" << boost::algorithm::to_upper_copy(std::string(edg_wll_StatToString(job_status.state))) << "] ";
-	  
-          result = purgeStorage(p, log_ctx.get(), wll_log_function);
-	}
-    }
-    default:
-      logger::edglog << " skipping: [" << boost::algorithm::to_upper_copy(std::string(edg_wll_StatToString(job_status.state))) << "] ";
-    logger::edglog << std::endl;   
-    break;
-   }
-  }
-  catch (CannotCreateLBContext& e) {
-    logger::edglog << e.what() << std::endl;
-  }
-  catch( fs::filesystem_error& fse ) {
-    logger::edglog << fse.what() << std::endl;
-  }
-  catch( jobid::JobIdException& jide ) {
-    logger::edglog << jide.what() << std::endl;
-  }
-  catch( std::exception&e ) {
-    logger::edglog << e.what() << std::endl;
+  } catch(fs::filesystem_error& fse) {
+    Error(fse.what());
   }
   return result;
 }
 
+bool 
+Purger::operator()(jobid::JobId const& id)
+{
+  ContextPtr log_ctx;
+
+  try {
+    log_ctx = create_context(id, get_host_x509_proxy(), f_sequence_code);
+  }
+  catch (CannotCreateLBContext& e) {
+    Error(
+      id.toString()
+      << ": CannotCreateLBContext from host proxy, error code #"
+      << e.error_code()
+    );
+    return false;
+  }
+
+#ifdef GLITE_WMS_HAVE_LBPROXY
+  ContextPtr log_proxy_ctx;
+  try {
+    log_proxy_ctx = create_context_proxy(id, get_host_x509_proxy(), f_sequence_code);
+  }
+  catch (CannotCreateLBContext& e) {
+    Error(
+      id.toString()
+      << ": CannotCreateLBProxyContext from host proxy, error code #"
+      << e.error_code()
+    );
+    log_proxy_ctx = log_ctx;
+  }
+#endif
+
+  edg_wll_JobStat job_status;
+  edg_wll_InitStatus(&job_status);
+
+  utilities::scope_guard free_job_status(
+    boost::bind(edg_wll_FreeStatus, &job_status)
+  );
+
+  if (!query_job_status(job_status, id, log_ctx)) {
+      return false;
+  }
+
+  // Reads the TYPE of the JOB...
+  bool is_dag = 
+    (job_status.jobtype == EDG_WLL_STAT_DAG ) || 
+    (job_status.jobtype == EDG_WLL_STAT_COLLECTION);
+  
+  if (is_dag && 
+      (m_skip_status_checking || is_status_removable(job_status)) &&
+      ( !m_threshold || is_threshold_overcome(job_status, m_threshold))
+  ) { // removing dag and children
+    
+    std::vector<std::string> children;
+    if (job_status.children) {
+      std::copy(
+        &job_status.children[0],
+        &job_status.children[job_status.children_num],
+        std::back_inserter(children)
+      );
+    }
+    std::vector<std::string>::const_iterator i = children.begin();
+    std::vector<std::string>::const_iterator const e = children.end();
+    size_t n = 0;
+    for( ; i != e; ++i ) {
+      if (!remove_path(
+        strid_to_absolute_path(*i), 
+#ifdef GLITE_WMS_HAVE_LBPROXY
+	log_proxy_ctx
+#else
+        log_ctx
+#endif
+      )) {
+        ++n;
+      }
+    }
+    Info(
+      id.toString() << ": " 
+      << children.size() - n << '/' << children.size() << " nodes removed"
+    );
+
+    bool const path_removed(
+      remove_path(
+        jobid_to_absolute_path(id), 
+#ifdef GLITE_WMS_HAVE_LBPROXY
+        log_proxy_ctx
+#else
+        log_ctx
+#endif
+      )
+    );
+    if (path_removed) {
+      Info(
+        id.toString()<< ": removed " << StatToString(job_status) << " dag "
+      );
+    }
+    return path_removed;
+  }
+  
+  bool const is_dag_node = job_status.parent_job != 0;
+  
+  // if the job is a dag node we should skip its removal
+  // unless it is an orphan node or so requested
+  if (is_dag_node && m_force_dag_node_removal ) {
+    bool const path_removed(
+      remove_path(
+        jobid_to_absolute_path(id), 
+#ifdef GLITE_WMS_HAVE_LBPROXY
+        log_proxy_ctx
+#else
+        log_ctx
+#endif
+      )
+    );
+    if (path_removed) {
+      Info(
+	id.toString() << ": removed "
+        << StatToString(job_status) << " node"
+      );
+    }
+    return path_removed;
+  }
+  
+  if (is_dag_node && m_force_orphan_node_removal) try {
+
+    jobid::JobId const p_id(job_status.parent_job);
+    fs::path pp(jobid_to_absolute_path(p_id));
+    if (!fs::exists(pp)) {
+      bool const path_removed(
+        remove_path(
+          jobid_to_absolute_path(id), 
+#ifdef GLITE_WMS_HAVE_LBPROXY
+        log_proxy_ctx
+#else
+        log_ctx
+#endif
+        )
+      );
+      if (path_removed) {
+        Info(
+          id.toString() << ": removed "
+          << StatToString(job_status) << " orphan node"
+        );
+      }
+      return path_removed;
+    }
+  } catch(...) {                // TODO: refine catch
+    return false;
+  }
+
+  if ((m_skip_status_checking || is_status_removable(job_status))
+      && (!m_threshold
+          || is_threshold_overcome(job_status, m_threshold)
+         )
+     ) { // removing normal job
+    bool const path_removed(
+      remove_path(
+        jobid_to_absolute_path(id), 
+#ifdef GLITE_WMS_HAVE_LBPROXY
+        log_proxy_ctx
+#else
+        log_ctx
+#endif
+      )
+    );
+    if (path_removed) {
+      Info(
+        id.toString() << ": removed " << StatToString(job_status) << " job"
+      );
+      return path_removed;
+    }
+  }
+  return false;
+}
 } // namespace purger
 } // namespace wms
 } // namesnapce glite

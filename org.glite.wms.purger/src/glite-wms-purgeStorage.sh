@@ -30,7 +30,7 @@ check_process()
 #exit 1
 
 log="/dev/stdout"
-while getopts "l:t:c:p:a:bfeqh" arg
+while getopts ":l:t:c:p:a:nosh" arg
 do
   case "$arg" in
   l)    log="$OPTARG";;

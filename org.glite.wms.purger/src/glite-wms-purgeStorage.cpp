@@ -1,70 +1,57 @@
-
-#include <boost/filesystem/operations.hpp> 
+#include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/exception.hpp>
-#include <boost/progress.hpp>
-#include <boost/scoped_ptr.hpp>
+#include <boost/program_options.hpp>
 
+#include "lb_utils.h"
 #include "purger.h"
 
 #include "glite/wmsutils/jobid/JobId.h"
 #include "glite/wmsutils/jobid/manipulation.h"
-#include "glite/wmsutils/jobid/JobIdExceptions.h"
+#include "glite/wms/common/configuration/Configuration.h"
+#include "glite/wms/common/configuration/WMPConfiguration.h"
 
 #include "glite/wms/common/logger/edglog.h"
-#include "glite/wms/common/logger/manipulators.h"
-
-#include "glite/wms/common/utilities/LineParser.h"
-#include "glite/wms/common/utilities/LineParserExceptions.h"
-#include "glite/wms/common/configuration/Configuration.h"
-#include "glite/wms/common/configuration/NSConfiguration.h"
 
 #include <iostream>                        // for cout
 #include <string>
 #include <vector>
-
-#include <math.h>
+#include <cmath>
 #include <time.h>
 #include <fstream>
 #include <sys/vfs.h>
 
 namespace fs            = boost::filesystem;
 namespace wl	        = glite::wms;
-namespace logger	= glite::wms::common::logger;
-namespace utilities     = glite::wms::common::utilities;
 namespace configuration = glite::wms::common::configuration;
 namespace jobid         = glite::wmsutils::jobid;
+namespace po            = boost::program_options;
+namespace logger	= glite::wms::common::logger;
 
-using namespace std;
-utilities::LineOption  options[] = {
-  { 'c', 1,		"conf-file",	    "\t configuration file." },
-  { 'l', 1,             "log-file",	    "\t logs any information into the specified file." },
-  { 't', 1,		"threshold",	    "\t sets the purging threshold to the specified number of seconds." },
-  { 'p', 1,		"staging-path",	    "\t defines the sandbox staging path." },
-  { 'a', 1,		"allocated-limit"   "\t defines the percentange of allocated blocks which triggers the purging." }, 
-  { 'b', no_argument,   "brute-rm"          "\t brute-force directory removal." },
-  { 'f', no_argument,   "force"             "\t does not perform any status check on the job forcing directory removal." },
-  { 'e', no_argument,   "enable-progress",  "\t enable the progress indicator." }, 
-  { 'q', no_argument,   "quiet",            "\t does not create any log file (any settings specified with -l will be ignored)." }
-};
+namespace {
 
-bool find_directories( const fs::path & from_path,
-		       const std::string &prefix,
-		       std::vector<fs::path>& path_found,
-		       bool recursive = false ) 
+const configuration::Configuration* f_conf = 0;
 
-{
-  if ( !fs::exists( from_path ) ) return false;
+bool
+find_directories(
+  const fs::path & from_path,
+  const std::string &prefix,
+  std::vector<fs::path>& path_found,
+  bool recursive = false
+) {
+  if (!fs::exists(from_path)) {
+    return false;
+  }
   fs::directory_iterator end_itr; // default construction yields past-the-end
-  for ( fs::directory_iterator itr( from_path );
-        itr != end_itr;
-        ++itr ) {
+  for (fs::directory_iterator itr( from_path );
+       itr != end_itr;
+       ++itr) {
     if (fs::exists(*itr))
     try { 	
-      if (fs::is_directory( *itr )) { 
+      if (fs::is_directory( *itr ) && itr->leaf()!="lost+found") {
 	   if (itr->leaf().substr(0,prefix.length()) == prefix) path_found.push_back( *itr );
 	   else if (recursive && find_directories( *itr, prefix, path_found )) return true;
       }
-    } 
+    }
     catch( fs::filesystem_error& e) {
 	std::cerr << e.what() << std::endl;
     }	
@@ -72,95 +59,152 @@ bool find_directories( const fs::path & from_path,
   return false;
 }
 
+std::string
+get_staging_path()
+{
+  if (!f_conf) {
+    f_conf = configuration::Configuration::instance();
+    assert(f_conf);
+  }
+  static std::string const sandbox_staging_path(
+    f_conf->wp()->sandbox_staging_path()
+  );
+  return sandbox_staging_path;
+}
+}
+
 int main( int argc, char* argv[])
 {
-  vector<utilities::LineOption>             optvec( options, options + sizeof(options)/sizeof(utilities::LineOption) );
-  utilities::LineParser                     options( optvec, utilities::ParserData::zero_args );
-  string log_file, staging_path, conf_file;
-  int allocated_limit, purge_threshold;
-  bool force_rm = false;
-
   try {
-    options.parse( argc, argv );
-   
-    force_rm = options.is_present('f');
-    purge_threshold = options.is_present('t') ? options['t'].getIntegerValue() : 604800;	    
-    conf_file = options.is_present('c') ? options['c'].getStringValue() : "glite_wms.conf";
-   
-    configuration::Configuration config(conf_file,
-      configuration::ModuleType::network_server);
-  
-    if (options.is_present('p')) staging_path.assign ( options['p'].getStringValue() );
-    else {
-      staging_path.assign(
-        config.ns()->sandbox_staging_path()
-      );
-    }
-    allocated_limit     = options.is_present('a') ? options['a'].getIntegerValue(): 0;
-        if( allocated_limit ) {
-    	struct statfs fs_stat;
-    	if( !statfs(staging_path.c_str(), &fs_stat) ) {
-		int allocated = (int) ceil( (1.0 - (fs_stat.f_bfree / (double) fs_stat.f_blocks)) * 100.0);
+    po::options_description desc("Usage");
+    desc.add_options()
+      ("help,h", "display this help and exit")
+      (
+        "conf-file,c",
+        po::value<std::string>(),
+        "configuration file"
+      )
+      (
+        "log-file,l",
+        po::value<std::string>(),
+        "logs any information into the specified file"
+      )
+      (
+        "threshold,t",
+        po::value<int>(),
+        "sets the purging threshold to the specified number of seconds"
+      )
+      ( 
+        "staging-path,p",
+        po::value<std::string>(),
+        "absolute path to sandbox staging directory"
+      )
+      (
+        "allocated-limit,a",
+        po::value<int>(),
+        "defines the percentange of allocated blocks which triggers the"
+        " purging"
+      )
+      (
+        "skip-status-checking,s",
+        "does not perform any status checking before purging"
+      )
+      ( 
+        "force-dag-node-removal,n", 
+        "force removal of dag nodes"
+      )
+      (
+        "force-orphan-node-removal,o", 
+        "force removal of orphan dag nodes"
+      )
+      ;
 
-		if( allocated < allocated_limit ) {
-			return 0;
-		}
-	}
+    po::variables_map vm;
+    po::store(po::command_line_parser(argc, argv).options(desc).run(), vm);
+    po::notify(vm);
+
+    if (vm.count("help")) {
+      std::cout << desc << '\n';
+      return EXIT_SUCCESS;
     }
- 
-    if( !options.is_present('l') && options.is_present('e') ) {
-	char* env_var;
-	string log_path;
-	if ((env_var=getenv("GLITE_WMS_TMP"))) log_path.assign( string(env_var) );
-	else {
-		cerr << "Unable to set logfile path from the environment: GLITE_WMS_TMP not defined..." << endl;
-		return 0;
+
+    configuration::Configuration config(
+      vm.count("conf-file")
+      ? vm["conf-file"].as<std::string>()
+      : "glite_wms.conf",
+      configuration::ModuleType::workload_manager
+    );
+
+    std::string const staging_path(
+      vm.count("staging-path")
+      ?  vm["staging-path"].as<std::string>()
+      : get_staging_path()
+    );
+    
+    int const allocated_limit(
+      vm.count("allocated-limit") ? vm["allocated-limit"].as<int>(): 0
+    );
+    if (allocated_limit) {
+      struct statfs fs_stat;
+      if (!statfs(staging_path.c_str(), &fs_stat)) {
+        int const allocated(
+          static_cast<int>(
+            (1.0 - (static_cast<double>(fs_stat.f_bfree) / fs_stat.f_blocks))
+            * 100
+          )
+        );
+        if (allocated < allocated_limit) {
+          return EXIT_SUCCESS;
 	}
-	char str_time [64];	
-	time_t now;
-	time(&now);
-	strftime(str_time, 64, "%a-%d-%b-%H:%M:%s-%Y", localtime(&now));
-	log_file.assign( log_path + string("/edg-wl-purgeStorage-") + string(str_time) + string(".log") );
+      }
     }
-    else if (options.is_present('l')) log_file.assign( options['l'].getStringValue() );
-    
-    if( options.is_present('q') ) log_file.assign("/dev/null");
-    
-    if(options.is_present('l') || options.is_present('e')) logger::threadsafe::edglog.open( log_file.c_str(), logger::info );
-    else logger::threadsafe::edglog.open( std::cout, logger::info ); 
-    
-    	std::vector<fs::path> found_path;
-    	fs::path from_path( staging_path, fs::native); 
-    	find_directories(from_path, "https", found_path, true);
-	
-    	std::auto_ptr<boost::progress_display> show_progress;
-    	if( options.is_present('e') ) show_progress.reset( new boost::progress_display(found_path.size()) );
-	
-    	for(std::vector<fs::path>::iterator it = found_path.begin(); it != found_path.end(); it++ ) {
-		
-		bool purge_done = wl::purger::purgeStorageEx( *it, purge_threshold, force_rm );
-		if( options.is_present('b') && ! purge_done ) {
-		      try {
-			logger::threadsafe::edglog << it->native_file_string() << " -> forcing removal" << std::endl;      
-			fs::remove_all( *it );
-		      }
-		      catch( fs::filesystem_error& fse )
-		      {
-			logger::threadsafe::edglog << fse.what() << std::endl;
-		      }
-		}
-      	if( options.is_present('e') ) ++(*show_progress);
-	}
+
+    wl::purger::Purger thePurger;
+
+    thePurger.threshold(
+      vm.count("threshold") ? vm["threshold"].as<int>() : 0
+    ).
+    skip_status_checking(
+      vm.count("skip-status-checking")
+    ).
+    force_dag_node_removal(
+      vm.count("force-dag-node-removal")
+    ).
+    force_orphan_node_removal(
+      vm.count("force-orphan-node-removal")
+    ).
+    log_using(
+#ifdef GLITE_WMS_HAVE_LBPROXY
+      edg_wll_LogClearTIMEOUTProxy
+#else
+      edg_wll_LogClearTIMEOUT
+#endif
+    );
+   
+   if (vm.count("log-file")) {
+     logger::threadsafe::edglog.open( vm["log-file"].as<std::string>(), logger::info);
+   }
+   else {
+     logger::threadsafe::edglog.open( std::cout, logger::info);
+   }
+   std::vector<fs::path> found_path;
+   fs::path from_path( staging_path, fs::native);
+   find_directories(from_path, "https", found_path, true);
+
+   std::vector<fs::path>::const_iterator i = found_path.begin();
+   std::vector<fs::path>::const_iterator const e = found_path.end();
+
+   for( ; i != e ; ++i) {
+     jobid::JobId id(jobid::from_filename( i->leaf()));
+     thePurger( id );
+   }
   }
-  catch( utilities::LineParsingError &error ) {
-    cerr << error << endl;
-    exit( error.return_code() );
+  catch (boost::program_options::unknown_option const& e) {
+    std::cerr<< e.what() << '\n';
+  } catch (std::exception const& e) {
+    std::cerr << e.what() << '\n';
+  } catch (...) {
+    std::cerr << "unknown exception\n";
   }
-  catch( exception& e) {
-    cerr << e.what() << endl;
-  }
-  catch( ... ) {
-    cerr << "Uncaught exception..." << endl;
-  }
-  exit(-1);
+  return EXIT_FAILURE;
 }

@@ -8,8 +8,13 @@
 #ifndef GLITE_WMS_PURGER_PURGER_H
 #define GLITE_WMS_PURGER_PURGER_H
 
+#include <boost/utility.hpp>
+#include <boost/type_traits.hpp>
+#include <boost/shared_ptr.hpp>
+
 #include <boost/filesystem/operations.hpp> 
 #include <boost/function.hpp>
+
 #include "glite/lb/context.h"
 #include "glite/lb/producer.h"
 namespace glite {
@@ -22,17 +27,33 @@ class JobId;
 
 namespace wms {
 namespace purger {
- typedef boost::function<int(edg_wll_Context)> wll_log_function_type;
 
- bool purgeStorageEx(const boost::filesystem::path&, 
-   int purge_threshold = 0, 
-   bool fake_rm = false, 
-   bool navigating_dag = false,
-   wll_log_function_type = edg_wll_LogClearTIMEOUT);
+ typedef boost::shared_ptr<boost::remove_pointer<edg_wll_Context>::type> ContextPtr;
+ 
+ class Purger : public boost::noncopyable
+ {
+   boost::function<int(edg_wll_Context)> m_logging_fn;
+   time_t m_threshold;
+   bool m_skip_status_checking;
+   bool m_force_orphan_node_removal;
+   bool m_force_dag_node_removal;
 
- bool purgeStorageEx(const boost::filesystem::path& p,wll_log_function_type wll_log_function);
+   bool remove_path(
+     boost::filesystem::path const&,
+     ContextPtr log_ctx
+   );
 
- bool purgeStorage(const glite::wmsutils::jobid::JobId&, const std::string& sandboxdir = "");
+ public:
+   Purger();   
+   bool operator()(glite::wmsutils::jobid::JobId const&);
+
+   Purger& log_using(boost::function<int(edg_wll_Context)>);
+   Purger& threshold(time_t);
+   Purger& skip_status_checking(bool = true);
+   Purger& force_orphan_node_removal(bool = true);
+   Purger& force_dag_node_removal(bool = true);
+ };
+
  
 } // namespace purger
 } // namespace wms
