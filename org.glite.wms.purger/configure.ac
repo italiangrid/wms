@@ -19,6 +19,9 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.16.2.17  2008/05/20 11:00:33  monforte
+#       increased version
+#
 #       Revision 1.16.2.16  2008/05/14 08:47:08  monforte
 #       Fix for:
 #       - bug #36536: The glite wms purge storage library should rely on LBProxy while logging CLEAR events.
@@ -201,7 +204,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.57)
-AC_INIT([GLite WMS Purger], [3.1.10])
+AC_INIT([GLite WMS Purger], [3.1.11])
 AC_CONFIG_AUX_DIR([./project])
 AM_INIT_AUTOMAKE([1.6.3 subdir-objects])
 AC_CONFIG_SRCDIR([src/purger.cpp])
