@@ -20,7 +20,13 @@ do
   esac
 done
 
-create-proxy.sh
+proxyfile=`${GLITE_WMS_LOCATION}/bin/glite-wms-get-configuration Common.HostProxyFile`
+
+openssl x509 -in $proxyfile -checkend `expr 3600 \* 6`
+if [ $? -eq  1 ] ; then
+  glite-wms-create-proxy.sh
+fi
+
 check_process glite-wms-purgeStorage $log
 
 # if another instance had been running the check_process
