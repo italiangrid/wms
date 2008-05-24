@@ -8,7 +8,7 @@
 
 CONF = $(top_builddir)/src/configuration/libglite_wms_conf.la
 
-sbin_PROGRAMS      = glite-wms-quota-adjust
+sbin_PROGRAMS      = glite-wms-quota-adjust glite-wms-fl2jd
 
 lib_LTLIBRARIES    = \
 	libglite_wms_util.la \
@@ -17,6 +17,13 @@ lib_LTLIBRARIES    = \
 	libglite_wms_quota.la
 
 libexec_PROGRAMS   = glite-wms-eval_ad_expr
+
+glite_wms_fl2jd_SOURCES = glite-wms-fl2jd.cpp
+glite_wms_fl2jd_LDADD = \
+	libglite_wms_util.la \
+	$(GLITE_WMSUTILS_CLASSADS_LIBS) \
+	$(BOOST_LIBS) \
+	$(CLASSAD_LIBS)
 
 glite_wms_eval_ad_expr_SOURCES = glite-wms-eval_ad_expr.cpp
 glite_wms_eval_ad_expr_LDADD   = \
