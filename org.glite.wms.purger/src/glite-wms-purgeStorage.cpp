@@ -32,12 +32,13 @@ namespace {
 const configuration::Configuration* f_conf = 0;
 
 bool
-find_directories(
-  const fs::path & from_path,
-  const std::string &prefix,
-  std::vector<fs::path>& path_found,
-  bool recursive = false
+purge_directories(
+  const fs::path& from_path,
+  wl::purger::Purger& thePurger
 ) {
+
+  static std::string const prefix("https");
+
   if (!fs::exists(from_path)) {
     return false;
   }
@@ -48,8 +49,11 @@ find_directories(
     if (fs::exists(*itr))
     try { 	
       if (fs::is_directory( *itr ) && itr->leaf()!="lost+found") {
-	   if (itr->leaf().substr(0,prefix.length()) == prefix) path_found.push_back( *itr );
-	   else if (recursive && find_directories( *itr, prefix, path_found )) return true;
+	   if (itr->leaf().substr(0,prefix.length()) == prefix) {
+             jobid::JobId id(jobid::from_filename( itr->leaf()));
+             thePurger(id);
+           }
+	   else if (purge_directories( *itr, thePurger )) return true;
       }
     }
     catch( fs::filesystem_error& e) {
@@ -189,15 +193,12 @@ int main( int argc, char* argv[])
    }
    std::vector<fs::path> found_path;
    fs::path from_path( staging_path, fs::native);
-   find_directories(from_path, "https", found_path, true);
+   
+   purge_directories(
+     from_path, 
+     thePurger
+   );
 
-   std::vector<fs::path>::const_iterator i = found_path.begin();
-   std::vector<fs::path>::const_iterator const e = found_path.end();
-
-   for( ; i != e ; ++i) {
-     jobid::JobId id(jobid::from_filename( i->leaf()));
-     thePurger( id );
-   }
   }
   catch (boost::program_options::unknown_option const& e) {
     std::cerr<< e.what() << '\n';
