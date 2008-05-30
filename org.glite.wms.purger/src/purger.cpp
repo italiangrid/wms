@@ -11,6 +11,8 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/bind.hpp>
 
+#include "ssl_utils.h"
+
 #include "glite/wmsutils/jobid/JobId.h"
 #include "glite/wmsutils/jobid/manipulation.h"
 #include "glite/wmsutils/jobid/JobIdExceptions.h"
@@ -177,6 +179,23 @@ Purger::Purger() :
   m_skip_status_checking(true),
   m_force_orphan_node_removal(false), m_force_dag_node_removal(false)
 {
+  if (sslutils::proxy_expires_within(get_host_x509_proxy(), 21600)) // 6 hours
+  {
+
+    std::string const cert(std::getenv("GLITE_HOST_CERT") ? 
+      std::getenv("GLITE_HOST_CERT") : "/home/glite/.certs/hostcert.pem"
+    );
+    std::string const key(std::getenv("GLITE_HOST_KEY") ?
+      std::getenv("GLITE_HOST_KEY") : "/home/glite/.certs/hostkey.pem"
+    );
+    if (!sslutils::proxy_init(cert, key, get_host_x509_proxy(), 86400)) // 24 hours
+    {
+      Error(
+        "Unable to renew expired host proxy '" << get_host_x509_proxy() << "': check certificates "
+        "and what GLITE_HOST_CERT / GLITE_HOST_KEY environment variables refer to."
+      );
+    }
+  }
 }
 
 Purger&

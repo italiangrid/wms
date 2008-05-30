@@ -65,6 +65,27 @@ create_context(
 
 namespace {
 
+
+bool
+proxy_expires_within(std::string const& x509_proxy, time_t seconds)
+{
+  std::FILE* fd = std::fopen(x509_proxy.c_str(), "r");
+  if (!fd) return true; // invalid proxy
+
+  boost::shared_ptr<std::FILE> fd_(fd, std::fclose);
+
+  ::X509* const cert = ::PEM_read_X509(fd, 0, 0, 0);
+  if (!cert) return true;
+
+  boost::shared_ptr< ::X509> cert_(cert, ::X509_free);
+
+  return (
+    ASN1_UTCTIME_cmp_time_t(
+      X509_get_notAfter(cert), std::time(0)+seconds
+    ) < 0
+  );
+}
+
 std::string
 get_proxy_subject(std::string const& x509_proxy)
 {

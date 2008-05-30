@@ -25,7 +25,8 @@ sbin_PROGRAMS      = glite-wms-purgeStorage
 
 libglite_wms_purger_la_SOURCES = \
 	purger.cpp \
-	lb_utils.cpp
+	lb_utils.cpp \
+        ssl_utils.cpp 
 
 glite_wms_purgeStorage_SOURCES = \
 	glite-wms-purgeStorage.cpp
