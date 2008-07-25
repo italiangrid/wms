@@ -113,10 +113,6 @@ int main( int argc, char* argv[])
         "skip-status-checking,s",
         "does not perform any status checking before purging"
       )
-      ( 
-        "force-dag-node-removal,n", 
-        "force removal of dag nodes"
-      )
       (
         "force-orphan-node-removal,o", 
         "force removal of orphan dag nodes"
@@ -170,9 +166,6 @@ int main( int argc, char* argv[])
     ).
     skip_status_checking(
       vm.count("skip-status-checking")
-    ).
-    force_dag_node_removal(
-      vm.count("force-dag-node-removal")
     ).
     force_orphan_node_removal(
       vm.count("force-orphan-node-removal")

@@ -24,7 +24,7 @@ proxyfile=`${GLITE_WMS_LOCATION}/bin/glite-wms-get-configuration Common.HostProx
 
 openssl x509 -in $proxyfile -checkend `expr 3600 \* 6`
 if [ $? -eq  1 ] ; then
-  glite-wms-create-proxy.sh
+   ${GLITE_WMS_LOCATION}/sbin/glite-wms-create-proxy.sh
 fi
 
 check_process glite-wms-purgeStorage $log

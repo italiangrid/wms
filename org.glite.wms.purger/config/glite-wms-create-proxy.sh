@@ -12,7 +12,7 @@ create_proxy()
 
    move=`chmod 400 "$1.$$" &&
      chown "${GLITE_WMS_USER}" "$1.$$" &&
-     mv "$1.$$" "$1" 2>&1`
+     mv -f "$1.$$" "$1" 2>&1`
 
    [ $? -eq 0 ] || echo $move " Fail " >> $2
 }
