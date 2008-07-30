@@ -11,7 +11,7 @@ check_process()
 }
 
 log="/dev/stdout"
-while getopts "l:t:c:p:a:snoh" arg
+while getopts "l:t:c:p:a:soh" arg
 do
   case "$arg" in
   l)    log="$OPTARG";;
@@ -21,6 +21,9 @@ do
 done
 
 proxyfile=`${GLITE_WMS_LOCATION}/bin/glite-wms-get-configuration Common.HostProxyFile`
+if [ $? eq -1 ] ; then
+  proxyfile="${GLITE_WMS_LOCATION_VAR}/wms.proxy"
+fi
 
 openssl x509 -in $proxyfile -checkend `expr 3600 \* 6`
 if [ $? -eq  1 ] ; then
