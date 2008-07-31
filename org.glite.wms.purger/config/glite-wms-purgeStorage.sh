@@ -21,11 +21,11 @@ do
 done
 
 proxyfile=`${GLITE_WMS_LOCATION}/bin/glite-wms-get-configuration Common.HostProxyFile`
-if [ $? eq -1 ] ; then
+if [ $? -eq 1 ] ; then
   proxyfile="${GLITE_WMS_LOCATION_VAR}/wms.proxy"
 fi
 
-openssl x509 -in $proxyfile -checkend `expr 3600 \* 6`
+openssl x509 -in $proxyfile -checkend `expr 3600 \* 6` > /dev/null
 if [ $? -eq  1 ] ; then
    ${GLITE_WMS_LOCATION}/sbin/glite-wms-create-proxy.sh
 fi
