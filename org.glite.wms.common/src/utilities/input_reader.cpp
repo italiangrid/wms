@@ -5,7 +5,7 @@
 
 // $Id$
 
-#include "input_reader.h"
+#include "glite/wms/common/utilities/input_reader.h"
 
 namespace glite {
 namespace wms {

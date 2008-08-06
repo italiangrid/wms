@@ -5,15 +5,15 @@
 
 // $Id$
 
-#include "jobdir_reader.h"
+#include "glite/wms/common/utilities/jobdir_reader.h"
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/fstream.hpp>
 #include <boost/bind.hpp>
 #include <classad_distribution.h>
 #include "glite/wms/common/logger/logger_utils.h"
-#include "scope_guard.h"
-#include "jobdir.h"
+#include "glite/wms/common/utilities/scope_guard.h"
+#include "glite/wms/common/utilities/jobdir.h"
 
 namespace utilities = glite::wms::common::utilities;
 namespace fs = boost::filesystem;

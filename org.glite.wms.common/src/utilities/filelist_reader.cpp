@@ -5,10 +5,10 @@
 
 // $Id$
 
-#include "filelist_reader.h"
+#include "glite/wms/common/utilities/filelist_reader.h"
 #include "glite/wms/common/utilities/FLExtractor.h"
 #include "glite/wms/common/logger/logger_utils.h"
-#include "scope_guard.h"
+#include "glite/wms/common/utilities/scope_guard.h"
 
 namespace glite {
 namespace wms {

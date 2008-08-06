@@ -82,12 +82,7 @@ utilitiesinclude_HEADERS = \
 	ii_attr_utils.h \
 	LineParserExceptions.h \
 	quota.h \
-	triple.h \
-	scope_guard.h \
-	jobdir.h \
-	input_reader.h \
-	jobdir_reader.h \
-	filelist_reader.h
+	triple.h
 
 AM_CPPFLAGS = -I$(top_srcdir)/interface \
 	-I$(top_srcdir)/src \

@@ -19,7 +19,7 @@
 
 // $Id$
  
-#include "jobdir.h"
+#include "glite/wms/common/utilities/jobdir.h"
 #include <cerrno>
 #include <sstream>
 #include <iomanip>
