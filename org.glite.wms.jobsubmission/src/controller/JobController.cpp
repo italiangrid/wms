@@ -20,8 +20,11 @@ JobController::JobController( edg_wll_Context *cont ) : jc_impl( JobControllerFa
 JobController::~JobController( void )
 { delete this->jc_impl; }
 
-int JobController::submit( const classad::ClassAd *ad )
-{ return this->jc_impl->submit( ad ); }
+int JobController::msubmit(std::vector<classad::ClassAd*> v)
+{ return this->jc_impl->msubmit(v); }
+
+int JobController::submit(classad::ClassAd *ad)
+{ return this->jc_impl->submit(ad); }
 
 bool JobController::cancel( const glite::wmsutils::jobid::JobId &id, const char *logfile )
 { return this->jc_impl->cancel( id, logfile ); }
@@ -29,10 +32,6 @@ bool JobController::cancel( const glite::wmsutils::jobid::JobId &id, const char 
 bool JobController::cancel( int condorid, const char *logfile )
 { return this->jc_impl->cancel( condorid, logfile ); }
 
-size_t JobController::queue_size( void )
-{ return this->jc_impl->queue_size(); }
-
 }; // namespace controller
-
 } JOBCONTROL_NAMESPACE_END;
 

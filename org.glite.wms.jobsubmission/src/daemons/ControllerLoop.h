@@ -2,6 +2,7 @@
 #define EDG_WORKLOAD_JOBCONTROL_DAEMONS_CONTROLLERLOOP_H
 
 #include <string>
+#include <boost/shared_ptr.hpp>
 
 #include "glite/wms/common/logger/logstream.h"
 #include "jobcontrol_namespace.h"
@@ -18,48 +19,35 @@ namespace controller {
 }
 
 namespace jccommon { class EventLogger; }
-
 namespace daemons {
 
 class ControllerLoop {
 public:
   enum run_code_t { do_nothing, reload, shutdown };
 
-  ControllerLoop( const glite::wms::common::utilities::LineParser &options );
-  ~ControllerLoop( void );
+  ControllerLoop(glite::wms::common::utilities::LineParser const& options);
 
-  run_code_t run( void );
+  run_code_t run();
+  run_code_t operator()( void ) { return this->run(); }
 
-  inline run_code_t operator()( void ) { return this->run(); }
-
-  inline static ControllerLoop *instance( void ) { return cl_s_instance; }
-  inline static const char *compile_time( void ) { return cl_s_time; }
-  inline static const char *compile_date( void ) { return cl_s_date; }
-  inline static const char *version( void ) { return cl_s_version; }
-  inline static const char *build_host( void ) { return cl_s_buildHost; }
-  inline static const char *build_user( void ) { return cl_s_buildUser; }
+  static ControllerLoop *instance( void ) { return cl_s_instance; }
 
 private:
-  ControllerLoop( const ControllerLoop &loop ); // Not implemented
-  ControllerLoop &operator=( const ControllerLoop &loop ); // Not implemented
-
   void createDirectories( void );
   void activateSignalHandling( void );
   bool checkSignal( run_code_t &return_code );
 
-  bool                                                           cl_verbose;
-  glite::wms::common::logger::logstream                                     &cl_stream;
-  std::auto_ptr<jccommon::EventLogger>                           cl_logger;
-  std::string                                                    cl_queuefilename;
-  std::auto_ptr<controller::CondorG>                             cl_executer;
-  std::auto_ptr<controller::JobControllerClient>                 cl_client;
+  bool cl_verbose;
+  glite::wms::common::logger::logstream &cl_stream;
+  boost::shared_ptr<jccommon::EventLogger> cl_logger;
+  std::string cl_queuefilename;
+  boost::shared_ptr<controller::CondorG> cl_executer;
+  boost::shared_ptr<controller::JobControllerClient> cl_client;
 
-  const glite::wms::common::utilities::LineParser                            &cl_options;
+  const glite::wms::common::utilities::LineParser &cl_options;
 
-  static const char         *cl_s_version, *cl_s_time, *cl_s_date;
-  static const char         *cl_s_buildUser, *cl_s_buildHost;
-  static const int           cl_s_signals[];
-  static ControllerLoop     *cl_s_instance;
+  static const int cl_s_signals[];
+  static ControllerLoop *cl_s_instance;
 };
 
 }; // Namespace daemons

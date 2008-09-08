@@ -74,7 +74,7 @@ void MonitorLoop::createDirectories( void )
   vector<fs::path>              paths;
   vector<fs::path>::iterator    pathIt;
 
-  if( this->ml_verbose ) clog << "Checking for directories..." << endl;
+  if( this->ml_verbose ) clog << "Checking for directories..." << '\n';
 
   try {
     paths.push_back(fs::path(lmconfig->monitor_internal_dir() + "/tmp", fs::native));
@@ -88,15 +88,15 @@ void MonitorLoop::createDirectories( void )
 
     for( pathIt = paths.begin(); pathIt != paths.end(); ++pathIt ) {
       if( (!pathIt->native_file_string().empty()) && !fs::exists(pathIt->branch_path()) ) {
-	if( this->ml_verbose ) clog << "\tCreating directory: " << pathIt->branch_path().native_file_string() << "..." << endl;
+	if( this->ml_verbose ) clog << "\tCreating directory: " << pathIt->branch_path().native_file_string() << "..." << '\n';
 
 	fs::create_parents( pathIt->branch_path() );
       }
-      else if( this->ml_verbose ) clog << "\tDirectory: " << pathIt->branch_path().native_file_string() << " exists..." << endl;
+      else if( this->ml_verbose ) clog << "\tDirectory: " << pathIt->branch_path().native_file_string() << " exists..." << '\n';
     }
   }
   catch( fs::filesystem_error &err ) {
-    clog << "Filesystem error: \"" << err.what() << "\"." << endl;
+    clog << "Filesystem error: \"" << err.what() << "\"." << '\n';
 
     throw CannotStart( err.what() );
   }
@@ -112,10 +112,10 @@ void MonitorLoop::activateSignalHandling( void )
   vector<int>                signals( ml_s_signals, ml_s_signals + sizeof(ml_s_signals) / sizeof(int) );
   logger::StatePusher        pusher( this->ml_stream, "MonitorLoop::activateSignalHandling()" );
 
-  this->ml_stream << logger::setlevel( logger::info ) << "Activating signal handlers." << endl;
+  this->ml_stream << logger::setlevel( logger::info ) << "Activating signal handlers." << '\n';
   results = jccommon::SignalChecker::instance()->add_signals( signals );
 
-  this->ml_stream << logger::setlevel( logger::debug ) << "Signals trapped:" << endl;
+  this->ml_stream << logger::setlevel( logger::debug ) << "Signals trapped:" << '\n';
   for( bIt = results.begin(), iIt = signals.begin(); bIt != results.end(); ++bIt, ++iIt ) {
     if( *bIt )
       this->ml_stream << logger::setlevel( logger::debug )
@@ -124,7 +124,7 @@ void MonitorLoop::activateSignalHandling( void )
 #else
 		      << *iIt
 #endif
-		      << " handler successfully set." << endl;
+		      << " handler successfully set." << '\n';
     else
       this->ml_stream << logger::setlevel( logger::severe ) << "Cannot set handler for signal: "
 #ifdef HAVE_STRSIGNAL
@@ -132,7 +132,7 @@ void MonitorLoop::activateSignalHandling( void )
 #else
 		      << '(' << *iIt << ')'
 #endif
-		      << ", proceeding without it !!!" << endl;
+		      << ", proceeding without it !!!" << '\n';
   }
 
   return;
@@ -149,11 +149,11 @@ bool MonitorLoop::checkSignal( run_code_t &return_code )
 #ifdef HAVE_STRSIGNAL
 		    << '\"' << strsignal(signal) << '\"'
 #endif
-		    << '(' << signal << ") signal, checking what to do..." << endl;
+		    << '(' << signal << ") signal, checking what to do..." << '\n';
 
     switch( signal ) {
     case SIGHUP:
-      this->ml_stream << logger::setlevel( logger::warning ) << "Try to restart the daemon." << endl;
+      this->ml_stream << logger::setlevel( logger::warning ) << "Try to restart the daemon." << '\n';
 
       loop = false;
       return_code = reload;
@@ -162,7 +162,7 @@ bool MonitorLoop::checkSignal( run_code_t &return_code )
     case SIGINT:
     case SIGQUIT:
     case SIGTERM:
-      this->ml_stream << logger::setlevel( logger::warning ) << "Ending signal, gracefully shutting down." << endl;
+      this->ml_stream << logger::setlevel( logger::warning ) << "Ending signal, gracefully shutting down." << '\n';
 
       loop = false;
       return_code = shutdown;
@@ -170,7 +170,7 @@ bool MonitorLoop::checkSignal( run_code_t &return_code )
       break;
     default:
       this->ml_stream << logger::setlevel( logger::error )
-		      << "Unhandled signal received, continuing work..." << endl;
+		      << "Unhandled signal received, continuing work..." << '\n';
 
       loop = true;
       return_code = do_nothing;
@@ -197,24 +197,24 @@ MonitorLoop::MonitorLoop( const utilities::LineParser &options ) : ml_verbose( o
 
   if( currentUser.uid() == 0 ) {
     if( this->ml_verbose )
-      clog << "Running as root, trying to lower permissions..." << endl;
+      clog << "Running as root, trying to lower permissions..." << '\n';
 
     if( process::Process::self()->drop_privileges_forever(common->dguser().c_str()) ) {
       if( this->ml_verbose )
-	clog << "Failed: reason \"" << strerror(errno) << "\"" << endl;
+	clog << "Failed: reason \"" << strerror(errno) << "\"" << '\n';
 
       if( !options.is_present('r') )
 	throw CannotStart( "Cannot drop privileges, avoiding running as root." );
       else {
 	previous = "Cannot drop privileges, running as root can be dangerous !";
-	if( this->ml_verbose ) clog << previous << endl;
+	if( this->ml_verbose ) clog << previous << '\n';
       }
     }
     else if( this->ml_verbose )
-      clog << "Running as user " << common->dguser() << "..." << endl;
+      clog << "Running as user " << common->dguser() << "..." << '\n';
   }
   else if( this->ml_verbose )
-    clog << "Running in an unprivileged account..." << endl;
+    clog << "Running in an unprivileged account..." << '\n';
 
   this->createDirectories();
 
@@ -222,7 +222,7 @@ MonitorLoop::MonitorLoop( const utilities::LineParser &options ) : ml_verbose( o
   this->ml_stream.activate_log_rotation( config->log_file_max_size(), config->log_rotation_base_file(),
 					 config->log_rotation_max_file_number() );
   if( this->ml_stream.good() ) {
-    if( this->ml_verbose ) clog << "Opened log file: " << logname.native_file_string() << endl;
+    if( this->ml_verbose ) clog << "Opened log file: " << logname.native_file_string() << '\n';
   }
   else {
     string    error( "Cannot open log file \"" );
@@ -238,41 +238,39 @@ MonitorLoop::MonitorLoop( const utilities::LineParser &options ) : ml_verbose( o
   }
   catch( jccommon::LoggerException &error ) {
     this->ml_stream << logger::setlevel( logger::fatal )
-		    << "Cannot create LB logger object." << endl
-		    << "Reason: \"" << error.what() << "\"." << endl;
+		    << "Cannot create LB logger object." << '\n'
+		    << "Reason: \"" << error.what() << "\"." << '\n';
 
     throw CannotStart( error.what() );
   }
 
   this->ml_stream << logger::setlevel( logger::null )
-		  << "<------------>" << endl << "<<   MARK   >>" << endl << "<------------>" << endl;
+		  << "<------------>" << '\n' << "<<   MARK   >>" << '\n' << "<------------>" << '\n';
 
   this->ml_stream << logger::setlevel( logger::null )
-		  << "**********************************************************************" << endl
+		  << "**********************************************************************" << '\n'
 		  << logger::setlevel( logger::debug )
-		  << "* Vax Headroom Enterprises Inc. and INFN are proud to present you... *" << endl
-		  << "* ...the chief of the readers, the brand new LogMonitor !!!          *" << endl
 		  << logger::setlevel( logger::null )
-		  << "* GLITE LogMonitor Version. " << ml_s_version << "                                        *" << endl
-		  << "* Compiled at " << ml_s_date << ", " << ml_s_time << "                                  *" << endl
-		  << "**********************************************************************" << endl;
+		  << "* gLite LogMonitor Version. " << ml_s_version << "                                        *" << '\n'
+		  << "* Compiled at " << ml_s_date << ", " << ml_s_time << "                                  *" << '\n'
+		  << "**********************************************************************" << '\n';
 
   if( previous )
-    this->ml_stream << logger::setlevel( logger::null ) << previous << endl;
+    this->ml_stream << logger::setlevel( logger::null ) << previous << '\n';
 
   try {
     idrep = internal / config->id_repository_name();
     abrep = internal / ml_s_abortedFileName;
 
     this->ml_idContainer.reset( new jccommon::IdContainer(idrep.native_file_string()) );
-    this->ml_stream << "Successfully created the id repository file." << endl;
+    this->ml_stream << "Successfully created the id repository file." << '\n';
 
     this->ml_abContainer.reset( new logmonitor::AbortedContainer(abrep.native_file_string()) );
-    this->ml_stream << "Successfully created the aborted job repository file." << endl;
+    this->ml_stream << "Successfully created the aborted job repository file." << '\n';
   }
   catch( fs::filesystem_error &err ) {
     this->ml_stream << logger::setlevel( logger::fatal )
-		    << "Filesystem error: \"" << err.what() << "\"." << endl;
+		    << "Filesystem error: \"" << err.what() << "\"." << '\n';
 
     throw CannotStart( err.what() );
   }
@@ -280,13 +278,13 @@ MonitorLoop::MonitorLoop( const utilities::LineParser &options ) : ml_verbose( o
     string     error( "Cannot create container: " );
     error.append( err.string_error() );
 
-    this->ml_stream << logger::setlevel( logger::fatal ) << error << endl;
+    this->ml_stream << logger::setlevel( logger::fatal ) << error << '\n';
 
     throw CannotStart( error );
   }
 
   this->ml_resubmitter.reset( new logmonitor::processer::JobResubmitter(this->ml_logger.get()) );
-  this->ml_stream << logger::setlevel( logger::info ) << "Successfully created the resubmitter to WM." << endl;
+  this->ml_stream << logger::setlevel( logger::info ) << "Successfully created the resubmitter to WM." << '\n';
 
   logmonitor::CondorMonitor::recycle_directory( config->condor_log_recycle_dir() );
 
@@ -340,30 +338,31 @@ try {
       logBegin = fs::directory_iterator( logdir );
 
       for( logIt = logBegin; logIt != logEnd; ++logIt ) {
-	name.assign( logIt->leaf() );
- 	if ( !fs::exists(*logIt) ) // see lcg2 bug 3807
- 	  ; // ignore
- 	else if( !fs::is_directory(*logIt) && !boost::regex_match(name, expr) && (filemap.count(name) == 0) ) {
-	  this->ml_stream << logger::setlevel( logger::low )
-			  << "Adding new condor log file: " << logIt->native_file_string() << endl;
+        name.assign( logIt->leaf() );
+        if (!fs::exists(*logIt)) { // see lcg2 bug 3807
+          ; // ignore
+        } else if (!fs::is_directory(*logIt) && !boost::regex_match(name, expr) && (filemap.count(name) == 0)) {
+          this->ml_stream << logger::setlevel( logger::low )
+            << "Adding new condor log file: " << logIt->native_file_string() << '\n';
           
           try {
+// TODO delete?
             tmp = new logmonitor::CondorMonitor( logIt->native_file_string(), data );
 	    filemap.insert( map<string, MonitorPtr>::value_type(logIt->leaf(), MonitorPtr(tmp)) );
 
           } catch( logmonitor::CannotOpenFile &err ) {
             this->ml_stream << logger::setlevel( logger::error )
-                            << "Detected an error while reading condor log file: " << endl
-                            << err.reason() << endl 
-                            << "Probably it is not a CondorLog file: REMOVE it please!!! " << endl; 
+                            << "Detected an error while reading condor log file: " << '\n'
+                            << err.reason() << '\n' 
+                            << "Probably it is not a CondorLog file: REMOVE it please!!! " << '\n'; 
           }
-	}
+        }
       }
       
       for( filemapIt = filemap.begin(); filemapIt != filemap.end(); ++filemapIt ) {
 	if( lastfile != filemapIt->first ) {
 	  this->ml_stream << logger::setlevel( logger::veryugly )
-			  << "Examining file: " << filemapIt->first << endl;
+			  << "Examining file: " << filemapIt->first << '\n';
 
 	  lastfile.assign( filemapIt->first );
 	}
@@ -387,15 +386,15 @@ try {
 
 	if( (status == logmonitor::CondorMonitor::no_events) && filemapIt->second->file_completed() ) {
 	    this->ml_stream << logger::setlevel( logger::info ) 
-			    << "No more jobs in condor log file." << endl
-			    << "Scheduling for removal." << endl;
+			    << "No more jobs in condor log file." << '\n'
+			    << "Scheduling for removal." << '\n';
 
 	    removables.push_back( filemapIt );
 	  }
 	  else if( status == logmonitor::CondorMonitor::event_error ) {
 	    this->ml_stream << logger::setlevel( logger::error )
-			    << "Detected an error while reading condor log file." << endl
-			    << "Removing it." << endl;
+			    << "Detected an error while reading condor log file." << '\n'
+			    << "Removing it." << '\n';
 
 	    removables.push_back( filemapIt );
 	  }
@@ -421,14 +420,14 @@ try {
 
 	  if( empty_loops == 1 )
 	    this->ml_stream << logger::setlevel( logger::info )
-			    << "No new event found, going to sleep." << endl
-			    << "Checking each " << total << " seconds for new events." << endl;
+			    << "No new event found, going to sleep." << '\n'
+			    << "Checking each " << total << " seconds for new events." << '\n';
 
 	  if( remaining > 0 ) {
 	    if( found_event ) {
 	      this->ml_stream << logger::setlevel( logger::info )
-			      << "Spent " << elapsed << " seconds in the last file loop." << endl
-			      << "Must wait for other " << remaining << " seconds." << endl;
+			      << "Spent " << elapsed << " seconds in the last file loop." << '\n'
+			      << "Must wait for other " << remaining << " seconds." << '\n';
 
 	      lastfile.erase();
 	    }
@@ -442,22 +441,22 @@ try {
 	    try {
 	      if( this->ml_idContainer->inserted() >= comthr ) {
 		this->ml_stream << logger::setlevel( logger::medium )
-				<< "IdContainer size exceeded, compacting." << endl;
+				<< "IdContainer size exceeded, compacting." << '\n';
 
 		this->ml_idContainer->compact();
 	      }
 
 	      if( this->ml_abContainer->inserted() >= comthr ) {
 		this->ml_stream << logger::setlevel( logger::medium )
-				<< "AbortedContainer size exceeded, compacting." << endl;
+				<< "AbortedContainer size exceeded, compacting." << '\n';
 
 		this->ml_abContainer->compact();
 	      }
 	    }
 	    catch( utilities::FileContainerError &error ) {
 	      this->ml_stream << logger::setlevel( logger::null )
-			      << "Cannot compact container." << endl
-			      << "Reason: " << error.string_error() << endl;
+			      << "Cannot compact container." << '\n'
+			      << "Reason: " << error.string_error() << '\n';
 
 	      loop = false;
 	      ret = shutdown;
@@ -474,8 +473,8 @@ catch( logmonitor::MonitorException &error ) {
   logger::StatePusher      pusher( this->ml_stream, "MonitorLoop::run()" );
 
   this->ml_stream << logger::setlevel( logger::null )
-		  << "Cannot run the CondorMonitor, fatal error." << endl
-		  << error.what() << endl;
+		  << "Cannot run the CondorMonitor, fatal error." << '\n'
+		  << error.what() << '\n';
 
   throw CannotExecute( error.what() );
 }
@@ -483,9 +482,8 @@ catch( exception &err ) {
   logger::StatePusher      pusher( this->ml_stream, "MonitorLoop::run()" );
 
   this->ml_stream << logger::setlevel( logger::null )
-		  << "Got an unhandled standard exception !!!" << endl
-		  << "Namely: \"" << err.what() << "\"" << endl
-		  << "Aborting daemon..." << endl;
+		  << "Got an unhandled standard exception:" << '\n'
+		  << err.what() << '\n';
 
   throw;
 }
@@ -493,8 +491,7 @@ catch( ... ) {
   logger::StatePusher      pusher( this->ml_stream, "MonitorLoop::run()" );
 
   this->ml_stream << logger::setlevel( logger::null )
-		  << "OUCH !!! Got an unknown exception !!!" << endl
-		  << "Aborting daemon..." << endl;
+		  << "unknown exception" << '\n';
 
   throw;
 }

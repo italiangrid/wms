@@ -127,20 +127,21 @@ JWOP::status_type JobWrapperOutputParser::parse_file( int &retcode, string &erro
   ifstream                   ifs;
   logger::StatePusher        pusher( elog::cedglog, "JobWrapperOutputParser::parse_file(...)" );
 
-  errors.erase(); retcode = -1;
+  errors.erase();
+  retcode = -1;
 
-  elog::cedglog << logger::setlevel( logger::high ) << "Going to parse standard output file." << endl;
+  elog::cedglog << logger::setlevel( logger::high ) << "Going to parse standard output file." << '\n';
 
   ifs.open( files->standard_output().native_file_string().c_str() );
   found = this->parseStream( ifs, errors, retcode, stat, sc );
   ifs.close();
-  if( !found ) {
-    errors.assign( "Standard output does not contain useful data." );
-    elog::cedglog << logger::setlevel( logger::null ) << errors << endl;
+  if (!found) {
+    errors = "Standard output does not contain useful data.";
+    elog::cedglog << logger::setlevel( logger::null ) << errors << '\n';
 
     if( lmconfig->use_maradona_file() ) {
       elog::cedglog << logger::setlevel( logger::high )
-		    << "Standard output was not useful, passing ball to Maradona..." << endl;
+		    << "Standard output was not useful, checking out Maradona..." << '\n';
 
       ifs.clear();
       ifs.open( files->maradona_file().native_file_string().c_str() );
@@ -148,21 +149,11 @@ JWOP::status_type JobWrapperOutputParser::parse_file( int &retcode, string &erro
       ifs.close();
       if( found )
 	elog::cedglog << logger::setlevel( logger::null )
-		      << "Got info from Maradona..." << endl
-		      << logger::setlevel( logger::ugly )
-		      << "Maradona makes another goal !!!" << endl
-		      << "The legend goes on..." << endl
-		      << logger::setlevel( logger::veryugly )
-		      << "Stuttgard - Naples: 3 - 3" << endl
-		      << "Naples win the UEFA cup !!!" << endl;
+		      << "Got info from Maradona..." << '\n';
       else {
 	errors.append( "Cannot read JobWrapper output, both from Condor and from Maradona. " );
 
-	elog::cedglog << logger::setlevel( logger::null ) << errors
-		      << logger::setlevel( logger::ugly )
-		      << "Maradona fails the shot !!!" << endl
-		      << logger::setlevel( logger::veryugly )
-		      << "100000 fans in the stadium boo him !!!" << endl;
+	elog::cedglog << logger::setlevel( logger::null ) << errors << '\n';
 
 	retcode = -1;
 	stat = resubmit;
@@ -170,7 +161,7 @@ JWOP::status_type JobWrapperOutputParser::parse_file( int &retcode, string &erro
     }
     else {
       elog::cedglog << logger::setlevel( logger::null )
-		    << "Maradona disabled, cannot check for alternate output." << endl;
+		    << "Maradona disabled, cannot check for alternate output." << '\n';
 
       retcode = -1;
       stat = resubmit;

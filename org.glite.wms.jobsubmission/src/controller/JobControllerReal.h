@@ -24,13 +24,13 @@ namespace controller {
 
 class JobControllerReal: public JobControllerImpl {
 public:
-  JobControllerReal( edg_wll_Context *cont );
-  virtual ~JobControllerReal( void );
+  JobControllerReal(edg_wll_Context *cont);
+  virtual ~JobControllerReal() { }
 
-  virtual int submit( const classad::ClassAd *ad );
-  virtual bool cancel( const glite::wmsutils::jobid::JobId &id, const char *logfile );
-  virtual bool cancel( int condorid, const char *logfile );
-  virtual size_t queue_size( void );
+  virtual int msubmit(std::vector<classad::ClassAd*>);
+  virtual int submit(classad::ClassAd *ad);
+  virtual bool cancel(const glite::wmsutils::jobid::JobId &id, const char *logfile );
+  virtual bool cancel(int condorid, const char *logfile );
 
 private:
   JobControllerReal( const JobControllerReal &rhs );

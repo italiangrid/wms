@@ -4,6 +4,8 @@
 #include <string>
 #include <memory>
 
+#include <boost/shared_ptr.hpp>
+
 JOBCONTROL_NAMESPACE_BEGIN {
 
 namespace controller {
@@ -19,7 +21,7 @@ public:
 
   Request &operator=( const Request &r );
   inline Request &operator=( const classad::ClassAd &ad ) { return this->reset( ad ); }
-  inline operator const classad::ClassAd &( void ) const { return *this->r_request; }
+  inline operator const classad::ClassAd &() const { return *this->r_request; }
   Request &reset( const classad::ClassAd &ad );
 
   int get_source( void ) const;
@@ -28,8 +30,8 @@ public:
   std::string get_string_command( void ) const;
 
   inline bool check_protocol( void ) const { return( this->get_protocol() == std::string(r_s_proto_version) ); }
-  inline const classad::ClassAd &get_arguments( void ) const { return *this->r_arguments; }
-  inline const classad::ClassAd &get_request( void ) const { return *this->r_request; }
+  inline const classad::ClassAd &get_arguments() const { return *this->r_arguments; }
+  inline const classad::ClassAd &get_request() const { return *this->r_request; }
 
   static const char *string_command( request_code_t command );
 
@@ -41,7 +43,7 @@ protected:
   void checkProtocol( void ) const;
 
   classad::ClassAd                  *r_arguments;
-  std::auto_ptr<classad::ClassAd>    r_request;
+  boost::shared_ptr<classad::ClassAd>    r_request;
 
   static const char    *r_s_commands[];
   static const char    *r_s_proto_version;
@@ -56,7 +58,7 @@ public:
 
   void set_sequence_code( const std::string &code );
 
-  const classad::ClassAd *get_jobad( void ) const;
+  classad::ClassAd *get_jobad( void ) const;
 
 private:
   static const char    *sr_s_JobAd;

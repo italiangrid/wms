@@ -4,12 +4,19 @@
 #include <string>
 #include <memory>
 
+<<<<<<< SubmitAdapter.h
+#include <classad_distribution.h>
+#include "SubmitAd.h"
+=======
 
 namespace classad {
   class ClassAd;
 };
+>>>>>>> 1.3
 
-namespace glite { namespace wms { namespace jobsubmission {
+namespace glite {
+namespace wms {
+namespace jobsubmission {
 
 namespace controller {
 
@@ -17,31 +24,33 @@ class SubmitAd;
 
 class SubmitAdapter {
 public:
-  SubmitAdapter( const classad::ClassAd &inad );
-  ~SubmitAdapter( void );
+  SubmitAdapter(classad::ClassAd* inad);
 
-  inline const SubmitAd *operator->( void ) const { return this->sa_sad.get(); }
-
-  classad::ClassAd *adapt_for_submission( const std::string &seqcode = "" );
-
+  SubmitAd const* operator->() const { return this->sa_sad; }
+  void adapt_for_submission(std::string const& seqcode = "");
+  bool good() { return sa_good; }
+  classad::ClassAd* classad() { return sa_sad->classad_ptr(); }
+  void SubmitAdapter::createFromAd(classad::ClassAd* pad);
 private:
-  void adapt( void );
+  void adapt();
 
-  bool                      sa_good;
-  std::auto_ptr<SubmitAd>   sa_sad;
-  std::string               sa_seqcode;
+  bool sa_good;
+  SubmitAd* sa_sad;
+  std::string sa_seqcode;
 };
 
-inline classad::ClassAd *adapt_for_submission( const classad::ClassAd &inad )
+void adapt_for_submission(classad::ClassAd* inad)
 {
-  SubmitAdapter    adapter( inad );
-
-  return adapter.adapt_for_submission();
+  SubmitAdapter adapter(inad);
 }
 
+<<<<<<< SubmitAdapter.h
+}}}}
+=======
 }; // Namespace controller
 
 }}} // Namespace jobsubmission wms glite
+>>>>>>> 1.3
 
 #endif /* EDG_WORKLOAD_JOBCONTROL_CONTROLLER_SUBMITADAPTER_H */
 

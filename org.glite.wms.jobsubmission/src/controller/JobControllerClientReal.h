@@ -21,7 +21,7 @@ public:
 
   virtual void release_request( void );
   virtual void extract_next_request( void );
-  virtual const Request *get_current_request( void );
+  virtual Request *get_current_request( void );
 
 private:
   typedef glite::wms::common::utilities::FileList<classad::ClassAd>   queue_type;
@@ -41,7 +41,7 @@ public:
 
   virtual void release_request( void );
   virtual void extract_next_request( void );
-  virtual const Request *get_current_request( void );
+  virtual Request *get_current_request( void );
 
 private:
   Request    jccu_request;

@@ -44,16 +44,16 @@ JobControllerClientReal::JobControllerClientReal( void ) : JobControllerClientIm
 	 << "Error while opening filelist." << endl
 	 << "Reason: " << error.string_error() << endl;
 
-    throw CannotCreate( error.string_error() );
+    throw CannotCreate(error.string_error());
   }
 }
 
-JobControllerClientReal::~JobControllerClientReal( void )
+JobControllerClientReal::~JobControllerClientReal()
 {
   this->jccr_queue.close();
 }
 
-void JobControllerClientReal::extract_next_request( void )
+void JobControllerClientReal::extract_next_request()
 {
   utilities::FileListLock     locker( *this->jccr_mutex, false );
   logger::StatePusher         pusher( clog, "JobControllerClientReal::get_next_request()" );
@@ -61,59 +61,57 @@ void JobControllerClientReal::extract_next_request( void )
   clog << logger::setlevel( logger::info ) << "Waiting for requests..." << endl;
   jccommon::SignalChecker::instance()->throw_on_signal();
 
-  while( true ) {
+  while (true) {
     locker.lock();
     this->jccr_current = this->jccr_extractor.get_next();
 
-    if( this->jccr_current != this->jccr_extractor->end() ) break;
-    else {
+    if (this->jccr_current != this->jccr_extractor->end()) {
+      break;
+    } else {
       locker.unlock();
-      sleep( 2 );
-
       jccommon::SignalChecker::instance()->throw_on_signal();
     }
   }
 
   this->jccr_currentGood = true;
-  this->jccr_request.reset( *this->jccr_current );
-  clog << logger::setlevel( logger::debug ) << "Got new request..." << endl;
+  this->jccr_request.reset(*this->jccr_current);
+  clog << logger::setlevel( logger::debug ) << "Got new request...\n";
 
   return;
 }
 
-void JobControllerClientReal::release_request( void )
+void JobControllerClientReal::release_request()
 {
   if( this->jccr_currentGood ) {
     utilities::FileListLock     locker( *this->jccr_mutex );
 
-    this->jccr_extractor.erase( this->jccr_current );
+    this->jccr_extractor.erase(this->jccr_current);
     this->jccr_currentGood = false;
   }
 
   return;
 }
 
-const Request *JobControllerClientReal::get_current_request( void )
+Request *JobControllerClientReal::get_current_request()
 {
   return &this->jccr_request;
 }
 
-JobControllerClientUnknown::JobControllerClientUnknown( void ) : jccu_request()
-{}
+JobControllerClientUnknown::JobControllerClientUnknown() : jccu_request() { }
 
-JobControllerClientUnknown::~JobControllerClientUnknown( void ) {}
+JobControllerClientUnknown::~JobControllerClientUnknown() { }
 
-void JobControllerClientUnknown::release_request( void )
+void JobControllerClientUnknown::release_request()
 {
   return;
 }
 
-void JobControllerClientUnknown::extract_next_request( void )
+void JobControllerClientUnknown::extract_next_request()
 {
   return;
 }
 
-const Request *JobControllerClientUnknown::get_current_request( void )
+Request *JobControllerClientUnknown::get_current_request()
 {
   return &this->jccu_request;
 }

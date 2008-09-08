@@ -10,11 +10,14 @@
 
 #include <memory>
 
+#include <boost/shared_ptr.hpp>
+
 #include <classad_distribution.h>
 
-#include "jobcontrol_namespace.h"
 #include "glite/wms/common/utilities/FileList.h"
 #include "glite/wms/common/utilities/FileListLock.h"
+#include "glite/wms/common/utilities/jobdir.h"
+#include "jobcontrol_namespace.h"
 
 typedef  struct _edg_wll_Context  *edg_wll_Context;
 
@@ -31,8 +34,6 @@ class JobControllerFactory {
   friend class Empty;
 
 public:
-  ~JobControllerFactory( void );
-
   JobControllerImpl *create_server( edg_wll_Context *cont );
   JobControllerClientImpl *create_client( void );
 
@@ -49,8 +50,9 @@ private:
 
   void createQueue( void );
 
-  std::auto_ptr<mutex_type>     jcf_mutex;
-  std::auto_ptr<queue_type>     jcf_queue;
+  boost::shared_ptr<mutex_type> jcf_mutex;
+  boost::shared_ptr<queue_type> jcf_queue;
+  boost::shared_ptr<glite::wms::common::utilities::JobDir> jcf_jobdir;
 
   static JobControllerFactory *jcf_s_instance;
 };

@@ -54,25 +54,25 @@ CondorG *CondorG::set_command( command_t command, const string &parameter )
   return this;
 }
 
-int CondorG::execute( std::string &info )
+int CondorG::execute(std::string &info)
 {
   int                         result = -1;
   FILE                       *fp;
   char                       *pc, buffer[BUFSIZ];
   boost::mutex::scoped_lock   lock( this->cg_mutex );
 
-  if( this->cg_command.size() == 0 ) info.assign( "Command not set." );
-  else {
+  if (this->cg_command.size() == 0 ) {
+    info = "Command not set.";
+  } else {
     if( (fp = popen(this->cg_command.c_str(), "r")) == NULL ) {
-      info.assign( "Cannot open pipe" );
+      info = "Cannot open pipe";
       result = -1;
-    }
-    else {
+    } else {
       info.erase();
-
-      while( (pc = fgets(buffer, BUFSIZ, fp)) != NULL ) info.append( pc );
-
-      result = pclose( fp );
+      while ((pc = fgets(buffer, BUFSIZ, fp)) != NULL ) {
+        info += pc;
+      }
+      result = pclose(fp);
     }
   }
 

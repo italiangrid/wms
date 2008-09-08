@@ -6,23 +6,24 @@ JOBCONTROL_NAMESPACE_BEGIN {
 
 namespace controller {
 
-JobControllerClient::JobControllerClient( void ) : jcc_impl( JobControllerFactory::instance()->create_client() )
-{}
+JobControllerClient::JobControllerClient()
+  : jcc_impl(JobControllerFactory::instance()->create_client())
+{ }
 
-JobControllerClient::~JobControllerClient( void )
+JobControllerClient::~JobControllerClient()
 { delete this->jcc_impl; }
 
-void JobControllerClient::release_request( void )
+void JobControllerClient::release_request()
 {
   this->jcc_impl->release_request();
 }
 
-void JobControllerClient::extract_next_request( void )
+void JobControllerClient::extract_next_request()
 {
   this->jcc_impl->extract_next_request();
 }
 
-const Request *JobControllerClient::get_current_request( void )
+const Request *JobControllerClient::get_current_request()
 {
   return this->jcc_impl->get_current_request();
 }

@@ -182,7 +182,7 @@ void SubmitRequest::set_sequence_code( const string &code )
   return;
 }
 
-const classad::ClassAd *SubmitRequest::get_jobad( void ) const
+classad::ClassAd *SubmitRequest::get_jobad( void ) const
 {
   classad::ClassAd     *jobad;
 

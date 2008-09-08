@@ -9,6 +9,7 @@
 
 // $Id$
 
+#include <vector>
 #include <cstdio>
 
 #include "jobcontrol_namespace.h"
@@ -30,10 +31,10 @@ public:
   JobController( edg_wll_Context *cont = NULL );
   ~JobController( void );
 
-  int submit( const classad::ClassAd *ad );
+  int msubmit(std::vector<classad::ClassAd*>);
+  int submit(classad::ClassAd*);
   bool cancel( const glite::wmsutils::jobid::JobId &id, const char *logfile = NULL );
   bool cancel( int condorid, const char *logfile = NULL );
-  size_t queue_size( void );
 
 private:
   JobController( const JobController &rhs ); // Not implemented

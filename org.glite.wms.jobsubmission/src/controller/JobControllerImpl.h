@@ -9,6 +9,8 @@
 
 // $Id$
 
+#include <vector>
+
 #include <glite/wmsutils/jobid/JobId.h>
 
 COMMON_SUBNAMESPACE_CLASS_J(jobid, JobId );
@@ -41,6 +43,8 @@ public:
    */
   virtual ~JobControllerImpl( void ) {}
 
+  virtual int msubmit(std::vector<classad::ClassAd *>) = 0;
+
   /**
    *  Submit a job.
    *  This method allows the user to submit a job to the controller or
@@ -48,7 +52,7 @@ public:
    *  \param ad The ClassAd containing all the informations about the job.
    *  \return Implementation dependent integer. Don't cope on it.
    */
-  virtual int submit( const classad::ClassAd *ad ) = 0;
+  virtual int submit(classad::ClassAd *ad) = 0;
   /**
    *  Remove a job.
    *  Remove a job from the queue using its JOB ID.
@@ -65,11 +69,6 @@ public:
    *  \return Implementation dependent integer. Don't cope on it.
    */
   virtual bool cancel( int condorid, const char *logfile ) = 0;
-  /**
-   *  Ask for the queue size.
-   *  \return The number of request still in the queue.
-   */
-  virtual size_t queue_size( void ) = 0;
 
 private:
   JobControllerImpl( const JobControllerImpl &rhs ); // Not implemented

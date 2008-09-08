@@ -2,6 +2,8 @@
 #define EDG_WORKLOAD_JOBCONTROL_CONTROLLER_JOBCONTROLLERCLIENTJD_H
 
 #include <queue>
+
+#include <boost/shared_ptr.hpp>
 #include <boost/filesystem/path.hpp>
 
 #include "glite/wms/common/utilities/jobdir.h"
@@ -15,20 +17,19 @@ namespace controller {
 
 class JobControllerClientJD : public JobControllerClientImpl {
 public:
-  JobControllerClientJD( void );
-  virtual ~JobControllerClientJD( void );
+  JobControllerClientJD();
+  virtual ~JobControllerClientJD() { }
 
-  virtual void release_request( void );
-  virtual void extract_next_request( void );
-  virtual const Request *get_current_request( void );
+  virtual void release_request();
+  virtual void extract_next_request();
+  virtual const Request *get_current_request();
 
 private:
-
   bool                                      jccjd_currentGood;
   boost::filesystem::path                   jccjd_current;
   Request                                   jccjd_request;
-  std::queue< boost::filesystem::path >     jccjd_queue;
-  glite::wms::common::utilities::JobDir*    jccjd_jd;
+  std::queue<boost::filesystem::path>       jccjd_queue;
+  boost::shared_ptr<glite::wms::common::utilities::JobDir> jccjd_jd;
 };
 
 }; // namespace controller

@@ -15,10 +15,10 @@ public:
   JobControllerFake( void );
   virtual ~JobControllerFake( void );
 
-  virtual int submit( const classad::ClassAd *ad );
+  int msubmit(std::vector<classad::ClassAd *>);
+  virtual int submit( classad::ClassAd *ad );
   virtual bool cancel( const glite::wmsutils::jobid::JobId &id, const char *logfile );
   virtual bool cancel( int condorid, const char *logfile );
-  virtual size_t queue_size( void );
 
 private:
   JobControllerFake( const JobControllerFake & ); // Not implemented

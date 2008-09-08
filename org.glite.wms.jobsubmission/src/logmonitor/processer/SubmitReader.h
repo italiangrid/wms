@@ -13,13 +13,13 @@ public:
   SubmitReader( const glite::wmsutils::jobid::JobId &dagid, const glite::wmsutils::jobid::JobId &jobid );
   ~SubmitReader( void );
 
-  inline const std::string &to_string( void ) const { return this->sr_submit; }
-  inline const std::string &get_globus_rsl( void ) const { return this->sr_globusRsl; }
+  const std::string &to_string( void ) const { return this->sr_submit; }
+  const std::string &get_globus_rsl( void ) const { return this->sr_globusRsl; }
 
 private:
   void internalRead( const glite::wmsutils::jobid::JobId &edgid );
 
-  std::string        sr_submit, sr_globusRsl;
+  std::string        sr_globusRsl, sr_submit;
   jccommon::Files    sr_files;
 };
 

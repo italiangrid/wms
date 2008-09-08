@@ -31,7 +31,16 @@ JobControllerFake::JobControllerFake( void ) {}
 
 JobControllerFake::~JobControllerFake( void ) {}
 
-int JobControllerFake::submit( const classad::ClassAd *pad )
+int JobControllerFake::msubmit(
+  std::vector<classad::ClassAd*> v
+) try
+{
+  return 0;
+} catch (SubmitAdException &error) {
+  throw CannotExecute(error.error());
+}
+
+int JobControllerFake::submit(classad::ClassAd *pad)
 try {
   ofstream              ofs;
   SubmitAd              ad( pad );
@@ -81,11 +90,5 @@ bool JobControllerFake::cancel( int condorid, const char *logfile )
   return true;
 }
 
-size_t JobControllerFake::queue_size( void )
-{
-  return 0;
-}
-
 }; // namespace controller
-
 } JOBCONTROL_NAMESPACE_END;
