@@ -7,8 +7,12 @@
 <<<<<<< JobControllerProxy.cpp
 // $Id$
 =======
+<<<<<<< JobControllerProxy.cpp
+// $Id$
+=======
 // $Id$
 >>>>>>> 1.7
+>>>>>>> 1.8
 
 #include <string>
 #include <fstream>

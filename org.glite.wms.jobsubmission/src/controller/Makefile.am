@@ -12,11 +12,19 @@
 #       Council for the Central Laboratory of the Research Councils (CCLRC), United Kingdom
 #
 #       Authors: Paolo Andreetto <paolo.andreetto@pd.infn.it>
+<<<<<<< Makefile.am
 #       Version info: $Id$
 #       Release: $Name$
+=======
+#       Version info: $Id$
+#       Release: $Name$
+>>>>>>> 1.3
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.4  2008/10/01 13:13:06  mcecchi
+#       enabling multiple job submission for a single user
+#
 #       Revision 1.3  2007/01/22 15:47:19  gianelle
 #       Sincronize HEAD repository with the 3.1 branch
 #       Add the JobDir support

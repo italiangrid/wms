@@ -17,7 +17,7 @@ JOBCONTROL_NAMESPACE_BEGIN {
 
 namespace jccommon {
 
-void RamContainer::internalCopy( IdContainer &ic )
+void RamContainer::internalCopy( IdContainer & ic )
 {
   PointerId                                         current;
   utilities::FileListMutex                          flmutex( ic.ic_container );
@@ -39,9 +39,6 @@ void RamContainer::internalCopy( IdContainer &ic )
 
   return;
 }
-
-RamContainer::RamContainer( void ) : rc_inserted( 0 ), rc_pointers(), rc_edgs(), rc_condors()
-{}
 
 RamContainer::RamContainer( IdContainer &ic ) : rc_inserted( 0 ), rc_pointers(), rc_edgs(), rc_condors()
 { this->internalCopy( ic ); }

@@ -17,6 +17,9 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.2  2008/10/01 13:13:06  mcecchi
+#       enabling multiple job submission for a single user
+#
 #       Revision 1.1  2004/07/06 10:09:03  pandreet
 #       Insert jobcontrol_namespace and Makefile
 #

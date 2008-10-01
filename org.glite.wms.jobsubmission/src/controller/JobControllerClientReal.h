@@ -16,12 +16,19 @@ namespace controller {
 
 class JobControllerClientReal : public JobControllerClientImpl {
 public:
-  JobControllerClientReal( void );
-  virtual ~JobControllerClientReal( void );
+  JobControllerClientReal();
+  virtual ~JobControllerClientReal();
 
+<<<<<<< JobControllerClientReal.h
+  virtual void release_request();
+  virtual void extract_next_request();
+  virtual Request *get_current_request();
+  virtual std::string const get_current_request_name() const { return ""; }
+=======
   virtual void release_request( void );
   virtual void extract_next_request( void );
   virtual Request *get_current_request( void );
+>>>>>>> 1.2
 
 private:
   typedef glite::wms::common::utilities::FileList<classad::ClassAd>   queue_type;
@@ -34,6 +41,9 @@ private:
   glite::wms::common::utilities::ForwardExtractor<queue_type>             jccr_extractor;
 };
 
+<<<<<<< JobControllerClientReal.h
+}} JOBCONTROL_NAMESPACE_END;
+=======
 class JobControllerClientUnknown : public JobControllerClientImpl {
 public:
   JobControllerClientUnknown( void );
@@ -50,6 +60,7 @@ private:
 }; // namespace controller
 
 } JOBCONTROL_NAMESPACE_END;
+>>>>>>> 1.2
 
 #endif /* EDG_WORKLOAD_JOBCONTROL_CONTROLLER_JOBCONTROLLERCLIENTREAL_H */
 

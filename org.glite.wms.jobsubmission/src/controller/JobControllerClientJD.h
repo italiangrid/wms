@@ -20,9 +20,16 @@ public:
   JobControllerClientJD();
   virtual ~JobControllerClientJD() { }
 
+<<<<<<< JobControllerClientJD.h
   virtual void release_request();
   virtual void extract_next_request();
   virtual const Request *get_current_request();
+  virtual std::string const get_current_request_name() const;
+=======
+  virtual void release_request();
+  virtual void extract_next_request();
+  virtual const Request *get_current_request();
+>>>>>>> 1.3
 
 private:
   bool                                      jccjd_currentGood;

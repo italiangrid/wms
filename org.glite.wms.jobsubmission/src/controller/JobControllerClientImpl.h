@@ -12,9 +12,10 @@ public:
   JobControllerClientImpl( void ) {}
   virtual ~JobControllerClientImpl( void ) {}
 
-  virtual void release_request( void ) = 0;
-  virtual void extract_next_request( void ) = 0;
-  virtual const Request *get_current_request( void ) = 0;
+  virtual void release_request() = 0;
+  virtual void extract_next_request() = 0;
+  virtual const Request *get_current_request() = 0;
+  virtual std::string const get_current_request_name() const = 0;
 
 private:
   JobControllerClientImpl( const JobControllerClientImpl & ); // Not implemented

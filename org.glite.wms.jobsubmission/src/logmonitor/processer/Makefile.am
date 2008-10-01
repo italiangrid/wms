@@ -12,11 +12,19 @@
 #       Council for the Central Laboratory of the Research Councils (CCLRC), United Kingdom
 #
 #       Authors: Paolo Andreetto <paolo.andreetto@pd.infn.it>
+<<<<<<< Makefile.am
 #       Version info: $Id$
 #       Release: $Name$
+=======
+#       Version info: $Id$
+#       Release: $Name$
+>>>>>>> 1.7
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.8  2008/10/01 13:13:07  mcecchi
+#       enabling multiple job submission for a single user
+#
 #       Revision 1.7  2007/11/12 10:36:46  giaco
 #       cleanup deps
 #

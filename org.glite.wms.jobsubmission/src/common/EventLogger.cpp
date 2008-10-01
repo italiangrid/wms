@@ -13,10 +13,8 @@
 
 namespace fs = boost::filesystem;
 
-#ifdef GLITE_WMS_HAVE_LBPROXY
 #include <openssl/pem.h>
 #include <openssl/x509.h>
-#endif
 
 #include "glite/wms/common/utilities/boost_fs_add.h"
 #include "glite/lb/producer.h"
@@ -1417,14 +1415,14 @@ string EventLogger::seq_code_lbproxy( const string &jobid )
 
 } 
 
-string EventLogger::sequence_code( void )
+string EventLogger::sequence_code()
 {
   char          *seqcode;
   string         res( "undefined" );
 
 #ifdef GLITE_WMS_HAVE_LOGGING
   if( this->el_context ) {
-    seqcode = edg_wll_GetSequenceCode( *this->el_context );
+    seqcode = edg_wll_GetSequenceCode(*this->el_context);
 
     res.assign( seqcode );
     free( seqcode );

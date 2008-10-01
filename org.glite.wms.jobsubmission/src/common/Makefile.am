@@ -12,11 +12,19 @@
 #       Council for the Central Laboratory of the Research Councils (CCLRC), United Kingdom
 #
 #       Authors: Paolo Andreetto <paolo.andreetto@pd.infn.it>
+<<<<<<< Makefile.am
 #       Version info: $Id$
 #       Release: $Name$
+=======
+#       Version info: $Id$
+#       Release: $Name$
+>>>>>>> 1.13
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.14  2008/10/01 13:13:06  mcecchi
+#       enabling multiple job submission for a single user
+#
 #       Revision 1.13  2007/07/09 15:51:50  gianelle
 #       Added globus lib
 #
@@ -102,6 +110,6 @@ AM_CPPFLAGS = -I$(top_srcdir)/src \
 	$(BOOST_CFLAGS) \
   $(GLOBUS_NOTHR_CFLAGS) \
 	-DGLITE_WMS_HAVE_LOGGING -DGLITE_WMS_HAVE_PURGER \
-        -DGLITE_WMS_HAVE_RENEWAL -DGLITE_WMS_HAVE_LBPROXY
+        -DGLITE_WMS_HAVE_RENEWAL #-DGLITE_WMS_HAVE_LBPROXY
 
 MAINTAINERCLEANFILES = Makefile.in *~

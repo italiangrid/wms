@@ -12,11 +12,19 @@
 #       Council for the Central Laboratory of the Research Councils (CCLRC), United Kingdom
 #
 #       Authors: Paolo Andreetto <paolo.andreetto@pd.infn.it>
+<<<<<<< Makefile.am
 #       Version info: $Id$
 #       Release: $Name$
+=======
+#       Version info: $Id$
+#       Release: $Name$
+>>>>>>> 1.21
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.22  2008/10/01 13:13:07  mcecchi
+#       enabling multiple job submission for a single user
+#
 #       Revision 1.21  2007/11/12 10:36:45  giaco
 #       cleanup deps
 #
@@ -181,6 +189,6 @@ AM_CPPFLAGS = -I$(top_srcdir)/src \
 	$(GLOBUS_NOTHR_CFLAGS) \
 	$(BOOST_CFLAGS) \
 	$(CLASSAD_CFLAGS) \
-	$(CONDORG_CFLAGS) -DGLITE_WMS_HAVE_LBPROXY 
+	$(CONDORG_CFLAGS) #-DGLITE_WMS_HAVE_LBPROXY 
 
 MAINTAINERCLEANFILES = Makefile.in *~

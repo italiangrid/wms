@@ -86,7 +86,15 @@ void JobControllerClientJD::extract_next_request()
   return;
 }
 
+<<<<<<< JobControllerClientJD.cpp
+std::string const JobControllerClientJD::get_current_request_name() const {
+  return this->jccjd_current.native_file_string();
+}
+
 void JobControllerClientJD::release_request()
+=======
+void JobControllerClientJD::release_request()
+>>>>>>> 1.4
 {
   if (this->jccjd_currentGood) {	
     fs::remove(this->jccjd_current);
@@ -95,9 +103,16 @@ void JobControllerClientJD::release_request()
       this->jccjd_currentGood = false;
     }
   }
-
-  return;
 }
+  // if (this->jccjd_currentGood) {	
+  //   fs::remove(this->jccjd_current);
+  //   this->jccjd_queue.pop();
+  //   if (this->jccjd_queue.empty()) {
+  //     this->jccjd_currentGood = false;
+  //   }
+  // }
+
+  // return;
 
 const Request *JobControllerClientJD::get_current_request()
 {
@@ -105,6 +120,20 @@ const Request *JobControllerClientJD::get_current_request()
     return 0;
   }
 
+<<<<<<< JobControllerClientJD.cpp
+  fs::ifstream is(this->jccjd_current);
+  classad::ClassAdParser parser;
+  boost::shared_ptr<classad::ClassAd> command_ad(
+    parser.ParseClassAd(is)
+  );
+  
+  this->jccjd_request.reset(*command_ad);
+  if (command_ad.get()) {
+    return &this->jccjd_request;
+  } else {
+    return 0;
+  }
+=======
   fs::ifstream is(this->jccjd_current);
   classad::ClassAdParser parser;
   boost::shared_ptr<classad::ClassAd> command_ad(
@@ -118,6 +147,7 @@ const Request *JobControllerClientJD::get_current_request()
   } else {
     return 0;
   }
+>>>>>>> 1.4
 }
 
 } // end namespace controller

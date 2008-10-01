@@ -33,7 +33,7 @@ private:
   RamContainer( const RamContainer &rc ); // Not implemented
   RamContainer &operator=( const RamContainer &rc ); // Not implemented
 
-  void internalCopy( IdContainer &ic );
+  void internalCopy(IdContainer & ic);
 
   int                     rc_inserted;
   std::list<PointerId>    rc_pointers;

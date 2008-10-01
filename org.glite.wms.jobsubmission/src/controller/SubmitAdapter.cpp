@@ -29,6 +29,10 @@ void SubmitAdapter::createFromAd(classad::ClassAd* pad)
 
 void SubmitAdapter::adapt()
 {
+<<<<<<< SubmitAdapter.cpp
+  if (this->sa_good) {
+      this->sa_sad->set_sequence_code(this->sa_seqcode);
+=======
   if (this->sa_good) {
     try {
       this->sa_sad->set_sequence_code(this->sa_seqcode);
@@ -43,9 +47,8 @@ void SubmitAdapter::adapt()
     } catch (...) { // TODO specialise
       this->sa_good = false;
     }
+>>>>>>> 1.4
   }
-
-  return;
 }
 
 void SubmitAdapter::adapt_for_submission(const string &seqcode)

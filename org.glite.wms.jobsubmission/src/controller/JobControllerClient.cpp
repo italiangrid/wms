@@ -28,6 +28,9 @@ const Request *JobControllerClient::get_current_request()
   return this->jcc_impl->get_current_request();
 }
 
-}; // Namespace controller
+std::string const JobControllerClient::get_current_request_name() const
+{
+  return this->jcc_impl->get_current_request_name();
+}
 
-} JOBCONTROL_NAMESPACE_END;
+}} JOBCONTROL_NAMESPACE_END;

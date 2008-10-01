@@ -4,15 +4,12 @@
 #include <string>
 #include <memory>
 
-<<<<<<< SubmitAdapter.h
 #include <classad_distribution.h>
 #include "SubmitAd.h"
-=======
 
 namespace classad {
   class ClassAd;
 };
->>>>>>> 1.3
 
 namespace glite {
 namespace wms {
@@ -44,13 +41,7 @@ void adapt_for_submission(classad::ClassAd* inad)
   SubmitAdapter adapter(inad);
 }
 
-<<<<<<< SubmitAdapter.h
-}}}}
-=======
-}; // Namespace controller
-
-}}} // Namespace jobsubmission wms glite
->>>>>>> 1.3
+}}}}; // Namespace controller
 
 #endif /* EDG_WORKLOAD_JOBCONTROL_CONTROLLER_SUBMITADAPTER_H */
 

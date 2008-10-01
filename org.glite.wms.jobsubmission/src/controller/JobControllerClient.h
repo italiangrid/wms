@@ -10,18 +10,19 @@ class JobControllerClientImpl;
 
 class JobControllerClient {
 public:
-  JobControllerClient( void );
-  ~JobControllerClient( void );
+  JobControllerClient();
+  ~JobControllerClient();
 
-  void release_request( void );
-  void extract_next_request( void );
-  const Request *get_current_request( void );
+  void release_request();
+  void extract_next_request();
+  const Request *get_current_request();
+  std::string const get_current_request_name() const;
 
 private:
-  JobControllerClient( const JobControllerClient & ); // Not implemented
-  JobControllerClient &operator=( const JobControllerClient & ); // Not implemented
+  JobControllerClient(const JobControllerClient &);
+  JobControllerClient &operator=(const JobControllerClient &);
 
-  JobControllerClientImpl   *jcc_impl;
+  JobControllerClientImpl *jcc_impl;
 };
 
 }; // Namespace controller

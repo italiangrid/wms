@@ -10,8 +10,12 @@
 <<<<<<< JobControllerProxy.h
 // $Id$
 =======
+<<<<<<< JobControllerProxy.h
+// $Id$
+=======
 // $Id$
 >>>>>>> 1.4
+>>>>>>> 1.5
 
 #include <vector>
 #include <classad_distribution.h>

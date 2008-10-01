@@ -97,6 +97,9 @@ Request *JobControllerClientReal::get_current_request()
   return &this->jccr_request;
 }
 
+<<<<<<< JobControllerClientReal.cpp
+}} JOBCONTROL_NAMESPACE_END;
+=======
 JobControllerClientUnknown::JobControllerClientUnknown() : jccu_request() { }
 
 JobControllerClientUnknown::~JobControllerClientUnknown() { }
@@ -119,3 +122,4 @@ Request *JobControllerClientUnknown::get_current_request()
 };
 
 } JOBCONTROL_NAMESPACE_END;
+>>>>>>> 1.4

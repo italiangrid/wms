@@ -293,7 +293,7 @@ MonitorLoop::MonitorLoop( const utilities::LineParser &options ) : ml_verbose( o
   ts::edglog.unsafe_attach( this->ml_stream ); // Attach edglog to the right stream
 }
 
-MonitorLoop::~MonitorLoop( void )
+MonitorLoop::~MonitorLoop()
 {
   ml_s_instance = NULL;
 }
@@ -301,7 +301,7 @@ MonitorLoop::~MonitorLoop( void )
 typedef  boost::shared_ptr<logmonitor::CondorMonitor>   MonitorPtr;
 typedef  map<string, MonitorPtr>::iterator              MapIterator;
 
-MonitorLoop::run_code_t MonitorLoop::run( void )
+MonitorLoop::run_code_t MonitorLoop::run()
 try {
   const configuration::LMConfiguration   *config = configuration::Configuration::instance()->lm();
   bool                                    loop = true, found_event;
@@ -331,7 +331,7 @@ try {
   do {
     loop = this->checkSignal( ret );
 
-    if( loop ) {
+    if (loop) {
       elapser.restart();
       found_event = false;
 
@@ -346,9 +346,16 @@ try {
             << "Adding new condor log file: " << logIt->native_file_string() << '\n';
           
           try {
+<<<<<<< MonitorLoop.cpp
+            tmp = new logmonitor::CondorMonitor(logIt->native_file_string(), data);
+            filemap.insert(
+              map<string, MonitorPtr>::value_type(logIt->leaf(), MonitorPtr(tmp))
+            );
+=======
 // TODO delete?
             tmp = new logmonitor::CondorMonitor( logIt->native_file_string(), data );
 	    filemap.insert( map<string, MonitorPtr>::value_type(logIt->leaf(), MonitorPtr(tmp)) );
+>>>>>>> 1.11
 
           } catch( logmonitor::CannotOpenFile &err ) {
             this->ml_stream << logger::setlevel( logger::error )
@@ -359,59 +366,85 @@ try {
         }
       }
       
+<<<<<<< MonitorLoop.cpp
+      for (filemapIt = filemap.begin(); filemapIt != filemap.end(); ++filemapIt ) {
+        if (lastfile != filemapIt->first) {
+          this->ml_stream << logger::setlevel(logger::veryugly)
+			      << "Examining file: " << filemapIt->first << '\n';
+=======
       for( filemapIt = filemap.begin(); filemapIt != filemap.end(); ++filemapIt ) {
 	if( lastfile != filemapIt->first ) {
 	  this->ml_stream << logger::setlevel( logger::veryugly )
 			  << "Examining file: " << filemapIt->first << '\n';
+>>>>>>> 1.11
 
-	  lastfile.assign( filemapIt->first );
-	}
+        lastfile.assign( filemapIt->first );
+      }
 
-	do {
-	  loop = this->checkSignal( ret );
+        do {
+          loop = this->checkSignal( ret );
 
-	  try {
-	    if( loop ) {
-	      status = filemapIt->second->process_next_event();
+          try {
+            if (loop) {
+              status = filemapIt->second->process_next_event();
 
-	      if( status == logmonitor::CondorMonitor::event_read )
-		found_event = true;
+	        if (status == logmonitor::CondorMonitor::event_read) {
+            found_event = true;
+          }
+	      }
+	    } catch (jccommon::SignalChecker::Exception &signal) {
+	      if(signal.signal()) {
+	        loop = this->checkSignal(ret);
+        }
 	    }
-	  }
-	  catch( jccommon::SignalChecker::Exception &signal ) {
-	    if( signal.signal() != 0 )
-	      loop = this->checkSignal( ret );
-	  }
-	} while( loop && (status == logmonitor::CondorMonitor::event_read) );
+	  } while (loop && (status == logmonitor::CondorMonitor::event_read));
 
-	if( (status == logmonitor::CondorMonitor::no_events) && filemapIt->second->file_completed() ) {
+	  if (
+      (status == logmonitor::CondorMonitor::no_events)
+      && filemapIt->second->file_completed()
+    ) {
 	    this->ml_stream << logger::setlevel( logger::info ) 
+<<<<<<< MonitorLoop.cpp
+			  << "No more jobs in condor log file." << '\n'
+			  << "Scheduling for removal." << '\n';
+=======
 			    << "No more jobs in condor log file." << '\n'
 			    << "Scheduling for removal." << '\n';
+>>>>>>> 1.11
 
 	    removables.push_back( filemapIt );
+<<<<<<< MonitorLoop.cpp
+    } else if (status == logmonitor::CondorMonitor::event_error) {
+      this->ml_stream << logger::setlevel(logger::error)
+        << "Detected an error while reading condor log file." << '\n'
+        << "Removing it." << '\n';
+=======
 	  }
 	  else if( status == logmonitor::CondorMonitor::event_error ) {
 	    this->ml_stream << logger::setlevel( logger::error )
 			    << "Detected an error while reading condor log file." << '\n'
 			    << "Removing it." << '\n';
+>>>>>>> 1.11
 
 	    removables.push_back( filemapIt );
-	  }
+    }
+  }
 
-      }
-
-      if( loop ) {
-	if( !removables.empty() ) {
-	  for( remIt = removables.begin(); remIt != removables.end(); ++remIt )
-	    filemap.erase( *remIt ); // Removing the CondorMonitor will also trigger its recycling when necessary
+  if (loop) {
+    if (!removables.empty()) {
+	  for (
+      remIt = removables.begin();
+      remIt != removables.end();
+      ++remIt) {
+	      filemap.erase( *remIt ); // Removing the CondorMonitor will also trigger its recycling when necessary
+    }
 
 	  removables.clear();
 	}
 
-	loop = this->checkSignal( ret );
+	loop = this->checkSignal(ret);
 
-	if( loop ) {
+	if (loop) {
 	  elapsed = elapser.elapsed();
 	  remaining = total - static_cast<int>(elapsed) + 1;
 
@@ -432,10 +465,10 @@ try {
 	      lastfile.erase();
 	    }
 
-	    seconds = sleep( remaining );
+	    seconds = sleep(remaining);
 	  }
 
-	  loop = this->checkSignal( ret );
+	  loop = this->checkSignal(ret);
 
 	  if( loop ) {
 	    try {
