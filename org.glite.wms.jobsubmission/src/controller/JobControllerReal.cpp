@@ -169,18 +169,10 @@ void JobControllerReal::readRepository()
     elog::cedglog << logger::setlevel( logger::medium )
 		  << "Reading repository from LogMonitor file: " << repfile.native_file_string() << '\n';
 
-<<<<<<< JobControllerReal.cpp
     repository.reset(new jccommon::IdContainer(repfile.native_file_string().c_str()));
     this->jcr_repository->copy(*repository);
-  } catch (utilities::FileContainerError &err) {
+  } catch (utilities::FileContainerError const& err) {
     elog::cedglog << logger::setlevel( logger::null ) << "File container error: " << err.string_error() << '\n';
-=======
-    repository.reset( new jccommon::IdContainer(repfile.native_file_string().c_str()) );
-    this->jcr_repository->copy( *repository );
-  }
-  catch( utilities::FileContainerError &err ) {
-    elog::cedglog << logger::setlevel( logger::null ) << "File container error: " << err.string_error() << '\n';
->>>>>>> 1.13
 
     throw CannotCreate( err.string_error() );
   }
@@ -214,13 +206,11 @@ JobControllerReal::JobControllerReal(edg_wll_Context *cont)
     this->jcr_threshold = jcr_s_threshold;
   }
 
-<<<<<<< JobControllerReal.cpp
   elog::cedglog << logger::setlevel(logger::ugly) << "Controller created...\n";
-  jcr_logger.initialize_jobcontroller_context();
 }
 
 int JobControllerReal::msubmit(
-  std::vector<classad::ClassAd*> classads
+  std::vector<classad::ClassAd*>& classads
 ) try
 {
   logger::StatePusher pusher(elog::cedglog, "JobControllerReal::msubmit(...)");
@@ -339,134 +329,8 @@ int JobControllerReal::msubmit(
       sleep(1 * count);
       --count;
     }
-=======
-  elog::cedglog << logger::setlevel(logger::ugly) << "Controller created...\n";
-}
-
-int JobControllerReal::msubmit(
-  std::vector<classad::ClassAd*> classads
-) try
-{
-  std::string msubmit_grouped_file(
-    "/tmp/msubmit.jc." +
-    boost::lexical_cast<std::string>(std::rand())
-  ); 
-  ofstream ofs_multiple(msubmit_grouped_file.c_str());
-  if (!ofs_multiple) {
-    elog::cedglog << logger::setlevel( logger::null )
-          << "Cannot open condor submit file for writing.\n"
-          << "File: " << msubmit_grouped_file << '\n';
-  
-    throw CannotExecute("Cannot open condor submit file.");
-  } 
-  logger::StatePusher pusher(elog::cedglog, "JobControllerReal::msubmit(...)");
-  elog::cedglog << logger::setlevel(logger::verylow) << "Submitting "
-    << classads.size() << " jobs in one shot (" << msubmit_grouped_file << ")\n";
-
-  std::string rsl;
-  std::vector<classad::ClassAd*>::iterator it_end = classads.end();
-  std::deque<std::string> ads;
-  for (
-    std::vector<classad::ClassAd*>::iterator it = classads.begin();
-    it != it_end;
-    ++it
-  ) {
-    SubmitAdapter sad(*it);
-    sad.createFromAd(*it);
-    ads.push_back(sad->log_file());
-    this->jcr_logger.condor_submit_start_event(sad->log_file());
-    sad.adapt_for_submission(this->jcr_logger.sequence_code());
-    if (sad.good()) {
-      elog::cedglog << logger::setlevel(logger::verylow) << "Submitting job \""
-        << sad->job_id() << "\"\n";
-#ifdef HAVE_STRINGSTREAM
-      ostringstream                      oss;
-#else
-      ostrstream                         oss;
-#endif
-
-      glite::jdl::to_submit_stream(ofs_multiple, sad->classad());
-      ofs_multiple << '\n';
-// TODO is that really needed?
-//ofstream ofs_single(sad->submit_file().c_str());
-//glite::jdl::to_submit_stream(ofs_single, sad->classad());
-//ofs_single << '\n';
-//ofs_single.close();
-      if (!ofs_multiple) {
-        jccommon::ProxyUnregistrar(sad->job_id()).unregister();
-        jccommon::JobFilePurger(sad->job_id(), sad->is_dag()).do_purge(true);
-
-        this->jcr_logger.job_abort_cannot_write_submit_file_event(
-          sad->log_file(),
-          msubmit_grouped_file,
-          "Cannot open file"
-        );
-
-        throw CannotExecute("Cannot write condor submit file");
-      }
-      rsl = "."; // TODO
-      if (rsl.length() == 0) {
-        elog::cedglog << logger::setlevel(logger::verylow)
-          << "Submit file is empty, aborting job...\n";
-        this->jcr_logger.job_abort_cannot_write_submit_file_event(
-          sad->log_file(),
-          msubmit_grouped_file,
-          "Submit file empty"
-        );
-
-        jccommon::ProxyUnregistrar(sad->job_id()).unregister();
-        jccommon::JobFilePurger(sad->job_id(), sad->is_dag()).do_purge(true);
-        continue;
-      }
-    } else { // submit classad not good...
-      bool good;
-      string id(glite::jdl::get_edg_jobid(*(*it), good));
-      string type(glite::jdl::get_type(*(*it), good));
-    
-      elog::cedglog << logger::setlevel(logger::null)
-        << "Received classad is invalid.\n"
-        << "Reason: " << sad->reason() << '\n';
-
-      this->jcr_logger.job_abort_classad_invalid_event(
-       sad->log_file(),
-        sad->reason()
-      );
-
-      transform(type.begin(), type.end(), type.begin(), ::tolower);
-      jccommon::ProxyUnregistrar(id).unregister();
-      jccommon::JobFilePurger(id, type == "dag").do_purge(true);
-    }
-  } // for (classads...)
-
-  // group command
-  string parameters = "-d " + msubmit_grouped_file + " 2>&1";
-  int count = 10;
-  string info;
-  int result = 1;
-  while (count > 0 && result) { // fix for bug #23401
-    result = CondorG::instance()->set_command(
-      CondorG::submit,
-      parameters
-    )->execute(info);
-    if (result) {
-      // TODO discern fatal errors: why does this have to block all the rest?
-      static boost::regex cred_error_regex(
-        "^.*Unable to read credential for import.*$"
-      );
-      if (regex_search(info, cred_error_regex)) {
-        result = 0;
-      }
-
-      elog::cedglog << logger::setlevel(logger::verylow)
-        << "ERROR Condor returned " << info << '\n';
-      usleep(1000 * count);
-      // sleep(2 * count); // TODO
-      --count;
-    }
->>>>>>> 1.13
   }
 
-<<<<<<< JobControllerReal.cpp
   // TODO a possible error in the submit file would result in an error for all the jobs of the bunch
   // split msubmit into single submissions instead
 
@@ -504,50 +368,7 @@ int JobControllerReal::msubmit(
     } else { // the condor command worked fine... do the rest
       string condorid = pieces.str(2);
       info.erase(pieces.position(1), pieces.length(1));
-=======
-  elog::cedglog << logger::setlevel(logger::verylow)
-    << "Submission to Condor returned: " << info << '\n';
-  boost::match_results<string::const_iterator> pieces;
-  for (
-    std::vector<classad::ClassAd*>::iterator it = classads.begin();
-    it != it_end;
-    ++it
-  ) {
-    if (
-      result
-      ||
-      !boost::regex_match(
-        info,
-        pieces,
-        mult_submit_regex
-      )
-    ) {
-      elog::cedglog << logger::setmultiline(true);
-      elog::cedglog << logger::setlevel(logger::null)
-        << "Error submitting job.\n"
-        << "condor_submit return code = " << result << '\n'
-        << logger::setmultiline(true, "CE->" ) << "Given reason\n" << info << '\n';
-      elog::cedglog << logger::setmultiline(false);
-      SubmitAdapter sad(*it);
-      this->jcr_logger.condor_submit_failed_event(
-        rsl,
-        info,
-        sad->log_file()
-      );
-      jccommon::ProxyUnregistrar(sad->job_id()).unregister();
-      jccommon::JobFilePurger(sad->job_id(), sad->is_dag()).do_purge(true);
-    } else { // the condor command worked fine... do the rest
-      string condorid = pieces.str(2);
-      info.erase(pieces.position(1), pieces.length(1));
 
-      // TODO
-      //if (this->jcr_repository->inserted() >= this->jcr_threshold) {
-      //  this->readRepository();
-      //}
-      //this->jcr_repository->insert(sad->job_id(), condorid);
->>>>>>> 1.13
-
-<<<<<<< JobControllerReal.cpp
       if (this->jcr_repository->inserted() >= this->jcr_threshold) {
         this->readRepository();
       }
@@ -582,29 +403,9 @@ int JobControllerReal::msubmit(
   throw CannotExecute(error.string_error());
 } catch (SubmitAdException &error) {
   throw CannotExecute(error.error());
-=======
-      this->jcr_logger.condor_submit_ok_event(rsl, condorid, ads.front());
-      ads.pop_front();
-    }
-  }
-
-  ::unlink(msubmit_grouped_file.c_str());
-  return 0;
-} catch (utilities::FileContainerError &error) {
-  elog::cedglog << logger::setlevel(logger::null)
-    << "Error handling the internal FileList.\n";
-  throw CannotExecute(error.string_error());
-} catch (SubmitAdException &error) {
-  throw CannotExecute(error.error());
->>>>>>> 1.13
 }
 
-<<<<<<< JobControllerReal.cpp
 int JobControllerReal::submit(classad::ClassAd *pad)
-=======
-
-int JobControllerReal::submit(classad::ClassAd *pad)
->>>>>>> 1.13
 try {
   int                                result = 1;
   int  															 numberId = -1;
@@ -619,24 +420,11 @@ try {
   ostrstream                         oss;
 #endif
 
-<<<<<<< JobControllerReal.cpp
   sad.createFromAd(pad);
   this->jcr_logger.condor_submit_start_event(sad->log_file());
   seqcode = this->jcr_logger.sequence_code();
   sad.adapt_for_submission(seqcode);
-=======
-  sad.createFromAd(pad);
-  this->jcr_logger.condor_submit_start_event(sad->log_file());
-
-  seqcode.assign(this->jcr_logger.sequence_code());
-  sad.adapt_for_submission(seqcode);
->>>>>>> 1.13
-
-<<<<<<< JobControllerReal.cpp
   elog::cedglog << logger::setlevel(logger::info) << "Submitting job \"" << sad->job_id() << "\"\n";
-=======
-  elog::cedglog << logger::setlevel(logger::verylow) << "Submitting job \"" << sad->job_id() << "\"\n";
->>>>>>> 1.13
 
   if (sad.good()) {
     glite::jdl::to_submit_stream( oss, sad->classad());
@@ -678,7 +466,6 @@ try {
 
       parameters = "-d " + sad->submit_file() + " 2>&1";
       int count = 3;	      
-<<<<<<< JobControllerReal.cpp
       while (count > 0 && result) { // fix for bug #23401
         // TODO discern fatal errors: why does this have to block all the rest?
       	result =
@@ -689,20 +476,8 @@ try {
         if (result) {
           sleep(1 * count);
         }
-=======
-      while (count > 0 && result) { // fix for bug #23401
-      	result =
-          CondorG::instance()->set_command(
-            CondorG::submit, parameters
-        )->execute(info);
-				--count;
-        if (result) {
-          sleep(2 * count);
-        }
->>>>>>> 1.13
       }	
 
-<<<<<<< JobControllerReal.cpp
       elog::cedglog << logger::setlevel(logger::info)
         << "Submission to Condor returned: " << info << '\n';
       if (result || !boost::regex_match(info, pieces, single_submit_regex)) {
@@ -728,34 +503,7 @@ try {
         }
         this->jcr_repository->insert(sad->job_id(), condorid);
         this->jcr_logger.condor_submit_ok_event(rsl, condorid, sad->log_file());
-=======
-      elog::cedglog << logger::setlevel(logger::verylow)
-        << "Submission to Condor returned: " << info << '\n';
-      if (result || !boost::regex_match(info, pieces, single_submit_regex)) {
-        // The condor command has failed... Do the right thing
-        elog::cedglog << logger::setmultiline(true);
-        elog::cedglog << logger::setlevel(logger::null)
-		      << "Error submitting job.\n"
-		      << "condor_submit return code = " << result 
-		      << logger::setmultiline(true, "CE-> ") << "Given reason\n" << info << '\n';
-        elog::cedglog << logger::setmultiline(false);
-        this->jcr_logger.condor_submit_failed_event(rsl, info, sad->log_file());
-
-        jccommon::ProxyUnregistrar(sad->job_id()).unregister();
-        jccommon::JobFilePurger(sad->job_id(), sad->is_dag()).do_purge(true);
-      } else {
-        // The condor command worked fine... Do the right thing
-        string condorid = pieces.str(1);
-        numberId = boost::lexical_cast<int>(condorid);
-        elog::cedglog << logger::setlevel(logger::verylow)
-          << "Job submitted to Condor cluster: " << condorid << '\n';
-        //if( this->jcr_repository->inserted() >= this->jcr_threshold ) this->readRepository();
-        //this->jcr_repository->insert(sad->job_id(), condorid); // TODO
-
-        this->jcr_logger.condor_submit_ok_event(rsl, condorid, sad->log_file() );
->>>>>>> 1.13
       }
-<<<<<<< JobControllerReal.cpp
     } else {
       elog::cedglog << logger::setlevel(logger::null)
         << "Cannot open condor submit file for writing.\n" 
@@ -769,31 +517,9 @@ try {
 
       jccommon::ProxyUnregistrar(sad->job_id()).unregister();
       jccommon::JobFilePurger(sad->job_id(), sad->is_dag()).do_purge(true);
-=======
-    } else {
-      elog::cedglog << logger::setlevel(logger::null)
-        << "Cannot open condor submit file for writing.\n" 
-		    << "File: \"" << sad->submit_file() << "\"\n";
-
-      this->jcr_logger.job_abort_cannot_write_submit_file_event(
-        sad->log_file(),
-        sad->submit_file(),
-        "Cannot open file"
-      );
->>>>>>> 1.13
-
-<<<<<<< JobControllerReal.cpp
       throw CannotExecute("Cannot open condor submit file.");
     }
   } else { // submit classad not good...
-=======
-      jccommon::ProxyUnregistrar(sad->job_id()).unregister();
-      jccommon::JobFilePurger(sad->job_id(), sad->is_dag()).do_purge(true);
-
-      throw CannotExecute("Cannot open condor submit file.");
-    }
-  } else { // submit classad not good...
->>>>>>> 1.13
     bool      good;
     string    id(glite::jdl::get_edg_jobid(*pad, good)), type(glite::jdl::get_type(*pad, good));
 
@@ -829,19 +555,11 @@ bool JobControllerReal::cancel( const glite::wmsutils::jobid::JobId &id, const c
   elog::cedglog << logger::setlevel( logger::info )
 		<< "Asked to remove job: " << id.toString() << '\n';
 
-<<<<<<< JobControllerReal.cpp
   condorid = this->jcr_repository->condor_id(sid);
   if (condorid.size() == 0) { // syncronize the "ram" repository with the LM's one
      this->readRepository();
      condorid = this->jcr_repository->condor_id(sid);
   }
-=======
-  //condorid.assign( this->jcr_repository->condor_id(sid) ); // TODO
-  //if ( condorid.size() == 0 ) { // syncronize the "ram" repository with the LM's one
-  //   this->readRepository();
-  //   condorid.assign( this->jcr_repository->condor_id(sid) );	
-  //}
->>>>>>> 1.13
 
   if (!condorid.empty()) {
     // Comunicate to LM that this request comes from the user
@@ -850,7 +568,6 @@ bool JobControllerReal::cancel( const glite::wmsutils::jobid::JobId &id, const c
       logGenericEvent(jccommon::user_cancelled_event, icid, logfile);
     }
 
-<<<<<<< JobControllerReal.cpp
     if ((good = cancelJob(condorid, info))) { // The condor command worked fine
       if (logfile) {
         logGenericEvent(jccommon::cancelled_event, icid, logfile);
@@ -866,21 +583,6 @@ bool JobControllerReal::cancel( const glite::wmsutils::jobid::JobId &id, const c
   } else {
     elog::cedglog << logger::setlevel( logger::null ) << "not able to retrieve the condor ID.\n";
     this->jcr_logger.job_cancel_refused_event( "not able to retrieve the condor ID." );
-=======
-    if ((good = cancelJob(condorid, info))) { // The condor command worked fine
-      if( logfile ) logGenericEvent( jccommon::cancelled_event, icid, logfile );
-
-      elog::cedglog << logger::setlevel(logger::verylow) << "Job " << sid
-        << " successfully marked for removal.\n";
-      //this->jcr_repository->remove_by_condor_id( condorid ); // TODO
-    } else if (logfile) {
-      logGenericEvent( jccommon::cannot_cancel_event, icid, logfile );
-      this->jcr_logger.job_cancel_refused_event( info );
-    }
-  } else {
-    elog::cedglog << logger::setlevel( logger::null ) << "not able to retrieve the condor ID.\n";
-    this->jcr_logger.job_cancel_refused_event( "not able to retrieve the condor ID." );
->>>>>>> 1.13
     good = false;
   }
 

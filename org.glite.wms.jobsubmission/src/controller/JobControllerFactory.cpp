@@ -97,25 +97,13 @@ JobControllerClientImpl *JobControllerFactory::create_client()
   const configuration::Configuration      *configure = configuration::Configuration::instance();
   JobControllerClientImpl                 *result = 0;
 
-<<<<<<< JobControllerFactory.cpp
   if (configure->get_module() == configuration::ModuleType::job_controller) {
     if (configure->jc()->input_type() == "filelist") {
-=======
-  if( configure->get_module() == configuration::ModuleType::job_controller )
-    if ( configure->jc()->input_type() == "jobdir" )
-      result = new JobControllerClientJD();
-    else
->>>>>>> 1.3
       result = new JobControllerClientReal();
-<<<<<<< JobControllerFactory.cpp
     } else {
       result = new JobControllerClientJD();
     }
   }
-=======
-  else
-    result = new JobControllerClientUnknown();
->>>>>>> 1.3
 
   return result;
 }

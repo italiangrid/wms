@@ -29,8 +29,8 @@
 #include "glite/wms/common/logger/manipulators.h"
 #include "glite/wms/common/logger/logstream.h"
 #include "glite/wms/common/logger/edglog.h"
-#include "common/process.h"
-#include "common/user.h"
+#include "glite/wms/common/process/process.h"
+#include "glite/wms/common/process/user.h"
 #include "common/EventLogger.h"
 #include "common/IdContainer.h"
 #include "common/SignalChecker.h"
@@ -346,16 +346,10 @@ try {
             << "Adding new condor log file: " << logIt->native_file_string() << '\n';
           
           try {
-<<<<<<< MonitorLoop.cpp
             tmp = new logmonitor::CondorMonitor(logIt->native_file_string(), data);
             filemap.insert(
               map<string, MonitorPtr>::value_type(logIt->leaf(), MonitorPtr(tmp))
             );
-=======
-// TODO delete?
-            tmp = new logmonitor::CondorMonitor( logIt->native_file_string(), data );
-	    filemap.insert( map<string, MonitorPtr>::value_type(logIt->leaf(), MonitorPtr(tmp)) );
->>>>>>> 1.11
 
           } catch( logmonitor::CannotOpenFile &err ) {
             this->ml_stream << logger::setlevel( logger::error )
@@ -366,17 +360,10 @@ try {
         }
       }
       
-<<<<<<< MonitorLoop.cpp
       for (filemapIt = filemap.begin(); filemapIt != filemap.end(); ++filemapIt ) {
         if (lastfile != filemapIt->first) {
           this->ml_stream << logger::setlevel(logger::veryugly)
 			      << "Examining file: " << filemapIt->first << '\n';
-=======
-      for( filemapIt = filemap.begin(); filemapIt != filemap.end(); ++filemapIt ) {
-	if( lastfile != filemapIt->first ) {
-	  this->ml_stream << logger::setlevel( logger::veryugly )
-			  << "Examining file: " << filemapIt->first << '\n';
->>>>>>> 1.11
 
         lastfile.assign( filemapIt->first );
       }
@@ -404,27 +391,14 @@ try {
       && filemapIt->second->file_completed()
     ) {
 	    this->ml_stream << logger::setlevel( logger::info ) 
-<<<<<<< MonitorLoop.cpp
 			  << "No more jobs in condor log file." << '\n'
 			  << "Scheduling for removal." << '\n';
-=======
-			    << "No more jobs in condor log file." << '\n'
-			    << "Scheduling for removal." << '\n';
->>>>>>> 1.11
 
 	    removables.push_back( filemapIt );
-<<<<<<< MonitorLoop.cpp
     } else if (status == logmonitor::CondorMonitor::event_error) {
       this->ml_stream << logger::setlevel(logger::error)
         << "Detected an error while reading condor log file." << '\n'
         << "Removing it." << '\n';
-=======
-	  }
-	  else if( status == logmonitor::CondorMonitor::event_error ) {
-	    this->ml_stream << logger::setlevel( logger::error )
-			    << "Detected an error while reading condor log file." << '\n'
-			    << "Removing it." << '\n';
->>>>>>> 1.11
 
 	    removables.push_back( filemapIt );
     }

@@ -29,25 +29,8 @@ void SubmitAdapter::createFromAd(classad::ClassAd* pad)
 
 void SubmitAdapter::adapt()
 {
-<<<<<<< SubmitAdapter.cpp
   if (this->sa_good) {
       this->sa_sad->set_sequence_code(this->sa_seqcode);
-=======
-  if (this->sa_good) {
-    try {
-      this->sa_sad->set_sequence_code(this->sa_seqcode);
-//TODO restore?
-//      if ((this->sa_good = this->sa_sad->good())) {
-//	      ofstream ofs(this->sa_sad->classad_file().c_str());
-//	      if((this->sa_good = ofs.good())) {
-//	        ofs << this->sa_sad->classad() << endl;
-//	        ts::edglog << logger::setlevel( logger::medium ) << "Classad file created..." << endl;
-//	      }
-//      }
-    } catch (...) { // TODO specialise
-      this->sa_good = false;
-    }
->>>>>>> 1.4
   }
 }
 

@@ -32,7 +32,7 @@ JobControllerFake::JobControllerFake( void ) {}
 JobControllerFake::~JobControllerFake( void ) {}
 
 int JobControllerFake::msubmit(
-  std::vector<classad::ClassAd*> v
+  std::vector<classad::ClassAd*>& v
 ) try
 {
   return 0;

@@ -97,29 +97,4 @@ Request *JobControllerClientReal::get_current_request()
   return &this->jccr_request;
 }
 
-<<<<<<< JobControllerClientReal.cpp
 }} JOBCONTROL_NAMESPACE_END;
-=======
-JobControllerClientUnknown::JobControllerClientUnknown() : jccu_request() { }
-
-JobControllerClientUnknown::~JobControllerClientUnknown() { }
-
-void JobControllerClientUnknown::release_request()
-{
-  return;
-}
-
-void JobControllerClientUnknown::extract_next_request()
-{
-  return;
-}
-
-Request *JobControllerClientUnknown::get_current_request()
-{
-  return &this->jccu_request;
-}
-
-};
-
-} JOBCONTROL_NAMESPACE_END;
->>>>>>> 1.4

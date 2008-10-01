@@ -119,7 +119,6 @@ void SubmitAd::createFromAd(classad::ClassAd* pad)
       edgId.fromString( this->sa_jobid );
       files.reset( this->sa_hasDagId ? new jccommon::Files(dagId, edgId) : new jccommon::Files(edgId) );
 
-<<<<<<< SubmitAd.cpp
   try {
     dirType = "job directory";
     buildPath.assign( files->output_directory().native_file_string() );
@@ -132,30 +131,11 @@ void SubmitAd::createFromAd(classad::ClassAd* pad)
 	    buildPath.assign( files->submit_file().branch_path().native_file_string() );
 	    elog::cedglog << logger::setlevel( logger::info ) << "Path for " << dirType << " doesn't exist, creating..." << endl
 			  << logger::setlevel( logger::debug ) << "Path = \"" << buildPath << "\"." << endl;
-=======
-  try {
-    dirType = "job directory";
-    buildPath.assign( files->output_directory().native_file_string() );
-    elog::cedglog << logger::setlevel( logger::info ) << "Creating " << dirType << " path." << endl
-      << logger::setlevel( logger::debug ) << "Path = \"" << buildPath << "\"." << endl;
-    fs::create_parents( files->output_directory());
-    if (!fs::exists(files->submit_file().branch_path())) {
-	    dirType = "submit file";
-	    buildPath.assign( files->submit_file().branch_path().native_file_string() );
-	    elog::cedglog << logger::setlevel( logger::info ) << "Path for " << dirType << " doesn't exist, creating..." << endl
-			  << logger::setlevel( logger::debug ) << "Path = \"" << buildPath << "\"." << endl;
->>>>>>> 1.6
 
-<<<<<<< SubmitAd.cpp
       fs::create_parents( files->submit_file().branch_path() );
     }
 */
-=======
-      fs::create_parents( files->submit_file().branch_path() );
-    }
->>>>>>> 1.6
 
-<<<<<<< SubmitAd.cpp
     if (!fs::exists(files->classad_file().branch_path())) {
         dirType = "classad file";
         buildPath.assign( files->classad_file().branch_path().native_file_string() );
@@ -171,23 +151,6 @@ void SubmitAd::createFromAd(classad::ClassAd* pad)
     }
     this->sa_submitfile.assign( files->submit_file().native_file_string() );
 //    this->sa_classadfile.assign( files->classad_file().native_file_string());
-=======
-    if (!fs::exists(files->classad_file().branch_path())) {
-        dirType = "classad file";
-        buildPath.assign( files->classad_file().branch_path().native_file_string() );
-        elog::cedglog << logger::setlevel( logger::info ) << "Path for " << dirType << " doesn't exist, creating..." << endl
-          << logger::setlevel( logger::debug ) << "Path = \"" << buildPath << "\"." << endl;
-        fs::create_parents( files->classad_file().branch_path() );
-      }
-    } catch( fs::filesystem_error &err ) {
-    	elog::cedglog << logger::setlevel( logger::fatal )
-		    << "Failed to create " << dirType << " path \"" << buildPath << "\"." << endl
-		    << "Reason: " << err.what() << endl;
-      throw CannotCreateDirectory( dirType, buildPath, err.what() );
-    }
-    this->sa_submitfile.assign( files->submit_file().native_file_string() );
-    this->sa_classadfile.assign( files->classad_file().native_file_string());
->>>>>>> 1.6
 
     if (this->sa_jobtype == "dag") {
         this->sa_last = false;

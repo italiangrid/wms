@@ -71,18 +71,12 @@ namespace daemons {
 const int           ControllerLoop::cl_s_signals[] = { SIGHUP, SIGINT, SIGQUIT, SIGTERM };
 ControllerLoop     *ControllerLoop::cl_s_instance = NULL;
 
-<<<<<<< ControllerLoop.cpp
 void deleter(std::pair<controller::Request, std::string>* r) {
+  // TODO
   //fs::remove(r->second);
 }
 
 void ControllerLoop::createDirectories()
-=======
-void deleter(controller::Request* r)  {
-}
-
-void ControllerLoop::createDirectories()
->>>>>>> 1.14
 {
   const configuration::JCConfiguration        *jcconfig = configuration::Configuration::instance()->jc();
   const configuration::LMConfiguration        *lmconfig = configuration::Configuration::instance()->lm();
@@ -198,15 +192,10 @@ bool ControllerLoop::checkSignal(run_code_t &return_code)
   return loop;
 }
 
-<<<<<<< ControllerLoop.cpp
-ControllerLoop::ControllerLoop(utilities::LineParser const& options)
-  : cl_verbose(options.is_present('v')), cl_stream(elog::cedglog), cl_options(options)
-=======
-ControllerLoop::ControllerLoop(utilities::LineParser const& options)
-  : cl_verbose(options.is_present('v')),
-	cl_stream(elog::cedglog),
-	cl_options(options)
->>>>>>> 1.14
+ControllerLoop::ControllerLoop(utilities::LineParser const& options) :
+  cl_verbose(options.is_present('v')),
+  cl_stream(elog::cedglog),
+  cl_options(options)
 {
   const configuration::JCConfiguration* config = configuration::Configuration::instance()->jc();
   const configuration::CommonConfiguration* common = configuration::Configuration::instance()->common();
@@ -245,16 +234,12 @@ ControllerLoop::ControllerLoop(utilities::LineParser const& options)
   this->cl_stream.open( logname.native_file_string(), (logger::level_t) config->log_level() );
   this->cl_stream.activate_log_rotation( config->log_file_max_size(), config->log_rotation_base_file(),
 					 config->log_rotation_max_file_number() );
-  if( this->cl_stream.good() ) {
-<<<<<<< ControllerLoop.cpp
-    if( this->cl_verbose ) clog << "Opened log file: " << logname.native_file_string() << '\n';
+  if (this->cl_stream.good()) {
+    if (this->cl_verbose) {
+      clog << "Opened log file: " << logname.native_file_string() << '\n';
+    }
   } else {
-=======
-    if( this->cl_verbose ) clog << "Opened log file: " << logname.native_file_string() << '\n';
-  }
-  else {
->>>>>>> 1.14
-    string    error( "Cannot open log file \"" );
+    string error( "Cannot open log file \"" );
     error.append( logname.native_file_string() ); error.append( "\"" );
 
     throw CannotStart( error );
@@ -266,11 +251,7 @@ ControllerLoop::ControllerLoop(utilities::LineParser const& options)
     this->cl_logger.reset(
       this->cl_options.is_present('l') ? new jccommon::EventLogger(NULL) : new jccommon::EventLogger);
     this->cl_logger->initialize_jobcontroller_context();
-<<<<<<< ControllerLoop.cpp
   } catch(jccommon::LoggerException &error) {
-=======
-  } catch( jccommon::LoggerException &error ) {
->>>>>>> 1.14
     this->cl_stream << logger::setlevel( logger::fatal )
 		    << "Cannot create LB logger object." << '\n'
 		    << "Reason: \"" << error.what() << "\"." << '\n';
@@ -278,7 +259,6 @@ ControllerLoop::ControllerLoop(utilities::LineParser const& options)
     throw CannotStart(error.what());
   }
 
-<<<<<<< ControllerLoop.cpp
   this->cl_stream << logger::setlevel(logger::high);
   this->cl_executer.reset(new controller::CondorG(config));
   this->cl_stream << logger::setlevel(logger::high) << "Created condor object." << '\n';
@@ -286,16 +266,6 @@ ControllerLoop::ControllerLoop(utilities::LineParser const& options)
   if (previous) {
     this->cl_stream << logger::setlevel( logger::null ) << previous << '\n';
   }
-=======
-  this->cl_stream << logger::setlevel( logger::high )
-	<< "**********************************************************************" << '\n';
-
-  this->cl_executer.reset( new controller::CondorG(config) );
-  this->cl_stream << logger::setlevel( logger::high ) << "Created condor object." << '\n';
-
-  if( previous )
-    this->cl_stream << logger::setlevel( logger::null ) << previous << '\n';
->>>>>>> 1.14
 
   try {
     this->cl_queuefilename = listname.native_file_string();
@@ -310,7 +280,6 @@ ControllerLoop::ControllerLoop(utilities::LineParser const& options)
 
 ControllerLoop::run_code_t ControllerLoop::run() try
 {
-<<<<<<< ControllerLoop.cpp
   run_code_t ret = do_nothing;
   controller::Request::request_code_t command = controller::Request::unknown;
   controller::JobController controller(*this->cl_logger);
@@ -319,33 +288,14 @@ ControllerLoop::run_code_t ControllerLoop::run() try
     boost::shared_ptr<std::pair<controller::Request, std::string> >
   > submit_requests;
   std::vector<classad::ClassAd *> submit_classads;
-=======
-  run_code_t ret = do_nothing;
-  controller::Request::request_code_t command = controller::Request::unknown;
-  controller::JobController controller(*this->cl_logger);
-  logger::StatePusher pusher(this->cl_stream, "ControllerLoop::run()");
-  std::vector<
-    boost::shared_ptr<controller::Request>
-  > submit_requests;
-  std::vector<classad::ClassAd *> submit_classads;
->>>>>>> 1.14
 
   this->activateSignalHandling();
-<<<<<<< ControllerLoop.cpp
   bool loop = true;
   std::time_t t_start = std::time(0);
   while (true) {
     loop = this->checkSignal(ret);
     if (loop) {
-=======
-  bool loop = true;
-  boost::timer t;
-  while (true) {
-    loop = this->checkSignal(ret);
-    if (loop) {
->>>>>>> 1.14
       try {
-<<<<<<< ControllerLoop.cpp
         usleep(5000);
         int const wait_seconds = 30;
         if (t_start - std::time(0) > wait_seconds) {
@@ -392,63 +342,19 @@ ControllerLoop::run_code_t ControllerLoop::run() try
             = static_cast<const controller::SubmitRequest *>(&request->first);
 	        classad::ClassAd *jobad = subreq->get_jobad();
           submit_classads.push_back(jobad);
-=======
-        usleep(10000);
-        if (t.elapsed() > 3) {
-	        this->cl_stream << logger::setlevel(logger::debug)
-            << "Releasing held requests after 3 seconds...\n";
-          if (submit_requests.size()) {
-            if (submit_classads.size() == 1) {
-	            controller.submit(submit_classads.front());
-            } else {
-	            controller.msubmit(submit_classads);
-            }
-            submit_classads.clear();
-            submit_requests.clear();
-          }
-          t.restart(); 
-        }
-
-	      this->cl_client->extract_next_request();
-        controller::Request const* req
-          = this->cl_client->get_current_request();
-        if (!req) {
-          continue;
-        }
-
-        boost::shared_ptr<controller::Request> request(new controller::Request, &deleter);
-        *request = *req;
-        submit_requests.push_back(request);
-
-        command = request->get_command();
-        configuration::ModuleType::module_type  source
-	        = static_cast<configuration::ModuleType::module_type>(request->get_source());
-
-	      switch (command) {
-	        case controller::Request::submit: {
-	        this->cl_stream << logger::setlevel( logger::info ) << "New submit request..." << '\n'; 
-
-	        const controller::SubmitRequest *subreq
-            = static_cast<const controller::SubmitRequest *>(request.get());
-	        classad::ClassAd *jobad = subreq->get_jobad();
-          submit_classads.push_back(jobad);
->>>>>>> 1.14
 
 #ifdef GLITE_WMS_HAVE_LBPROXY
           this->cl_logger->set_LBProxy_context(glite::jdl::get_edg_jobid(*jobad),
                                                glite::jdl::get_lb_sequence_code(*jobad),
                                                glite::jdl::get_x509_user_proxy(*jobad) );
 #else
-<<<<<<< ControllerLoop.cpp
-          this->cl_logger->reset_user_proxy(glite::jdl::get_x509_user_proxy(*jobad));
-          this->cl_logger->reset_context(glite::jdl::get_edg_jobid(*jobad), glite::jdl::get_lb_sequence_code(*jobad));
-=======
-          this->cl_logger->reset_user_proxy( glite::jdl::get_x509_user_proxy(*jobad) );
-          this->cl_logger->reset_context( glite::jdl::get_edg_jobid(*jobad), glite::jdl::get_lb_sequence_code(*jobad) );
->>>>>>> 1.14
+          this->cl_logger->reset_user_proxy(
+            glite::jdl::get_x509_user_proxy(*jobad));
+          this->cl_logger->reset_context(
+            glite::jdl::get_edg_jobid(*jobad),
+            glite::jdl::get_lb_sequence_code(*jobad));
 #endif
 
-<<<<<<< ControllerLoop.cpp
           this->cl_logger->job_dequeued_event(this->cl_queuefilename);
           bool res = false;
           std::string current_user_subject =
@@ -499,71 +405,15 @@ ControllerLoop::run_code_t ControllerLoop::run() try
 	        string jobid(remreq->get_jobid());
           this->cl_stream << logger::setlevel(logger::info)
             << "Got remove request (JOB ID = " << jobid << ")..." << '\n';
-=======
-          this->cl_logger->job_dequeued_event(this->cl_queuefilename);
-          bool res = false;
-          std::string current_user_subject =
-            glite::jdl::get_user_subject_name(*jobad, res);
-// TODO remove input separately
-          int const bunch_size = 10;
-          if (
-            res
-            && current_user_subject == prec_user_subject 
-            && msubmit_count < bunch_size
-          ) {
-            ++msubmit_count;
-          } else if (
-            res
-            && current_user_subject == prec_user_subject
-            && msubmit_count >= bunch_size
-          ) {
-      	    controller.msubmit(submit_classads);
-            submit_classads.clear();
-            submit_requests.clear();
-            msubmit_count = 0;
-            t.restart(); 
-          } else if (res && current_user_subject != prec_user_subject) {
-            if (submit_classads.size() == 1) {
-      	      controller.submit(submit_classads.front());
-            } else {
-      	      controller.msubmit(submit_classads);
-            }
-            submit_classads.clear();
-            submit_requests.clear();
-            msubmit_count = 0;
-            t.restart(); 
-          } else {
-      	    controller.submit(jobad);
-            submit_classads.clear();
-            submit_requests.clear();
-            msubmit_count = 0;
-            t.restart(); 
-          }
-          prec_user_subject = current_user_subject;
-      	  break;
-      	}
-	      case controller::Request::remove: {
-	        const controller::RemoveRequest *remreq
-            = static_cast<const controller::RemoveRequest*>(request.get());
-	        string jobid( remreq->get_jobid() );
-
-          this->cl_stream << logger::setlevel( logger::info ) << "Got new remove request (JOB ID = " << jobid << ")..." << '\n';
->>>>>>> 1.14
 
 #ifdef GLITE_WMS_HAVE_LBPROXY
           this->cl_logger->set_LBProxy_context(jobid, remreq->get_sequence_code(), remreq->get_proxyfile());
 #else 
-<<<<<<< ControllerLoop.cpp
           this->cl_logger->reset_user_proxy(remreq->get_proxyfile());
           this->cl_logger->reset_context(jobid, remreq->get_sequence_code());
-=======
-          this->cl_logger->reset_user_proxy( remreq->get_proxyfile() );
-          this->cl_logger->reset_context( jobid, remreq->get_sequence_code() );
->>>>>>> 1.14
 #endif
           if (source == configuration::ModuleType::workload_manager) {
 
-<<<<<<< ControllerLoop.cpp
             this->cl_logger->job_cancel_requested_event(
               configuration::ModuleType::module_name(source)
             );
@@ -670,112 +520,6 @@ ControllerLoop::run_code_t ControllerLoop::run() try
       this->cl_client->release_request();
     } // if (loop)
   }
-=======
-          if (source == configuration::ModuleType::workload_manager) {
-            this->cl_logger->job_cancel_requested_event(
-              configuration::ModuleType::module_name(source)
-            );
-          }
-	  
-          // See lcg2 bug: 3883
-          fs::path logfile(remreq->get_logfile(), fs::native);
-          this->cl_stream << logger::setlevel( logger::debug ) << "Executing remove request..." << '\n';
-          if (!logfile.empty()) {
-            controller.cancel(
-              glite::wmsutils::jobid::JobId(jobid), logfile.native_file_string().c_str()
-            );
-          } else {
-            controller.cancel(glite::wmsutils::jobid::JobId(jobid), 0);
-          }
-	      break;
-	    }
-	    case controller::Request::condorremove: {
-	      const controller::CondorRemoveRequest *cremreq
-          = static_cast<const controller::CondorRemoveRequest*>(request.get());
-	      int condorid(cremreq->get_condorid());
-          this->cl_stream << logger::setlevel(logger::info) <<
-            "Got new remove request (condor ID = " << condorid << ")...\n" <<
-            logger::setlevel(logger::debug) << "Executing remove request...\n";
-
-            if (source == configuration::ModuleType::log_monitor) {
-              fs::path logfile( cremreq->get_logfile(), fs::native );
-              controller.cancel( condorid, logfile.native_file_string().c_str() );
-            } else {
-              controller.cancel( condorid, NULL );
-            }
-            break;
-          }
-      default:
-        this->cl_stream << logger::setlevel( logger::null ) << "__NOT__ Executing unimplemented command \"" 
-          << controller::Request::string_command( command ) << "\"." << '\n';
-        break;
-        }
-      } catch (jccommon::SignalChecker::Exception &signal) {
-        this->cl_stream << logger::setlevel( logger::severe ) << "Ping\n";
-        if (signal.signal() != 0) {
-          this->cl_stream << logger::setlevel( logger::severe ) << "ifPing\n";
-	        loop = this->checkSignal(ret);
-        }
-      } catch( controller::MalformedRequest &err ) {
-        this->cl_stream << logger::setlevel( logger::severe )
-			    << "Got malformed request.\n"
-			    << logger::setlevel( logger::debug ) << logger::setmultiline( true, "--> " )
-			    << "Broken classad = " << err.classad() << '\n';
-        this->cl_stream << logger::setmultiline( false )
-          << logger::setlevel( logger::info ) << "Ignoring request...\n";
-      } catch( controller::MismatchedProtocol &err ) {
-        this->cl_stream << logger::setlevel( logger::severe )
-			    << "Cannot execute command \"" << controller::Request::string_command( command ) << "\"." << '\n'
-			    << "Got request with mismatching protocol." << '\n'
-			    << "Must be: \"" << err.default_protocol() << "\", was \"" << err.current_protocol() << "\"." << '\n'
-			    << logger::setlevel( logger::info )
-			    << "Ignoring request..." << '\n';
-      } catch( glite::jdl::ManipulationException &par ) {
-        this->cl_stream << logger::setlevel( logger::severe )
-			    << "Cannot execute command \""
-          << controller::Request::string_command( command ) << "\"." << '\n'
-			    << "Reason: parameter \"" << par.parameter()
-          << "\" not found in the classad." << '\n'
-			    << logger::setlevel( logger::info )
-			    << "Ignoring request..." << '\n';
-      } catch( controller::ControllerError &error ) {
-        this->cl_stream << logger::setlevel( logger::severe )
-			    << "Cannot execute command \""
-          << controller::Request::string_command( command ) << "\"." << '\n'
-			    << "Reason: " << error.reason() << '\n'
-			    << logger::setlevel( logger::info )
-			    << "Ignoring request..." << '\n';
-      } catch( glite::wmsutils::jobid::JobIdException &error ) {
-	      this->cl_stream << logger::setlevel( logger::severe )
-			    << "Cannot execute command \""
-          << controller::Request::string_command( command ) << "\"." << '\n'
-			    << "Error creating job id: \"" << error.what() << "\"" << '\n'
-			    << logger::setlevel( logger::info )
-			    << "Ignoring request..." << '\n';
-      } catch( jccommon::LoggerException &error ) {
-        this->cl_stream << logger::setlevel( logger::fatal )
-			    << "Cannot log event to L&B service." << '\n'
-			    << "Reason: " << error.what() << '\n'
-			    << "Giving up." << '\n';
-
-	      loop = false;
-	      ret = shutdown;
-      } catch( std::exception &error ) {
-        this->cl_stream << logger::setlevel( logger::null ) << "Got a standard exception..." << '\n'
-          << "What = \"" << error.what() << "\"" << '\n';
-        loop = false;
-        ret = shutdown;
-      } catch( ... ) {
-        this->cl_stream << logger::setlevel( logger::null ) << "Got an unknown exception..." << '\n';
-
-        loop = false;
-        ret = shutdown;
-      }
-// TODO handle with shared_ptr
-      this->cl_client->release_request();
-    } // if (loop)
-  }
->>>>>>> 1.14
 
   return ret;
 } catch (exception &err) {
@@ -788,5 +532,4 @@ ControllerLoop::run_code_t ControllerLoop::run() try
 
   throw;
 }
-}; // Namespace daemons
-} JOBCONTROL_NAMESPACE_END;
+}} JOBCONTROL_NAMESPACE_END;

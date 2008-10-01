@@ -10,7 +10,7 @@
 #include "glite/wms/common/utilities/LineParserExceptions.h"
 #include "glite/wms/common/logger/logstream.h"
 #include "glite/wms/common/logger/manipulators.h"
-#include "common/process.h"
+#include "glite/wms/common/process/process.h"
 #include "jobcontrol_namespace.h"
 #include "common/LockFile.h"
 

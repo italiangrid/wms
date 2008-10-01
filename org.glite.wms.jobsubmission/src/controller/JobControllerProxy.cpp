@@ -4,15 +4,7 @@
 // Copyright (c) 2001 EU DataGrid.
 // For license conditions see http://www.eu-datagrid.org/license.html
 
-<<<<<<< JobControllerProxy.cpp
 // $Id$
-=======
-<<<<<<< JobControllerProxy.cpp
-// $Id$
-=======
-// $Id$
->>>>>>> 1.7
->>>>>>> 1.8
 
 #include <string>
 #include <fstream>
@@ -70,7 +62,7 @@ JobControllerProxy::JobControllerProxy(
 {}
 
 int
-JobControllerProxy::msubmit(std::vector<classad::ClassAd*>) try
+JobControllerProxy::msubmit(std::vector<classad::ClassAd*>&) try
 {
   return 0;
 } catch( glite::jdl::ManipulationException &par ) {
