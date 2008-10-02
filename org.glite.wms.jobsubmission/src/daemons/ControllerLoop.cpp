@@ -282,7 +282,7 @@ ControllerLoop::run_code_t ControllerLoop::run() try
 {
   run_code_t ret = do_nothing;
   controller::Request::request_code_t command = controller::Request::unknown;
-  controller::JobController controller(*this->cl_logger);
+  controller::JobController controller(this->cl_logger);
   logger::StatePusher pusher(this->cl_stream, "ControllerLoop::run()");
   std::vector<
     boost::shared_ptr<std::pair<controller::Request, std::string> >
@@ -336,8 +336,6 @@ ControllerLoop::run_code_t ControllerLoop::run() try
 	      switch (command) {
 	        case controller::Request::submit: {
 
-          this->cl_stream << logger::setlevel(logger::debug) << "Got submit request..." << '\n';
-
 	        const controller::SubmitRequest *subreq
             = static_cast<const controller::SubmitRequest *>(&request->first);
 	        classad::ClassAd *jobad = subreq->get_jobad();
@@ -354,7 +352,6 @@ ControllerLoop::run_code_t ControllerLoop::run() try
             glite::jdl::get_edg_jobid(*jobad),
             glite::jdl::get_lb_sequence_code(*jobad));
 #endif
-
           this->cl_logger->job_dequeued_event(this->cl_queuefilename);
           bool res = false;
           std::string current_user_subject =
@@ -377,17 +374,16 @@ ControllerLoop::run_code_t ControllerLoop::run() try
             msubmit_count = 0;
             t_start = std::time(0);
           } else if (res && current_user_subject != prec_user_subject) {
+            if (!submit_classads.empty()) {
+      	      controller.msubmit(submit_classads);
+              submit_classads.clear();
+              submit_requests.clear();
+            }
+
+            msubmit_count = 1;
+            t_start = std::time(0);
 	          classad::ClassAd *jobad = subreq->get_jobad();
             submit_classads.push_back(jobad);
-            if (submit_classads.size() == 1) {
-      	      controller.submit(submit_classads.front());
-            } else {
-      	      controller.msubmit(submit_classads);
-            }
-            submit_classads.clear();
-            submit_requests.clear();
-            msubmit_count = 0;
-            t_start = std::time(0);
           } else {
       	    controller.submit(jobad);
             submit_classads.clear();

@@ -1,6 +1,5 @@
 #include <cstdio>
 #include <ctime>
-
 #include <memory>
 #include <string>
 
@@ -27,19 +26,20 @@ JOBCONTROL_NAMESPACE_BEGIN {
 
 namespace logmonitor { namespace processer {
 
-EventGlobusSubmitFailed::EventGlobusSubmitFailed( ULogEvent *event, MonitorData *data ) : EventInterface( event, data ), 
-  egsf_event( dynamic_cast<GlobusSubmitFailedEvent *>(event) )
-{}
+EventGlobusSubmitFailed::EventGlobusSubmitFailed(
+  ULogEvent *event, MonitorData *data ) : EventInterface( event, data ), 
+  egsf_event( dynamic_cast<GlobusSubmitFailedEvent *>(event))
+{ }
 
-EventGlobusSubmitFailed::~EventGlobusSubmitFailed( void )
-{}
+EventGlobusSubmitFailed::~EventGlobusSubmitFailed()
+{ }
 
 void EventGlobusSubmitFailed::process_event( void )
 {
   auto_ptr<SubmitReader>                 reader;
   jccommon::IdContainer::iterator        position;
-  controller::JobController              controller( *this->ei_data->md_logger );
-  logger::StatePusher                    pusher( elog::cedglog, "EventGlobusSubmitFailed::process_event()" );
+  controller::JobController              controller(this->ei_data->md_logger);
+  logger::StatePusher                    pusher(elog::cedglog, "EventGlobusSubmitFailed::process_event()");
 
   elog::cedglog << logger::setlevel( logger::info ) << "Got globus submit failed event." << endl
 		<< "For cluster: " << this->ei_condor << ", reason: " << this->egsf_event->reason << endl;

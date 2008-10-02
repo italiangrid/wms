@@ -121,36 +121,24 @@ void SubmitAd::createFromAd(classad::ClassAd* pad)
 
   try {
     dirType = "job directory";
-    buildPath.assign( files->output_directory().native_file_string() );
-//    elog::cedglog << logger::setlevel( logger::info ) << "Creating " << dirType << " path." << endl
-//      << logger::setlevel( logger::debug ) << "Path = \"" << buildPath << "\"." << endl;
-    fs::create_parents( files->output_directory());
-/*
+    buildPath = files->output_directory().native_file_string();
+    elog::cedglog << logger::setlevel( logger::info ) << "Creating " << dirType << " path."
+      << logger::setlevel(logger::debug) << "Path = \"" << buildPath << "\"." << endl;
+    fs::create_parents(files->output_directory());
     if (!fs::exists(files->submit_file().branch_path())) {
 	    dirType = "submit file";
 	    buildPath.assign( files->submit_file().branch_path().native_file_string() );
-	    elog::cedglog << logger::setlevel( logger::info ) << "Path for " << dirType << " doesn't exist, creating..." << endl
-			  << logger::setlevel( logger::debug ) << "Path = \"" << buildPath << "\"." << endl;
+	    elog::cedglog << logger::setlevel( logger::info ) << "Path for " << dirType << " doesn't exist, creating..." << logger::setlevel( logger::debug ) << "Path = \"" << buildPath << "\"." << endl;
 
       fs::create_parents( files->submit_file().branch_path() );
     }
-*/
-
-    if (!fs::exists(files->classad_file().branch_path())) {
-        dirType = "classad file";
-        buildPath.assign( files->classad_file().branch_path().native_file_string() );
-        elog::cedglog << logger::setlevel( logger::info ) << "Path for " << dirType << " doesn't exist, creating..." << endl
-          << logger::setlevel( logger::debug ) << "Path = \"" << buildPath << "\"." << endl;
-        fs::create_parents( files->classad_file().branch_path() );
-      }
-    } catch( fs::filesystem_error &err ) {
-    	elog::cedglog << logger::setlevel( logger::fatal )
-		    << "Failed to create " << dirType << " path \"" << buildPath << "\"." << endl
-		    << "Reason: " << err.what() << endl;
-      throw CannotCreateDirectory( dirType, buildPath, err.what() );
-    }
-    this->sa_submitfile.assign( files->submit_file().native_file_string() );
-//    this->sa_classadfile.assign( files->classad_file().native_file_string());
+  } catch(fs::filesystem_error const& err) {
+   elog::cedglog << logger::setlevel( logger::fatal )
+		  << "Failed to create " << dirType << " path \"" << buildPath << "\".\n"
+		  << "Reason: " << err.what() << endl;
+    throw CannotCreateDirectory(dirType, buildPath, err.what());
+  }
+  this->sa_submitfile = files->submit_file().native_file_string();
 
     if (this->sa_jobtype == "dag") {
         this->sa_last = false;

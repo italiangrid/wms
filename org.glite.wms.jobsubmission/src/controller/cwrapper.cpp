@@ -10,6 +10,7 @@
 #include "glite/lb/producer.h"
 #include "glite/lb/context.h"
 
+#include "common/EventLogger.h"
 #include "JobController.h"
 #include "JobControllerExceptions.h"
 #include "cwrapper.h"
@@ -30,10 +31,9 @@ edg_wljc_Context edg_wljc_ContextInitialize( edg_wll_Context *logcont )
   edg_wljc_jobcontroller_t    *wrapper = new edg_wljc_jobcontroller_t;
 
   wrapper->jc_context = NULL; wrapper->jc_error = NULL;
-
+  boost::shared_ptr<jccommon::EventLogger> el(new jccommon::EventLogger(logcont));
   try {
-    cont = new controller::JobController( logcont );
-
+    cont = new controller::JobController(el);
     wrapper->jc_context = reinterpret_cast<void *>( cont );
   }
   catch( exception &err ) {

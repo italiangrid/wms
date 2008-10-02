@@ -28,15 +28,17 @@
 
 USING_COMMON_NAMESPACE;
 using namespace std;
-RenameLogStreamNS( elog );
+RenameLogStreamNS(elog);
 
 JOBCONTROL_NAMESPACE_BEGIN {
 
-namespace logmonitor { namespace processer {
+namespace logmonitor {
+namespace processer {
 
 typedef  JobWrapperOutputParser   JWOP;
 
-JobResubmitter::JobResubmitter( jccommon::EventLogger *logger ) : jr_list(), jr_jobdir(), jr_logger( logger )
+JobResubmitter::JobResubmitter(boost::shared_ptr<jccommon::EventLogger> logger)
+: jr_logger(logger)
 {
   const configuration::WMConfiguration       *config = configuration::Configuration::instance()->wm();
   logger::StatePusher                         pusher( elog::cedglog, "JobResubmitter::JobResubmitter(...)" );
@@ -76,7 +78,11 @@ JobResubmitter::~JobResubmitter( void )
   delete this->jr_jobdir;
 }
 
-void JobResubmitter::resubmit( int laststatus, const string &edgid, const string &sequence_code, jccommon::IdContainer *container )
+void JobResubmitter::resubmit(
+  int laststatus,
+  const string &edgid,
+  const string &sequence_code,
+  boost::shared_ptr<jccommon::IdContainer> container)
 {
   const configuration::WMConfiguration       *config = configuration::Configuration::instance()->wm();
   classad::ClassAd                            command, arguments;

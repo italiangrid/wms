@@ -9,8 +9,8 @@
 class ULogEvent;
 
 JOBCONTROL_NAMESPACE_BEGIN {
-
-namespace logmonitor { namespace processer {
+namespace logmonitor {
+namespace processer {
 
 struct MonitorData;
 class SubmitReader;

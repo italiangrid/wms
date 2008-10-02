@@ -45,20 +45,17 @@ JOBCONTROL_NAMESPACE_BEGIN {
 
 namespace controller {
 
-/*
-  Public methods
-*/
 JobControllerProxy::JobControllerProxy(
   boost::shared_ptr<utilities::FileList<classad::ClassAd> > q,
   boost::shared_ptr<utilities::FileListMutex> m,
   boost::shared_ptr<utils::JobDir> jcp_jd,
-  edg_wll_Context *cont
+  boost::shared_ptr<jccommon::EventLogger> ctx
 ) : 
   jcp_source(static_cast<int>(configuration::Configuration::instance()->get_module())),
   jcp_mutex(m),
   jcp_queue(q),
   jcp_jobdir(jcp_jd),
-  jcp_logger(cont)
+  jcp_logger(ctx)
 {}
 
 int
@@ -84,40 +81,40 @@ JobControllerProxy::submit(classad::ClassAd *ad) try
   SubmitRequest           request(*ad, this->jcp_source);
   logger::StatePusher     pusher( ts::edglog, "JobControllerProxy::submit(...)" );
 
-  request.set_sequence_code( this->jcp_logger.sequence_code() );
+  request.set_sequence_code(this->jcp_logger->sequence_code());
 
   if (this->jcp_queue) {
-    this->jcp_logger.job_enqueued_start_event(this->jcp_queue->filename(), 0);      
+    this->jcp_logger->job_enqueued_start_event(this->jcp_queue->filename(), 0);      
     try {
       utilities::FileListLock     lock( *this->jcp_mutex );
       this->jcp_queue->push_back(request);
     } catch(utilities::FileContainerError &error) {
-      this->jcp_logger.job_enqueued_failed_event(
+      this->jcp_logger->job_enqueued_failed_event(
         this->jcp_queue->filename(),
         error.string_error(),
         &request.get_request()
       );
       throw CannotExecute(error.string_error());
     }
-    this->jcp_logger.job_enqueued_ok_event(
+    this->jcp_logger->job_enqueued_ok_event(
       this->jcp_queue->filename(), &request.get_request()
     );
   } else {
-    this->jcp_logger.job_enqueued_start_event(
+    this->jcp_logger->job_enqueued_start_event(
       this->jcp_jobdir->base_dir().native_file_string(), 0
     );
     std::string const ad_str(ca::unparse_classad(request.get_request()));
     try {
       this->jcp_jobdir->deliver(ad_str);
     } catch(utilities::JobDirError &error) {
-      this->jcp_logger.job_enqueued_failed_event(
+      this->jcp_logger->job_enqueued_failed_event(
         this->jcp_jobdir->base_dir().native_file_string(),
         error.what(),
         &request.get_request()
       );
       throw CannotExecute(error.what());
     }
-    this->jcp_logger.job_enqueued_ok_event(
+    this->jcp_logger->job_enqueued_ok_event(
       this->jcp_jobdir->base_dir().native_file_string(),
       &request.get_request()
     );
@@ -165,7 +162,7 @@ bool JobControllerProxy::cancel( const glite::wmsutils::jobid::JobId &id, const 
     ifs.close();
   }
 
-  request.set_sequence_code(this->jcp_logger.sequence_code());
+  request.set_sequence_code(this->jcp_logger->sequence_code());
   if(logfile) {
     request.set_logfile(string(logfile));
   }

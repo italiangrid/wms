@@ -283,10 +283,10 @@ MonitorLoop::MonitorLoop( const utilities::LineParser &options ) : ml_verbose( o
     throw CannotStart( error );
   }
 
-  this->ml_resubmitter.reset( new logmonitor::processer::JobResubmitter(this->ml_logger.get()) );
+  this->ml_resubmitter.reset( new logmonitor::processer::JobResubmitter(this->ml_logger));
   this->ml_stream << logger::setlevel( logger::info ) << "Successfully created the resubmitter to WM." << '\n';
 
-  logmonitor::CondorMonitor::recycle_directory( config->condor_log_recycle_dir() );
+  logmonitor::CondorMonitor::recycle_directory(config->condor_log_recycle_dir());
 
   ml_s_instance = this;
 
@@ -320,8 +320,12 @@ try {
   boost::timer                            elapser;
   fs::path                 logdir( config->condor_log_dir(), fs::native );
   fs::directory_iterator   logIt, logBegin, logEnd;
-  logmonitor::MonitorData                 data( this->ml_abContainer.get(), this->ml_idContainer.get(),
-						this->ml_resubmitter.get(), this->ml_logger.get() );
+  logmonitor::MonitorData data(
+    this->ml_abContainer,
+    this->ml_idContainer,
+    this->ml_resubmitter,
+    this->ml_logger
+  );
   logger::StatePusher                     pusher( this->ml_stream, "MonitorLoop::run()" );
 
   static boost::regex                     expr( "^\\..*$" );

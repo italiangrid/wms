@@ -73,15 +73,15 @@ void JobFilePurger::do_purge( bool everything )
 		    << "Reason: " << err.what() << endl;
     }
 
-    try {
-      elog::cedglog << logger::setlevel( logger::info ) << "Removing classad file: " << files->classad_file().native_file_string() << endl;
-      fs::remove( files->classad_file() );
-      elog::cedglog << logger::setlevel( logger::ugly ) << "Removed..." << endl;
-    }
-    catch( fs::filesystem_error &err ) {
-      elog::cedglog << logger::setlevel( logger::null ) << "Failed to remove classad file." << endl
-		    << "Reason: " << err.what() << endl;
-    }
+    //try {
+      //elog::cedglog << logger::setlevel( logger::info ) << "Removing classad file: " << files->classad_file().native_file_string() << endl;
+      //fs::remove( files->classad_file() );
+      //elog::cedglog << logger::setlevel( logger::ugly ) << "Removed..." << endl;
+    //}
+    //catch( fs::filesystem_error &err ) {
+    //  elog::cedglog << logger::setlevel( logger::null ) << "Failed to remove classad file." << endl
+		//    << "Reason: " << err.what() << endl;
+    //}
 
     if( this->jfp_isDag ) {
       try {
@@ -115,9 +115,7 @@ void JobFilePurger::do_purge( bool everything )
     elog::cedglog << logger::setlevel( logger::ugly ) << "Going to purge job storage..." << endl;
 
 #ifdef GLITE_WMS_HAVE_PURGER
-
-    purge = purger::Purger()(this->jfp_jobId );
-
+    purger::Purger().force_dag_node_removal()(this->jfp_jobId);
     elog::cedglog << logger::setlevel( logger::verylow ) << "Purging command returned " << (purge ? "ok" : "an error") << endl;
 #else
     elog::cedglog << logger::setlevel( logger::null ) << "Job purging support not compiled." << endl;

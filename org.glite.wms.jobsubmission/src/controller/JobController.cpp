@@ -14,10 +14,11 @@ JOBCONTROL_NAMESPACE_BEGIN {
 
 namespace controller {
 
-JobController::JobController( edg_wll_Context *cont ) : jc_impl( JobControllerFactory::instance()->create_server( cont ) )
-{}
+JobController::JobController(boost::shared_ptr<jccommon::EventLogger> ctx)
+ : jc_impl(JobControllerFactory::instance()->create_server(ctx))
+{ }
 
-JobController::~JobController( void )
+JobController::~JobController()
 { delete this->jc_impl; }
 
 int JobController::msubmit(std::vector<classad::ClassAd*> v)

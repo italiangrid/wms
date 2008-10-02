@@ -70,7 +70,7 @@ JobControllerFactory *JobControllerFactory::instance()
   return jcf_s_instance;
 }
 
-JobControllerImpl *JobControllerFactory::create_server(edg_wll_Context *cont)
+JobControllerImpl *JobControllerFactory::create_server(boost::shared_ptr<jccommon::EventLogger> ctx)
 {
   const configuration::Configuration *configure = configuration::Configuration::instance();
   JobControllerImpl *result = NULL;
@@ -79,13 +79,13 @@ JobControllerImpl *JobControllerFactory::create_server(edg_wll_Context *cont)
     if (configure->jc()->use_fake_for_real()) {
       result = new JobControllerFake;
     } else {
-      result = new JobControllerReal(cont);
+      result = new JobControllerReal(ctx);
     }
   } else {
     if (configure->jc()->use_fake_for_proxy()) {
       result = new JobControllerFake;
     } else {
-      result = new JobControllerProxy(this->jcf_queue, this->jcf_mutex, this->jcf_jobdir, cont);
+      result = new JobControllerProxy(this->jcf_queue, this->jcf_mutex, this->jcf_jobdir, ctx);
     }
   }
 

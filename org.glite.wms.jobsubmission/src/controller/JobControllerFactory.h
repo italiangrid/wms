@@ -19,31 +19,30 @@
 #include "glite/wms/common/utilities/jobdir.h"
 #include "jobcontrol_namespace.h"
 
-typedef  struct _edg_wll_Context  *edg_wll_Context;
-
 JOBCONTROL_NAMESPACE_BEGIN {
+
+namespace jccommon { class EventLogger; }
 
 namespace controller {
 
 class JobControllerImpl;
 class JobControllerClientImpl;
 
-class Empty {};
+class Empty { };
 
 class JobControllerFactory {
   friend class Empty;
 
 public:
-  JobControllerImpl *create_server( edg_wll_Context *cont );
-  JobControllerClientImpl *create_client( void );
-
-  static JobControllerFactory *instance( void );
+  JobControllerImpl *create_server(boost::shared_ptr<jccommon::EventLogger> ctx);
+  JobControllerClientImpl *create_client();
+  static JobControllerFactory *instance();
 
 private:
   typedef glite::wms::common::utilities::FileList<classad::ClassAd>    queue_type;
   typedef glite::wms::common::utilities::FileListMutex                 mutex_type;
 
-  JobControllerFactory( const JobControllerFactory &rhs ); // Not implemented
+  JobControllerFactory(const JobControllerFactory &rhs); // Not implemented
   JobControllerFactory &operator=( const JobControllerFactory &rhs ); // Not implemented
 
   JobControllerFactory( void );

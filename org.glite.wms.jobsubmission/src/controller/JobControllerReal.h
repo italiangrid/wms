@@ -11,38 +11,34 @@
 
 #include <memory>
 
+#include "common/RamContainer.h"
 #include "common/EventLogger.h"
 #include "JobControllerImpl.h"
 
-typedef  struct _edg_wll_Context  *edg_wll_Context;
+namespace jccommon { class EventLogger; }
 
 JOBCONTROL_NAMESPACE_BEGIN {
-
-namespace jccommon { class RamContainer; }
-
 namespace controller {
 
 class JobControllerReal: public JobControllerImpl {
 public:
-  JobControllerReal(edg_wll_Context *cont);
+  JobControllerReal(boost::shared_ptr<jccommon::EventLogger> ctx);
   virtual ~JobControllerReal() { }
 
-  virtual int msubmit(std::vector<classad::ClassAd*>);
+  virtual int msubmit(std::vector<classad::ClassAd*>&);
   virtual int submit(classad::ClassAd *ad);
   virtual bool cancel(const glite::wmsutils::jobid::JobId &id, const char *logfile );
   virtual bool cancel(int condorid, const char *logfile );
 
+  static const int jcr_s_threshold = 25;
 private:
-  JobControllerReal( const JobControllerReal &rhs );
-  JobControllerReal &operator=( const JobControllerReal &rhs );
+  JobControllerReal(jccommon::EventLogger& rhs);
 
-  void readRepository( void );
+  void readRepository();
 
-  int                                      jcr_threshold;
-  std::auto_ptr<jccommon::RamContainer>    jcr_repository;
-  jccommon::EventLogger                    jcr_logger;
-
-  static const int        jcr_s_threshold = 10;
+  int jcr_threshold;
+  boost::shared_ptr<jccommon::RamContainer> jcr_repository;
+  boost::shared_ptr<jccommon::EventLogger> jcr_logger;
 };
 
 }; // namespace controller

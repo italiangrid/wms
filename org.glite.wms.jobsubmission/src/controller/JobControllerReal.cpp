@@ -180,23 +180,23 @@ void JobControllerReal::readRepository()
   return;
 }
 
-JobControllerReal::JobControllerReal(edg_wll_Context *cont)
-  : jcr_threshold(0), jcr_repository(), jcr_logger(cont)
+JobControllerReal::JobControllerReal(boost::shared_ptr<jccommon::EventLogger> logger)
+  : jcr_threshold(0), jcr_logger(logger)
 {
   const configuration::LMConfiguration   *lmconfig = configuration::Configuration::instance()->lm();
   const configuration::JCConfiguration   *jcconfig = configuration::Configuration::instance()->jc();
   string                                  repname(lmconfig->id_repository_name());
-  auto_ptr<jccommon::IdContainer>         repository;
   fs::path                                repfile(lmconfig->monitor_internal_dir(), fs::native);
   logger::StatePusher                     pusher(elog::cedglog, "JobControllerReal::JobControllerReal()");
 
   repfile /= repname;
-
+  boost::shared_ptr<jccommon::IdContainer> repository(
+    new jccommon::IdContainer(repfile.native_file_string().c_str())
+  );
   try {
-    repository.reset(new jccommon::IdContainer(repfile.native_file_string().c_str()));
     this->jcr_repository.reset(new jccommon::RamContainer(*repository));
   } catch (utilities::FileContainerError &err) {
-    elog::cedglog << logger::setlevel( logger::null ) << "File container error: " << err.string_error() << '\n';
+    elog::cedglog << logger::setlevel(logger::null) << "File container error: " << err.string_error() << '\n';
 
     throw CannotCreate(err.string_error());
   }
@@ -248,15 +248,14 @@ int JobControllerReal::msubmit(
     string id(glite::jdl::get_edg_jobid(*(*it), good));
     string seq_code(glite::jdl::get_lb_sequence_code(*(*it), good));
 #ifdef GLITE_WMS_HAVE_LBPROXY
-    this->cl_logger->set_LBProxy_context(
+    this->jcr_logger->set_LBProxy_context(
       id,
       seq_code,
       glite::jdl::get_x509_user_proxy(**it));
 #else
-    this->jcr_logger.reset_user_proxy(glite::jdl::get_x509_user_proxy(**it));
-    this->jcr_logger.reset_context(id, seq_code);
+    this->jcr_logger->reset_context(id, seq_code);
 #endif
-    this->jcr_logger.condor_submit_start_event(sad->log_file());
+    this->jcr_logger->condor_submit_start_event(sad->log_file());
 
     sad.adapt_for_submission(seq_code);
     if (sad.good()) {
@@ -275,7 +274,7 @@ int JobControllerReal::msubmit(
         jccommon::ProxyUnregistrar(sad->job_id()).unregister();
         jccommon::JobFilePurger(sad->job_id(), sad->is_dag()).do_purge(true);
 
-        this->jcr_logger.job_abort_cannot_write_submit_file_event(
+        this->jcr_logger->job_abort_cannot_write_submit_file_event(
           sad->log_file(),
           msubmit_grouped_file,
           "Cannot open file"
@@ -294,7 +293,7 @@ int JobControllerReal::msubmit(
         << "Received classad is invalid.\n"
         << "Reason: " << sad->reason() << '\n';
 
-      this->jcr_logger.job_abort_classad_invalid_event(
+      this->jcr_logger->job_abort_classad_invalid_event(
        sad->log_file(),
         sad->reason()
       );
@@ -331,8 +330,16 @@ int JobControllerReal::msubmit(
     }
   }
 
-  // TODO a possible error in the submit file would result in an error for all the jobs of the bunch
-  // split msubmit into single submissions instead
+  // split msubmit into single submissions in case of error for the whole bunch
+  if (result) {
+    for (
+      std::vector<classad::ClassAd*>::iterator it = classads.begin();
+      it != it_end;
+      ++it
+    ) {
+      this->submit(*it);
+    }
+  }
 
   elog::cedglog << logger::setlevel(logger::info)
     << "Submission to Condor returned: " << info << endl;
@@ -342,15 +349,11 @@ int JobControllerReal::msubmit(
     it != it_end;
     ++it
   ) {
-    if (
-      result
-      ||
-      !boost::regex_match(
+    if (!boost::regex_match(
         info,
         pieces,
-        mult_submit_regex
-      )
-    ) {
+        mult_submit_regex))
+    {
       elog::cedglog << logger::setmultiline(true);
       elog::cedglog << logger::setlevel(logger::null)
         << "Error submitting job.\n"
@@ -358,7 +361,7 @@ int JobControllerReal::msubmit(
         << logger::setmultiline(true, "CE->" ) << "Given reason\n" << info << '\n';
       elog::cedglog << logger::setmultiline(false);
       SubmitAdapter sad(*it);
-      this->jcr_logger.condor_submit_failed_event(
+      this->jcr_logger->condor_submit_failed_event(
         "(unavailable)", // rsl
         info,
         sad->log_file()
@@ -379,16 +382,14 @@ int JobControllerReal::msubmit(
 
       string seq_code(glite::jdl::get_lb_sequence_code(**it, good));
 #ifdef GLITE_WMS_HAVE_LBPROXY
-      this->cl_logger->set_LBProxy_context(
+      this->jcr_logger.set_LBProxy_context(
         id,
         seq_code,
         glite::jdl::get_x509_user_proxy(**it));
 #else
-      this->jcr_logger.reset_user_proxy(
-        glite::jdl::get_x509_user_proxy(**it));
-      this->jcr_logger.reset_context(id, seq_code);
+      this->jcr_logger->reset_context(id, seq_code);
 #endif
-      this->jcr_logger.condor_submit_ok_event(
+      this->jcr_logger->condor_submit_ok_event(
         "(unavailable)", // rsl
         condorid,
         ads.front());
@@ -421,8 +422,8 @@ try {
 #endif
 
   sad.createFromAd(pad);
-  this->jcr_logger.condor_submit_start_event(sad->log_file());
-  seqcode = this->jcr_logger.sequence_code();
+  this->jcr_logger->condor_submit_start_event(sad->log_file());
+  seqcode = this->jcr_logger->sequence_code();
   sad.adapt_for_submission(seqcode);
   elog::cedglog << logger::setlevel(logger::info) << "Submitting job \"" << sad->job_id() << "\"\n";
 
@@ -448,7 +449,8 @@ try {
 #else
     if (rsl.length() == 0) {
       elog::cedglog << logger::setlevel( logger::verylow ) << "Submit file is empty, aborting job...\n";
-      this->jcr_logger.job_abort_cannot_write_submit_file_event( sad->log_file(), sad->submit_file(), "Submit file empty" );
+      this->jcr_logger->job_abort_cannot_write_submit_file_event(
+        sad->log_file(), sad->submit_file(), "Submit file empty");
 
       jccommon::ProxyUnregistrar( sad->job_id() ).unregister();
       jccommon::JobFilePurger( sad->job_id(), sad->is_dag() ).do_purge( true );
@@ -488,7 +490,7 @@ try {
 		      << "condor_submit return code = " << result 
 		      << logger::setmultiline(true, "CE-> ") << "Given reason\n" << info << '\n';
         elog::cedglog << logger::setmultiline(false);
-        this->jcr_logger.condor_submit_failed_event(rsl, info, sad->log_file());
+        this->jcr_logger->condor_submit_failed_event(rsl, info, sad->log_file());
 
         jccommon::ProxyUnregistrar(sad->job_id()).unregister();
         jccommon::JobFilePurger(sad->job_id(), sad->is_dag()).do_purge(true);
@@ -502,14 +504,14 @@ try {
           this->readRepository();
         }
         this->jcr_repository->insert(sad->job_id(), condorid);
-        this->jcr_logger.condor_submit_ok_event(rsl, condorid, sad->log_file());
+        this->jcr_logger->condor_submit_ok_event(rsl, condorid, sad->log_file());
       }
     } else {
       elog::cedglog << logger::setlevel(logger::null)
         << "Cannot open condor submit file for writing.\n" 
 		    << "File: \"" << sad->submit_file() << "\"\n";
 
-      this->jcr_logger.job_abort_cannot_write_submit_file_event(
+      this->jcr_logger->job_abort_cannot_write_submit_file_event(
         sad->log_file(),
         sad->submit_file(),
         "Cannot open file"
@@ -527,9 +529,8 @@ try {
       << "Received classad is invalid.\n" 
 		  << "Reason: \"" << sad->reason() << "\"\n";
 
-    this->jcr_logger.job_abort_classad_invalid_event(
-      sad->log_file(), sad->reason()
-    );
+    this->jcr_logger->job_abort_classad_invalid_event(
+      sad->log_file(), sad->reason());
 
     transform(type.begin(), type.end(), type.begin(), ::tolower);
     jccommon::ProxyUnregistrar(id).unregister();
@@ -578,11 +579,11 @@ bool JobControllerReal::cancel( const glite::wmsutils::jobid::JobId &id, const c
       this->jcr_repository->remove_by_condor_id(condorid);
     } else if (logfile) {
       logGenericEvent(jccommon::cannot_cancel_event, icid, logfile);
-      this->jcr_logger.job_cancel_refused_event(info);
+      this->jcr_logger->job_cancel_refused_event(info);
     }
   } else {
     elog::cedglog << logger::setlevel( logger::null ) << "not able to retrieve the condor ID.\n";
-    this->jcr_logger.job_cancel_refused_event( "not able to retrieve the condor ID." );
+    this->jcr_logger->job_cancel_refused_event( "not able to retrieve the condor ID.");
     good = false;
   }
 

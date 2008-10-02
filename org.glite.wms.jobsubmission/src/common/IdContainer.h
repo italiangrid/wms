@@ -31,11 +31,11 @@ public:
 
   IdContainer( const char *filename );
   IdContainer( const std::string &filename );
-  ~IdContainer( void );
+  ~IdContainer();
 
-  void refresh( void );
-  void compact( void );
-  void clear( void );
+  void refresh();
+  void compact();
+  void clear();
 
   bool insert( const std::string &edgId, const std::string &condorId, const std::string &seqcode, int status );
   bool update_pointer( iterator position, const std::string &seqcode, int condorstatus, int laststatus = undefined_status );

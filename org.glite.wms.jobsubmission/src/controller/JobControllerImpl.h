@@ -11,11 +11,9 @@
 
 #include <vector>
 
-#include <vector>
-
 #include <glite/wmsutils/jobid/JobId.h>
 
-COMMON_SUBNAMESPACE_CLASS_J(jobid, JobId );
+COMMON_SUBNAMESPACE_CLASS_J(jobid, JobId);
 
 namespace classad { class ClassAd; }
 
@@ -36,16 +34,10 @@ namespace controller {
  */
 class JobControllerImpl {
 public:
-  /**
-   *  Empty constructor.
-   */
-  JobControllerImpl( void ) {}
-  /**
-   *  Empty virtual destructor.
-   */
-  virtual ~JobControllerImpl( void ) {}
+  JobControllerImpl() { }
+  virtual ~JobControllerImpl() { }
 
-  virtual int msubmit(std::vector<classad::ClassAd *>) = 0;
+  virtual int msubmit(std::vector<classad::ClassAd *>&) = 0;
 
   /**
    *  Submit a job.

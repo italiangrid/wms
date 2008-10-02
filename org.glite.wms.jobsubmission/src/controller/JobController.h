@@ -12,14 +12,16 @@
 #include <vector>
 #include <cstdio>
 
+#include <boost/shared_ptr.hpp>
+
 #include "jobcontrol_namespace.h"
 #include <glite/wmsutils/jobid/JobId.h>
-
-typedef  struct _edg_wll_Context  *edg_wll_Context;
 
 namespace classad { class ClassAd; }
 
 JOBCONTROL_NAMESPACE_BEGIN {
+
+namespace jccommon { class EventLogger; }
 
 namespace controller {
 
@@ -28,8 +30,8 @@ class JobControllerImpl;
 class JobController
 {
 public:
-  JobController( edg_wll_Context *cont = NULL );
-  ~JobController( void );
+  JobController(boost::shared_ptr<jccommon::EventLogger> ctx);
+  ~JobController();
 
   int msubmit(std::vector<classad::ClassAd*>);
   int submit(classad::ClassAd*);

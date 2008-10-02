@@ -26,24 +26,24 @@
 
 using namespace std;
 USING_COMMON_NAMESPACE;
-RenameLogStreamNS( elog );
+RenameLogStreamNS(elog);
 
 JOBCONTROL_NAMESPACE_BEGIN {
-
-namespace logmonitor { namespace processer {
+namespace logmonitor {
+namespace processer {
 
 EventJobHeld::EventJobHeld( ULogEvent *event, MonitorData *data ) : EventInterface( event, data ),
 								    ejh_event( dynamic_cast<JobHeldEvent *>(event) )
-{}
+{ }
 
 EventJobHeld::~EventJobHeld( void )
 {}
 
 void EventJobHeld::process_event( void )
 {
-  string                                 reason( this->ejh_event->getReason() );
+  string                                 reason(this->ejh_event->getReason());
   jccommon::IdContainer::iterator        position;
-  controller::JobController              controller( *this->ei_data->md_logger );
+  controller::JobController              controller(this->ei_data->md_logger);
   logger::StatePusher                    pusher( elog::cedglog, "EventJobHeld::process_event()" );
 
   elog::cedglog << logger::setlevel( logger::info ) << "Got a job held event." << endl

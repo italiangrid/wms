@@ -4,6 +4,8 @@
 #include <memory>
 #include <iosfwd>
 
+#include <boost/shared_ptr.hpp>
+
 #include "glite/wms/common/logger/logstream.h"
 #include "jobcontrol_namespace.h"
 
@@ -53,14 +55,14 @@ private:
   void activateSignalHandling( void );
   bool checkSignal( run_code_t &return_code );
 
-  bool                                                  ml_verbose;
-  glite::wms::common::logger::logstream                            &ml_stream;
-  std::auto_ptr<jccommon::EventLogger>                  ml_logger;
-  std::auto_ptr<jccommon::IdContainer>                  ml_idContainer;
-  std::auto_ptr<logmonitor::AbortedContainer>           ml_abContainer;
-  std::auto_ptr<logmonitor::processer::JobResubmitter>  ml_resubmitter;
+  bool ml_verbose;
+  glite::wms::common::logger::logstream &ml_stream;
+  boost::shared_ptr<jccommon::EventLogger> ml_logger;
+  boost::shared_ptr<jccommon::IdContainer> ml_idContainer;
+  boost::shared_ptr<logmonitor::AbortedContainer> ml_abContainer;
+  boost::shared_ptr<logmonitor::processer::JobResubmitter> ml_resubmitter;
 
-  const glite::wms::common::utilities::LineParser         &ml_options;
+  const glite::wms::common::utilities::LineParser& ml_options;
 
   static const char       *ml_s_version, *ml_s_time, *ml_s_date, *ml_s_abortedFileName;
   static const char       *ml_s_buildUser, *ml_s_buildHost;

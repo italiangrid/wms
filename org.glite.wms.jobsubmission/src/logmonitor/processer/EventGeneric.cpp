@@ -128,7 +128,7 @@ void EventGeneric::finalProcess( int cn )
 
       break;
     case jccommon::retry_remove: {
-      controller::JobController     controller( *this->ei_data->md_logger );
+      controller::JobController controller(this->ei_data->md_logger);
 
       elog::cedglog << logger::setlevel( logger::info )
 		    << "Sending new removal request to JC for cluster " << this->ei_condor << endl
@@ -146,7 +146,7 @@ void EventGeneric::finalProcess( int cn )
 
       if( retry > maxretries ) {
 	if( this->ei_data->md_isDagLog && (edgid != this->ei_data->md_dagId) ) { // Subnode
-	  controller::JobController   controller( *this->ei_data->md_logger );
+	  controller::JobController controller(this->ei_data->md_logger);
 
 	  elog::cedglog << logger::setlevel( logger::error )
 			<< "Cancellation retries exceeded maximum (" << retry << '/' << maxretries << ')' << endl

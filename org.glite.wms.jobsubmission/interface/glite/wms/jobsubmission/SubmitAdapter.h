@@ -41,8 +41,7 @@ void adapt_for_submission(classad::ClassAd* inad)
   SubmitAdapter adapter(inad);
 }
 
-}}}}; // Namespace controller
-
+}}}}
 #endif /* EDG_WORKLOAD_JOBCONTROL_CONTROLLER_SUBMITADAPTER_H */
 
 // Local Variables:

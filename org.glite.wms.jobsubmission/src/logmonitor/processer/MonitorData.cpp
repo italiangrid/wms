@@ -1,6 +1,7 @@
 #include <string>
 
 #include <boost/filesystem/path.hpp>
+#include <boost/shared_ptr.hpp>
 
 #include "glite/wms/common/utilities/boost_fs_add.h"
 #include "jobcontrol_namespace.h"
@@ -14,12 +15,19 @@ using namespace std;
 USING_COMMON_NAMESPACE;
 
 JOBCONTROL_NAMESPACE_BEGIN {
-
 namespace logmonitor { 
 
-MonitorData::MonitorData( AbortedContainer *aborted, jccommon::IdContainer *container, processer::JobResubmitter *resubmitter, jccommon::EventLogger *logger ) : 
-  md_logger( logger ), md_container( container ), md_aborted( aborted ), md_resubmitter( resubmitter )
-{}
+MonitorData::MonitorData(
+  boost::shared_ptr<AbortedContainer> aborted,
+  boost::shared_ptr<jccommon::IdContainer> container,
+  boost::shared_ptr<processer::JobResubmitter> resubmitter,
+  boost::shared_ptr<jccommon::EventLogger> logger)
+: 
+  md_aborted(aborted),
+  md_container(container),
+  md_resubmitter(resubmitter),
+  md_logger(logger)
+{ }
 
 namespace processer {
 
@@ -30,8 +38,9 @@ MonitorData::MonitorData( const string &filename, logmonitor::MonitorData &data 
   md_dagId(),
   md_timer(), md_sizefile()
 {
-  if( this->md_logfile_name.length() == 0 )
-    throw InvalidFileName( filename );
+  if (this->md_logfile_name.length() == 0) {
+    throw InvalidFileName(filename);
+  }
 }
 
 }} // Namespace processer, logmonitor

@@ -1394,14 +1394,13 @@ void EventLogger::job_really_run_event( const string &sc )
 
 string EventLogger::seq_code_lbproxy( const string &jobid )
 {
-  char         *seqcode;
-  string       res( "undefined" );
-  edg_wlc_JobId       id;
-  edg_wlc_JobIdParse( jobid.c_str(), &id );
+  string res("undefined");
+  edg_wlc_JobId id;
+  edg_wlc_JobIdParse(jobid.c_str(), &id);
   
 #ifdef GLITE_WMS_HAVE_LBPROXY
   if( this->el_context ) {
-    edg_wll_QuerySequenceCodeProxy( *this->el_context, id, &seqcode );
+    edg_wll_QuerySequenceCodeProxy(*this->el_context, id, &seqcode);
 
     res.assign( seqcode );
     free( seqcode );
@@ -1421,11 +1420,11 @@ string EventLogger::sequence_code()
   string         res( "undefined" );
 
 #ifdef GLITE_WMS_HAVE_LOGGING
-  if( this->el_context ) {
+  if (this->el_context) {
     seqcode = edg_wll_GetSequenceCode(*this->el_context);
 
-    res.assign( seqcode );
-    free( seqcode );
+    res = seqcode;
+    free(seqcode);
   }
 #else
   res.assign( "UI=000000:NS=000000:WM=000000:BH=000000:JSS=000000:LM=000000:LRMS=000000:APP=000000" );
@@ -1434,9 +1433,9 @@ string EventLogger::sequence_code()
   return res;
 }
 
-// Queries LB
+// Queries to LB
 
-// TO BE CHECK 
+// TO BE CHECKED
 string EventLogger::query_condorid( const string &jobid )
 {
   string              condor_id;

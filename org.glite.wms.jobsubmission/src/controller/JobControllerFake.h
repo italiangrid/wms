@@ -15,7 +15,7 @@ public:
   JobControllerFake( void );
   virtual ~JobControllerFake( void );
 
-  int msubmit(std::vector<classad::ClassAd *>);
+  int msubmit(std::vector<classad::ClassAd *>&);
   virtual int submit( classad::ClassAd *ad );
   virtual bool cancel( const glite::wmsutils::jobid::JobId &id, const char *logfile );
   virtual bool cancel( int condorid, const char *logfile );

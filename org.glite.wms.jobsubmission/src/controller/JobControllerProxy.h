@@ -7,15 +7,7 @@
 // Copyright (c) 2001 EU DataGrid.
 // For license conditions see http://www.eu-datagrid.org/license.html
 
-<<<<<<< JobControllerProxy.h
 // $Id$
-=======
-<<<<<<< JobControllerProxy.h
-// $Id$
-=======
-// $Id$
->>>>>>> 1.4
->>>>>>> 1.5
 
 #include <vector>
 #include <classad_distribution.h>
@@ -43,16 +35,16 @@ class JobControllerProxy: public JobControllerImpl {
   boost::shared_ptr<utils::FileList<classad::ClassAd> > jcp_queue;
   boost::shared_ptr<utils::JobDir>                      jcp_jobdir;
 
-  jccommon::EventLogger    jcp_logger;
+  boost::shared_ptr<jccommon::EventLogger> jcp_logger;
 public:
   JobControllerProxy(
     boost::shared_ptr<utils::FileList<classad::ClassAd> >q,
     boost::shared_ptr<utils::FileListMutex> m,
     boost::shared_ptr<utils::JobDir> jcp_jd,
-    edg_wll_Context *cont
+    boost::shared_ptr<jccommon::EventLogger> ctx
   );
 
-  virtual int msubmit(std::vector<classad::ClassAd*>);
+  virtual int msubmit(std::vector<classad::ClassAd*>&);
   virtual int submit(classad::ClassAd *ad);
   virtual bool cancel(const glite::wmsutils::jobid::JobId &id, const char *logfile);
   virtual bool cancel(int condorid, const char *logfile);

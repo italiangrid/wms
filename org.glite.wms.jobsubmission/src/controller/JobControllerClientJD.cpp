@@ -40,13 +40,13 @@ JobControllerClientJD::JobControllerClientJD() :
     this->jccjd_jd.reset(new utilities::JobDir(listname));
     clog << logger::setlevel( logger::info ) << "Created jobdir queue object.\n";
  
-   // Check if there are "old" requests not managed
+   // check if there are "old" requests not yet managed
     utilities::JobDir::iterator b, e;
     boost::tie(b, e) = this->jccjd_jd->old_entries();
 
     for ( ; b != e; ++b) {
-      this->jccjd_queue.push(*b);
-      this->jccjd_current = this->jccjd_queue.front();
+      this->jccjd_queue.insert(std::make_pair(std::time(0), *b));
+      this->jccjd_current = this->jccjd_queue.begin()->second;
       this->jccjd_currentGood = true;
     }
   } catch(utilities::JobDirError &error) {
@@ -67,9 +67,12 @@ void JobControllerClientJD::extract_next_request()
       
   if (b != e) {
     for ( ; b != e; ++b) {
-      this->jccjd_queue.push(this->jccjd_jd->set_old(*b));
+      this->jccjd_queue.insert(
+        std::make_pair(std::time(0),
+        this->jccjd_jd->set_old(*b)));
+//] = this->jccjd_jd->set_old(*b);
     }
-    this->jccjd_current = this->jccjd_queue.front();
+    this->jccjd_current = this->jccjd_queue.begin()->second;
     this->jccjd_currentGood = true;
     return;
   }
@@ -79,7 +82,7 @@ void JobControllerClientJD::extract_next_request()
   if (this->jccjd_queue.empty()) {
     this->jccjd_currentGood = false;
   } else {
-    this->jccjd_current = this->jccjd_queue.front();
+    this->jccjd_current = this->jccjd_queue.begin()->second;
     this->jccjd_currentGood = true;
   }
 
@@ -94,22 +97,23 @@ void JobControllerClientJD::release_request()
 {
   if (this->jccjd_currentGood) {	
     fs::remove(this->jccjd_current);
-    this->jccjd_queue.pop();
+    std::multimap<
+      std::time_t,
+      boost::filesystem::path
+    >::iterator it, it_end = this->jccjd_queue.end();
+    for (it = this->jccjd_queue.begin(); it != it_end; ++it) {
+      if (it->second == this->jccjd_current) {
+        this->jccjd_queue.erase(it);
+        break;
+      }
+    }
+
+    this->jccjd_queue.erase(it);
     if (this->jccjd_queue.empty()) {
       this->jccjd_currentGood = false;
     }
   }
 }
-  // TODO
-  // if (this->jccjd_currentGood) {	
-  //   fs::remove(this->jccjd_current);
-  //   this->jccjd_queue.pop();
-  //   if (this->jccjd_queue.empty()) {
-  //     this->jccjd_currentGood = false;
-  //   }
-  // }
-
-  // return;
 
 const Request *JobControllerClientJD::get_current_request()
 {
