@@ -293,10 +293,19 @@ Purger::operator()(jobid::JobId const& id)
   );
 
   if (!query_job_status(job_status, id, log_ctx)) {
-      return false;
+    Info(
+      id.toString() << ": forced removal, unknown L&B job"
+    );
+    return remove_path(
+      jobid_to_absolute_path(id),
+#ifdef GLITE_WMS_HAVE_LBPROXY
+      log_proxy_ctx
+#else
+      log_ctx
+#endif
+    );
   }
-
-  // Reads the TYPE of the JOB...
+ // Reads the TYPE of the JOB...
   bool is_dag = 
     (job_status.jobtype == EDG_WLL_STAT_DAG ) || 
     (job_status.jobtype == EDG_WLL_STAT_COLLECTION);
@@ -308,11 +317,12 @@ Purger::operator()(jobid::JobId const& id)
     
     std::vector<std::string> children;
     if (job_status.children) {
-      std::copy(
-        &job_status.children[0],
-        &job_status.children[job_status.children_num],
-        std::back_inserter(children)
-      );
+
+      char** i = &job_status.children[0];
+      while( *i ) {
+        children.push_back(std::string(*i));
+        i++;
+      }
     }
     std::vector<std::string>::const_iterator i = children.begin();
     std::vector<std::string>::const_iterator const e = children.end();
@@ -331,7 +341,7 @@ Purger::operator()(jobid::JobId const& id)
     }
     Info(
       id.toString() << ": " 
-      << children.size() - n << '/' << children.size() << " nodes removed"
+      << children.size() - n << '/' << job_status.children_num << " nodes removed"
     );
 
     bool const path_removed(
