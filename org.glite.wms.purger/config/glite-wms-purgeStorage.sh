@@ -11,7 +11,7 @@ check_process()
 }
 
 log="/dev/stdout"
-while getopts "l:t:c:p:a:soh" arg
+while getopts "l:t:c:p:a:qsoh" arg
 do
   case "$arg" in
   l)    log="$OPTARG";;

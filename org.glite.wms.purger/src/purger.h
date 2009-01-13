@@ -46,7 +46,7 @@ namespace purger {
  public:
    Purger();   
    bool operator()(glite::wmsutils::jobid::JobId const&);
-
+   bool operator()();
    Purger& log_using(boost::function<int(edg_wll_Context)>);
    Purger& threshold(time_t);
    Purger& skip_status_checking(bool = true);

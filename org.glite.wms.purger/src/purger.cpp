@@ -253,6 +253,71 @@ Purger::remove_path(
   return result;
 }
 
+bool
+Purger::operator()()
+{
+  ContextPtr log_ctx;
+
+  try {
+    log_ctx = create_context(get_host_x509_proxy());
+  }
+  catch (CannotCreateLBContext& e) {
+    Error(
+      "CannotCreateLBContext from host proxy, error code #"
+      << e.error_code()
+    );
+    return false;
+  }
+  edg_wll_SetParam(log_ctx.get(), EDG_WLL_PARAM_QUERY_RESULTS, EDG_WLL_QUERYRES_LIMITED);
+  edg_wll_SetParam(log_ctx.get(), EDG_WLL_PARAM_QUERY_JOBS_LIMIT, 1000);
+  for(;;) {
+  size_t n = 0;
+  struct removable_jobs removable_jobs_info(
+    get_removable_jobs(log_ctx, m_threshold)
+  );
+  LB_Jobs::const_iterator job = removable_jobs_info.jobs.begin();
+  LB_Jobs::const_iterator const job_end = removable_jobs_info.jobs.end();
+  if (!std::distance(job_end, job)) break;
+  for( size_t i=0; job != job_end; ++job, ++i ) {
+
+    if (is_threshold_overcome(
+      removable_jobs_info.states[i], m_threshold
+    )) {
+
+      boost::shared_ptr<char> s(
+        edg_wlc_JobIdUnparse(*job), free
+      );
+      jobid::JobId const id(s.get());
+      ContextPtr ctx;
+      try {
+        ctx = create_context_proxy(id, get_host_x509_proxy(), f_sequence_code);
+      }
+      catch (CannotCreateLBContext& e) {
+        Error(
+          s.get()
+          << ": CannotCreateLBProxyContext from host proxy, error code #"
+          << e.error_code()
+        );
+        break;
+      }
+      bool path_removed = remove_path(
+        jobid_to_absolute_path(id),
+        ctx
+      );
+      if (path_removed) {
+        n++;
+        Info(
+          id.toString()<< ": removed " << StatToString(removable_jobs_info.states[i])
+        );
+      }  
+    }
+  }
+  Debug("Purged " << n << "/" << removable_jobs_info.jobs.size() << " removable jobs");
+  if(!n) break;
+  }
+  return true;
+}
+
 bool 
 Purger::operator()(jobid::JobId const& id)
 {
@@ -328,6 +393,15 @@ Purger::operator()(jobid::JobId const& id)
     std::vector<std::string>::const_iterator const e = children.end();
     size_t n = 0;
     for( ; i != e; ++i ) {
+      change_logging_job(
+#ifdef GLITE_WMS_HAVE_LBPROXY
+        log_proxy_ctx,
+#else
+        log_ctx,
+#endif
+        "",
+        jobid::JobId(*i)
+      );
       if (!remove_path(
         strid_to_absolute_path(*i), 
 #ifdef GLITE_WMS_HAVE_LBPROXY
@@ -342,6 +416,15 @@ Purger::operator()(jobid::JobId const& id)
     Info(
       id.toString() << ": " 
       << children.size() - n << '/' << job_status.children_num << " nodes removed"
+    );
+
+    change_logging_job(
+#ifdef GLITE_WMS_HAVE_LBPROXY
+      log_proxy_ctx,
+#else
+      log_ctx,
+#endif
+      f_sequence_code, id
     );
 
     bool const path_removed(

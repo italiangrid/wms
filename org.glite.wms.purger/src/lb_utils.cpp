@@ -15,6 +15,7 @@
 #include <openssl/x509.h>
 #include "glite/wmsutils/jobid/JobId.h"
 #include "glite/wmsutils/jobid/manipulation.h"
+#include "glite/wmsutils/jobid/cjobid.h"
 #include "glite/lb/producer.h"
 #include "glite/security/proxyrenewal/renewal.h"
 #include "glite/wms/common/configuration/Configuration.h"
@@ -28,6 +29,28 @@ namespace configuration = glite::wms::common::configuration;
 namespace glite {
 namespace wms {
 namespace purger {
+
+ContextPtr
+create_context(
+  std::string const& x509_proxy
+)
+{
+  edg_wll_Context context;
+  int errcode = edg_wll_InitContext(&context);
+  if (errcode) {
+    return ContextPtr();
+  }
+
+  if(!x509_proxy.empty()) 
+    errcode |= edg_wll_SetParam(context,
+                                EDG_WLL_PARAM_X509_PROXY,
+                                x509_proxy.c_str());
+  if (errcode) {
+    throw CannotCreateLBContext(errcode);
+  }
+
+  return ContextPtr(context, edg_wll_FreeContext);
+}
 
 ContextPtr
 create_context(
@@ -153,6 +176,53 @@ create_context_proxy(
   return ContextPtr(context, edg_wll_FreeContext);
 }
 
+void edg_wll_FreeJobStat(edg_wll_JobStat s)
+{
+  edg_wll_FreeStatus(&s);
+}
+
+struct removable_jobs
+get_removable_jobs(ContextPtr const& context, time_t threshold)
+{
+  struct timeval t;
+  t.tv_sec =  std::time(0) - threshold;
+  edg_wll_QueryRec status_conditions[5];
+  edg_wll_QueryRec time_conditions[3];
+  // OR conditions
+  status_conditions[0].attr    = EDG_WLL_QUERY_ATTR_STATUS;
+  status_conditions[0].op      = EDG_WLL_QUERY_OP_EQUAL;
+  status_conditions[0].value.i = EDG_WLL_JOB_DONE;
+  status_conditions[1].attr    = EDG_WLL_QUERY_ATTR_STATUS;
+  status_conditions[1].op      = EDG_WLL_QUERY_OP_EQUAL;
+  status_conditions[1].value.i = EDG_WLL_JOB_ABORTED;
+  status_conditions[2].attr    = EDG_WLL_QUERY_ATTR_STATUS;
+  status_conditions[2].op      = EDG_WLL_QUERY_OP_EQUAL;
+  status_conditions[2].value.i = EDG_WLL_JOB_CLEARED;
+  status_conditions[3].attr    = EDG_WLL_QUERY_ATTR_STATUS;
+  status_conditions[3].op      = EDG_WLL_QUERY_OP_EQUAL;
+  status_conditions[3].value.i = EDG_WLL_JOB_CANCELLED;
+  status_conditions[4].attr    = EDG_WLL_QUERY_ATTR_UNDEF;
+  // AND condition
+  time_conditions[0].attr    = EDG_WLL_QUERY_ATTR_LASTUPDATETIME;
+  time_conditions[0].op      = EDG_WLL_QUERY_OP_LESS;
+  time_conditions[0].value.t = t;
+  time_conditions[1].attr    = EDG_WLL_QUERY_ATTR_UNDEF;
+
+  // Query Record Ext
+  edg_wll_QueryRec const* job_conditions[3];
+  job_conditions[0] = status_conditions;
+  job_conditions[1] = time_conditions;
+  job_conditions[2] = 0;
+  job_conditions[1] = 0;
+  edg_wlc_JobId* jobs = 0;
+  edg_wll_JobStat* states = 0;
+  edg_wll_QueryJobsExtProxy(context.get(), job_conditions, 0, &jobs, &states);
+
+  return removable_jobs(
+    LB_Jobs(jobs), LB_States(states)
+  );
+}
+
 std::string
 get_original_jdl(edg_wll_Context context, jobid::JobId const& id)
 {
@@ -218,7 +288,41 @@ get_error_info(edg_wll_Context context)
   return boost::make_tuple(error, error_txt, description_txt);
 }
 
+std::string get_lb_proxy_user(ContextPtr context)
+{
+  char *s=0;
+  boost::shared_ptr<void> free_char(s, std::free);
+  edg_wll_GetParam(&(*context), EDG_WLL_PARAM_LBPROXY_USER, &s);
+  return std::string(s);
+}
+
 } // anonymous
+
+void change_logging_job(
+  ContextPtr context,
+  std::string const& sequence_code,
+  jobid::JobId const& id)
+{
+  int const flag = EDG_WLL_SEQ_NORMAL;
+
+#ifdef GLITE_WMS_HAVE_LBPROXY
+  std::string const user_dn = get_lb_proxy_user(context);
+  edg_wll_SetLoggingJobProxy(
+    &(*context),
+    id,
+    sequence_code.empty() ? 0 : sequence_code.c_str(),
+    user_dn.c_str(),
+    flag
+  );
+#else
+  edg_wll_SetLoggingJob(
+    &(*context),
+    id,
+    sequence_code.c_str(),
+    flag
+  );
+#endif
+}
 
 std::string
 get_lb_message(ContextPtr const& context)
