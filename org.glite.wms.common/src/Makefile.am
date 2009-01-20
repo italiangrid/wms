@@ -8,6 +8,6 @@
 
 ## Subdirectories list
 SUBDIRS = scripts configuration ldif2classad utilities logger \
-	task process programs
+	process programs
 
 MAINTAINERCLEANFILES = Makefile.in 
