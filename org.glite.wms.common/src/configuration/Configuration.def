@@ -561,6 +561,11 @@ class ICEConfiguration {
   parameter int( lease_update_frequency = 1800 ) section normal;
   parameter int( ice_empty_threshold = 600 ) section normal;
   parameter long( max_ice_mem = 524288 ) section normal; 
+  parameter bool( disable_deregister = false ) section normal;
+  parameter bool( disable_purge_storage = false ) section normal;
+  parameter bool( no_listener_message = false ) section normal;
+  parameter bool( no_filelist_message = false ) section normal;
+  parameter bool( disable_lb = false ) section normal;
 
 #  parameter int( MainLoopDuration = 3 ) section normal;
 #  parameter int( AbortedJobsTimeout = 600 ) section normal;
