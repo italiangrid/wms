@@ -566,6 +566,8 @@ class ICEConfiguration {
   parameter bool( no_listener_message = false ) section normal;
   parameter bool( no_filelist_message = false ) section normal;
   parameter bool( disable_lb = false ) section normal;
+  parameter int( ce_blacklist_opcount_max = 20 ) section normal;
+  parameter int( ce_blacklist_time = 30*60 ) section normal;
 
 #  parameter int( MainLoopDuration = 3 ) section normal;
 #  parameter int( AbortedJobsTimeout = 600 ) section normal;
