@@ -11,6 +11,7 @@
 #include <boost/thread/mutex.hpp>
 #endif
 
+#define _LINUX_QUOTA_VERSION 1 // enable linux user quota support version 1
 
 #ifndef QUOTABLOCK_BITS
 /* Conservatively assume 512-bytes blocks */
