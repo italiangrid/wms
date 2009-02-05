@@ -12,16 +12,14 @@
 #       Council for the Central Laboratory of the Research Councils (CCLRC), United Kingdom
 #
 #       Authors: Paolo Andreetto <paolo.andreetto@pd.infn.it>
-<<<<<<< Makefile.am
 #       Version info: $Id$
 #       Release: $Name$
-=======
-#       Version info: $Id$
-#       Release: $Name$
->>>>>>> 1.20
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.22  2009/02/05 16:07:23  mcecchi
+#       enabling bunch submission to condor (work in progress)
+#
 #       Revision 1.21  2008/10/01 13:13:07  mcecchi
 #       enabling multiple job submission for a single user
 #
