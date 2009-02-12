@@ -209,6 +209,7 @@ class CommonConfiguration {
   parameter std::string( DGUser = "dguser" ) section parse;
   parameter std::string( HostProxyFile ) section fileparse;
   parameter bool( UseCacheInsteadOfGris = false ) section normal;
+  parameter bool ( LBProxy = true ) section normal;
 }
 
 class JCConfiguration {
@@ -352,7 +353,7 @@ class WMConfiguration {
   copy ConfBase.fileparse;
 
   parameter bool(Fake = false) section normal;
-  parameter int(PipeDepth = 10) section normal;
+  parameter int(QueueSize = 500) section normal;
   parameter int(WorkerThreads = 10) section normal;
   parameter int(InputIterations = 1) section normal;
   parameter int(MaxRetryCount = 10) section normal;
@@ -481,7 +482,6 @@ class WMPConfiguration {
   parameter std::string ( SandboxStagingPath = "/var/glite/SandboxDir" ) section fileparse;
   parameter std::string ( ListMatchRootPath = "/tmp" ) section fileparse;
 
-  parameter bool ( LBProxy = true ) section normal;
   parameter bool ( EnableServiceDiscovery = false ) section normal;
   parameter std::string ( LBServiceDiscoveryType      = "org.glite.lb.server"  ) section normal;
   parameter long ( ServiceDiscoveryInfoValidity = 3600 ) section normal;
@@ -518,7 +518,6 @@ class ICEConfiguration {
   copy ConfBase.fileparse;
 
 #  parameter bool( UseMaradonaFile = true ) section normal;
-#  parameter int(  pippo = 1000 ) section normal;
   parameter int( listener_port = 7010) section normal;
   parameter int( subscription_update_threshold_time = 1200) section normal;
   parameter int( subscription_duration = 86400) section normal;
