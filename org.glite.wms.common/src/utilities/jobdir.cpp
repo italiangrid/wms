@@ -194,8 +194,8 @@ fs::path JobDir::set_old(fs::path const& file)
   fs::path new_path;
   fs::path old_path;
   try {
-    fs::path new_path = m_impl->new_dir / file.leaf();
-    fs::path old_path = m_impl->old_dir / file.leaf();
+    new_path = m_impl->new_dir / file.leaf();
+    old_path = m_impl->old_dir / file.leaf();
   } catch (boost::filesystem::filesystem_error const& e) {
     throw JobDirError(e.what());
   }
