@@ -364,9 +364,7 @@ class WMConfiguration {
   parameter std::string(Input = "${EDG_WL_TMP}/workload_manager/input.fl") section fileparse;
   parameter std::string(BrokerLib = "libglite_wms_helper_broker_ism.so") section fileparse;
   parameter std::string(IsmDump = "${GLITE_WMS_TMP}/workload_manager/ismdump.fl") section fileparse;
-  parameter bool(EnableIsmDump = false) section normal;
   parameter int(IsmUpdateRate = 799) section normal;
-  parameter int(IsmDumpRate = 599) section normal;
   parameter std::vector<std::string>(IsmBlackList) section normal;
   parameter std::string(DispatcherType = "filelist") section normal;
   parameter std::vector<std::string>(CeMonitorServices) section normal;
