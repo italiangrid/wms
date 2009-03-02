@@ -76,6 +76,7 @@ have_boost=no
 have_classads=no
 have_globus=no
 have_cppunit=no
+have_ldap=no
 
 AC_BOOST([], have_boost=yes, have_boost=no)
 AC_MSG_RESULT(["BOOST found $have_boost"])
@@ -88,6 +89,9 @@ AC_MSG_RESULT(["GLOBUS found $have_globus"])
 
 AC_CPPUNIT([], have_cppunit=yes, have_cppunit=no)
 AC_MSG_RESULT(["CPPUNIT found $have_cppunit"])
+
+GLITE_CHECK_LDAP([], have_ldap=yes, have_ldap=no)
+AC_MSG_RESULT(["LDAP found $have_ldap"])
 
 if test "$have_globus" = "no"; then
   AC_MSG_RESULT(["Please verify GLOBUS package"])
@@ -105,6 +109,10 @@ if test "$have_cppunit" = "no"; then
   AC_MSG_RESULT(["Please verify CPPUNIT package"])
 fi
 
+if test "$have_ldap" = "no"; then
+  AC_MSG_RESULT(["Please verify LDAP package"])
+fi
+
 if test "$have_globus" = "no"; then
   AC_MSG_ERROR([Cannot continue building])
 fi
@@ -118,6 +126,10 @@ if test "$have_classads" = "no"; then
 fi
 
 if test "$have_cppunit" = "no"; then
+  AC_MSG_ERROR([Cannot continue building])
+fi
+
+if test "$have_ldap" = "no"; then
   AC_MSG_ERROR([Cannot continue building])
 fi
 
