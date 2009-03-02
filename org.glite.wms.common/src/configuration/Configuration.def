@@ -356,6 +356,7 @@ class WMConfiguration {
   parameter int(QueueSize = 500) section normal;
   parameter int(WorkerThreads = 10) section normal;
   parameter bool(IsmThreads = true) section normal;
+  parameter std::string(RuntimeMalloc = "") section fileparse;
   parameter int(InputIterations = 1) section normal;
   parameter int(MaxRetryCount = 10) section normal;
   parameter int(MaxShallowRetryCount = 10) section normal;
