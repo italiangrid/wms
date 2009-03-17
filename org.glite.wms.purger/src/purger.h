@@ -32,6 +32,7 @@ namespace purger {
  
  class Purger : public boost::noncopyable
  {
+   bool m_have_lb_proxy;
    boost::function<int(edg_wll_Context)> m_logging_fn;
    time_t m_threshold;
    bool m_skip_status_checking;
@@ -44,9 +45,10 @@ namespace purger {
    );
 
  public:
-   Purger();   
+   Purger(bool have_lb_proxy);
+   Purger();
    bool operator()(glite::wmsutils::jobid::JobId const&);
-   bool operator()();
+
    Purger& log_using(boost::function<int(edg_wll_Context)>);
    Purger& threshold(time_t);
    Purger& skip_status_checking(bool = true);

@@ -168,17 +168,23 @@ bool is_status_removable(edg_wll_JobStat const& job_status)
 
 } // anonymous namespace
 
-Purger::Purger() :
-  m_logging_fn(
-#ifdef GLITE_WMS_HAVE_LBPROXY
-    edg_wll_LogClearUSERProxy
-#else
-    edg_wll_LogClearUSER
-#endif
-  ), m_threshold(0),
-  m_skip_status_checking(true),
-  m_force_orphan_node_removal(false), m_force_dag_node_removal(false)
+Purger::Purger()
 {
+  Purger(true);
+}
+
+Purger::Purger(bool have_lb_proxy) :
+  m_have_lb_proxy(have_lb_proxy),
+  m_threshold(0),
+  m_skip_status_checking(true),
+  m_force_orphan_node_removal(false),
+  m_force_dag_node_removal(false)
+{
+  if (m_have_lb_proxy) {
+    m_logging_fn = edg_wll_LogClearUSERProxy;
+  } else {
+    m_logging_fn = edg_wll_LogClearUSER;
+  }
   if (sslutils::proxy_expires_within(get_host_x509_proxy(), 21600)) // 6 hours
   {
 
@@ -270,20 +276,19 @@ Purger::operator()(jobid::JobId const& id)
     return false;
   }
 
-#ifdef GLITE_WMS_HAVE_LBPROXY
   ContextPtr log_proxy_ctx;
-  try {
-    log_proxy_ctx = create_context_proxy(id, get_host_x509_proxy(), f_sequence_code);
+  if (m_have_lb_proxy) {
+    try {
+      log_proxy_ctx = create_context_proxy(id, get_host_x509_proxy(), f_sequence_code);
+    } catch (CannotCreateLBContext& e) {
+      Error(
+        id.toString()
+        << ": CannotCreateLBProxyContext from host proxy, error code #"
+        << e.error_code()
+      );
+      log_proxy_ctx = log_ctx;
+    }
   }
-  catch (CannotCreateLBContext& e) {
-    Error(
-      id.toString()
-      << ": CannotCreateLBProxyContext from host proxy, error code #"
-      << e.error_code()
-    );
-    log_proxy_ctx = log_ctx;
-  }
-#endif
 
   edg_wll_JobStat job_status;
   edg_wll_InitStatus(&job_status);
@@ -294,15 +299,18 @@ Purger::operator()(jobid::JobId const& id)
 
   if (!query_job_status(job_status, id, log_ctx)) {
       Info(id.toString() << ": forced removal, unknown L&B job");
-      return remove_path(
-        jobid_to_absolute_path(id),  
-#ifdef GLITE_WMS_HAVE_LBPROXY
-        log_proxy_ctx
-#else
-        log_ctx
-#endif
-      );
-}
+      if (m_have_lb_proxy) {
+        return remove_path(
+          jobid_to_absolute_path(id),  
+          log_proxy_ctx
+        );
+      } else {
+        return remove_path(
+          jobid_to_absolute_path(id),  
+          log_ctx
+        );
+      }
+  }
 
   // Reads the TYPE of the JOB...
   bool is_dag = 
@@ -326,15 +334,14 @@ Purger::operator()(jobid::JobId const& id)
     std::vector<std::string>::const_iterator const e = children.end();
     size_t n = 0;
     for( ; i != e; ++i ) {
-      if (!remove_path(
-        strid_to_absolute_path(*i), 
-#ifdef GLITE_WMS_HAVE_LBPROXY
-	log_proxy_ctx
-#else
-        log_ctx
-#endif
-      )) {
-        ++n;
+      if (m_have_lb_proxy) {
+        if (!remove_path(strid_to_absolute_path(*i), log_proxy_ctx)) {
+          ++n;
+        }
+      } else {
+        if (!remove_path(strid_to_absolute_path(*i), log_ctx)) {
+          ++n;
+        }
       }
     }
     Info(
@@ -342,16 +349,18 @@ Purger::operator()(jobid::JobId const& id)
       << children.size() - n << '/' << children.size() << " nodes removed"
     );
 
-    bool const path_removed(
-      remove_path(
+    bool path_removed = false;
+    if (m_have_lb_proxy) {
+      path_removed = remove_path(
         jobid_to_absolute_path(id), 
-#ifdef GLITE_WMS_HAVE_LBPROXY
         log_proxy_ctx
-#else
+      );
+    } else {
+      path_removed = remove_path(
+        jobid_to_absolute_path(id), 
         log_ctx
-#endif
-      )
-    );
+      );
+    }
     if (path_removed) {
       Info(
         id.toString()<< ": removed " << StatToString(job_status) << " dag "
@@ -365,16 +374,18 @@ Purger::operator()(jobid::JobId const& id)
   // if the job is a dag node we should skip its removal
   // unless it is an orphan node or so requested
   if (is_dag_node && m_force_dag_node_removal ) {
-    bool const path_removed(
-      remove_path(
+    bool path_removed = false;
+    if (m_have_lb_proxy) {
+      path_removed = remove_path(
         jobid_to_absolute_path(id), 
-#ifdef GLITE_WMS_HAVE_LBPROXY
         log_proxy_ctx
-#else
+      );
+    } else {
+      path_removed = remove_path(
+        jobid_to_absolute_path(id), 
         log_ctx
-#endif
-      )
-    );
+      );
+    }
     if (path_removed) {
       Info(
 	id.toString() << ": removed "
@@ -389,16 +400,18 @@ Purger::operator()(jobid::JobId const& id)
     jobid::JobId const p_id(job_status.parent_job);
     fs::path pp(jobid_to_absolute_path(p_id));
     if (!fs::exists(pp)) {
-      bool const path_removed(
-        remove_path(
+      bool path_removed = false;
+      if (m_have_lb_proxy) {
+        path_removed = remove_path(
           jobid_to_absolute_path(id), 
-#ifdef GLITE_WMS_HAVE_LBPROXY
-        log_proxy_ctx
-#else
-        log_ctx
-#endif
-        )
-      );
+          log_proxy_ctx
+        );
+      } else {
+        path_removed = remove_path(
+          jobid_to_absolute_path(id), 
+          log_ctx
+        );
+      }
       if (path_removed) {
         Info(
           id.toString() << ": removed "
@@ -415,17 +428,20 @@ Purger::operator()(jobid::JobId const& id)
       && (!m_threshold
           || is_threshold_overcome(job_status, m_threshold)
          )
-     ) { // removing normal job
-    bool const path_removed(
-      remove_path(
+     )
+  { // removing normal job
+    bool path_removed = false;
+    if (m_have_lb_proxy) {
+      path_removed = remove_path(
         jobid_to_absolute_path(id), 
-#ifdef GLITE_WMS_HAVE_LBPROXY
         log_proxy_ctx
-#else
+      );
+    } else {
+      path_removed = remove_path(
+        jobid_to_absolute_path(id), 
         log_ctx
-#endif
-      )
-    );
+      );
+    }
     if (path_removed) {
       Info(
         id.toString() << ": removed " << StatToString(job_status) << " job"

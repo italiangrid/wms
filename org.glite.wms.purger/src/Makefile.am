@@ -50,7 +50,6 @@ glite_wms_purgeStorage_LDADD = \
 	$(CLASSAD_LIBS)
 
 AM_CPPFLAGS = \
-        -DGLITE_WMS_HAVE_LBPROXY \
 	$(GLITE_CFLAGS) \
 	$(BOOST_CFLAGS) \
 	$(CLASSAD_CFLAGS) \
