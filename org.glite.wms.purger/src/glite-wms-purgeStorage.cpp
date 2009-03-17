@@ -66,7 +66,7 @@ purge_directories(
 }
 
 bool
-lb_type()
+lb_proxy()
 {
   if (!f_conf) {
     f_conf = configuration::Configuration::instance();
@@ -171,7 +171,7 @@ int main( int argc, char* argv[])
       }
     }
 
-    bool have_lbproxy = lb_type();
+    bool have_lbproxy = lb_proxy();
     wl::purger::Purger thePurger(have_lbproxy);
 
     boost::function<int(edg_wll_Context)> log_clear;
