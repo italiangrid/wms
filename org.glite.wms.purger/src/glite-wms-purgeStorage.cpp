@@ -1,6 +1,7 @@
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/exception.hpp>
 #include <boost/program_options.hpp>
+#include <boost/function.hpp>
 
 #include "lb_utils.h"
 #include "purger.h"
@@ -9,6 +10,7 @@
 #include "glite/wmsutils/jobid/manipulation.h"
 #include "glite/wms/common/configuration/Configuration.h"
 #include "glite/wms/common/configuration/WMPConfiguration.h"
+#include "glite/wms/common/configuration/CommonConfiguration.h"
 
 #include "glite/wms/common/logger/edglog.h"
 
@@ -63,6 +65,16 @@ purge_directories(
   return false;
 }
 
+bool
+lb_type()
+{
+  if (!f_conf) {
+    f_conf = configuration::Configuration::instance();
+    assert(f_conf);
+  }
+  return f_conf->common()->lbproxy();
+}
+
 std::string
 get_staging_path()
 {
@@ -98,38 +110,24 @@ int main( int argc, char* argv[])
         po::value<int>(),
         "sets the purging threshold to the specified number of seconds"
       )
+      ( 
+        "staging-path,p",
+        po::value<std::string>(),
+        "absolute path to sandbox staging directory"
+      )
       (
         "allocated-limit,a",
         po::value<int>(),
         "defines the percentange of allocated blocks which triggers the"
         " purging"
       )
-#ifdef GLITE_WMS_HAVE_LBPROXY
-      (
-        "query-lbproxy,q", "query lbproxy for jobs in terminal state"
-      )
-#endif
-      (
-        "staging-path,p",
-        po::value<std::string>(),
-        "absolute path to sandbox staging directory"
-#ifdef GLITE_WMS_HAVE_LBPROXY
-        " (useless in conjuctions with query-lbproxy)"
-#endif
-      )
       (
         "skip-status-checking,s",
         "does not perform any status checking before purging"
-#ifdef GLITE_WMS_HAVE_LBPROXY
-        " (does not work in conjuction with query-lbproxy"
-#endif
       )
       (
         "force-orphan-node-removal,o", 
         "force removal of orphan dag nodes"
-#ifdef GLITE_WMS_HAVE_LBPROXY
-        " (does not work in coniuction with query-lbproxy"
-#endif
       )
       ;
 
@@ -172,47 +170,43 @@ int main( int argc, char* argv[])
 	}
       }
     }
-   
-    if (vm.count("log-file")) {
-      logger::threadsafe::edglog.open( vm["log-file"].as<std::string>(), logger::info);
+
+    bool have_lbproxy = lb_type();
+    wl::purger::Purger thePurger(have_lbproxy);
+
+    boost::function<int(edg_wll_Context)> log_clear;
+
+    if (have_lbproxy) {
+      log_clear = edg_wll_LogClearTIMEOUTProxy;
+    } else {
+      log_clear = edg_wll_LogClearTIMEOUT;
     }
-    else {
-      logger::threadsafe::edglog.open( std::cout, logger::info);
-    }
-    wl::purger::Purger thePurger;
 
     thePurger.threshold(
       vm.count("threshold") ? vm["threshold"].as<int>() : 0
-    );
+    ).
+    skip_status_checking(
+      vm.count("skip-status-checking")
+    ).
+    force_orphan_node_removal(
+      vm.count("force-orphan-node-removal")
+    ).
+    log_using(log_clear);
+   
+   if (vm.count("log-file")) {
+     logger::threadsafe::edglog.open( vm["log-file"].as<std::string>(), logger::info);
+   }
+   else {
+     logger::threadsafe::edglog.open( std::cout, logger::info);
+   }
+   std::vector<fs::path> found_path;
+   fs::path from_path( staging_path, fs::native);
+   
+   purge_directories(
+     from_path, 
+     thePurger
+   );
 
-#ifdef GLITE_WMS_HAVE_LBPROXY
-    if (vm.count("query-lbproxy")) {
-      thePurger.log_using(
-        edg_wll_LogClearTIMEOUTProxy
-      );
-      thePurger();
-    } 
-    else {
-#endif
-      thePurger.skip_status_checking(
-        vm.count("skip-status-checking")
-      ).
-      force_orphan_node_removal(
-        vm.count("force-orphan-node-removal")
-      ).
-      log_using(
-        edg_wll_LogClearTIMEOUT
-      );
-      std::vector<fs::path> found_path;
-      fs::path from_path( staging_path, fs::native);
-
-      purge_directories(
-        from_path,
-        thePurger
-      );
-#ifdef GLITE_WMS_HAVE_LBPROXY
-    }
-#endif
   }
   catch (boost::program_options::unknown_option const& e) {
     std::cerr<< e.what() << '\n';
