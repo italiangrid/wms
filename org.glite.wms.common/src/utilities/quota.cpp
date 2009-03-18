@@ -11,7 +11,6 @@
 #include <boost/thread/mutex.hpp>
 #endif
 
-#define _LINUX_QUOTA_VERSION 1 // enable linux user quota support version 1
 
 #ifndef QUOTABLOCK_BITS
 /* Conservatively assume 512-bytes blocks */
@@ -108,8 +107,13 @@ std::pair<long, long> beGrateful2Me4Ever(const std::string &uname, bool totalquo
 	  sftlmt=(dbstr.dqb_bsoftlimit << QUOTABLOCK_BITS);
 	  hrdlmt=(dbstr.dqb_bhardlimit << QUOTABLOCK_BITS);
 	} else {
+#if _LINUX_QUOTA_VERSION < 2
 	  sftlmt=(dbstr.dqb_bsoftlimit << QUOTABLOCK_BITS)- dbstr.dqb_curblocks;
 	  hrdlmt=(dbstr.dqb_bhardlimit << QUOTABLOCK_BITS)- dbstr.dqb_curblocks;
+#elif _LINUX_QUOTA_VERSION == 2
+	  sftlmt=(dbstr.dqb_bsoftlimit << QUOTABLOCK_BITS)- dbstr.dqb_curspace;
+	  hrdlmt=(dbstr.dqb_bhardlimit << QUOTABLOCK_BITS)- dbstr.dqb_curspace;
+#endif
 	}
       }
     }
