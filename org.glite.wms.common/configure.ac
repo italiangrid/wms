@@ -89,6 +89,8 @@ AC_MSG_RESULT(["GLOBUS found $have_globus"])
 AC_CPPUNIT([], have_cppunit=yes, have_cppunit=no)
 AC_MSG_RESULT(["CPPUNIT found $have_cppunit"])
 
+GLITE_CHECK_LDAP
+
 if test "$have_globus" = "no"; then
   AC_MSG_RESULT(["Please verify GLOBUS package"])
 fi
@@ -145,5 +147,4 @@ AC_CONFIG_FILES([src/programs/Makefile])
 AC_CONFIG_FILES([test/Makefile])
 
 AC_OUTPUT
-
 

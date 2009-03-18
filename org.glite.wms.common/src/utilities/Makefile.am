@@ -90,6 +90,7 @@ AM_CPPFLAGS = -I$(top_srcdir)/interface \
 	$(GLOBUS_THR_CFLAGS) \
 	$(BOOST_CFLAGS) \
 	$(CLASSAD_CFLAGS) \
+        $(LDAP_CPPFLAGS) \
 	-DB_THREAD_SAFE
 
 EXTRA_DIST = \
