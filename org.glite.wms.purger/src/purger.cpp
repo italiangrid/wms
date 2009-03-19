@@ -178,7 +178,8 @@ Purger::Purger(bool have_lb_proxy) :
   m_threshold(0),
   m_skip_status_checking(true),
   m_force_orphan_node_removal(false),
-  m_force_dag_node_removal(false)
+  m_force_dag_node_removal(false),
+  m_logging_fn(edg_wll_LogClearUSERProxy)
 {
   if (m_have_lb_proxy) {
     m_logging_fn = edg_wll_LogClearUSERProxy;
