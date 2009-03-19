@@ -179,13 +179,8 @@ Purger::Purger(bool have_lb_proxy) :
   m_skip_status_checking(true),
   m_force_orphan_node_removal(false),
   m_force_dag_node_removal(false),
-  m_logging_fn(edg_wll_LogClearUSERProxy)
+  m_logging_fn(have_lb_proxy ? edg_wll_LogClearUSERProxy : edg_wll_LogClearUSER)
 {
-  if (m_have_lb_proxy) {
-    m_logging_fn = edg_wll_LogClearUSERProxy;
-  } else {
-    m_logging_fn = edg_wll_LogClearUSER;
-  }
   if (sslutils::proxy_expires_within(get_host_x509_proxy(), 21600)) // 6 hours
   {
 
