@@ -23,23 +23,29 @@ glite_wms_fl2jd_LDADD = \
 	libglite_wms_util.la \
 	$(GLITE_WMSUTILS_CLASSADS_LIBS) \
 	$(BOOST_LIBS) \
-	$(CLASSAD_LIBS)
+	$(CLASSAD_LIBS) \
+        -L$(GLITE_LOCATION)/lib $(GLITE_JOBID_LIBS)
 
 glite_wms_eval_ad_expr_SOURCES = glite-wms-eval_ad_expr.cpp
 glite_wms_eval_ad_expr_LDADD   = \
         ./libglite_wms_util.la \
 	$(GLITE_WMSUTILS_CLASSADS_LIBS) \
 	$(BOOST_LIBS) \
-	$(CLASSAD_LIBS)
+	$(CLASSAD_LIBS) \
+        -L$(GLITE_LOCATION)/lib $(GLITE_JOBID_LIBS) 
 
 glite_wms_quota_adjust_SOURCES = glite_wms_quota_adjust.cpp
 glite_wms_quota_adjust_LDADD = \
         $(CONF) \
         ./libglite_wms_util.la \
         $(BOOST_FS_LIBS) -lpthread \
+	$(BOOST_LIBS) \
         $(BOOST_REGEX_LIBS) \
-	$(CLASSAD_LIBS)
-glite_wms_quota_adjust_LDFLAGS = -all-static
+	$(CLASSAD_LIBS) \
+        $(GLITE_WMSUTILS_CLASSADS_LIBS) \
+        -L$(GLITE_LOCATION)/lib $(GLITE_JOBID_LIBS)
+#glite_wms_quota_adjust_LDFLAGS = -all-static
+
 
 libglite_wms_globus_ftp_util_la_SOURCES = \
 	globus_ftp_mkdir.cpp \
@@ -62,10 +68,11 @@ libglite_wms_util_la_SOURCES = \
 	jobdir.cpp \
 	input_reader.cpp \
 	jobdir_reader.cpp \
-	filelist_reader.cpp
+	filelist_reader.cpp \
+        manipulation.cpp
 
 libglite_wms_util_la_LIBADD = -lstdc++ \
-	$(BOOST_DATE_LIBS)
+	$(BOOST_DATE_LIBS) 
 
 libglite_wms_iiattrutil_la_SOURCES = \
 	ii_attr_utils.cpp
@@ -82,7 +89,8 @@ utilitiesinclude_HEADERS = \
 	ii_attr_utils.h \
 	LineParserExceptions.h \
 	quota.h \
-	triple.h
+	triple.h \
+        manipulation.h
 
 AM_CPPFLAGS = -I$(top_srcdir)/interface \
 	-I$(top_srcdir)/src \
