@@ -89,8 +89,6 @@ AC_MSG_RESULT(["GLOBUS found $have_globus"])
 AC_CPPUNIT([], have_cppunit=yes, have_cppunit=no)
 AC_MSG_RESULT(["CPPUNIT found $have_cppunit"])
 
-GLITE_CHECK_LDAP
-
 if test "$have_globus" = "no"; then
   AC_MSG_RESULT(["Please verify GLOBUS package"])
 fi
@@ -126,10 +124,18 @@ fi
 AC_OPTIMIZE
 
 have_glite_wmsutils=no
+have_glite_jobid=no
 
 AC_GLITE
 
+GLITE_CHECK_LDAP
+
 AC_GLITE_WMSUTILS
+
+GLITE_CPPFLAGS=${GLITE_CFLAGS}
+GLITE_LDFLAGS="${GLITE_LDFLAGS} -L$GLITE_LOCATION/lib"
+GLITE_CHECK_JOBID([], have_glite_jobid=yes, have_glite_jobid=no)
+AC_MSG_RESULT(["GLITE_JOBID found $have_glite_jobid"])
 
 # Configuration items
 AC_PREFIX_DEFAULT([/opt/glite])
