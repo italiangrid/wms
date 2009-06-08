@@ -1,8 +1,19 @@
 // File: purger.cpp
 // Author: Salvatore Monforte <salvatore.monforte@ct.infn.it>
-// Copyright (c) 2001 EU DataGrid.
-// For license conditions see http://www.eu-datagrid.org/license.html
-//
+
+// Copyright (c) Members of the EGEE Collaboration. 2009. 
+// See http://www.eu-egee.org/partners/ for details on the copyright holders.  
+
+// Licensed under the Apache License, Version 2.0 (the "License"); 
+// you may not use this file except in compliance with the License. 
+// You may obtain a copy of the License at 
+//     http://www.apache.org/licenses/LICENSE-2.0 
+// Unless required by applicable law or agreed to in writing, software 
+// distributed under the License is distributed on an "AS IS" BASIS, 
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+// See the License for the specific language governing permissions and 
+// limitations under the License.
+
 // $Id$
 
 #include <boost/filesystem/operations.hpp> 
@@ -13,8 +24,7 @@
 
 #include "ssl_utils.h"
 
-#include "glite/wmsutils/jobid/JobId.h"
-#include "glite/wmsutils/jobid/manipulation.h"
+#include "glite/jobid/JobId.h"
 #include "glite/wmsutils/jobid/JobIdExceptions.h"
 
 #include "glite/wms/common/configuration/Configuration.h"
@@ -27,6 +37,7 @@
 #include "glite/wms/common/logger/logger_utils.h"
 #include "glite/wms/common/logger/manipulators.h"
 #include "glite/wms/common/utilities/scope_guard.h"
+#include "glite/wms/common/utilities/manipulation.h"
 
 #include "glite/lb/Job.h"
 #include "lb_utils.h"
@@ -39,7 +50,7 @@
 #include <time.h>
 
 namespace fs            = boost::filesystem;
-namespace jobid         = glite::wmsutils::jobid;
+namespace jobid         = glite::jobid;
 namespace logger	= glite::wms::common::logger::threadsafe;
 namespace logging       = glite::lb;
 namespace configuration = glite::wms::common::configuration;
@@ -109,7 +120,7 @@ query_job_status(
 ) 
 {
   if (edg_wll_JobStatus(
-        log_ctx.get(), jobid,
+        log_ctx.get(), jobid.c_jobid(),
         EDG_WLL_STAT_CLASSADS | EDG_WLL_STAT_CHILDREN,
         &job_status
       )
@@ -132,11 +143,11 @@ query_job_status(
 fs::path
 jobid_to_absolute_path(jobid::JobId const& id)
 {
-  std::string const unique(id.getUnique());
+  std::string const unique(id.unique());
   return fs::path(
     fs::path(get_staging_path(), fs::native) /
     fs::path(unique.substr(0,2), fs::native) /
-    fs::path(jobid::to_filename(id), fs::native)
+    fs::path(utilities::to_filename(id), fs::native)
   );
 }
 

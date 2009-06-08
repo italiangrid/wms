@@ -2,6 +2,20 @@
 // Author: Francesco Giacomini <Francesco.Giacomini@cnaf.infn.it>
 // Author: Salvatore Monforte <Salvatore.Monforte@cnaf.infn.it>
 
+// Copyright (c) Members of the EGEE Collaboration. 2009. 
+// See http://www.eu-egee.org/partners/ for details on the copyright holders.  
+
+// Licensed under the Apache License, Version 2.0 (the "License"); 
+// you may not use this file except in compliance with the License. 
+// You may obtain a copy of the License at 
+//     http://www.apache.org/licenses/LICENSE-2.0 
+// Unless required by applicable law or agreed to in writing, software 
+// distributed under the License is distributed on an "AS IS" BASIS, 
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+// See the License for the specific language governing permissions and 
+// limitations under the License.
+
+
 #ifndef GLITE_WMS_PURGER_LB_UTILS_H
 #define GLITE_WMS_PURGER_LB_UTILS_H
 
@@ -15,14 +29,12 @@
 #include <boost/function.hpp>
 #include "glite/lb/context.h"
 #include "glite/lb/consumer.h"
-#include "glite/wmsutils/jobid/cjobid.h"
 
 namespace glite {
 
-namespace wmsutils {
 namespace jobid {
 class JobId;
-}}
+}
 
 namespace wms {
 namespace purger {
@@ -31,12 +43,7 @@ typedef boost::shared_ptr<boost::remove_pointer<edg_wll_Context>::type> ContextP
 
 ContextPtr
 create_context(
-  std::string const& x509_proxy
-);
-
-ContextPtr
-create_context(
-  wmsutils::jobid::JobId const& id,
+  jobid::JobId const& id,
   std::string const& x509_proxy,
   std::string const& sequence_code
 );
@@ -68,61 +75,57 @@ public:
 
 ContextPtr
 create_context_proxy(
-  wmsutils::jobid::JobId const& id,
+  jobid::JobId const& id,
   std::string const& x509_proxy,
   std::string const& sequence_code
 );
 
-class LB_Jobs
+class LB_Events
 {
-  boost::shared_array<edg_wlc_JobId> m_jobs;
+  boost::shared_array<edg_wll_Event> m_events;
   size_t m_size;
 
-  static void free_jobs(edg_wlc_JobId* jobs)
+  void free_events(edg_wll_Event* events)
   {
-    if (jobs) {
-      for (int i = 0; jobs[i]; ++i) {
-        edg_wlc_JobIdFree(jobs[i]);
+    if (events) {
+      for (int i = 0; events[i].type; ++i) {
+        edg_wll_FreeEvent(&events[i]);
       }
-      free(jobs);
+      free(events);
     }
   }
 
 public:
-  typedef edg_wlc_JobId const* iterator;
+  typedef edg_wll_Event const* iterator;
   typedef iterator const_iterator;
   typedef std::reverse_iterator<iterator> reverse_iterator;
   typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
-  LB_Jobs(edg_wlc_JobId* jobs)
-    : m_jobs(jobs, &free_jobs), m_size(0)
+  LB_Events(edg_wll_Event* events)
+    : m_events(events), m_size(0)
   {
-    if (m_jobs) {
-      while (m_jobs[m_size]) {
-        ++m_size;
-      }
-    }
+    while (m_events[m_size].type) ;
   }
   bool empty() const
   {
-    return m_size == 0;
+    return m_events.get() == 0;
   }
   size_t size() const
   {
     return m_size;
   }
-  edg_wlc_JobId const& operator[](std::size_t i) const
+  edg_wll_Event const& operator[](std::size_t i) const
   {
     assert(0 <= i && i < m_size);
-    return m_jobs[i];
+    return m_events[i];
   }
   const_iterator begin() const
   {
-    return m_jobs ? &m_jobs[0] : 0;
+    return m_events ? &m_events[0] : 0;
   }
   const_iterator end() const
   {
-    return m_jobs ? &m_jobs[m_size] : 0;
+    return m_events ? &m_events[m_size] : 0;
   }
   const_reverse_iterator rbegin() const
   {
@@ -134,85 +137,9 @@ public:
   }
 };
 
-class LB_States
-{
-  boost::shared_array<edg_wll_JobStat> m_states;
-  size_t m_size;
-
-  static void free_states(edg_wll_JobStat* states)
-  {
-    if (states) {
-      for (int i = 0; states[i].jobId; ++i) {
-        edg_wll_FreeStatus(&states[i]);
-      }
-      free(states);
-    }
-  }
-
-public:
-  typedef edg_wll_JobStat const* iterator;
-  typedef iterator const_iterator;
-  typedef std::reverse_iterator<iterator> reverse_iterator;
-  typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
-
-  LB_States(edg_wll_JobStat* states)
-    : m_states(states, &free_states), m_size(0)
-  {
-    if (m_states) {
-      while (m_states[m_size].jobId) {
-        ++m_size;
-      }
-    }
-  }
-  bool empty() const
-  {
-    return m_size == 0;
-  }
-  size_t size() const
-  {
-    return m_size;
-  }
-  edg_wll_JobStat const& operator[](std::size_t i) const
-  {
-    assert(0 <= i && i < m_size);
-    return m_states[i];
-  }
-  const_iterator begin() const
-  {
-    return m_states ? &m_states[0] : 0;
-  }
-  const_iterator end() const
-  {
-    return m_states ? &m_states[m_size] : 0;
-  }
-  const_reverse_iterator rbegin() const
-  {
-    return const_reverse_iterator(end());
-  }
-  const_reverse_iterator rend() const
-  {
-    return const_reverse_iterator(begin());
-  }
-};
-
-struct removable_jobs
-{
-  LB_Jobs jobs;
-  LB_States states;
-
-  removable_jobs(  
-    LB_Jobs j,
-    LB_States s
-  ) : jobs(j), states(s) {}
-};
-
-struct removable_jobs
-get_removable_jobs(ContextPtr const& context, time_t threshold);
-
-std::string get_original_jdl(edg_wll_Context context, wmsutils::jobid::JobId const& id);
+std::string get_original_jdl(edg_wll_Context context, jobid::JobId const& id);
 std::string get_lb_message(ContextPtr const& context_ptr);
 std::string get_lb_message(edg_wll_Context context);
-void change_logging_job(ContextPtr, std::string const& sequence_code, wmsutils::jobid::JobId const&);
 
 }}} // glite::wms::purger
 
