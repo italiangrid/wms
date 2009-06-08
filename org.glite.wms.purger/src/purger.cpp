@@ -25,7 +25,6 @@
 #include "ssl_utils.h"
 
 #include "glite/jobid/JobId.h"
-#include "glite/wmsutils/jobid/JobIdExceptions.h"
 
 #include "glite/wms/common/configuration/Configuration.h"
 #include "glite/wms/common/configuration/WMPConfiguration.h"
