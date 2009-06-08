@@ -1,10 +1,15 @@
-## *********************************************************************
-## *
-## * Copyright (c) 2002 CERN and INFN on behalf of the EU DataGrid.
-## * For license conditions see LICENSE file or
-## * http://www.edg.org/license.html
-## *
-## *********************************************************************
+## Copyright (c) Members of the EGEE Collaboration. 2009. 
+## See http://www.eu-egee.org/partners/ for details on the copyright holders.  
+
+## Licensed under the Apache License, Version 2.0 (the "License"); 
+## you may not use this file except in compliance with the License. 
+## You may obtain a copy of the License at 
+##     http://www.apache.org/licenses/LICENSE-2.0 
+## Unless required by applicable law or agreed to in writing, software 
+## distributed under the License is distributed on an "AS IS" BASIS, 
+## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+## See the License for the specific language governing permissions and 
+## limitations under the License.
 
 lib_LTLIBRARIES = libglite_wms_purger.la
 
@@ -32,8 +37,7 @@ glite_wms_purgeStorage_SOURCES = \
 	glite-wms-purgeStorage.cpp
 
 glite_wms_purgeStorage_LDADD = \
-	$(GLITE_WMSUTILS_JOBID_LIBS) \
-	$(GLITE_WMSUTILS_CJOBID_LIBS) \
+        $(GLITE_LDFLAGS) \
 	$(GLITE_WMSUTILS_EXCEPTION_LIBS) \
 	$(GLITE_WMSUTILS_CLASSADS_LIBS) \
 	$(GLITE_WMS_COMMON_CONF_LIBS) \
@@ -47,7 +51,8 @@ glite_wms_purgeStorage_LDADD = \
 	$(GLOBUS_SSL_NOTHR_LIBS) \
 	$(GLOBUS_COMMON_NOTHR_LIBS) \
 	$(GLOBUS_GSS_NOTHR_LIBS) \
-	$(CLASSAD_LIBS)
+	$(CLASSAD_LIBS) \
+        $(GLITE_JOBID_LIBS)
 
 AM_CPPFLAGS = \
 	$(GLITE_CFLAGS) \
