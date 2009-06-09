@@ -1,3 +1,16 @@
+// Copyright (c) Members of the EGEE Collaboration. 2009. 
+// See http://www.eu-egee.org/partners/ for details on the copyright holders.  
+
+// Licensed under the Apache License, Version 2.0 (the "License"); 
+// you may not use this file except in compliance with the License. 
+// You may obtain a copy of the License at 
+//     http://www.apache.org/licenses/LICENSE-2.0 
+// Unless required by applicable law or agreed to in writing, software 
+// distributed under the License is distributed on an "AS IS" BASIS, 
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+// See the License for the specific language governing permissions and 
+// limitations under the License.
+
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/exception.hpp>
 #include <boost/program_options.hpp>
@@ -6,8 +19,8 @@
 #include "lb_utils.h"
 #include "purger.h"
 
-#include "glite/wmsutils/jobid/JobId.h"
-#include "glite/wmsutils/jobid/manipulation.h"
+#include "glite/jobid/JobId.h"
+#include "glite/wms/common/utilities/manipulation.h"
 #include "glite/wms/common/configuration/Configuration.h"
 #include "glite/wms/common/configuration/WMPConfiguration.h"
 #include "glite/wms/common/configuration/CommonConfiguration.h"
@@ -25,7 +38,8 @@
 namespace fs            = boost::filesystem;
 namespace wl	        = glite::wms;
 namespace configuration = glite::wms::common::configuration;
-namespace jobid         = glite::wmsutils::jobid;
+namespace jobid         = glite::jobid;
+namespace utilities     = glite::wms::common::utilities;
 namespace po            = boost::program_options;
 namespace logger	= glite::wms::common::logger;
 
@@ -52,7 +66,7 @@ purge_directories(
     try { 	
       if (fs::is_directory( *itr ) && itr->leaf()!="lost+found") {
 	   if (itr->leaf().substr(0,prefix.length()) == prefix) {
-             jobid::JobId id(jobid::from_filename( itr->leaf()));
+             jobid::JobId id = utilities::from_filename(itr->leaf());
              thePurger(id);
            }
 	   else if (purge_directories( *itr, thePurger )) return true;
