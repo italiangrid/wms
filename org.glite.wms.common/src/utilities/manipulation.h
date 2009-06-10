@@ -3,8 +3,6 @@
 
 #include <string>
 
-namespace gljobid = glite::jobid; 
-
 namespace glite {
 
 namespace jobid {
@@ -15,9 +13,9 @@ namespace wms {
 namespace common {
 namespace utilities {
 
-std::string get_reduced_part( const gljobid::JobId &id, int level = 0 );
-std::string to_filename( const gljobid::JobId &id );
-gljobid::JobId from_filename( const std::string &filename );
+std::string get_reduced_part( const glite::jobid::JobId &id, int level = 0 );
+std::string to_filename( const glite::jobid::JobId &id );
+glite::jobid::JobId from_filename( const std::string &filename );
 
 } // namespace utilities
 } // namespace common
