@@ -178,11 +178,6 @@ bool is_status_removable(edg_wll_JobStat const& job_status)
 
 } // anonymous namespace
 
-Purger::Purger()
-{
-  Purger(true);
-}
-
 Purger::Purger(bool have_lb_proxy) :
   m_have_lb_proxy(have_lb_proxy),
   m_threshold(0),

@@ -55,7 +55,6 @@ namespace purger {
 
  public:
    Purger(bool have_lb_proxy);
-   Purger();
    bool operator()(glite::jobid::JobId const&);
 
    Purger& log_using(boost::function<int(edg_wll_Context)>);
