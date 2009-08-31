@@ -393,6 +393,7 @@ class WMConfiguration {
   parameter int(ExpiryPeriod = 86400) section normal;
   parameter bool(EnableBulkMM = false) section normal;
   parameter double( MaxOutputSandboxSize = 100000000 ) section normal;
+  parameter bool(SbRetryDifferentProtocols= false) section normal;
 }
 class WMCConfiguration {
 
