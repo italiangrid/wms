@@ -3,6 +3,7 @@
 
 #include <cstdio>
 
+#include <cstring>
 #include <string>
 
 #include <boost/thread/mutex.hpp>

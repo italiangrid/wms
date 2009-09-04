@@ -2,7 +2,7 @@
 #define GLITE_WMS_COMMON_UTILITIES_STREAMDESCRIPTOR_H
 
 #include <fstream>
-#include <iostream.h>
+#include <iostream>
 
 
 #if (__GNUC__>=3)
