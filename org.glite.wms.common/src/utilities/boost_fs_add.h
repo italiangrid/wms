@@ -3,6 +3,7 @@
 
 #include <string>
 #include <iostream>
+#include <boost/filesystem/path.hpp>
 
 /**
  *  This file adds some functions to the boost::filesystem
@@ -10,8 +11,6 @@
  */
 
 namespace boost { namespace filesystem {
-
-class path;
 
 void create_parents( const path &dpath );
 std::string normalize_path( const std::string &fpath );
