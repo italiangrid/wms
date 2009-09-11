@@ -71,6 +71,10 @@ inline std::string StatToString(edg_wll_JobStat const& status)
   return result;
 }
 
+struct lb_query_authorization_failed 
+{
+};
+
 }
 
 namespace glite {
@@ -126,13 +130,15 @@ query_job_status(
      ) {
     char* etxt = 0;
     char* edsc = 0;
-    edg_wll_Error(log_ctx.get(), &etxt, &edsc);
+    int ecode = edg_wll_Error(log_ctx.get(), &etxt, &edsc);
     Error(
-       jobid.toString() << ": edg_wll_JobStat " << std::string(etxt)
+       jobid.toString() << ": edg_wll_JobStat [" << ecode << "] " << std::string(etxt) <<
+       (edsc ? ("(" + std::string(edsc) + ")") : "")
     );
-     free(etxt);
+    free(etxt);
     free(edsc);
-
+    
+    if (ecode == 1) throw lb_query_authorization_failed();
     return false;
   }
 
@@ -297,8 +303,8 @@ Purger::operator()(jobid::JobId const& id)
   utilities::scope_guard free_job_status(
     boost::bind(edg_wll_FreeStatus, &job_status)
   );
-
-  if (!query_job_status(job_status, id, log_ctx)) {
+  try {
+    if (!query_job_status(job_status, id, log_ctx)) {
       Info(id.toString() << ": forced removal, unknown L&B job");
       if (m_have_lb_proxy) {
         return remove_path(
@@ -311,6 +317,9 @@ Purger::operator()(jobid::JobId const& id)
           log_ctx
         );
       }
+    }
+  } catch (lb_query_authorization_failed&) {
+    return false;
   }
 
   // Reads the TYPE of the JOB...
