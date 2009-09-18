@@ -234,6 +234,7 @@ class JCConfiguration {
   parameter int( ContainerRefreshThreshold = 1000 ) section normal;
 
   parameter std::string( CondorSubmit ) section fileparse;
+  parameter std::string(CondorRelease) section fileparse;
   parameter std::string( CondorRemove ) section fileparse;
   parameter std::string( CondorDagman ) section fileparse;
   parameter int( DagmanLogLevel ) section normal;
