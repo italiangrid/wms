@@ -9,6 +9,7 @@
 #include <openssl/ssl.h>
 #include <openssl/crypto.h>
 #include <boost/shared_ptr.hpp>
+#include <ctime>
 
 namespace {
 

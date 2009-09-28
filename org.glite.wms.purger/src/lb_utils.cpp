@@ -31,6 +31,7 @@
 #include "glite/wms/common/configuration/Configuration.h"
 #include "glite/wms/common/configuration/NSConfiguration.h"
 #include "glite/wms/common/configuration/CommonConfiguration.h"
+#include <ctime>
 
 namespace jobid = glite::jobid;
 
