@@ -10,12 +10,29 @@
  *  namespace, so it does not follow the EDG naming directives.
  */
 
-namespace boost { namespace filesystem {
+namespace fs = boost::filesystem;
 
-void create_parents( const path &dpath );
+namespace glite { 
+namespace wms { 
+namespace common {
+namespace utilities {
+
+class CannotCreateParents: public std::exception {
+  std::string m_error;
+public:
+  CannotCreateParents(std::string const& error) : m_error(error) { }
+  CannotCreateParents() throw() { }
+  ~CannotCreateParents() throw() { }
+  char const* what() const throw()
+  {
+    return m_error.c_str();
+  }
+};
+
+void create_parents( const fs::path &dpath );
 std::string normalize_path( const std::string &fpath );
 
-}};
+}}}};
 
 #endif /* GLITE_WMS_COMMON_UTILITIES_BOOST_FS_ADD_H */
 

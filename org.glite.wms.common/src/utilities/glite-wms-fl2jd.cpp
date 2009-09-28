@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstring>
 #include <string>
 #include "glite/wms/common/utilities/jobdir.h"
 #include "glite/wms/common/utilities/jobdir_reader.h"

@@ -6,6 +6,8 @@
 #include <errno.h>
 #include <iostream>
 #include <mntent.h>
+#include <cstring>
+#include <string>
 
 #ifdef B_THREAD_SAFE
 #include <boost/thread/mutex.hpp>

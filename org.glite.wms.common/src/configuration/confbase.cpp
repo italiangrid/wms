@@ -6,7 +6,8 @@
 
 using namespace std;
 
-namespace utilities = glite::wmsutils::classads;
+namespace classads = glite::wmsutils::classads;
+namespace utilities = glite::wms::common::utilities;
 
 namespace glite {
 namespace wms {
@@ -49,7 +50,7 @@ string confbase_c::getAndParseFileName( const char *name, const string &def ) co
 {
   string     unparsed( this->getAndParseString(name, def) );
 
-  return boost::filesystem::normalize_path( unparsed );
+  return utilities::normalize_path( unparsed );
 }
 
 bool confbase_c::getBool( const char *name, bool def ) const
@@ -96,7 +97,7 @@ vector<string> confbase_c::getVector( const char *name ) const
 {
   vector<string>   v;
 
-  utilities::EvaluateAttrListOrSingle( *this->cb_ad, name, v );
+  classads::EvaluateAttrListOrSingle( *this->cb_ad, name, v );
 
   return v;
 }

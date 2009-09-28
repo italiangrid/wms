@@ -7,10 +7,15 @@
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/exception.hpp>
+#include "boost_fs_add.h"
 
 using namespace std;
+namespace fs = boost::filesystem;
 
-namespace boost { namespace filesystem {
+namespace glite { 
+namespace wms { 
+namespace common {
+namespace utilities {
 
 string normalize_path( const string &fpath )
 {
@@ -36,16 +41,16 @@ string normalize_path( const string &fpath )
   return modified;
 }
 
-void create_parents( const path &dpath )
+void create_parents( const fs::path &dpath )
 {
   string     err( "create_parent(): " );
-  path       branch( dpath.branch_path() );
+  fs::path       branch( dpath.branch_path() );
   string     who("create_parents");
 
   if( dpath.empty() ) {
     err.append( "cannot create an empty path." );
 
-    throw filesystem_error( who, err );
+    throw CannotCreateParents( err );
   }
   else if( !exists(dpath) ) {
     if( branch.empty() ) create_directory( dpath );
@@ -57,16 +62,16 @@ void create_parents( const path &dpath )
     else {
       err.append( branch.native_file_string() ); err.append( " is not a directory." );
 
-      throw filesystem_error( who, err );
+      throw CannotCreateParents( err );
     }
   }
   else if( !is_directory(dpath) ) {
     err.append( dpath.native_file_string() ); err.append( " is not a directory." );
 
-    throw filesystem_error( err, who );
+    throw CannotCreateParents( err );
   }
 
   return;
 }
 
-}};
+}}}};

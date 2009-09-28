@@ -27,6 +27,7 @@
 #include "glite/wms/common/configuration/exceptions.h"
 
 namespace fs = boost::filesystem;
+namespace utilities = glite::wms::common::utilities;
 using namespace std;
 
 namespace glite {
@@ -162,7 +163,7 @@ try {
   fs::path      complete, name( filename );
 
   if( (value = getenv("GLITE_WMS_CONFIG_DIR")) != NULL )
-    spaths.push_back( fs::normalize_path(value) );
+    spaths.push_back( utilities::normalize_path(value) );
 
   spaths.insert( spaths.end(), c_s_paths, c_s_paths + (sizeof(c_s_paths) / sizeof(char *)) );
 

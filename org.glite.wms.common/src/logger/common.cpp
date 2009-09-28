@@ -1,5 +1,6 @@
 #include <cstdio>
 #include <cstdlib>
+#include <cstring>
 
 #include "glite/wms/common/logger/common.h"
 
