@@ -32,7 +32,7 @@ public:
 void create_parents( const fs::path &dpath );
 std::string normalize_path( const std::string &fpath );
 
-}}}};
+}}}}
 
 #endif /* GLITE_WMS_COMMON_UTILITIES_BOOST_FS_ADD_H */
 

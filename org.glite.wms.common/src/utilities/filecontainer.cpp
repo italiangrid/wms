@@ -190,7 +190,7 @@ int integer_size( size_t size, int basen = 10 )
   return answer;
 }
 
-}; // Unnamed namespace closure
+} // Unnamed namespace closure
 
 /*
   Private methods

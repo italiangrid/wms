@@ -3,7 +3,6 @@
 #include <string>
 #include <algorithm>
 
-//#include "glite/wmsutils/jobid/JobId.h"
 #include "glite/jobid/JobId.h"
 
 using namespace std;
@@ -125,7 +124,7 @@ string get_reduced_part_internal( const string &unique, int level )
   return answer;
 }
 
-}; // Unnamed namespace
+} // Unnamed namespace
 
 string get_reduced_part( const JobId &id, int level )
 {

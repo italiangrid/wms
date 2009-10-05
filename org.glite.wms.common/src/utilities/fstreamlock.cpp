@@ -29,7 +29,7 @@ inline int signal_aware_fcntl( int fd, int cmd, struct flock *fl )
   return res;
 }
 
-}; // Anonymous namespace
+} // Anonymous namespace
 
 DescriptorLock::DescriptorLock( int fd, bool lock ) : dl_locked( false ), dl_fd( fd )
 {
