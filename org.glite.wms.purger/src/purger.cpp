@@ -47,6 +47,7 @@
 #include "glite/lb/LoggingExceptions.h"
 #include <string>
 #include <time.h>
+#include <asm/errno.h>
 
 namespace fs            = boost::filesystem;
 namespace jobid         = glite::jobid;
@@ -70,10 +71,6 @@ inline std::string StatToString(edg_wll_JobStat const& status)
 
   return result;
 }
-
-struct lb_query_authorization_failed 
-{
-};
 
 }
 
@@ -115,7 +112,7 @@ std::string get_staging_path()
   return sandbox_staging_path;
 }
 
-bool
+int
 query_job_status(
   edg_wll_JobStat& job_status, 
   jobid::JobId const& jobid, 
@@ -137,12 +134,10 @@ query_job_status(
     );
     free(etxt);
     free(edsc);
-    
-    if (ecode == 1) throw lb_query_authorization_failed();
-    return false;
+    return ecode;
   }
 
-  return true;
+  return 0;
 } 
 
 fs::path
@@ -303,8 +298,9 @@ Purger::operator()(jobid::JobId const& id)
   utilities::scope_guard free_job_status(
     boost::bind(edg_wll_FreeStatus, &job_status)
   );
-  try {
-    if (!query_job_status(job_status, id, log_ctx)) {
+  switch( query_job_status(job_status, id, log_ctx) ) {
+    case 0: break; // query succeeded
+    case ENOENT: // no matching jobs found
       Info(id.toString() << ": forced removal, unknown L&B job");
       if (m_have_lb_proxy) {
         return remove_path(
@@ -317,8 +313,7 @@ Purger::operator()(jobid::JobId const& id)
           log_ctx
         );
       }
-    }
-  } catch (lb_query_authorization_failed&) {
+   default: 
     return false;
   }
 
