@@ -106,6 +106,9 @@ get_staging_path()
 int main( int argc, char* argv[])
 {
   try {
+
+    bool have_lbproxy = lb_proxy();
+
     po::options_description desc("Usage");
     desc.add_options()
       ("help,h", "display this help and exit")
@@ -124,17 +127,45 @@ int main( int argc, char* argv[])
         po::value<int>(),
         "sets the purging threshold to the specified number of seconds"
       )
-      ( 
-        "staging-path,p",
-        po::value<std::string>(),
-        "absolute path to sandbox staging directory"
-      )
       (
         "allocated-limit,a",
         po::value<int>(),
         "defines the percentange of allocated blocks which triggers the"
         " purging"
       )
+      ;
+ 
+    if (have_lbproxy) {
+      desc.add_options()
+      (
+        "staging-path,p",
+        po::value<std::string>(),
+        "absolute path to sandbox staging directory"
+        " (useless in conjuctions with query-lbproxy)"
+      )
+      (
+        "skip-status-checking,s",
+        "does not perform any status checking before purging"
+        " (does not work in conjuction with query-lbproxy"
+      )
+      (
+        "force-orphan-node-removal,o",
+        "force removal of orphan dag nodes"
+        " (does not work in coniuction with query-lbproxy"
+      )
+      ( 
+        "query-lbproxy,q", "query lbproxy for jobs in terminal state"
+      )
+      ;
+    }
+    else {
+      desc.add_options()
+      ( 
+        "staging-path,p",
+        po::value<std::string>(),
+        "absolute path to sandbox staging directory"
+      )
+      
       (
         "skip-status-checking,s",
         "does not perform any status checking before purging"
@@ -144,7 +175,7 @@ int main( int argc, char* argv[])
         "force removal of orphan dag nodes"
       )
       ;
-
+    }
     po::variables_map vm;
     po::store(po::command_line_parser(argc, argv).options(desc).run(), vm);
     po::notify(vm);
@@ -185,7 +216,6 @@ int main( int argc, char* argv[])
       }
     }
 
-    bool have_lbproxy = lb_proxy();
     wl::purger::Purger thePurger(have_lbproxy);
 
     boost::function<int(edg_wll_Context)> log_clear;

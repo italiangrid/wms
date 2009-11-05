@@ -47,7 +47,7 @@
 #include "glite/lb/LoggingExceptions.h"
 #include <string>
 #include <time.h>
-#include <asm/errno.h>
+#include <cerrno>
 
 namespace fs            = boost::filesystem;
 namespace jobid         = glite::jobid;
