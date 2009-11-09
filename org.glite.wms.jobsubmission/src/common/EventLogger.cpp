@@ -212,8 +212,12 @@ EventLogger::EventLogger( void ) : el_remove( true ),
 
 EventLogger::EventLogger( edg_wll_Context *cont, int flag ) : el_remove( false ), el_hostProxy( false ),
 							      el_flag( flag ), el_count( 0 ), el_context( cont ),
-							      el_proxy()
-{ }
+							      el_proxy(), el_have_lbproxy(true)
+{
+  const configuration::CommonConfiguration *common = 
+    configuration::Configuration::instance()->common();
+  this->el_have_lbproxy = common->lbproxy();
+}
 
 EventLogger::~EventLogger( void )
 {
