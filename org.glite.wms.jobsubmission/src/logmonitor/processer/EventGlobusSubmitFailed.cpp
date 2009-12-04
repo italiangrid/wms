@@ -1,6 +1,16 @@
-? .deps
-? Makefile
-? Makefile.in
+// Copyright (c) Members of the EGEE Collaboration. 2009. 
+// See http://www.eu-egee.org/partners/ for details on the copyright holders.  
+
+// Licensed under the Apache License, Version 2.0 (the "License"); 
+// you may not use this file except in compliance with the License. 
+// You may obtain a copy of the License at 
+//     http://www.apache.org/licenses/LICENSE-2.0 
+// Unless required by applicable law or agreed to in writing, software 
+// distributed under the License is distributed on an "AS IS" BASIS, 
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+// See the License for the specific language governing permissions and 
+// limitations under the License.
+
 #include <cstdio>
 #include <ctime>
 
@@ -9,7 +19,6 @@
 
 #include <user_log.c++.h>
 
-#include "glite/wmsutils/jobid/JobId.h"
 #include "glite/wms/common/logger/logstream.h"
 #include "glite/wms/common/logger/manipulators.h"
 #include "common/IdContainer.h"
@@ -25,6 +34,12 @@
 using namespace std;
 USING_COMMON_NAMESPACE;
 RenameLogStreamNS( elog );
+
+//namespace {
+//  std::string globus_error10 = "10 data transfer to the server failed";
+//reason: 37 the provided RSL 'queue' parameter
+//reason: 10 data transfer to the server failed
+//}
 
 JOBCONTROL_NAMESPACE_BEGIN {
 
@@ -45,7 +60,7 @@ void EventGlobusSubmitFailed::process_event( void )
   logger::StatePusher                    pusher( elog::cedglog, "EventGlobusSubmitFailed::process_event()" );
 
   elog::cedglog << logger::setlevel( logger::info ) << "Got globus submit failed event." << endl
-		<< "For cluster: " << this->ei_condor << ", reason: " << this->egsf_event->reason << endl;
+    << "For cluster: " << this->ei_condor << ", reason: " << this->egsf_event->reason << endl;
 
   position = this->ei_data->md_container->position_by_condor_id( this->ei_condor );
 
@@ -72,11 +87,13 @@ void EventGlobusSubmitFailed::process_event( void )
     }
     this->ei_data->md_logger->globus_submit_failed_event( reader->to_string(), this->egsf_event->reason, this->ei_data->md_logfile_name );
 
-    elog::cedglog << logger::setlevel( logger::info ) << "Forwarding remove request to JC." << endl;
-
-    controller.cancel( this->egsf_event->cluster, this->ei_data->md_logfile_name.c_str() );
-
-    this->ei_data->md_container->update_pointer( position, this->ei_data->md_logger->sequence_code(), this->egsf_event->eventNumber );
+    //if (std::string(this->egsf_event->reason).substr(0, globus_error10.size()) == globus_error10) {
+      //elog::cedglog << logger::setlevel( logger::info ) << "Here it comes! The infamous globus error 10: __NOT__ forwarding remove request to JC." << endl;
+    //} else {
+      elog::cedglog << logger::setlevel( logger::info ) << "Forwarding remove request to JC." << endl;
+      controller.cancel( this->egsf_event->cluster, this->ei_data->md_logfile_name.c_str() );
+      this->ei_data->md_container->update_pointer( position, this->ei_data->md_logger->sequence_code(), this->egsf_event->eventNumber );
+    //}
   }
 
   return;
@@ -84,157 +101,4 @@ void EventGlobusSubmitFailed::process_event( void )
 
 }} // namespace processer, logmonitor
 
-} JOBCONTROL_NAMESPACE_END;
-#include <string>
-
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
-#include <classad_distribution.h>
-
-#if CONDORG_AT_LEAST(6,5,3)
-#include <globus_gram_protocol_constants.h>
-#endif
-
-#include "glite/wms/common/configuration/Configuration.h"
-#include "glite/wms/common/configuration/WMConfiguration.h"
-#include "glite/wmsutils/jobid/JobId.h"
-#include "glite/wms/common/logger/logstream.h"
-#include "glite/wms/common/logger/manipulators.h"
-#include "glite/wms/common/utilities/FileList.h"
-#include "glite/wms/common/utilities/FileListLock.h"
-#include "../../jobcontrol_namespace.h"
-#include "../../common/ProxyUnregistrar.h"
-#include "../../common/EventLogger.h"
-#include "../../common/IdContainer.h"
-#include "../../logmonitor/exceptions.h"
-#include "../../logmonitor/JobWrapperOutputParser.h"
-
-#include <user_log.c++.h>
-
-#include "JobResubmitter.h"
-
-USING_COMMON_NAMESPACE;
-using namespace std;
-RenameLogStreamNS( elog );
-
-JOBCONTROL_NAMESPACE_BEGIN {
-
-namespace logmonitor { namespace processer {
-
-typedef  JobWrapperOutputParser   JWOP;
-
-JobResubmitter::JobResubmitter( jccommon::EventLogger *logger ) : jr_list(), jr_logger( logger )
-{
-  const configuration::WMConfiguration       *config = configuration::Configuration::instance()->wm();
-  logger::StatePusher                         pusher( elog::cedglog, "JobResubmitter::JobResubmitter(...)" );
-
-  try {
-    this->jr_list.open( config->input() );
-
-    elog::cedglog << logger::setlevel( logger::info )
-		  << "FileList to WM initialized." << endl;
-  }
-  catch( utilities::FileContainerError &error ) {
-    elog::cedglog << logger::setlevel( logger::fatal )
-		  << "Cannot open FileList to WM." << endl
-		  << "Error: \"" << error.string_error() << "\"." << endl;
-
-    throw CannotOpenFile( config->input() );
-  }
-}
-
-JobResubmitter::~JobResubmitter( void )
-{}
-
-void JobResubmitter::resubmit( int laststatus, const string &edgid, const string &sequence_code, jccommon::IdContainer *container )
-{
-  const configuration::WMConfiguration       *config = configuration::Configuration::instance()->wm();
-  utilities::FileListDescriptorMutex          flmutex( this->jr_list );
-  classad::ClassAd                            command, arguments;
-  logger::StatePusher                         pusher( elog::cedglog, "JobResubmitter::resubmit(...)" );
-  int                                         retcode;
-  string                                      errors, sc;
-  JobWrapperOutputParser                      parser( edgid );
-
-  elog::cedglog << logger::setlevel( logger::info )
-		<< "Last known status = " << laststatus << endl;
-
-  switch( laststatus ) {
-#if CONDORG_AT_LEAST(6,5,3) 
-    case GLOBUS_GRAM_PROTOCOL_ERROR_USER_PROXY_EXPIRED:
-      elog::cedglog << logger::setlevel( logger::warning ) << "Job has an expiring proxy." << endl
-		    << logger::setlevel( logger::info ) << "Must not resubmit, but abort." << endl
-		    << "Job id = " << edgid << endl;
-
-      this->jr_logger->abort_on_error_event( string("Job proxy is expired.") );
-
-      jccommon::ProxyUnregistrar( edgid ).unregister();
-
-      break;
-#endif
-  case jccommon::no_resubmission:
-    elog::cedglog << logger::setlevel( logger::warning ) << "Job has been cancelled by the user." << endl
-		  << "Don't resubmit it." << endl;
-    break;
-  case GLOBUS_GRAM_PROTOCOL_ERROR_STAGE_OUT_FAILED: // see LCG2 bug 3987
-    if( parser.parse_file( retcode, errors, sc ) == JWOP::good ) { // Job terminated successfully
-      
-      jccommon::IdContainer::iterator position = container->position_by_edg_id( edgid );
-      
-      elog::cedglog << logger::setlevel( logger::verylow ) << "Real return code: " << retcode << endl;
-      
-#ifdef GLITE_WMS_HAVE_LBPROXY
-      this->jr_logger->set_LBProxy_context( edgid, position->sequence_code(), position->proxy_file() );
-#else 
-      this->jr_logger->reset_user_proxy( position->proxy_file() ).reset_context( edgid, position->sequence_code() );
-#endif    
-      
-      if ( !sc.empty() && ( sc != "NoToken" ) ) 
-        this->jr_logger->job_really_run_event( sc ); // logged really running event 
-      
-      this->jr_logger->terminated_event( retcode ); // This call discriminates between 0 and all other codes.
-      container->update_pointer( position, this->jr_logger->sequence_code(), ULOG_JOB_TERMINATED );
-      
-      jccommon::ProxyUnregistrar( edgid ).unregister();
-      
-      break;
-    } else // resubmit it --> default label. Pay attention: don't put any other case under this one!!!
-      elog::cedglog << logger::setlevel( logger::verylow ) << "The job is not terminated successfully. Reason: " << errors << endl;
-    
-  default:
-    elog::cedglog << logger::setlevel( logger::info ) << "Resubmitting job to WM." << endl
-		  << logger::setlevel( logger::debug ) << "Job id = " << edgid << endl;
-    
-    command.InsertAttr( "version", string("1.0.0") );
-    command.InsertAttr( "command", string("jobresubmit") );
-    arguments.InsertAttr( "id", edgid );
-    arguments.InsertAttr( "lb_sequence_code", sequence_code );
-    command.Insert( "arguments", arguments.Copy() );
-
-     if ( !sc.empty() && ( sc != "NoToken" ) ) 
-       this->jr_logger->job_really_run_event( sc ); // logged really running event
-    
-    this->jr_logger->job_resubmitting_event();
-    this->jr_logger->job_wm_enqueued_start_event( config->input(), command );
-    try {
-      utilities::FileListLock   lock( flmutex );
-      this->jr_list.push_back( command );
-    }
-    catch( utilities::FileContainerError &error ) {
-      this->jr_logger->job_wm_enqueued_failed_event( config->input(), command, error.string_error() );
-
-      throw CannotExecute( error.string_error() );
-    }
-
-    this->jr_logger->job_wm_enqueued_ok_event( config->input(), command );
-    break;
-  }
-
-  return;
-}
-
-}} // Namespace processer, logmonitor
-
-} JOBCONTROL_NAMESPACE_END;
+} JOBCONTROL_NAMESPACE_END
