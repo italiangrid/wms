@@ -173,9 +173,7 @@ get_original_jdl(edg_wll_Context context, jobid::JobId const& id)
   edg_wll_QueryRec job_conditions[2];
   job_conditions[0].attr    = EDG_WLL_QUERY_ATTR_JOBID;
   job_conditions[0].op      = EDG_WLL_QUERY_OP_EQUAL;
-  glite_jobid_t id_;
-  glite_jobid_dup(id.c_jobid(),&id_);
-  job_conditions[0].value.j = id_;
+  job_conditions[0].value.j = glite_jobid_t(id.c_jobid());
   job_conditions[1].attr    = EDG_WLL_QUERY_ATTR_UNDEF;
 
   edg_wll_QueryRec event_conditions[3];
