@@ -22,8 +22,6 @@ limitations under the License.
 
 /*
  * exception_codes.h
- * Copyright (c) 2001 The European Datagrid Project - IST programme, all rights reserved.
- * Contributors are mentioned in the code where appropriate.
  */
 
 #include "glite/wmsutils/exception/exception_codes.h"

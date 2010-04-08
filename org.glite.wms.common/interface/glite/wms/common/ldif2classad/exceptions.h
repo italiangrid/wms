@@ -23,7 +23,6 @@ limitations under the License.
 /*
  * exceptions.h
  * Copyright (c) 2002 EU DataGrid
- * For license conditions see http://www.eu-datagrid.org/license.html
  */
 
 #include "glite/wmsutils/exception/Exception.h"

@@ -22,7 +22,6 @@ limitations under the License.
  * Author: Salvatore Monforte <Salvatore.Monforte@ct.infn.it>
  * Author: Marco Pappalardo <Marco.Pappalardo@ct.infn.it>
  * Copyright (c) 2002 EU DataGrid.
- * For license conditions see http://www.eu-datagrid.org/license.html
  */
 
 // $Id$
