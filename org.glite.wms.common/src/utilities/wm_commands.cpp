@@ -213,7 +213,7 @@ match_command_create(
 )
 {
   std::auto_ptr<classad::ClassAd> jdl_(new classad::ClassAd(jdl));
-  return
+  retur
     match_command_create(jdl_, file, number_of_results, include_brokerinfo);
 }
 
