@@ -19,6 +19,9 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.16.2.18.4.2  2010/04/08 13:59:12  mcecchi
+#       copyright and license
+#
 #       Revision 1.16.2.18.4.1  2009/06/08 14:46:33  fcapanni
 #       porting to org.glite.jobid
 #
