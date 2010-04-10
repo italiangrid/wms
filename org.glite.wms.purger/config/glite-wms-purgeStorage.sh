@@ -1,5 +1,5 @@
 # Copyright (c) Members of the EGEE Collaboration. 2004.
-# See http://project.eu-egee.org/partners/ for details on the
+# See http://www.eu-egee.org/partners/ for details on the
 # copyright holders.
 
 # Licensed under the Apache License, Version 2.0 (the "License");
