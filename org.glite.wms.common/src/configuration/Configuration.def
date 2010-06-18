@@ -393,7 +393,7 @@ class WMConfiguration {
   parameter double( MaxOutputSandboxSize = 100000000 ) section normal;
   parameter bool(SbRetryDifferentProtocols= false) section normal;
   parameter classad::ExprTree*(PropagateToLRMS) section normal;
-  parameter std::string(WmsRequirements) section fileparse;
+  parameter std::string(WmsRequirements) section normal;
 }
 class WMCConfiguration {
 
