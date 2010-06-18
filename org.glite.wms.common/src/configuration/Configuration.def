@@ -391,9 +391,9 @@ class WMConfiguration {
   parameter int(ExpiryPeriod = 86400) section normal;
   parameter bool(EnableBulkMM = false) section normal;
   parameter double( MaxOutputSandboxSize = 100000000 ) section normal;
-  parameter bool(SbRetryDifferentProtocols= false) section normal;
+  parameter bool(SbRetryDifferentProtocols = false) section normal;
   parameter classad::ExprTree*(PropagateToLRMS) section normal;
-  parameter std::string(WmsRequirements) section normal;
+  parameter classad::ExprTree*(WmsRequirements) section normal;
 }
 class WMCConfiguration {
 
@@ -490,7 +490,6 @@ class WMPConfiguration {
   parameter std::string ( WeightsCachePath = "/var/glite/wmproxy" ) section fileparse;
   parameter std::vector<std::string>( LBServer ) section normal;
   parameter std::string ( LBLocalLogger ) section normal;
-  parameter classad::ExprTree*(SDJRequirements) section normal;
   parameter classad::ClassAd*( OperationLoadScripts ) section normal;
   parameter bool ( AsyncJobStart = true ) section normal;
   parameter long ( MaxServedRequests = 300 ) section normal;
