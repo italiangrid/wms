@@ -386,9 +386,6 @@ class WMConfiguration {
   parameter std::string(DliServiceName = "data-location-interface") section normal;
   parameter std::string(SiServiceName = "org.glite.SEIndex") section normal;
   parameter std::string(JobWrapperTemplateDir = "${GLITE_WMS_LOCATION}/etc/templates") section fileparse;
-  parameter std::string(PboxHostName) section fileparse;
-  parameter int(PboxPortNum = 6699) section normal;
-  parameter bool(PboxSafeMode = false) section normal;
   parameter std::vector<std::string>(CeForwardParameters) section normal;
   parameter int(MatchRetryPeriod = 1000) section normal;
   parameter int(ExpiryPeriod = 86400) section normal;
@@ -396,6 +393,7 @@ class WMConfiguration {
   parameter double( MaxOutputSandboxSize = 100000000 ) section normal;
   parameter bool(SbRetryDifferentProtocols= false) section normal;
   parameter classad::ExprTree*(PropagateToLRMS) section normal;
+  parameter std::string(WmsRequirements) section fileparse;
 }
 class WMCConfiguration {
 
