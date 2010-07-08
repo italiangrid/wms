@@ -17,21 +17,39 @@
 
 #!/bin/bash
 
+defined() {
+ [[ ! -z "${1}" ]]
+}
+
+readable() {
+ [[ -r ${1} ]]
+}
+
+writable() {
+ [[ -w ${1} ]]
+}
+
+
 create_proxy()
 {
    proxy=`"${GLOBUS_LOCATION}/bin/grid-proxy-init" -q \
      -cert $GLITE_HOST_CERT \
      -key  $GLITE_HOST_KEY \
      -hours 24 \
-     -out  "$1.$$" 2>&1`
+     -out  "$1.$$"`
    
    [ $? -eq 0 ] || echo $proxy " Fail " >> $2
 
    move=`chmod 400 "$1.$$" &&
      chown "${GLITE_WMS_USER}" "$1.$$" &&
-     mv -f "$1.$$" "$1" 2>&1`
+     mv -f "$1.$$" "$1"`
 
    [ $? -eq 0 ] || echo $move " Fail " >> $2
 }
 
-create_proxy `${GLITE_WMS_LOCATION}/bin/glite-wms-get-configuration Common.HostProxyFile` | /usr/bin/logger
+pf=`${GLITE_WMS_LOCATION}/bin/glite-wms-get-configuration Common.HostProxyFile`
+lf="/dev/null"
+defined $1 && readable $1 && pf=$1
+defined $2 && writable $2 && lf=$2
+
+create_proxy $pf $lf &>$lf
