@@ -19,6 +19,9 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.16.2.18.4.3  2010/09/03 08:03:33  pandreet
+#       Ares AC definitions in build files
+#
 #       Revision 1.16.2.18.4.2  2010/04/08 13:59:12  mcecchi
 #       copyright and license
 #
@@ -305,6 +308,7 @@ have_glite_jobid=no
 
 AC_GLITE
 AC_OPTIMIZE
+AC_ARES
 
 AC_GLITE_WMS_COMMON([], have_glite_wms_common=yes, have_glite_wms_common=no)
 AC_MSG_RESULT(["GLITE_WMS_COMMON found $have_glite_wms_common"])

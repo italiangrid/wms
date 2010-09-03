@@ -52,8 +52,9 @@ glite_wms_purgeStorage_LDADD = \
 	$(GLOBUS_COMMON_NOTHR_LIBS) \
 	$(GLOBUS_GSS_NOTHR_LIBS) \
 	$(CLASSAD_LIBS) \
+	$(ARES_LIBS) \
         $(GLITE_JOBID_LIBS) \
-  -lglite_lbu_trio
+	-lglite_lbu_trio
 
 AM_CPPFLAGS = \
 	$(GLITE_CFLAGS) \
