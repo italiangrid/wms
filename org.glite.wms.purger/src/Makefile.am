@@ -73,5 +73,8 @@ AM_CPPFLAGS = \
 
 #CLEANFILES = edg-wl-purgestorage.sh
 
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = wms-purger.pc
+
 MAINTAINERCLEANFILES = Makefile.in
 

@@ -19,6 +19,9 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.16.2.18.4.4  2011/01/05 08:49:55  pandreet
+#       Pkg-config support for purger
+#
 #       Revision 1.16.2.18.4.3  2010/09/03 08:03:33  pandreet
 #       Ares AC definitions in build files
 #
@@ -329,6 +332,7 @@ AC_PREFIX_DEFAULT([/opt/glite])
 AM_CONFIG_HEADER([src/autogen/config.h])
 AC_CONFIG_FILES([Makefile])
 AC_CONFIG_FILES([src/Makefile])
+AC_CONFIG_FILES([src/wms-purger.pc])
 AC_CONFIG_FILES([config/Makefile])
 
 AC_OUTPUT
