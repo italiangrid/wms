@@ -137,6 +137,11 @@ public:
   }
 };
 
+void change_logging_job(
+  ContextPtr context,
+  jobid::JobId const& id,
+  bool have_lbproxy
+);
 std::string get_original_jdl(edg_wll_Context context, jobid::JobId const& id);
 std::string get_lb_message(ContextPtr const& context_ptr);
 std::string get_lb_message(edg_wll_Context context);

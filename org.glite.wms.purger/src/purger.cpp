@@ -335,37 +335,33 @@ Purger::operator()(jobid::JobId const& id)
         ++i;
       }
     }
+
+    ContextPtr this_context = (m_have_lb_proxy) ? log_proxy_ctx : log_ctx;
+
     std::vector<std::string>::const_iterator i = children.begin();
     std::vector<std::string>::const_iterator const e = children.end();
     size_t n = 0;
     for( ; i != e; ++i ) {
-      if (m_have_lb_proxy) {
+    
+      jobid::JobId const job_id(*i);
+      change_logging_job(this_context, job_id, m_have_lb_proxy);
+    
         if (!remove_path(strid_to_absolute_path(*i), log_proxy_ctx)) {
           ++n;
         }
-      } else {
-        if (!remove_path(strid_to_absolute_path(*i), log_ctx)) {
-          ++n;
-        }
-      }
     }
     Info(
       id.toString() << ": " 
       << children.size() - n << '/' << children.size() << " nodes removed"
     );
 
-    bool path_removed = false;
-    if (m_have_lb_proxy) {
-      path_removed = remove_path(
+    change_logging_job(this_context, jobid::JobId(id), m_have_lb_proxy);
+
+    bool path_removed = remove_path(
         jobid_to_absolute_path(id), 
-        log_proxy_ctx
-      );
-    } else {
-      path_removed = remove_path(
-        jobid_to_absolute_path(id), 
-        log_ctx
-      );
-    }
+        this_context
+    );
+
     if (path_removed) {
       Info(
         id.toString()<< ": removed " << StatToString(job_status) << " dag "

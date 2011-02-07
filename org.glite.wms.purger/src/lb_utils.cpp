@@ -22,10 +22,12 @@
 #include <map>
 #include <boost/tuple/tuple.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/bind.hpp>
 #include <openssl/pem.h>
 #include <openssl/x509.h>
 #include "glite/jobid/JobId.h"
 #include "glite/wms/common/utilities/manipulation.h"
+#include "glite/wms/common/utilities/scope_guard.h"
 #include "glite/lb/producer.h"
 #include "glite/security/proxyrenewal/renewal.h"
 #include "glite/wms/common/configuration/Configuration.h"
@@ -36,6 +38,7 @@
 namespace jobid = glite::jobid;
 
 namespace configuration = glite::wms::common::configuration;
+namespace utilities = glite::wms::common::utilities;
 
 namespace glite {
 namespace wms {
@@ -207,6 +210,16 @@ get_original_jdl(edg_wll_Context context, jobid::JobId const& id)
 
 namespace {
 
+std::string get_lb_proxy_user(ContextPtr context)
+{ 
+  char *s = 0;
+  utilities::scope_guard free_char(
+    boost::bind(std::free, s)
+  );
+  edg_wll_GetParam(&(*context), EDG_WLL_PARAM_LBPROXY_USER, &s);
+  return std::string(s);
+}
+
 boost::tuple<int,std::string,std::string>
 get_error_info(edg_wll_Context context)
 {
@@ -230,7 +243,45 @@ get_error_info(edg_wll_Context context)
   return boost::make_tuple(error, error_txt, description_txt);
 }
 
+std::string
+get_lb_sequence_code(ContextPtr context)
+{
+  char* c_sequence_code = edg_wll_GetSequenceCode(context.get());
+  std::string sequence_code(c_sequence_code);
+  free(c_sequence_code);
+  return sequence_code;
+}
+
 } // anonymous
+
+void change_logging_job(
+  ContextPtr context,
+  jobid::JobId const& id,
+  bool have_lbproxy
+)
+{
+  int const flag = EDG_WLL_SEQ_NORMAL;
+  std::string const sequence_code = get_lb_sequence_code(context);
+
+  if (have_lbproxy) {
+    std::string const user_dn = get_lb_proxy_user(context);
+    edg_wll_SetLoggingJobProxy(
+      &(*context),
+      id.c_jobid(),
+      sequence_code.empty() ? 0 : sequence_code.c_str(),
+      user_dn.c_str(),
+      flag
+    );
+  } else {
+    edg_wll_SetLoggingJob(
+      &(*context),
+      id.c_jobid(),
+      sequence_code.empty() ? 0 : sequence_code.c_str(),
+      flag
+    );
+  }
+}
+
 
 std::string
 get_lb_message(ContextPtr const& context)

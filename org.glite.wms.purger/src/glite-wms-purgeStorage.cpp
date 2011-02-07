@@ -107,10 +107,8 @@ int main( int argc, char* argv[])
 {
   try {
 
-    bool have_lbproxy = lb_proxy();
-
-    po::options_description desc("Usage");
-    desc.add_options()
+    po::options_description generic("Generic options");
+    generic.add_options()
       ("help,h", "display this help and exit")
       (
         "conf-file,c",
@@ -121,7 +119,10 @@ int main( int argc, char* argv[])
         "log-file,l",
         po::value<std::string>(),
         "logs any information into the specified file"
-      )
+      );
+
+    po::options_description triggering("Triggering options");
+    triggering.add_options()
       (
         "threshold,t",
         po::value<int>(),
@@ -132,50 +133,36 @@ int main( int argc, char* argv[])
         po::value<int>(),
         "defines the percentange of allocated blocks which triggers the"
         " purging"
-      )
-      ;
- 
-    if (have_lbproxy) {
-      desc.add_options()
+      );
+
+    po::options_description source("Job source options");
+    source.add_options()
       (
         "staging-path,p",
         po::value<std::string>(),
         "absolute path to sandbox staging directory"
         " (useless in conjuctions with query-lbproxy)"
       )
+      ( 
+        "query-lbproxy,q", "query lbproxy for jobs in terminal state"
+        " ( Available only if Common.LBProxy == true )"
+      );
+     po::options_description status("Job selection options");
+     status.add_options()
       (
         "skip-status-checking,s",
         "does not perform any status checking before purging"
-        " (does not work in conjuction with query-lbproxy"
+        " (does not work in conjuction with query-lbproxy)"
       )
       (
         "force-orphan-node-removal,o",
         "force removal of orphan dag nodes"
-        " (does not work in coniuction with query-lbproxy"
+        " (does not work in coniuction with query-lbproxy)"
       )
-      ( 
-        "query-lbproxy,q", "query lbproxy for jobs in terminal state"
-      )
-      ;
-    }
-    else {
-      desc.add_options()
-      ( 
-        "staging-path,p",
-        po::value<std::string>(),
-        "absolute path to sandbox staging directory"
-      )
-      
-      (
-        "skip-status-checking,s",
-        "does not perform any status checking before purging"
-      )
-      (
-        "force-orphan-node-removal,o", 
-        "force removal of orphan dag nodes"
-      )
-      ;
-    }
+     ;
+    po::options_description desc;
+    desc.add(generic).add(triggering).add(source).add(status);
+
     po::variables_map vm;
     po::store(po::command_line_parser(argc, argv).options(desc).run(), vm);
     po::notify(vm);
@@ -184,13 +171,15 @@ int main( int argc, char* argv[])
       std::cout << desc << '\n';
       return EXIT_SUCCESS;
     }
-
     configuration::Configuration config(
       vm.count("conf-file")
       ? vm["conf-file"].as<std::string>()
       : "glite_wms.conf",
       configuration::ModuleType::workload_manager
     );
+
+    bool have_lbproxy = lb_proxy();
+
 
     std::string const staging_path(
       vm.count("staging-path")
