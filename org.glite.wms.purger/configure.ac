@@ -19,6 +19,9 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.16.2.18.4.5  2011/03/07 09:57:11  pandreet
+#       Incremented version number
+#
 #       Revision 1.16.2.18.4.4  2011/01/05 08:49:55  pandreet
 #       Pkg-config support for purger
 #
@@ -219,7 +222,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.57)
-AC_INIT([GLite WMS Purger], [3.1.12])
+AC_INIT([GLite WMS Purger], [3.3.1])
 AC_CONFIG_AUX_DIR([./project])
 AM_INIT_AUTOMAKE([1.6.3 subdir-objects])
 AC_CONFIG_SRCDIR([src/purger.cpp])
