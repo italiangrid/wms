@@ -19,6 +19,9 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.16.2.18.4.6  2011/03/10 15:25:59  pandreet
+#       Removed with-glite-location
+#
 #       Revision 1.16.2.18.4.5  2011/03/07 09:57:11  pandreet
 #       Incremented version number
 #
@@ -312,7 +315,7 @@ have_glite_wmsutils=no
 have_glite_lb=no
 have_glite_jobid=no
 
-AC_GLITE
+GLITE_CHECK_LIBDIR
 AC_OPTIMIZE
 AC_ARES
 
