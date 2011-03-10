@@ -19,6 +19,9 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.13.2.13.4.1  2011/03/10 15:11:03  pandreet
+#       Removed with-glite-location
+#
 #       Revision 1.13.2.13  2008/01/31 11:21:13  amarasch
 #       version increased to 3.1.11 for bug #31278
 #
@@ -165,7 +168,7 @@ if test "$have_condorg" = "no"; then
   AC_MSG_ERROR([Cannot continue building])
 fi
 
-AC_GLITE
+GLITE_CHECK_LIBDIR
 
 # Configuration items
 AC_PREFIX_DEFAULT([/opt/glite])
