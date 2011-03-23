@@ -6,8 +6,6 @@
 ## *
 ## *********************************************************************
 
-wletcdir = $(sysconfdir)
-wletc_SCRIPTS = glite-wms-vars.sh glite-wms-vars.csh
 wletcutilsdir = $(sysconfdir)/profile.d
 wletcutils_SCRIPTS = glite-wms.sh glite-wms.csh
 
@@ -16,21 +14,19 @@ libexec_SCRIPTS = \
 	glite-wms-services-certs.sh \
 	glite-wms-parse-configuration.sh
 
-wletcwmdir = $(sysconfdir)
+wletcwmdir = $(sysconfdir)/glite-wms
 wletcwm_DATA = glite_wms.conf
 
 wletcwmsdir = $(sysconfdir)/profile.d
 wletcwms_SCRIPTS = glite-wms-config.sh
 
 install-data-hook:
-	/bin/mv $(DESTDIR)$(sysconfdir)/glite_wms.conf $(DESTDIR)$(sysconfdir)/glite_wms.conf.template
+	/bin/mv $(DESTDIR)$(wletcwmdir)/glite_wms.conf $(DESTDIR)$(wletcwmdir)/wms.conf.template
 
 EXTRA_DIST = \
         glite_wms.conf \
         glite-wms.csh.in \
         glite-wms.sh.in \
-        glite-wms-vars.sh.in \
-        glite-wms-vars.csh.in \
 	glite-wms-config.sh.in \
 	glite-wms-parse-configuration.sh.in \
 	glite-wms-check-daemons.sh.in \
