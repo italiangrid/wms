@@ -8,12 +8,12 @@ lm=LogMonitor
 wm=WorkloadManager
 ns=NetworkServer
 
-GLITE_WMS_LOCATION=${GLITE_WMS_LOCATION:-@prefix@}
+GLITE_WMS_LOCATION=${GLITE_WMS_LOCATION:-/}
 
 if [ -z "$GLITE_WMS_USER" ] || [ -z "$GLITE_WMS_CONFIG_DIR" ]; then
-   . ${GLITE_WMS_LOCATION}/etc/glite-wms-vars.sh
-   . ${GLITE_WMS_LOCATION}/etc/profile.d/glite-wms.sh
-   . ${GLITE_WMS_LOCATION}/etc/profile.d/glite-wms-config.sh
+   . ${WMS_LOCATION_ETC}/glite-wms-vars.sh
+   . ${WMS_LOCATION_ETC}/profile.d/glite-wms.sh
+   . ${WMS_LOCATION_ETC}/profile.d/glite-wms-config.sh
 fi
 
 if [ -z "$GLITE_WMS_GROUP" ]; then
@@ -26,7 +26,7 @@ if [ ! -d "$GLITE_WMS_TMP" ] ; then
   chown -R $GLITE_WMS_USER.$GLITE_WMS_GROUP $GLITE_WMS_TMP
 fi
 
-GET_CONF=${GLITE_WMS_LOCATION}/bin/glite-wms-get-configuration
+GET_CONF=${WMS_LOCATION_BIN}/glite-wms-get-configuration
 
 if [ -f ${GET_CONF} ]; then
 
