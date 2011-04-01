@@ -1,6 +1,6 @@
 #!/bin/sh
 
-SCRIPT_LOCATION=${GLITE_LOCATION}/etc/init.d
+SCRIPT_LOCATION=${WMS_LOCATION_ETC}/init.d
 WMS_PREFIX=glite-wms
 LB_PREFIX=glite-lb
 PROXY_PREFIX=glite-proxy
