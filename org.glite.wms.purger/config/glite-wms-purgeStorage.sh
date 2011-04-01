@@ -32,23 +32,23 @@ while getopts "l:t:c:p:a:soh" arg
 do
   case "$arg" in
   l)    log="$OPTARG";;
-  [?])  ${GLITE_WMS_LOCATION}/sbin/glite-wms-purgeStorage -h > $log
+  [?])  ${WMS_LOCATION_USR}/sbin/glite-wms-purgeStorage -h > $log
         exit 1;;
   esac
 done
 
-proxyfile=`${GLITE_WMS_LOCATION}/bin/glite-wms-get-configuration Common.HostProxyFile`
+proxyfile=`${WMS_LOCATION_USR}/bin/glite-wms-get-configuration Common.HostProxyFile`
 if [ $? -eq 1 ] ; then
-  proxyfile="${GLITE_WMS_LOCATION_VAR}/wms.proxy"
+  proxyfile="${WMS_LOCATION_VAR}/wms.proxy"
 fi
 
 openssl x509 -in $proxyfile -checkend `expr 3600 \* 6` > /dev/null
 if [ $? -eq  1 ] ; then
-   ${GLITE_WMS_LOCATION}/sbin/glite-wms-create-proxy.sh
+   ${WMS_LOCATION_USR}/sbin/glite-wms-create-proxy.sh
 fi
 
 check_process glite-wms-purgeStorage $log
 
 # if another instance had been running the check_process
 # would have already exited
-${GLITE_WMS_LOCATION}/sbin/glite-wms-purgeStorage "$@"
+${WMS_LOCATION_USR}/sbin/glite-wms-purgeStorage "$@"

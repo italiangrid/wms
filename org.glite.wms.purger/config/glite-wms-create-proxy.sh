@@ -47,7 +47,7 @@ create_proxy()
    [ $? -eq 0 ] || echo $move " Fail " >> $2
 }
 
-pf=`${GLITE_WMS_LOCATION}/bin/glite-wms-get-configuration Common.HostProxyFile`
+pf=`${WMS_LOCATION_USR}/bin/glite-wms-get-configuration Common.HostProxyFile`
 lf="/dev/null"
 defined $1 && readable $1 && pf=$1
 defined $2 && writable $2 && lf=$2
