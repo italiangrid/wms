@@ -11,100 +11,6 @@
 #       University of Bergen (UiB), Norway
 #       Council for the Central Laboratory of the Research Councils (CCLRC), United Kingdom
 #
-#       Common configure.ac file for the GLite WMS Common module
-#
-#       Authors: Alberto Di Meglio <alberto.di.meglio@cern.ch>
-#       Version info: $Id$
-#       Release: $Name$
-#
-#       Revision history:
-#       $Log$
-#       Revision 1.13.2.13.4.1  2011/03/10 15:11:03  pandreet
-#       Removed with-glite-location
-#
-#       Revision 1.13.2.13  2008/01/31 11:21:13  amarasch
-#       version increased to 3.1.11 for bug #31278
-#
-#       Revision 1.13.2.12  2007/07/16 11:49:35  rlops
-#       increased version
-#
-#       Revision 1.13.2.11  2007/07/10 10:53:18  rlops
-#       increased version
-#
-#       Revision 1.13.2.10  2007/07/04 10:18:02  rlops
-#       increased version
-#
-#       Revision 1.13.2.9  2007/06/05 09:28:45  rlops
-#       decreased version
-#
-#       Revision 1.13.2.8  2007/06/05 09:26:57  rlops
-#       increased version
-#
-#       Revision 1.13.2.7  2007/06/05 08:21:35  eronchie
-#       Fix for bug #26705
-#
-#       Revision 1.13.2.6  2007/05/16 10:14:04  rlops
-#       increased version
-#
-#       Revision 1.13.2.5  2007/03/30 13:05:12  rlops
-#       increased version
-#
-#       Revision 1.13.2.4  2006/12/12 13:34:07  rlops
-#       increased version
-#
-#       Revision 1.13.2.3  2006/11/21 16:18:38  eronchie
-#       Increased version
-#
-#       Revision 1.13.2.2  2006/09/22 07:40:01  eronchie
-#       increased version
-#
-#       Revision 1.13.2.1  2006/06/27 12:18:05  rlops
-#       increased version
-#
-#       Revision 1.13  2006/03/20 22:06:07  eronchie
-#       Increased version
-#
-#       Revision 1.12  2005/11/08 11:22:45  amarasch
-#       version updated for new Tag
-#
-#       Revision 1.11  2005/10/15 11:55:27  eronchie
-#       Increased version
-#
-#       Revision 1.10  2005/09/20 14:59:45  eronchie
-#       Started merging with rc1.4
-#
-#       Revision 1.9  2005/02/22 13:36:29  eronchie
-#       Updated version
-#
-#       Revision 1.8  2005/02/22 13:17:21  eronchie
-#       Updated
-#       Increased version due to the change in the glite-wms-parse-configuration.sh.in
-#
-#       Revision 1.7  2004/12/10 07:47:03  eronchie
-#       Increased version
-#
-#       Revision 1.6  2004/10/19 12:01:15  eronchie
-#       Removed config.h handling
-#
-#       Revision 1.5  2004/10/15 14:41:22  vmedici
-#       start updating configuration according to dev-guide
-#
-#       Revision 1.4  2004/09/22 01:01:01  dimeglio
-#       Fixed missing parenthesis in AC_INIT
-#
-#       Revision 1.3  2004/09/21 19:23:47  glbuild
-#       modified module.version
-#
-#       Revision 1.2  2004/08/16 15:07:55  eronchie
-#       Updated
-#
-#       Revision 1.1  2004/08/16 14:18:11  eronchie
-#       Start adding
-#       WARNING: work in progress
-#
-#
-                                                                                                                                                             
-# Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.57)
 AC_INIT([GLite WMS Configuration], [3.1.11])
@@ -155,20 +61,9 @@ AC_FUNC_STRFTIME
 AC_FUNC_VPRINTF
 AC_CHECK_FUNCS([bzero endpwent ftruncate getmntent memset mkdir pow strerror strtol])
 
-have_condorg=no
-
-AC_CONDORG(6.7.1, have_condorg=yes, have_condorg=no)
-AC_MSG_RESULT(["CONDORG found $have_condorg"])
-
-if test "$have_condorg" = "no"; then
-  AC_MSG_RESULT(["Please verify CONDORG package"])
-fi
-
-if test "$have_condorg" = "no"; then
-  AC_MSG_ERROR([Cannot continue building])
-fi
-
 GLITE_CHECK_LIBDIR
+
+AC_CONDORG(6.7.1, AC_MSG_RESULT(["CONDORG ok"]), AC_MSG_ERROR(["CONDORG not found"]))
 
 # Configuration items
 AC_PREFIX_DEFAULT([/opt/glite])

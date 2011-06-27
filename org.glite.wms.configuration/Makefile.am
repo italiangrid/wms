@@ -11,27 +11,10 @@
 #       University of Bergen (UiB), Norway
 #       Council for the Central Laboratory of the Research Councils (CCLRC), United Kingdom
 #
-#       Authors: Elisabetta Ronchieri <elisabetta.ronchieri@cnaf.infn.it>
-#       Version info: $Id$
-#       Release: $Name$
-#
-#       Revision history:
-#       $Log$
-#       Revision 1.2  2004/10/11 16:49:08  eronchie
-#       Added LICENSE handling
-#
-#       Revision 1.1  2004/08/16 14:18:11  eronchie
-#       Start adding
-#       WARNING: work in progress
-#
-#
-#
-
-## Process this file with automake to produce Makefile.in
 
 EXTRA_DIST = LICENSE
 
-docdir = $(datadir)/doc/@PACKAGE@-@VERSION@
+docdir = $(datadir)/doc/@PACKAGE@-@PVER@
 doc_DATA = LICENSE
 
 ## Subdirectories list
