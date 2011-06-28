@@ -66,7 +66,8 @@ GLITE_CHECK_LIBDIR
 AC_CONDORG(6.7.1, AC_MSG_RESULT(["CONDORG ok"]), AC_MSG_ERROR(["CONDORG not found"]))
 
 # Configuration items
-AC_PREFIX_DEFAULT([/opt/glite])
+AC_PREFIX_DEFAULT([/usr])
+AM_CONFIG_HEADER([src/autogen/config.h])
 AC_CONFIG_FILES([Makefile])
 AC_CONFIG_FILES([config/Makefile])
 AC_CONFIG_FILES([config/glite-wms-check-daemons.sh])
