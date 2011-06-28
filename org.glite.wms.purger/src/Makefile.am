@@ -36,6 +36,7 @@ glite_wms_purgeStorage_LDADD = \
 	$(GLITE_LB_NOTHR_CLIENT_LIBS) \
 	$(GLITE_LB_NOTHR_CLIENTPP_LIBS) \
 	$(GLITE_LB_NOTHR_COMMON_LIBS) \
+	$(RENEWAL_NOTHR_LIBS) \
 	./libglite_wms_purger.la \
 	$(BOOST_LIBS) \
 	$(GLOBUS_SSL_NOTHR_LIBS) \
