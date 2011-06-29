@@ -1,3 +1,4 @@
+#!/bin/bash
 # Copyright (c) Members of the EGEE Collaboration. 2004.
 # See http://www.eu-egee.org/partners/ for details on the
 # copyright holders.
@@ -14,8 +15,6 @@
 # either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-#!/bin/bash
 
 defined() {
  [[ ! -z "${1}" ]]

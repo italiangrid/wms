@@ -26,7 +26,7 @@ Cleanup module for the Workload Management System
 %prep
  
 
-%setup -c
+%setup -c -q
 
 %build
 %{!?extbuilddir:%define extbuilddir "--"}
@@ -44,11 +44,11 @@ if test "x%{extbuilddir}" == "x--" ; then
 else
   cp -R %{extbuilddir}/* %{buildroot}
 fi
-sed 's|^prefix=.*|prefix=/usr|g' %{buildroot}/usr/lib64/pkgconfig/wms-purger.pc > %{buildroot}/usr/lib64/pkgconfig/wms-purger.pc.new
-mv %{buildroot}/usr/lib64/pkgconfig/wms-purger.pc.new %{buildroot}/usr/lib64/pkgconfig/wms-purger.pc
-rm %{buildroot}/usr/lib64/*.la
-chrpath --delete %{buildroot}/usr/lib64/libglite_wms_*.so.0.0.0
- 
+sed 's|^prefix=.*|prefix=/usr|g' %{buildroot}%{_libdir}/pkgconfig/wms-purger.pc > %{buildroot}%{_libdir}/pkgconfig/wms-purger.pc.new
+mv %{buildroot}%{_libdir}/pkgconfig/wms-purger.pc.new %{buildroot}%{_libdir}/pkgconfig/wms-purger.pc
+rm %{buildroot}%{_libdir}/*.la
+chrpath --delete %{buildroot}%{_libdir}/libglite_wms_*.so.0.0.0
+chrpath --delete %{buildroot}/usr/sbin/glite-wms-purgeStorage 
 
 %clean
 rm -rf %{buildroot}
@@ -65,8 +65,8 @@ rm -rf %{buildroot}
 /usr/sbin/glite-wms-purgeStorage.sh
 %dir /usr/share/doc/glite-wms-purger-%{version}/
 %doc /usr/share/doc/glite-wms-purger-%{version}/LICENSE
-/usr/lib64/libglite_wms_purger.so.0
-/usr/lib64/libglite_wms_purger.so.0.0.0
+%{_libdir}/libglite_wms_purger.so.0
+%{_libdir}/libglite_wms_purger.so.0.0.0
 
 %changelog
 
@@ -74,6 +74,7 @@ rm -rf %{buildroot}
 %package devel
 Summary: Development files for the WMS purger module
 Group: System Environment/Libraries
+Requires: %{name}%{?_isa} = %{version}-%{release}
 
 %description devel
 Development files for the WMS purger module
@@ -84,6 +85,11 @@ Development files for the WMS purger module
 %dir /usr/include/glite/wms/
 %dir /usr/include/glite/wms/purger/
 /usr/include/glite/wms/purger/purger.h
-/usr/lib64/pkgconfig/wms-purger.pc
-/usr/lib64/libglite_wms_purger.so
+%{_libdir}/pkgconfig/wms-purger.pc
+%{_libdir}/libglite_wms_purger.so
+
+%post debuginfo -p /sbin/ldconfig
+
+%postun debuginfo -p /sbin/ldconfig
+
 
