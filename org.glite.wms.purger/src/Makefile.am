@@ -39,9 +39,9 @@ glite_wms_purgeStorage_LDADD = \
 	$(RENEWAL_NOTHR_LIBS) \
 	./libglite_wms_purger.la \
 	$(BOOST_LIBS) \
-	$(GLOBUS_SSL_NOTHR_LIBS) \
-	$(GLOBUS_COMMON_NOTHR_LIBS) \
-	$(GLOBUS_GSS_NOTHR_LIBS) \
+	$(GLOBUS_OPENSSL_LIBS) \
+	$(GLOBUS_COMMON_LIBS) \
+	$(GLOBUS_GSS_ASSIST_LIBS) \
 	$(CLASSAD_LIBS) \
 	$(ARES_LIBS) \
         $(GLITE_JOBID_LIBS) \
@@ -54,7 +54,9 @@ AM_CPPFLAGS = \
 	$(GLITE_WMSUTILS_CLASSADS_CFLAGS) \
 	$(BOOST_CFLAGS) \
 	$(CLASSAD_CFLAGS) \
-	$(GLOBUS_THR_CFLAGS)
+        $(GLOBUS_OPENSSL_CFLAGS) \
+        $(GLOBUS_COMMON_CFLAGS) \
+        $(GLOBUS_GSS_ASSIST_CFLAGS)
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = wms-purger.pc
