@@ -63,7 +63,8 @@ if [ -f ${GET_CONF} ]; then
     dir=$(dirname "$path")
     dirLogFile=$(dirname "$dir")
 
-    for location in $dirStaging $dirLogFile $dir; do
+    #for location in $dirStaging $dirLogFile $dir; do
+    for location in $dirStaging $dir; do
       mkdir -p $location
       chown -R $GLITE_WMS_USER.$GLITE_WMS_GROUP $location
     done
@@ -80,7 +81,8 @@ if [ -f ${GET_CONF} ]; then
     dir=$(dirname "$path")
     dirLogFile=$(dirname "$dir")
 
-    for location in $dirInput $dirLogFile $dir; do
+    #for location in $dirInput $dirLogFile $dir; do
+    for location in $dirInput $dir; do
       mkdir -p $location
       chown $GLITE_WMS_USER.$GLITE_WMS_GROUP $location
     done
