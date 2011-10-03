@@ -300,8 +300,11 @@ Purger::operator()(jobid::JobId const& id)
   );
   switch( query_job_status(job_status, id, log_ctx) ) {
     case 0: break; // query succeeded
+    case EIDRM: // identifier removed(matching job already purged) 
     case ENOENT: // no matching jobs found
-      Info(id.toString() << ": forced removal, unknown L&B job");
+
+      Info(id.toString() << ": forced removal, unknown/removed L&B job");
+      
       if (m_have_lb_proxy) {
         return remove_path(
           jobid_to_absolute_path(id),  
