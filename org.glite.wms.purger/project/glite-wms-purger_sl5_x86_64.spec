@@ -1,13 +1,12 @@
 Summary: Cleanup module for the Workload Management System
 Name: glite-wms-purger
-Version:
-Release:
+Version: %{extversion}
+Release: %{extage}.%{extdist}
 License: Apache Software License
 Vendor: EMI
-Packager: WMS group <wms-support@lists.infn.it>
 URL: http://glite.cern.ch/
 Group: System Environment/Libraries
-BuildArch:
+BuildArch: %{_arch}
 BuildRequires: %{!?extbuilddir: glite-wms-common-devel,} chrpath
 BuildRequires: %{!?extbuilddir: glite-jobid-api-cpp, glite-lb-client, } libtool
 BuildRequires: %{!?extbuilddir: glite-wms-utils-classad-devel,} boost-devel
@@ -67,7 +66,6 @@ rm -rf %{buildroot}
 %{_libdir}/libglite_wms_purger.so.0
 %{_libdir}/libglite_wms_purger.so.0.0.0
 
-%changelog
 
 
 %package devel
@@ -91,4 +89,8 @@ Development files for the WMS purger module
 %{_libdir}/libglite_wms_purger.so
 
 
+
+%changelog
+* %(date +"%%a %%b %%d %%Y") WMS group <wms-support@lists.infn.it> - %{version}-%{release}
+- %{extclog}
 
