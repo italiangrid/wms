@@ -1,13 +1,12 @@
 Summary: Configuration module for the Workload Management System
 Name: glite-wms-configuration
-Version:
-Release:
+Version: %{extversion}
+Release: %{extage}.%{extdist}
 License: Apache Software License
 Vendor: EMI
 URL: http://glite.cern.ch/
-Packager: WMS group <wms-support@lists.infn.it>
 Group: System Environment/Libraries
-BuildArch:
+BuildArch: noarch
 BuildRequires: condor
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 AutoReqProv: yes
@@ -19,7 +18,7 @@ Configuration module for the Workload Management System
 %prep
  
 
-%setup -c
+%setup -c -q
 
 %build
 %{!?extbuilddir:%define extbuilddir "--"}
@@ -53,5 +52,7 @@ rm -rf %{buildroot}
 /usr/libexec/glite-wms-services-certs.sh
 
 %changelog
+* %(date +"%%a %%b %%d %%Y") WMS group <wms-support@lists.infn.it> - %{version}-%{release}
+- %{extclog}
 
 
