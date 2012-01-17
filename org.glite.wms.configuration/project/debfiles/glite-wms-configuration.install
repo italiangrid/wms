@@ -1,0 +1,4 @@
+etc/glite-wms/wms.conf.template
+usr/libexec/glite-wms-parse-configuration.sh
+usr/libexec/glite-wms-check-daemons.sh
+usr/libexec/glite-wms-services-certs.sh
