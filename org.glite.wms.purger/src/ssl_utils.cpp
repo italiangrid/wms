@@ -29,6 +29,7 @@ limitations under the License.
 #include <openssl/crypto.h>
 #include <boost/shared_ptr.hpp>
 #include <ctime>
+#include <cstdio>
 
 namespace {
 
@@ -143,13 +144,13 @@ proxy_expires_within(
   time_t seconds
 )
 {
-  boost::shared_ptr<std::FILE> fd(
-    std::fopen(x509_proxy.c_str(), "r"), std::fclose
+  boost::shared_ptr< ::FILE> fd(
+    ::fopen(x509_proxy.c_str(), "r"), ::fclose
   );
   if (!fd) return true;
   
   boost::shared_ptr< ::X509> cert(
-    ::PEM_read_X509( (std::FILE*)(fd.get()), 0, 0, 0), ::X509_free
+    ::PEM_read_X509((::FILE*)(fd.get()), 0, 0, 0), ::X509_free
   );
   if (!cert) return true;
 
@@ -167,8 +168,8 @@ proxy_init(
   time_t seconds
 )
 {  
-  boost::shared_ptr<std::FILE> fd(
-    std::fopen(certfile.c_str(), "r"), std::fclose
+  boost::shared_ptr< ::FILE> fd(
+    ::fopen(certfile.c_str(), "r"), ::fclose
   );
   if (!fd) return false;
   

@@ -84,10 +84,10 @@ namespace {
 bool
 proxy_expires_within(std::string const& x509_proxy, time_t seconds)
 {
-  std::FILE* fd = std::fopen(x509_proxy.c_str(), "r");
+  ::FILE* fd = ::fopen(x509_proxy.c_str(), "r");
   if (!fd) return true; // invalid proxy
 
-  boost::shared_ptr<std::FILE> fd_(fd, std::fclose);
+  boost::shared_ptr< ::FILE> fd_(fd, ::fclose);
 
   ::X509* const cert = ::PEM_read_X509(fd, 0, 0, 0);
   if (!cert) return true;
@@ -106,9 +106,9 @@ get_proxy_subject(std::string const& x509_proxy)
 {
   static std::string const null_string;
 
-  std::FILE* fd = std::fopen(x509_proxy.c_str(), "r");
+  ::FILE* fd = ::fopen(x509_proxy.c_str(), "r");
   if (!fd) return null_string;
-  boost::shared_ptr<std::FILE> fd_(fd, std::fclose);
+  boost::shared_ptr< ::FILE> fd_(fd, ::fclose);
 
   ::X509* const cert = ::PEM_read_X509(fd, 0, 0, 0);
   if (!cert) return null_string;
