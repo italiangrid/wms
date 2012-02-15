@@ -8,9 +8,9 @@ URL: http://glite.cern.ch/
 Group: System Environment/Libraries
 BuildArch: %{_arch}
 BuildRequires: %{!?extbuilddir: glite-wms-common-devel,} chrpath
-BuildRequires: %{!?extbuilddir: glite-jobid-api-cpp, glite-lb-client, } libtool
+BuildRequires: %{!?extbuilddir: glite-jobid-api-cpp-devel, glite-lb-client-devel, } libtool
 BuildRequires: %{!?extbuilddir: glite-wms-utils-classad-devel,} boost-devel
-BuildRequires: %{!?extbuilddir: glite-px-proxyrenewal,} classads-devel
+BuildRequires: %{!?extbuilddir: glite-px-proxyrenewal-devel,} classads-devel
 BuildRequires: globus-gss-assist-devel, c-ares
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 AutoReqProv: yes
@@ -72,9 +72,9 @@ rm -rf %{buildroot}
 Summary: Development files for the WMS purger module
 Group: System Environment/Libraries
 Requires: %{name}%{?_isa} = %{version}-%{release}
-Requires: glite-wms-common-devel, glite-jobid-api-cpp
-Requires: glite-lb-client, glite-wms-utils-classad-devel
-Requires: glite-px-proxyrenewal, boost-devel, globus-gss-assist-devel
+Requires: glite-wms-common-devel, glite-jobid-api-cpp-devel
+Requires: glite-lb-client-devel, glite-wms-utils-classad-devel
+Requires: glite-px-proxyrenewal-devel, boost-devel, globus-gss-assist-devel
 
 %description devel
 Development files for the WMS purger module
