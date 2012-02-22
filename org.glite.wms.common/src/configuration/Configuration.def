@@ -360,7 +360,9 @@ class WMConfiguration {
   parameter bool(EnableRecovery = false) section normal;
   parameter bool(EnableStatusCheck = false) section normal;
   parameter std::string(Input = "${EDG_WL_TMP}/workload_manager/input.fl") section fileparse;
-  parameter std::string(BrokerLib = "libglite_wms_helper_broker_ism.so") section fileparse;
+  parameter std::string(BrokerLib = "libglite_wms_helper_broker_ism.so.0") section fileparse;
+  parameter std::string(IsmGlue13Lib = "libglite_wms_ism_ii_purchaser.so.0") section fileparse;
+  parameter std::string(IsmGlue20Lib = "libglite_wms_ism_ii_g2_purchaser.so.0") section fileparse;
   parameter std::string(IsmDump = "${GLITE_WMS_TMP}/workload_manager/ismdump.fl") section fileparse;
   parameter bool(EnableIsmDump = true) section normal;
   parameter int(IsmUpdateRate = 50) section normal;
