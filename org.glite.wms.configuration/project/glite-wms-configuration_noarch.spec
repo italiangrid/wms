@@ -20,19 +20,13 @@ Configuration module for the Workload Management System
 
 %setup -c -q
 
-%build
-%{!?extbuilddir:%define extbuilddir "--"}
-if test "x%{extbuilddir}" == "x--" ; then
-  ./configure --prefix=%{buildroot}/usr --sysconfdir=%{buildroot}/etc PVER=%{version}
-  make
-fi
 
 %install
 rm -rf %{buildroot}
 mkdir -p %{buildroot}
 %{!?extbuilddir:%define extbuilddir "--"}
 if test "x%{extbuilddir}" == "x--" ; then
-  make install
+  ./install.sh %{buildroot}
 else
   cp -R %{extbuilddir}/* %{buildroot}
 fi
@@ -52,7 +46,7 @@ rm -rf %{buildroot}
 /usr/libexec/glite-wms-services-certs.sh
 
 %changelog
-* %(date +"%%a %%b %%d %%Y") WMS group <wms-support@lists.infn.it> - %{version}-%{release}
+* %{extcdate} WMS group <wms-support@lists.infn.it> - %{extversion}-%{extage}.%{extdist}
 - %{extclog}
 
 

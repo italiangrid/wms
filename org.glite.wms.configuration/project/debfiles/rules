@@ -7,11 +7,7 @@ INSTALLDIR=$(CURDIR)/debian/tmp
 build-stamp:
 	touch build-stamp
 	
-build:build-stamp
-ifndef extbuilddir
-	./configure --prefix=$(INSTALLDIR)/usr --sysconfdir=$(INSTALLDIR)/etc --disable-static PVER=$(version)
-	make
-endif
+build : build-stamp
 
 clean:
 	dh_testdir
@@ -29,7 +25,7 @@ install: build
 ifdef extbuilddir
 	mkdir -p $(INSTALLDIR) && cp -R $(extbuilddir)/* $(INSTALLDIR)
 else
-	make install
+	./install.sh $(INSTALLDIR)
 endif
 
 binary-indep: build install
