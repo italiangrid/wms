@@ -26,7 +26,7 @@ rm -rf %{buildroot}
 mkdir -p %{buildroot}
 %{!?extbuilddir:%define extbuilddir "--"}
 if test "x%{extbuilddir}" == "x--" ; then
-  ./install.sh %{buildroot}
+  ./install.sh %{buildroot} %{version}
 else
   cp -R %{extbuilddir}/* %{buildroot}
 fi
