@@ -48,6 +48,7 @@ mv %{buildroot}%{_libdir}/pkgconfig/wms-purger.pc.new %{buildroot}%{_libdir}/pkg
 rm %{buildroot}%{_libdir}/*.la
 chrpath --delete %{buildroot}%{_libdir}/libglite_wms_*.so.0.0.0
 chrpath --delete %{buildroot}/usr/sbin/glite-wms-purgeStorage 
+export QA_SKIP_BUILD_ROOT=yes
 
 %clean
 rm -rf %{buildroot}
