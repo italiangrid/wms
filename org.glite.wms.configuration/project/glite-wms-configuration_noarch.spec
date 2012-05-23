@@ -7,7 +7,6 @@ Vendor: EMI
 URL: http://glite.cern.ch/
 Group: System Environment/Libraries
 BuildArch: noarch
-BuildRequires: condor
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 AutoReqProv: yes
 Source: %{name}-%{version}-%{release}.tar.gz
