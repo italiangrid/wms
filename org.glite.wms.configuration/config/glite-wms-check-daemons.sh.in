@@ -31,11 +31,11 @@ if [ -f ${SCRIPT_LOCATION}/${LB_PREFIX}-bkserverd ]; then
   fi
 fi
 
-if [ -f ${SCRIPT_LOCATION}/${PROXY_PREFIX}-renewald ]; then
-  ${SCRIPT_LOCATION}/${PROXY_PREFIX}-renewald status >/dev/null
+if [ -f ${SCRIPT_LOCATION}/${PROXY_PREFIX}-renewd ]; then
+  ${SCRIPT_LOCATION}/${PROXY_PREFIX}-renewd status >/dev/null
   if [ $? -ne 0 ]; then
     # if [ -s "$RENEW_PIDFILE" ]; then
-      ${SCRIPT_LOCATION}/${PROXY_PREFIX}-renewald restart
+      ${SCRIPT_LOCATION}/${PROXY_PREFIX}-renewd restart
     # fi
   fi
 fi
