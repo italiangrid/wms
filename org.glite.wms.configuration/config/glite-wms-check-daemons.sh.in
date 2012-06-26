@@ -3,11 +3,10 @@
 SCRIPT_LOCATION=${WMS_LOCATION_ETC}/init.d
 WMS_PREFIX=glite-wms
 LB_PREFIX=glite-lb
-PROXY_PREFIX=glite-proxy
+PROXY_RENEWAL=glite-proxy-renewald
 GLITE_LB_LOCATION_VAR=${GLITE_LB_LOCATION_VAR:-'/var/glite'}
 LL_PIDFILE="${GLITE_LB_LOCATION_VAR}/glite-lb-logd.pid"
 BKS_PIDFILE="${GLITE_LB_LOCATION_VAR}/glite-lb-bkserverd.pid"
-# RENEW_PIDFILE= doesn't exist
 LM_PIDFILE=/var/run/glite-wms-log_monitor.pid # /var/run/ is hard-coded in the corresponding startup script
 JC_PIDFILE=/var/run/glite-wms-job_controller.pid # same as above
 ICE_PIDFILE="${WMS_LOCATION_VAR}/run/glite-wms-ice-safe.pid"
@@ -31,12 +30,10 @@ if [ -f ${SCRIPT_LOCATION}/${LB_PREFIX}-bkserverd ]; then
   fi
 fi
 
-if [ -f ${SCRIPT_LOCATION}/${PROXY_PREFIX}-renewd ]; then
-  ${SCRIPT_LOCATION}/${PROXY_PREFIX}-renewd status >/dev/null
+if [ -f ${SCRIPT_LOCATION}/${PROXY_} ]; then
+  ${SCRIPT_LOCATION}/${PROXY_RENEWAL} status >/dev/null
   if [ $? -ne 0 ]; then
-    # if [ -s "$RENEW_PIDFILE" ]; then
-      ${SCRIPT_LOCATION}/${PROXY_PREFIX}-renewd restart
-    # fi
+      ${SCRIPT_LOCATION}/${PROXY_RENEWAL} restart
   fi
 fi
 
