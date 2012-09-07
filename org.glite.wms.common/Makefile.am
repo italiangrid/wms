@@ -17,6 +17,9 @@
 #
 #       Revision history:
 #       $Log$
+#       Revision 1.13  2012/09/07 11:50:28  mcecchi
+#       moved from configuration
+#
 #       Revision 1.12  2007/11/22 22:40:03  giaco
 #       - general cleanup of the build system
 #       - now a single library libglite_wms_common instead of N, as it was before.
@@ -53,7 +56,7 @@ docdir = $(datadir)/doc/@PACKAGE@-@VERSION@
 doc_DATA = LICENSE
 
 ## Subdirectories list
-SUBDIRS = src interface
+SUBDIRS = src interface config
 
 ## Default flags to run aclocal
 ACLOCAL_AMFLAGS = -I project

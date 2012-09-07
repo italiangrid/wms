@@ -1,0 +1,29 @@
+#!/bin/csh
+
+if ( ! $?GLOBUS_LOCATION) then
+    setenv GLOBUS_LOCATION "/opt/globus"
+endif
+
+if ( $?GLITE_WMS_USER) then
+  setenv GLITE_WMS_USER glite
+endif
+
+if ( $?GLITE_WMS_GROUP) then
+  setenv GLITE_WMS_GROUP glite
+endif
+
+if ( $?GLITE_WMS_LOCATION_VAR) then
+  setenv GLITE_WMS_LOCATION_VAR ${GLITE_WMS_LOCATION}"/var"
+endif
+
+if ( $?GLITE_WMS_TMP) then
+  setenv GLITE_WMS_TMP "/tmp/glitewms"
+endif
+
+setenv GLITE_WMS_PATH ${GLITE_WMS_LOCATION}"/bin:"${GLITE_WMS_LOCATION}"/sbin"
+
+setenv GLITE_WMS_LIBRARY_PATH ${GLOBUS_LOCATION}"/lib:"${GLITE_WMS_LOCATION}"/lib"
+
+
+
+
