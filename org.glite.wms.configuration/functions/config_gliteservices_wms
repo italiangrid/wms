@@ -1,0 +1,115 @@
+##############################################################################
+# Copyright (c) Members of the EGEE Collaboration. 2009. 
+# See http://www.eu-egee.org/partners/ for details on the copyright
+# holders.  
+# 
+# Licensed under the Apache License, Version 2.0 (the "License"); 
+# you may not use this file except in compliance with the License. 
+# You may obtain a copy of the License at 
+# 
+#     http://www.apache.org/licenses/LICENSE-2.0 
+# 
+# Unless required by applicable law or agreed to in writing, software 
+# distributed under the License is distributed on an "AS IS" BASIS, 
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+# See the License for the specific language governing permissions and 
+# limitations under the License.
+##############################################################################
+#
+# NAME :        config_gliteservices_wms
+#
+# DESCRIPTION : This function configures processes start at init and starts 
+#               processes in a WMS.
+#
+# AUTHORS :     grid-release@infn.it
+#
+# YAIM MODULE:  glite.yaim.wms
+#
+##############################################################################
+
+function config_gliteservices_wms_check () {
+
+  # Some variables are requested becaused used in called init scripts
+  requires $1 GLITE_USER GLITE_WMS_USER WMS_LOCATION_ETC WMS_LOCATION_BIN \
+              WMS_LOCATION_TMP WMS_LOCATION_LIBEXEC GRID_ENV_LOCATION \
+              GLITE_WMS_CONFIG_DIR 
+
+
+}
+
+function config_gliteservices_wms_setenv () {
+
+  # Variable used in init scripts called here
+  yaimgridenv_set GLITE_WMS_CONFIG_DIR ${GLITE_WMS_CONFIG_DIR} 
+  yaimgridenv_set WMS_LOCATION_BIN         ${WMS_LOCATION_BIN}
+  yaimgridenv_set WMS_LOCATION_ETC         ${WMS_LOCATION_ETC}
+  yaimgridenv_set WMS_LOCATION_LOG         /var/log/wms
+  yaimgridenv_set WMS_LOCATION_TMP         ${WMS_LOCATION_TMP}
+  yaimgridenv_set WMS_LOCATION_LIBEXEC     ${WMS_LOCATION_LIBEXEC} 
+  yaimgridenv_set CONDOR_CONFIG	           /etc/condor/condor_config
+
+  yaimgridpath_append LD_LIBRARY_PATH  /opt/c-ares/lib
+}
+
+function config_gliteservices_wms () {
+  # Start services
+  export CONDOR_CONFIG=/etc/condor/condor_config
+  export LD_LIBRARY_PATH=/opt/c-ares/lib:$LD_LIBRARY_PATH
+
+  # in order to remove the anonying error message from a WMS bug
+#  if [ ! -f /etc/glite/profile.d/glite_setenv.sh ]; then
+#    mkdir -p /etc/glite/profile.d
+#    ln -s ${GRID_ENV_LOCATION}/grid-env.sh /etc/glite/profile.d/glite_setenv.sh
+#  fi
+
+  # create, if necessary, the log's directory for gridftp
+  if [ ! -d ${WMS_LOCATION_LOG} ]; then
+    mkdir -p ${WMS_LOCATION_LOG}
+  fi
+
+  . /opt/glite/yaim/etc/grid-env-funcs.sh
+  . ${GRID_ENV_LOCATION}/grid-env.sh
+  if [ ! -f ${WMS_LOCATION_ETC}/gLiteservices ] ; then
+    touch ${WMS_LOCATION_ETC}/gLiteservices
+  fi
+
+  #ln -s -f /etc/init.d/globus-gridftp  ${WMS_LOCATION_ETC}/init.d/globus-gridftp
+
+  ### Add all services to the list and (re)start them
+  # globus-gridftp per primo
+  # glite-wms-wmproxy per ultimo
+  for service in globus-gridftp glite-wms-wm glite-wms-jc  glite-wms-lm \
+                 glite-wms-ice glite-proxy-renewald  glite-wms-wmproxy
+  do
+
+    if [ -f "/etc/rc.d/init.d/$service" ]; then
+      if [[ ! -a "/etc/init.d/$service" ]]; then
+        if [[ -L "/etc/init.d/$service" ]]; then
+          yaimlog DEBUG "/etc/init.d/$service is a broken symlink! Fixing"
+          rm "/etc/init.d/$service"
+          ln -s "/etc/rc.d/init.d/$service" "/etc/init.d/$service"
+        else
+          yaimlog DEBUG "/etc/init.d/$service does not exist! Creating it"
+          ln -s "/etc/rc.d/init.d/$service" "/etc/init.d/$service"
+        fi
+      fi
+    fi
+    if [ -f  ${WMS_LOCATION_ETC}/init.d/$service ]; then
+        yaimlog DEBUG "Starting service $service"
+
+        grep $service ${WMS_LOCATION_ETC}/gLiteservices > /dev/null
+        if [ ! $? = 0 ] ; then
+          echo "${WMS_LOCATION_ETC}/init.d/$service" >> ${WMS_LOCATION_ETC}/gLiteservices
+        fi
+
+        ${WMS_LOCATION_ETC}/init.d/$service restart
+        if [ ! $? = 0 ] ; then
+          yaimlog ABORT "Service $service failed to start!"
+          return 1
+        fi
+    fi
+  done
+
+  return 0;
+}
+

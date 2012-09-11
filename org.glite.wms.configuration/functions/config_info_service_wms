@@ -1,0 +1,134 @@
+##############################################################################
+# Copyright (c) Members of the EGEE Collaboration. 2004.
+# See http://www.eu-egee.org/partners/ for details on the copyright
+# holders.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+##############################################################################
+#
+# NAME :        config_info_service_wms
+#
+# DESCRIPTION : This function configures the dynamic service publisher
+#                        for site WMS node.
+#
+# AUTHORS :     your mail
+#
+# NOTES :
+#
+# YAIM MODULE:  glite-yaim-<node-type>
+#
+##############################################################################
+
+config_info_service_wms_check () {
+        requires $1 SITE_NAME WMS_INFO_CONF WMS_INFO_LOCATION VOS
+}
+
+config_info_service_wms_setenv () {
+        yaimlog DEBUG "This function currently doesn't set any environment variables."
+}
+
+config_info_service_wms () {
+
+INFO_SERVICE_CONFIG=${INFO_SERVICE_CONFIG:-${WMS_INFO_CONF}}
+INFO_SERVICE_SCRIPT=${INFO_SERVICE_SCRIPT:-${WMS_INFO_BIN}}
+INFO_PROVIDER_PATH=${INFO_PROVIDER_PATH:-${WMS_INFO_LOCATION}/provider}
+
+SERVICE=WMPROXY     
+SERVICE_HOST=${WMS_HOST} 
+
+SERVICE_LC=`echo ${SERVICE} | tr '[:upper:]' '[:lower:]'`
+
+# Check presence of template files for glue and glue2
+if [ ! -f ${INFO_SERVICE_CONFIG}/glite-info-service-${SERVICE_LC}.conf.template ]; then
+  yaimlog ERROR "The template file for glite-info-service-${SERVICE_LC}.conf.template was not found in ${INFO_SERVICE_CONFIG}."
+  exit 1
+fi
+
+if [ ! -f ${INFO_SERVICE_CONFIG}/glite-info-glue2-${SERVICE_LC}.conf.template  ]; then
+  yaimlog ERROR "The template file for glite-info-glue2-wmproxy.conf.template was not found in ${INFO_SERVICE_CONFIG}."
+  exit 1
+fi
+
+# Check presence of binary files
+if [ ! -f ${INFO_SERVICE_SCRIPT}/glite-info-service ]; then
+  yaimlog ERROR "The script file glite-info-service was not found in ${INFO_SERVICE_SCRIPT}."
+  exit 1
+fi
+
+if [ ! -f ${INFO_SERVICE_SCRIPT}/glite-info-glue2-simple ]; then
+  yaimlog ERROR "The script file glite-info-glue2-simple was not found in ${INFO_SERVICE_SCRIPT}."
+  exit 1
+fi
+
+yaimlog DEBUG "Delete a previous version of the glite-info-service-${SERVICE_LC}.conf if it exists"
+rm -rf ${INFO_SERVICE_CONFIG}/glite-info-service-${SERVICE_LC}.conf
+
+# Modify glite-info-service-${SERVICE_LC}.conf.template creating glue configuration file
+yaimlog DEBUG "Create the glite-info-service-${SERVICE_LC}.conf file out of the template file"
+TMP_FILE="${INFO_SERVICE_CONFIG}/glite-info-service-${SERVICE_LC}.conf.template"
+FINAL_FILE="${INFO_SERVICE_CONFIG}/glite-info-service-${SERVICE_LC}.conf"
+
+my_owner=""
+my_acbr=""
+i=0
+for vo in $VOS; do
+  if [ $i -eq 0 ]; then
+     my_owner=${my_owner}${vo}
+     my_acbr=${my_acbr}VO:${vo}
+  else
+     my_owner=${my_owner}\\\\n${vo}
+     my_acbr=${my_acbr}\\\\nVO:${vo}
+  fi
+  let i++
+done
+
+cat ${TMP_FILE} | sed \
+  -e "s/^get_owner = .*/get_owner = echo -e \"${my_owner}\"/" \
+  -e "s/^get_acbr = .*/get_acbr = echo -e \"${my_acbr}\"/" \
+  -e "s/^get_data = .*/get_data = echo -n DN= \&\& openssl x509 -in \/etc\/grid-security\/hostcert.pem -noout -subject | cut -d "=" -f 2- /" \
+> ${FINAL_FILE}
+ 
+# Note: the configuration file may need to be altered if non standard values have been used.
+
+# Create and initialize where needed the glue2 configuration file
+GLUE2_CONF_TEMPLATE_FILE=${INFO_SERVICE_CONFIG}/glite-info-glue2-${SERVICE_LC}.conf.template
+GLUE2_CONF_FINAL_FILE=${INFO_SERVICE_CONFIG}/glite-info-glue2-${SERVICE_LC}.conf
+cat ${GLUE2_CONF_TEMPLATE_FILE} | sed \
+  -e "s/^get_owner = .*/get_owner = echo -e \"${my_owner}\"/" \
+  -e "s/^get_acbr = .*/get_acbr = echo -e \"${my_acbr}\"/" \
+> ${GLUE2_CONF_FINAL_FILE}
+
+yaimlog DEBUG "Delete a previous version of the glite-info-provider-service-${SERVICE_LC}-wrapper if it exists"
+rm -rf ${INFO_PROVIDER_PATH}/glite-info-provider-service-${SERVICE_LC}-wrapper
+
+yaimlog DEBUG "Create the ${INFO_PROVIDER_PATH} in case it doesn't exist"
+mkdir -p ${INFO_PROVIDER_PATH}
+
+yaimlog DEBUG "Create the glite-info-provider-service-${SERVICE_LC}-wrapper file"
+cat << EOF > ${INFO_PROVIDER_PATH}/glite-info-provider-service-${SERVICE_LC}-wrapper
+#!/bin/sh
+export PATH=$PATH:${INFO_SERVICE_SCRIPT}
+export ${SERVICE}_HOST=${SERVICE_HOST}
+${INFO_SERVICE_SCRIPT}/glite-info-service ${INFO_SERVICE_CONFIG}/glite-info-service-${SERVICE_LC}.conf $SITE_NAME
+
+${INFO_SERVICE_SCRIPT}/glite-info-glue2-simple ${INFO_SERVICE_CONFIG}/glite-info-glue2-${SERVICE_LC}.conf $SITE_NAME
+EOF
+
+chmod +x ${INFO_PROVIDER_PATH}/glite-info-provider-service-${SERVICE_LC}-wrapper
+
+# Temporary patch to make running glite-info-provider-release
+mkdir -p /opt/glite/etc/gip/provider
+
+return 0
+
+}

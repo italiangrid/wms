@@ -1,0 +1,197 @@
+##############################################################################
+# Copyright (c) Members of the EGEE Collaboration. 2009. 
+# See http://www.eu-egee.org/partners/ for details on the copyright
+# holders.  
+# 
+# Licensed under the Apache License, Version 2.0 (the "License"); 
+# you may not use this file except in compliance with the License. 
+# You may obtain a copy of the License at 
+# 
+#     http://www.apache.org/licenses/LICENSE-2.0 
+# 
+# Unless required by applicable law or agreed to in writing, software 
+# distributed under the License is distributed on an "AS IS" BASIS, 
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+# See the License for the specific language governing permissions and 
+# limitations under the License.
+##############################################################################
+#
+# NAME :        config_cron_wms
+#
+# DESCRIPTION : This function configures cron in a WMS.
+#
+# AUTHORS :     grid-release@infn.it
+#
+# YAIM MODULE:  glite.yaim.wms
+#
+##############################################################################
+
+function config_cron_wms_check () {
+
+  requires $1 GRID_ENV_LOCATION SITE_EMAIL
+
+
+}
+
+function config_cron_wms_setenv () {
+
+  yaimgridenv_set WMS_LOCATION_VAR /var
+  yaimgridenv_set WMS_LOCATION_LOG /var/log/wms
+
+}
+
+function config_cron_wms () {
+
+
+mkdir -p ${WMS_LOCATION_VAR}
+mkdir -p ${WMS_LOCATION_LOG}
+
+  # cron to create the host proxy
+cat << EOF > /etc/cron.d/glite-wms-create-host-proxy.cron
+HOME=/
+MAILTO=$SITE_EMAIL
+
+0 */6 * * * glite . ${GRID_ENV_LOCATION}/grid-env.sh ; ${WMS_LOCATION_SBIN}/glite-wms-create-proxy.sh ${WMS_LOCATION_VAR}/glite/wms.proxy ${WMS_LOCATION_LOG}/create_proxy.log
+EOF
+
+  # cron (need to expand cron_job to add MAILTO)
+  # glite-wms-purger.cron, change from hourly to 3 times daily since it is slow
+cat << EOF > /etc/cron.d/glite-wms-purger.cron
+HOME=/
+MAILTO=$SITE_EMAIL
+
+# Execute the 'purger' command at every day except on Sunday with a frequency of six hours
+3 */6 * * mon-sat glite . ${GRID_ENV_LOCATION}/grid-env.sh ; ${WMS_LOCATION_SBIN}/glite-wms-purgeStorage.sh -l ${WMS_LOCATION_LOG}/glite-wms-purgeStorage.log -p ${WMS_LOCATION_VAR}/SandboxDir -t 604800 > /dev/null 2>&1
+
+# Execute the 'purger' command on each Sunday (sun) forcing removal of dag nodes,
+# orphan dag nodes without performing any status checking (threshold of 2 weeks).
+0 1 * * sun glite . ${GRID_ENV_LOCATION}/grid-env.sh ; ${WMS_LOCATION_SBIN}/glite-wms-purgeStorage.sh -l ${WMS_LOCATION_LOG}/glite-wms-purgeStorage.log -p ${WMS_LOCATION_VAR}/SandboxDir -o -s -t 1296000 > /dev/null 2>&1
+EOF
+
+  # glite-wms-wmproxy-purge-proxycache.cron
+cat << EOF > /etc/cron.d/glite-wms-wmproxy-purge-proxycache.cron
+HOME=/
+MAILTO=$SITE_EMAIL
+
+0 */6 * * * root . ${GRID_ENV_LOCATION}/grid-env.sh ; ${WMS_LOCATION_BIN}/glite-wms-wmproxy-purge-proxycache ${WMS_LOCATION_VAR}/proxycache > ${WMS_LOCATION_LOG}/glite-wms-wmproxy-purge-proxycache.log 2>&1
+EOF
+
+
+  # glite-wms-check-daemons.cron
+cat << EOF > /etc/cron.d/glite-wms-check-daemons.cron
+HOME=/
+MAILTO=$SITE_EMAIL
+
+*/5 * * * * root . ${GRID_ENV_LOCATION}/grid-env.sh ; sh ${WMS_LOCATION_LIBEXEC}/glite-wms-check-daemons.sh > /dev/null 2>&1
+EOF
+
+  # Fix bug #47974: Once a day restart glite-wms-wmproxy in order to load new updated CRLs
+
+cat << EOF > /etc/cron.d/glite-wms-wmproxy.restart.cron
+HOME=/
+MAILTO=$SITE_EMAIL
+
+
+0 0 * * * root . ${GRID_ENV_LOCATION}/grid-env.sh ; HOSTNAME=`/bin/hostname` ;  ${WMS_LOCATION_ETC}/init.d/glite-wms-wmproxy graceful > ${WMS_LOCATION_LOG}/glite-wms-wmproxy.restart.cron.log
+EOF
+
+
+  #logrotate
+
+cat << EOF > /etc/logrotate.d/wmproxy
+${WMS_LOCATION_LOG}/httpd-wmproxy-access.log  ${WMS_LOCATION_LOG}/httpd-wmproxy-errors.log ${WMS_LOCATION_LOG}/wmproxy.log {
+
+       compress
+       daily
+       delaycompress
+       missingok
+       rotate 90
+       copytruncate
+
+}
+EOF
+
+
+cat << EOF > /etc/logrotate.d/glite-wms-purger
+${WMS_LOCATION_LOG}/glite-wms-purgeStorage.log {
+       compress
+       daily
+       delaycompress
+       missingok
+       rotate 90
+       copytruncate
+}
+EOF
+
+
+cat << EOF > /etc/logrotate.d/lcmaps
+${WMS_LOCATION_LOG}/lcmaps.log {
+       compress
+       daily
+       delaycompress
+       missingok
+       rotate 90
+       copytruncate
+}
+EOF
+
+cat << EOF > /etc/logrotate.d/argus
+${WMS_LOCATION_LOG}/argus.log {
+       compress
+       daily
+       delaycompress
+       missingok
+       rotate 90
+       copytruncate
+}
+EOF
+
+cat << EOF > /etc/logrotate.d/wm
+${WMS_LOCATION_LOG}/workload_manager_events.log {
+       compress
+       daily
+       delaycompress
+       missingok
+       rotate 90
+       copytruncate
+}
+EOF
+
+
+cat << EOF > /etc/logrotate.d/jc
+${WMS_LOCATION_LOG}/jobcontroller_events.log {
+       compress
+       daily
+       delaycompress
+       missingok
+       rotate 90
+       copytruncate
+}
+EOF
+
+
+cat << EOF > /etc/logrotate.d/lm
+${WMS_LOCATION_LOG}/logmonitor_events.log {
+       compress
+       daily
+       delaycompress
+       missingok
+       rotate 90
+       copytruncate
+}
+EOF
+
+cat << EOF > /etc/logrotate.d/ice
+${WMS_LOCATION_LOG}/ice.log {
+       compress
+       daily
+       delaycompress
+       missingok
+       rotate 90
+       copytruncate
+}
+EOF
+
+  return 0;
+}
+
