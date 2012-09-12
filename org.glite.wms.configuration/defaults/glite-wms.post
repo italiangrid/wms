@@ -1,1 +1,0 @@
-LCMAPS_DB_FILE=${LCMAPS_DB_FILE:-${WMS_LOCATION_ETC}/lcmaps/lcmaps.db.gridftp}
