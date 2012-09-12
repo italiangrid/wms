@@ -1,0 +1,176 @@
+##############################################################################
+# Copyright (c) Members of the EGEE Collaboration. 2004.
+# See http://www.eu-egee.org/partners/ for details on the copyright
+# holders.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+##############################################################################
+#
+# NAME :        config_condor_wms
+#
+# DESCRIPTION : This function creates the condor configuration files for WMS.
+#
+#
+# AUTHORS :     Nuno.Orestes.Vaz.da.Silva@cern.ch
+#               Di.Qing@cern.ch
+#
+# NOTES :       - This function is only for glite 3.0
+#
+# YAIM MODULE:  glite-yaim-wms
+#
+##############################################################################
+
+function config_condor_wms_check () {
+
+  	requires $1 SITE_EMAIL GLOBUS_TCP_PORT_RANGE GLITE_USER
+}
+
+function config_condor_wms_setenv () {
+
+  yaimgridenv_set GRIDMAP /etc/grid-security/grid-mapfile
+  yaimgridenv_set CONDOR_CONFIG /etc/condor/condor_config
+  yaimgridenv_set CONDORG_INSTALL_PATH /usr
+
+  return 0
+}
+
+function config_condor_wms() {
+
+  yaimlog DEBUG "Configure Condor"
+
+  ### Take condor low and high ports from globus
+  ### Only valid for "LOW HIGH" format in SL3 - VDT1.2
+  CONDOR_LOW=`echo $GLOBUS_TCP_PORT_RANGE | awk -F'[, ]' '{print $1}'`
+  CONDOR_HIGH=`echo $GLOBUS_TCP_PORT_RANGE | awk -F'[, ]' '{print $2}'` 
+
+  CONDOR_LOCALDIR=/var/condor
+  mkdir -p $CONDOR_LOCALDIR
+  mkdir -p $CONDOR_LOCALDIR/run/condor
+  mkdir -p $CONDOR_LOCALDIR/log/condor
+  mkdir -p $CONDOR_LOCALDIR/lib/condor/spool/
+  mkdir -p $CONDOR_LOCALDIR/lock/condor
+  chown -R $GLITE_USER:$GLITE_USER $CONDOR_LOCALDIR
+  condor_local_config=/etc/condor/condor_config.local
+
+  echo -e "\nLOCAL_DIR               = /var/condor\n" >> /etc/condor/condor_config # workaround
+  mkdir -p /usr/man # required by condor_configure in /usr
+  /usr/sbin/condor_configure --owner=${GLITE_USER} --install-dir=${CONDORG_INSTALL_PATH}
+
+  TEMP_CONF_FILE=/tmp/condor_config.tmp
+  LOCAL_HOSTNAME=`hostname -s`
+
+  setValue ()
+  {
+    # Main condor configuration file
+    grep "#$1 " ${CONDOR_CONFIG} > /dev/null  # If the parameter is commented out
+    res=$?
+    if [ $res -eq 0 ]; then #if parameter exists, commented, substitute the line setting the required value
+      sed "s%^#$1 .*%$1 = $2%" ${CONDOR_CONFIG} > ${TEMP_CONF_FILE}
+      mv ${TEMP_CONF_FILE} -f ${CONDOR_CONFIG}
+    else
+      grep "^$1 " ${CONDOR_CONFIG} > /dev/null 
+      res=$?
+      if [ $res -eq 0 ]; then   # If the parameter is present uncommented out, sets the required value
+        sed "s%^$1 .*%$1 = $2%" ${CONDOR_CONFIG} > ${TEMP_CONF_FILE}
+        mv ${TEMP_CONF_FILE} -f ${CONDOR_CONFIG}
+      fi
+    fi
+
+    rm -rf ${TEMP_CONF_FILE}
+
+    # Search if the parameter is present  in local  configuration file
+    # Local condor configuration file 
+    grep "#$1 " ${condor_local_config} > /dev/null
+    res=$?
+    if [ $res -eq 0 ]; then   # If parameter exists, commented, substitute the line setting the required value
+      sed "s%^#$1 .*%$1 = $2%" ${condor_local_config} > ${TEMP_CONF_FILE}
+      mv ${TEMP_CONF_FILE} -f ${condor_local_config}
+    else  
+      grep "^$1 " ${condor_local_config} > /dev/null
+      res=$?
+      if [ $res -eq 0 ]; then  # If the parameter is present uncommented out, sets the required value
+        sed "s%^$1 .*%$1 = $2%" ${condor_local_config} > ${TEMP_CONF_FILE}
+        mv ${TEMP_CONF_FILE} -f ${condor_local_config}
+      else  # The parameter is not present, yaim will add it in the local configuration
+        echo "#parameter added by yaim" >> ${condor_local_config}
+        echo "$1 = $2" >> ${condor_local_config}
+      fi
+    fi
+   }
+
+   GLITE_USER_UID=`id -u $GLITE_USER`
+   GLITE_USER_GID=`id -g $GLITE_USER`
+
+   setValue CONDOR_ADMIN $SITE_EMAIL
+   setValue RELEASE_DIR /usr
+   setValue CONDOR_HOST `hostname -f`
+   setValue LOCAL_DIR $CONDOR_LOCALDIR
+   setValue DAEMON_LIST "MASTER, SCHEDD, COLLECTOR, NEGOTIATOR"
+   setValue USERNAME $GLITE_USER
+   setValue SCHEDD_INTERVAL 10
+   setValue CLASSAD_LIFETIME 60
+   setValue MASTER_UPDATE_INTERVAL 20
+   setValue UPDATE_INTERVAL 20
+   setValue NEGOTIATOR_INTERVAL 30
+   setValue HIGHPORT ${CONDOR_HIGH}
+   setValue LOWPORT ${CONDOR_LOW}
+   setValue GRIDMANAGER_CHECKPROXY_INTERVAL 60
+   setValue CONDOR_IDS $GLITE_USER_UID.$GLITE_USER_GID
+   setValue GRIDMANAGER_DEBUG "D_COMMAND"
+   setValue GRIDMANAGER_LOG "\$(LOCAL_DIR)/log/GridmanagerLog.\$(USERNAME)"
+   setValue GRIDSHELL "\$(RELEASE_DIR)/sbin/condor_starter"
+   setValue MAX_C_GAHP_LOG 1000000
+   setValue C_GAHP_LOG "\$(LOG)/CGAHPLog.\$(USERNAME)"
+   setValue C_GAHP_WORKER_THREAD_LOG "\$(LOG)/CGAHPWorkerLog.\$(USERNAME)"
+   setValue CONDOR_GAHP "\$(RELEASE_DIR)/sbin/condor_c-gahp"
+   setValue CONDOR_JOB_POLL_INTERVAL 10
+   setValue SEC_DEFAULT_NEGOTIATION REQUIRED
+   setValue SEC_DEFAULT_AUTHENTICATION\  REQUIRED
+   setValue SEC_DEFAULT_AUTHENTICATION_METHODS "FS,GSI"
+   setValue GSI_DAEMON_CERT "\$ENV(GLITE_HOST_CERT)"
+   setValue GSI_DAEMON_KEY "\$ENV(GLITE_HOST_KEY)"
+   setValue NEGOTIATOR_IGNORE_USER_PRIORITIES True
+   setValue DAGMAN_ALLOW_EVENTS 1
+   setValue GRIDMANAGER_MAX_JOBMANAGERS_PER_RESOURCE 20
+   setValue HOLD_JOB_IF_CREDENTIAL_EXPIRES TRUE
+   setValue GRIDMANAGER_MINIMUM_PROXY_TIME 600
+   setValue GRIDMANAGER_MAX_SUBMITTED_JOBS_PER_RESOURCE 32000
+   setValue GRIDMANAGER_GLOBUS_COMMIT_TIMEOUT 3600
+   setValue GRID_MONITOR_HEARTBEAT_TIMEOUT 300
+   setValue GRID_MONITOR_RETRY_DURATION 31536000
+   setValue GLOBUS_GATEKEEPER_TIMEOUT 1800
+   setValue GT2_GAHP "/usr/sbin/gahp_server"
+   setValue GRID_MONITOR "/usr/sbin/grid_monitor.sh"
+   setValue ENABLE_GRID_MONITOR TRUE
+   setValue GRIDMANAGER_TIMEOUT_MULTIPLIER 3
+   setValue SCHEDD_TIMEOUT_MULTIPLIER 3
+   setValue COLLECTOR_TIMEOUT_MULTIPLIER 3
+   setValue C_GAHP_TIMEOUT_MULTIPLIER 3
+   setValue C_GAHP_WORKER_THREAD_TIMEOUT_MULTIPLIER 5
+   setValue TOOL_TIMEOUT_MULTIPLIER 3
+   setValue GLITE_CONDORC_DEBUG_LEVEL 1
+   setValue GLITE_CONDORC_LOG_DIR /var/tmp
+   setValue NEGOTIATOR_MATCHLIST_CACHING False
+   setValue HOSTALLOW_WRITE\  "*"
+   setValue NEGOTIATOR_UPDATE_INTERVAL 20
+ 
+   # Added for patch #2397
+   setValue GRIDMANAGER_MAX_PENDING_SUBMITS_PER_RESOURCE 1 
+
+   # Added for wms 3.3
+   setValue ALLOW_WRITE\  "*"
+
+   cp ${condor_local_config} -f ${CONDOR_LOCALDIR}/condor_config.local
+
+   return 0
+}

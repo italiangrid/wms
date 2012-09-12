@@ -1,0 +1,17 @@
+WMS_FUNCTIONS="
+config_add_pool_env
+config_crl
+config_host_certs
+config_edgusers
+config_users
+config_mkgridmap
+config_vomses
+config_gip_only
+config_gip_wms_30
+config_globus_clients
+config_condor_wms
+config_glite_wms_30
+config_glite_lbproxy_30
+config_glite_locallogger
+config_bdii
+config_glite_initd"
