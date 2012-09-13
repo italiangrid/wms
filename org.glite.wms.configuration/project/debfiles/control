@@ -1,0 +1,14 @@
+Source:  glite-wms-configuration
+Section:  net
+Priority:  optional
+Maintainer:  WMS group <wms-support@lists.infn.it>
+Build-Depends: debhelper (>= 8.0.0~)
+Standards-Version:  3.9.1
+Homepage: http://glite.cern.ch/
+
+Package: glite-wms-configuration
+Architecture: all
+Depends: ${misc:Depends}
+Description: Configuration module for the Workload Management System
+ Configuration module for the Workload Management System
+

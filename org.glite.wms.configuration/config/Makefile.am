@@ -1,49 +1,71 @@
-## *********************************************************************
-## *
-## * Copyright (c) 2002 CERN and INFN on behalf of the EU DataGrid.
-## * For license conditions see LICENSE file or
-## * http://www.edg.org/license.html
-## *
-## *********************************************************************
+#       Copyright (c) 2004 on behalf of the EU EGEE Project:
+#       #       The European Organization for Nuclear Research (CERN),
+#       Istituto Nazionale di Fisica Nucleare (INFN), Italy
+#       #       Datamat Spa, Italy
+#       Centre National de la Recherche Scientifique (CNRS), France
+#       #       CS Systeme d'Information (CSSI), France
+#       Royal Institute of Technology, Center for Parallel Computers (KTH-PDC), Sweden
+#       #       Universiteit van Amsterdam (UvA), Netherlands
+#       University of Helsinki (UH.HIP), Finland
+#       #       University of Bergen (UiB), Norway
+#       Council for the Central Laboratory of the Research Councils (CCLRC), United Kingdom
+#       #
 
-wletcdir = $(sysconfdir)
-wletc_SCRIPTS = glite-wms-vars.sh glite-wms-vars.csh
-wletcutilsdir = $(sysconfdir)/profile.d
-wletcutils_SCRIPTS = glite-wms.sh glite-wms.csh
+EXTRA_DIST = LICENSE
 
-libexec_SCRIPTS = \
-	glite-wms-check-daemons.sh \
-	glite-wms-services-certs.sh \
-	glite-wms-parse-configuration.sh
+docdir = $(datadir)/doc/@PACKAGE@-@PVER@
+doc_DATA = LICENSE
 
-wletcwmdir = $(sysconfdir)
-wletcwm_DATA = glite_wms.conf
+## Subdirectories list
+SUBDIRS = config 
 
-wletcwmsdir = $(sysconfdir)/profile.d
-wletcwms_SCRIPTS = glite-wms-config.sh
+## Default flags to run aclocal
+ACLOCAL_AMFLAGS = -I project
 
-install-data-hook:
-	/bin/mv $(DESTDIR)$(sysconfdir)/glite_wms.conf $(DESTDIR)$(sysconfdir)/glite_wms.conf.template
+stage:
+	@set fnord $(MAKEFLAGS); amf=$$2; \
+	dot_seen=no; \
+        target="install"; \
+	prefix_arg=@prefix@; \
+        list='$(SUBDIRS)'; for subdir in $$list; do \
+          echo "Making $$target $$prefix_arg in $$subdir"; \
+          if test "$$subdir" = "."; then \
+            dot_seen=yes; \
+            local_target="$$target-am"; \
+          else \
+            local_target="$$target"; \
+          fi; \
+          (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) $$local_target $$prefix_arg) \
+           || case "$$amf" in *=*) exit 1;; *k*) fail=yes;; *) exit 1;; esac; \
+        done; \
+        if test "$$dot_seen" = "no"; then \
+          $(MAKE) $(AM_MAKEFLAGS) "$$target-am" $$prefix_arg || exit 1; \
+        fi; test -z "$$fail"
 
-EXTRA_DIST = \
-        glite_wms.conf \
-        glite-wms.csh.in \
-        glite-wms.sh.in \
-        glite-wms-vars.sh.in \
-        glite-wms-vars.csh.in \
-	glite-wms-config.sh.in \
-	glite-wms-parse-configuration.sh.in \
-	glite-wms-check-daemons.sh.in \
-	glite-wms-services-certs.sh
+distsrc: dist
+	mv $(distdir).tar.gz $(DISTTAR)/$(distdir)_src.tar.gz
 
-CLEANFILES = \
-	glite-wms.csh \
-	glite-wms-parse-configuration.sh \
-	glite-wms.sh \
-	glite-wms-vars.sh \
-	glite-wms-vars.csh \
-	glite-wms-check-daemons.sh \
-	glite-wms-config.sh 
-
-MAINTAINERCLEANFILES = Makefile.in *~ *.*~
-
+distbin:
+	@set fnord $(MAKEFLAGS); amf=$$2; \
+        dot_seen=no; \
+        target="install"; \
+	tmpdistbin="$(WORKDIR)/dist_bin"; \
+        prefix_arg="prefix=$$tmpdistbin"; \
+        list='$(SUBDIRS)'; for subdir in $$list; do \
+          echo "Making $$target $$prefix_arg in $$subdir"; \
+          if test "$$subdir" = "."; then \
+            dot_seen=yes; \
+            local_target="$$target-am"; \
+          else \
+            local_target="$$target"; \
+          fi; \
+          (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) $$local_target $$prefix_arg) \
+           || case "$$amf" in *=*) exit 1;; *k*) fail=yes;; *) exit 1;; esac; \
+        done; \
+        if test "$$dot_seen" = "no"; then \
+          $(MAKE) $(AM_MAKEFLAGS) "$$target-am" $$prefix_arg || exit 1; \
+        fi; test -z "$$fail"; \
+	pushd $$tmpdistbin; \
+	$(AMTAR) -zcf $(DISTTAR)/$(distdir)_bin.tar.gz .; \
+	popd; \
+	rm -rf $$tmpdistbin
