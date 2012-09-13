@@ -1,144 +1,73 @@
-# Copyright (c) Members of the EGEE Collaboration. 2004.
-# See http://www.eu-egee.org/partners/ for details on the copyright
-# holders.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+#       Copyright (c) 2004 on behalf of the EU EGEE Project:
+#       #       The European Organization for Nuclear Research (CERN),
+#       Istituto Nazionale di Fisica Nucleare (INFN), Italy
+#       #       Datamat Spa, Italy
+#       Centre National de la Recherche Scientifique (CNRS), France
+#       #       CS Systeme d'Information (CSSI), France
+#       Royal Institute of Technology, Center for Parallel Computers (KTH-PDC), Sweden
+#       #       Universiteit van Amsterdam (UvA), Netherlands
+#       University of Helsinki (UH.HIP), Finland
+#       #       University of Bergen (UiB), Norway
+#       Council for the Central Laboratory of the Research Councils (CCLRC), United Kingdom
+#       #
 
-libexec_PROGRAMS   = glite-wms-eval_ad_expr
-lib_LTLIBRARIES = libglite_wms_common.la
+EXTRA_DIST = LICENSE
 
-glite_wms_eval_ad_expr_SOURCES = utilities/glite-wms-eval_ad_expr.cpp
-glite_wms_eval_ad_expr_LDFLAGS = $(GLITE_LDFLAGS) $(CLASSAD_LDFLAGS)
-glite_wms_eval_ad_expr_LDADD   = \
-	$(GLITE_WMSUTILS_CLASSADS_LIBS) \
-	$(BOOST_LIBS) \
-	$(CLASSAD_LIBS)
+docdir = $(datadir)/doc/@PACKAGE@-@PVER@
+doc_DATA = LICENSE
 
-configuration_cpp_files = \
-	configuration/Configuration.cpp \
-	configuration/JCConfiguration.cpp \
-	configuration/NSConfiguration.cpp \
-	configuration/LMConfiguration.cpp \
-	configuration/ICEConfiguration.cpp \
-	configuration/WMConfiguration.cpp \
-	configuration/WMPConfiguration.cpp \
-	configuration/CommonConfiguration.cpp \
-	configuration/confbase.cpp \
-	configuration/exceptions.cpp \
-	configuration/ModuleType.cpp \
-	configuration/initializer.cpp \
-	configuration/cwrapper.cpp
+## Subdirectories list
+SUBDIRS = interface src
 
-configuration_cpp_g_files = $(wildcard $(srcdir)/configuration/*.cpp.G)
-configuration_generated_cpp_files = $(configuration_cpp_g_files:.G=)
-configuration_h_g_files = $(wildcard $(srcdir)/configuration/*.h.G)
-configuration_generated_h_files = $(configuration_h_g_files:.G=)
+## Default flags to run aclocal
+ACLOCAL_AMFLAGS = -I project
 
-utilities_cpp_files = \
-	utilities/filecontainer.cpp \
-	utilities/fstreamlock.cpp \
-	utilities/FileList.cpp \
-	utilities/FileListIterator.cpp \
-	utilities/FileListLock.cpp \
-	utilities/FileLocker.cpp \
-	utilities/LineParser.cpp \
-	utilities/LineParserExceptions.cpp \
-	utilities/mixed.cpp \
-	utilities/boost_fs_add.cpp \
-	utilities/wm_commands.cpp \
-	utilities/jobdir.cpp \
-	utilities/input_reader.cpp \
-	utilities/jobdir_reader.cpp \
-	utilities/filelist_reader.cpp
+stage:
+	@set fnord $(MAKEFLAGS); amf=$$2; \
+	dot_seen=no; \
+        target="install"; \
+	prefix_arg=@prefix@; \
+        list='$(SUBDIRS)'; for subdir in $$list; do \
+          echo "Making $$target $$prefix_arg in $$subdir"; \
+          if test "$$subdir" = "."; then \
+            dot_seen=yes; \
+            local_target="$$target-am"; \
+          else \
+            local_target="$$target"; \
+          fi; \
+          (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) $$local_target $$prefix_arg) \
+           || case "$$amf" in *=*) exit 1;; *k*) fail=yes;; *) exit 1;; esac; \
+        done; \
+        if test "$$dot_seen" = "no"; then \
+          $(MAKE) $(AM_MAKEFLAGS) "$$target-am" $$prefix_arg || exit 1; \
+        fi; test -z "$$fail"
 
-logger_cpp_files = \
-	logger/common.cpp \
-	logger/logbuf.cpp \
-	logger/logstream.cpp \
-	logger/manipulators.cpp \
-	logger/logstream_ts.cpp \
-	logger/container_ts.cpp \
-	logger/manipulators_ts.cpp \
-	logger/key_value.cpp \
-	logger/logging.cpp
+distsrc: dist
+	mv $(distdir).tar.gz $(DISTTAR)/$(distdir)_src.tar.gz
 
-libglite_wms_common_la_SOURCES = \
-	$(configuration_cpp_files) \
-	$(configuration_generated_cpp_files) \
-	$(utilities_cpp_files) \
-	$(logger_cpp_files)
-libglite_wms_common_la_LDFLAGS = $(GLITE_LDFLAGS)
-libglite_wms_common_la_LIBADD = \
-	$(GLITE_WMSUTILS_CLASSADS_LIBS) \
-	$(BOOST_DATE_LIBS) \
-	$(BOOST_FS_LIBS) \
-	$(BOOST_REGEX_LIBS) \
-	$(BOOST_THREAD_LIBS) \
-	-llog4cpp
+distbin:
+	@set fnord $(MAKEFLAGS); amf=$$2; \
+        dot_seen=no; \
+        target="install"; \
+	tmpdistbin="$(WORKDIR)/dist_bin"; \
+        prefix_arg="prefix=$$tmpdistbin"; \
+        list='$(SUBDIRS)'; for subdir in $$list; do \
+          echo "Making $$target $$prefix_arg in $$subdir"; \
+          if test "$$subdir" = "."; then \
+            dot_seen=yes; \
+            local_target="$$target-am"; \
+          else \
+            local_target="$$target"; \
+          fi; \
+          (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) $$local_target $$prefix_arg) \
+           || case "$$amf" in *=*) exit 1;; *k*) fail=yes;; *) exit 1;; esac; \
+        done; \
+        if test "$$dot_seen" = "no"; then \
+          $(MAKE) $(AM_MAKEFLAGS) "$$target-am" $$prefix_arg || exit 1; \
+        fi; test -z "$$fail"; \
+	pushd $$tmpdistbin; \
+	$(AMTAR) -zcf $(DISTTAR)/$(distdir)_bin.tar.gz .; \
+	popd; \
+	rm -rf $$tmpdistbin
 
-AM_CPPFLAGS = -I$(top_srcdir)/interface \
-	-I$(top_srcdir)/src \
-	$(GLITE_CPPFLAGS) \
-	$(BOOST_CFLAGS) \
-	$(CLASSAD_CPPFLAGS) \
-	$(GLOBUS_THR_CFLAGS)
 
-utilitiesincludedir = $(includedir)/glite/wms/common/utilities
-utilitiesinclude_HEADERS = \
-	utilities/boost_fs_add.h \
-	utilities/streamdescriptor.h \
-	utilities/globus_ftp_macros.h \
-	utilities/globus_ftp_utils.h \
-	utilities/LineParserExceptions.h \
-	utilities/quota.h \
-	utilities/triple.h \
-	utilities/scope_guard.h \
-	utilities/jobdir.h \
-	utilities/input_reader.h \
-	utilities/jobdir_reader.h \
-	utilities/filelist_reader.h
-
-EXTRA_DIST = \
-	utilities/triple.h \
-	configuration/JCConfiguration.h.G \
-	configuration/LMConfiguration.h.G \
-	configuration/ICEConfiguration.h.G \
-	configuration/NSConfiguration.h.G \
-	configuration/WMConfiguration.h.G \
-        configuration/WMPConfiguration.h.G \
-	configuration/CommonConfiguration.h.G \
-	configuration/cwrapper.h.G \
-	configuration/cwrapper.cpp.G \
-	configuration/Configuration.def
-
-configuration/Configuration.cpp: configuration/JCConfiguration.h $(configuration_generated_h_files)
-
-configurationincludedir = $(includedir)/glite/wms/common/configuration
-configurationinclude_HEADERS = \
-	configuration/cwrapper.h \
-	$(configuration_generated_h_files)
-
-CLEANFILES = \
-	$(configuration_generated_h_files) \
-	$(configuration_generated_cpp_files)
-
-generator_definition_file = $(srcdir)/configuration/Configuration.def
-
-%.h: %.h.G $(generator_definition_file)
-	$(top_srcdir)/src/scripts/generator.pl $(generator_definition_file) -H $<
-	cp $@ $(top_srcdir)/interface/glite/wms/common/configuration
-
-%.cpp: %.cpp.G $(generator_definition_file)
-	$(top_srcdir)/src/scripts/generator.pl $(generator_definition_file) -c $<
-
-MAINTAINERCLEANFILES = Makefile.in *~

@@ -15,6 +15,7 @@ glite_wms_get_configuration_SOURCES = get_configuration.cpp
 glite_wms_get_configuration_LDADD   = \
 	$(CONFIG) \
 	$(UTIL) \
+        -L$(GLITE_LOCATION)/lib $(GLITE_JOBID_LIBS) \
 	$(GLITE_WMSUTILS_CLASSADS_LIBS) \
 	$(BOOST_LIBS) \
 	$(CLASSAD_LIBS)

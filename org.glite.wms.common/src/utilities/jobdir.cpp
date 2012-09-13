@@ -17,13 +17,14 @@
 // See the License for the specific language governing permissions and 
 // limitations under the License.
 
-// $Id$
+// $Id: jobdir.cpp,v 1.3.2.5.2.2 2009/02/13 12:43:33 mcecchi Exp $
  
-#include "jobdir.h"
+#include "glite/wms/common/utilities/jobdir.h"
 #include <cerrno>
 #include <sstream>
 #include <iomanip>
 #include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/exception.hpp>
 #include <boost/filesystem/fstream.hpp>
 #include <boost/filesystem/convenience.hpp>
 #include <boost/lexical_cast.hpp>
@@ -148,9 +149,16 @@ fs::path JobDir::deliver(
     file_name += '_';
     file_name += tag;
   }
+
   fs::path const file(file_name, fs::native);
-  fs::path const tmp_path(m_impl->tmp_dir / file);
-  fs::path const new_path(m_impl->new_dir / file);
+  fs::path tmp_path;
+  fs::path new_path;
+  try {
+    tmp_path = m_impl->tmp_dir / file;
+    new_path = m_impl->new_dir / file;
+  } catch (boost::filesystem::filesystem_error const& e) {
+    throw JobDirError(e.what());
+  }
 
   fs::ofstream tmp_file(tmp_path);
   if (!tmp_file) {
@@ -168,7 +176,7 @@ fs::path JobDir::deliver(
     throw JobDirError(msg);
   }
 
-  tmp_file.close(); // synch too?
+  tmp_file.close(); // sync too? yes, rename doesn't sync (TODO)
 
   bool e = std::rename(tmp_path.string().c_str(), new_path.string().c_str());
   if (e) {
@@ -183,9 +191,14 @@ fs::path JobDir::deliver(
 
 fs::path JobDir::set_old(fs::path const& file)
 {
-  fs::path const new_path(m_impl->new_dir / file.leaf());
-  fs::path const old_path(m_impl->old_dir / file.leaf());
-
+  fs::path new_path;
+  fs::path old_path;
+  try {
+    new_path = m_impl->new_dir / file.leaf();
+    old_path = m_impl->old_dir / file.leaf();
+  } catch (boost::filesystem::filesystem_error const& e) {
+    throw JobDirError(e.what());
+  }
   bool e = std::rename(new_path.string().c_str(), old_path.string().c_str());
   if (e) {
     std::string msg("rename failed for ");
@@ -226,13 +239,14 @@ std::pair<JobDir::iterator, JobDir::iterator> JobDir::old_entries()
   return boost::make_shared_container_range(entries);
 }
 
-bool JobDir::create(fs::path const& base_dir)
+bool JobDir::create(fs::path const& base_dir) try
 {
   return
     create_directories(base_dir / fs::path(tmp_tag, fs::native))
     && create_directories(base_dir / fs::path(new_tag, fs::native))
     && create_directories(base_dir / fs::path(old_tag, fs::native));
+} catch (boost::filesystem::filesystem_error const& e) {
+  throw JobDirError(e.what());
 }
 
 }}}} // glite::wms::common::utilities
-

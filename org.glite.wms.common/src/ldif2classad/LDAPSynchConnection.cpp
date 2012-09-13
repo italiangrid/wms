@@ -1,3 +1,21 @@
+/* Copyright (c) Members of the EGEE Collaboration. 2004.
+See http://www.eu-egee.org/partners for details on the
+copyright holders.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
 
 /***************************************************************************
  *  filename  : LDAPSynchConnection.cpp
@@ -11,7 +29,7 @@
  * @author Salvatore Monforte salvatore.monforte@ct.infn.it
  * @author comments by Marco Pappalardo marco.pappalardo@ct.infn.it and Salvatore Monforte
  */
-// $Id$
+// $Id: LDAPSynchConnection.cpp,v 1.6.20.1.4.3.4.1 2012/02/15 09:26:35 mcecchi Exp $
 
 /** Includes header definitions. */
 #include "glite/wms/common/ldif2classad/LDAPQuery.h"
@@ -20,7 +38,7 @@
 #ifdef WITH_LDAP_EXCEPTIONS
 #include "glite/wms/common/ldif2classad/exceptions.h"
 #include "glite/wms/common/utilities/edgstrstream.h"
-#endif
+#endif 
 
 namespace glite {
 namespace wms {
@@ -54,40 +72,40 @@ LDAPSynchConnection::~LDAPSynchConnection()
 
 
 /**
- * Opens a connection to the Server.
+ * Opens a connection to the Server. 
  * This function overrides virtual LDAP Connection one.
  * @return true on success, false otherwise.
  */
 bool LDAPSynchConnection::open()
 {
   bool result = false;
-
+  
   close();
 
   LDAP* h_ldap = NULL;
   if ( (h_ldap = ldap_init( const_cast<char*>(source_name.c_str()), source_port) ) ) {
-
+    
     ldap_set_option(h_ldap, LDAP_OPT_NETWORK_TIMEOUT, &timeout);
-
+    
     if( (ldap_last_error=ldap_simple_bind_s(h_ldap,0,0)) == LDAP_SUCCESS )  {
-
+      
       handle = h_ldap;
       result  = true;
-    }
+    } 
 #ifdef WITH_LDAP_EXCEPTIONS
     else {
       utilities::oedgstrstream source;
-      source << "contact=" << source_name << ":" << source_port << ", dn=" << base_dn;
-      std::string connection_info(source.str());
+      source << "contact=" << source_name << ":" << source_port << ", dn=" << base_dn;      
+      std::string connection_info(source.str());       
       std::string error_msg(ldap_err2string(ldap_last_error));
-      throw ConnectionException(connection_info, std::string("ldap_simple_bind_s()"), error_msg);
+      throw ConnectionException(connection_info, std::string("ldap_simple_bind_s()"), error_msg); 
     }
 #endif
   }
   else {
     if( h_ldap ) {
       ldap_unbind( h_ldap );
-    }
+    } 
   }
   return result;
 }
@@ -95,26 +113,26 @@ bool LDAPSynchConnection::open()
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 // Search
 //
-generic_search_result_t* LDAPSynchConnection::execute( LDAPQuery* query )
+generic_search_result_t* LDAPSynchConnection::execute( LDAPQuery* query ) 
 {
   generic_search_result_t *search_result = NULL;
 
   if( is_established() ) {
-
+    
     int    scope  = query -> scope();
     char*  filter = (char*)query -> filter().c_str();
     char** topics = make_topics( query -> topics() );
-
+    
     LDAPMessage *ldresult = NULL;
     ldap_last_error = ldap_search_st( handle,
-	(char*)base_dn.c_str(),
+	(char*)base_dn.c_str(), 
 	scope,
 	filter,
 	topics,
 	false,
-	&timeout,
+	&timeout, 
 	&ldresult );
-
+    
     delete[] topics;
     if( ldap_last_error != LDAP_SUCCESS ) {
 
@@ -139,29 +157,29 @@ generic_search_result_t* LDAPSynchConnection::execute( LDAPQuery* query )
 //
 bool LDAPSynchConnection::close()
 {
-  bool return_status = ( is_established() &&
+  bool return_status = ( is_established() && 
 			 ldap_unbind( handle ) == LDAP_SUCCESS);
-
+   
   handle = NULL;
-
-  return return_status;
+  
+  return return_status; 
 }
 
 
 /**
  * Topics creator.
- * Creates a vector of pointer to topics to us AP Connection
+ * Creates a vector of pointer to topics to us AP Connection 
  * for record satisfing a filter, having a specified scope.
  */
 char** LDAPSynchConnection::make_topics(const std::vector<std::string>& topic)
 {
 	std::vector<std::string>::const_iterator it;
-
+  
   int i = 0;
   char** t = new char*[ topic.size()+1 ];
-
+  
   for( it = topic.begin(); it != topic.end(); it++) {
-
+    
     t[i++] = const_cast<char*>( (*it).c_str() );
   }
   t[i]=NULL;
@@ -172,12 +190,13 @@ char** LDAPSynchConnection::make_topics(const std::vector<std::string>& topic)
  * Shows wheter tconnection is established or not.
  * @return true if connection is established, false otherwise.
  */
-bool LDAPSynchConnection::is_established() const
-{
+bool LDAPSynchConnection::is_established() const 
+{  
   return handle != NULL;
 }
 
-} // namespace ldif2classad
+} // namespace ldif2classad 
 } // namespace common
 } // namespace wms
-} // namespace glite
+} // namespace glite 
+

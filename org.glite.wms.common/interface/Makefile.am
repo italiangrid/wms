@@ -33,13 +33,18 @@ nobase_commonut_HEADERS = \
 	glite/wms/common/utilities/FileList.h \
 	glite/wms/common/utilities/FileListIterator.h \
 	glite/wms/common/utilities/FileListLock.h \
+	glite/wms/common/utilities/filelist_reader.h \
 	glite/wms/common/utilities/FileLocker.h \
 	glite/wms/common/utilities/FLExtractor.h \
 	glite/wms/common/utilities/FLExtractor.cpp \
 	glite/wms/common/utilities/fstreamlock.h \
+	glite/wms/common/utilities/input_reader.h \
+	glite/wms/common/utilities/jobdir.h \
+	glite/wms/common/utilities/jobdir_reader.h \
 	glite/wms/common/utilities/LineParser.h \
 	glite/wms/common/utilities/mixed.h \
         glite/wms/common/utilities/result_codes.h \
+	glite/wms/common/utilities/scope_guard.h \
         glite/wms/common/utilities/wm_commands.h
 
 MAINTAINERCLEANFILES = Makefile.in

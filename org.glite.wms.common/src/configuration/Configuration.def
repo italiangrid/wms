@@ -9,8 +9,6 @@ class ConfBase {
   section normal {
 
     parameter int( LogLevel );
-    parameter unsigned int( LogRotationMaxFileNumber = 5 );
-    parameter std::streamsize( LogFileMaxSize = 100000000 );
 
     template( bool )
     inline @ATTRTYPE@ @.@( @ATTRTYPE@ def = @ATTRDEF@ ) <const> { return this->getBool( @ATTRNAME@, def ); }
@@ -100,7 +98,6 @@ class ConfBase {
   section fileparse {
 
     parameter std::string( LogFile );
-    parameter std::string( LogRotationBaseFile = "[[LogFile]]" );
     parameter std::string( LockFile );
 
     template( std::string )
@@ -208,7 +205,7 @@ class CommonConfiguration {
 
   parameter std::string( DGUser = "dguser" ) section parse;
   parameter std::string( HostProxyFile ) section fileparse;
-  parameter bool( UseCacheInsteadOfGris = false ) section normal;
+  parameter bool ( LBProxy = true ) section normal;
 }
 
 class JCConfiguration {
@@ -233,16 +230,12 @@ class JCConfiguration {
   parameter int( ContainerRefreshThreshold = 1000 ) section normal;
 
   parameter std::string( CondorSubmit ) section fileparse;
+  parameter std::string(CondorRelease) section fileparse;
   parameter std::string( CondorRemove ) section fileparse;
   parameter std::string( CondorDagman ) section fileparse;
-  parameter int( DagmanLogLevel ) section normal;
-  parameter int( DagmanLogRotate ) section normal;
-  parameter int(DagmanMaxPre = 10) section normal;
-  parameter int(MaxDAGRunningNodes = 10) section normal;
   parameter int( MaximumTimeAllowedForCondorMatch = 900 ) section normal;
 
   parameter std::string( Input ) section fileparse;
-  parameter std::string( InputType = "filelist" ) section normal;
   parameter std::string( SubmitFileDir ) section fileparse;
   parameter std::string( OutputFileDir ) section fileparse;
 }
@@ -297,20 +290,17 @@ class NSConfiguration {
   copy ConfBase.parse;
   copy ConfBase.fileparse;
 
-  parameter int( BacklogSize = 16 ) section normal;
-  parameter int( ListeningPort ) section normal;
-  parameter int( MasterThreads ) section normal;
-  parameter int( DispatcherThreads ) section normal;
   parameter long( ConnectionTimeout = 120 ) section normal;
+  parameter long( QuotaAdjustmentAmount = 10000 ) section normal;
 
   parameter std::string( SandboxStagingPath = "${GLITE_WMS_TMP}/SandboxDir" ) section fileparse;
   parameter std::string( ListMatchRootPath = "/tmp" ) section fileparse;
 
-  parameter double( MaxInputSandboxSize = 10000000 ) section normal;
   parameter bool( EnableQuotaManagement = false ) section normal; 
   parameter bool( EnableDynamicQuotaAdjustment = false) section normal;
-  parameter long( QuotaAdjustmentAmount = 10000 ) section normal;
+
   parameter double( QuotaInsensibleDiskPortion = 0.0 ) section normal;  
+  parameter double( MaxInputSandboxSize = 10000000 ) section normal;
 
 #
 #  Parameters to query the II for the schema...
@@ -351,31 +341,35 @@ class WMConfiguration {
   copy ConfBase.parse;
   copy ConfBase.fileparse;
 
-  parameter bool(Fake = false) section normal;
-  parameter int(PipeDepth = 10) section normal;
+  parameter int(QueueSize = 500) section normal;
+  parameter int(ReplanGracePeriod = 3600) section normal;
   parameter int(WorkerThreads = 10) section normal;
-  parameter int(InputIterations = 1) section normal;
+  parameter bool(IsmThreads = true) section normal;
+  parameter std::string(RuntimeMalloc = "") section fileparse;
   parameter int(MaxRetryCount = 10) section normal;
   parameter int(MaxShallowRetryCount = 10) section normal;
+  parameter int(MaxReplansCount = 5) section normal;
   parameter bool(EnableRecovery = false) section normal;
   parameter bool(EnableStatusCheck = false) section normal;
   parameter std::string(Input = "${EDG_WL_TMP}/workload_manager/input.fl") section fileparse;
-  parameter std::string(BrokerLib = "libglite_wms_helper_broker_ism.so.0") section fileparse;
-  parameter std::string(IsmGlue13Lib = "libglite_wms_ism_ii_purchaser.so.0") section fileparse;
-  parameter std::string(IsmGlue20Lib = "libglite_wms_ism_ii_g2_purchaser.so.0") section fileparse;
+  parameter std::string(BrokerLib = "libglite_wms_helper_broker_ism.so") section fileparse;
+  parameter std::string(IiGlueLib = "libglite_wms_ism_ii_purchaser.so.0") section fileparse;
   parameter std::string(IsmDump = "${GLITE_WMS_TMP}/workload_manager/ismdump.fl") section fileparse;
-  parameter bool(EnableIsmDump = true) section normal;
-  parameter int(IsmUpdateRate = 50) section normal;
-  parameter int(IsmDumpRate = 50) section normal;
+  parameter int(IsmUpdateRate = 799) section normal;
   parameter std::vector<std::string>(IsmBlackList) section normal;
-  parameter std::string(DispatcherType = "filelist") section normal;
   parameter std::vector<std::string>(CeMonitorServices) section normal;
   parameter int(CeMonitorAsynchPort = -1) section normal;
   parameter int(IsmIiPurchasingRate = 240) section normal;
+  parameter std::string(IsmIiLDAPCEFilterExt = "") section normal;
+  parameter std::string(IsmIiG2LDAPCEFilterExt = "") section normal;
+  parameter std::string(IsmIiG2LDAPSEFilterExt = "") section normal;
   parameter int(IsmCEMonPurchasingRate = 120) section normal;
   parameter int(IsmCEMonAsynchPurchasingRate = 30) section normal;
   parameter bool(DisablePurchasingFromGris = false) section normal;
   parameter bool(EnablePurchasingFromRgma = false) section normal;
+  parameter bool(EnableReplanner = false) section normal;
+  parameter bool(EnableIsmIiGlue20Purchasing = true) section normal;
+  parameter bool(EnableIsmIiGlue13Purchasing = true) section normal;
   parameter int(RgmaQueryTimeout = 30) section normal;
   parameter int(RgmaConsumerTtl = 300) section normal;
   parameter int(RgmaConsumerLifeCycle = 30) section normal;
@@ -384,14 +378,74 @@ class WMConfiguration {
   parameter std::string(DliServiceName = "data-location-interface") section normal;
   parameter std::string(SiServiceName = "org.glite.SEIndex") section normal;
   parameter std::string(JobWrapperTemplateDir = "${GLITE_WMS_LOCATION}/etc/templates") section fileparse;
-  parameter std::string(PboxHostName) section fileparse;
-  parameter int(PboxPortNum = 6699) section normal;
-  parameter bool(PboxSafeMode = false) section normal;
   parameter std::vector<std::string>(CeForwardParameters) section normal;
   parameter int(MatchRetryPeriod = 1000) section normal;
   parameter int(ExpiryPeriod = 86400) section normal;
-  parameter bool(EnableBulkMM = false) section normal;
   parameter double( MaxOutputSandboxSize = 100000000 ) section normal;
+  parameter bool(SbRetryDifferentProtocols = false) section normal;
+  parameter classad::ExprTree*(PropagateToLRMS) section normal;
+  parameter classad::ExprTree*(WmsRequirements) section normal;
+}
+class WMCConfiguration {
+
+  defaultvalue bool = false;
+  defaultvalue int = 0;
+  defaultvalue std::string = "";
+
+  wrapper {
+    prefix = edg_wlcc_WmsClient_;
+    contexttype = const configuration::WMCConfiguration *;
+    contextfunc = wc;
+  }
+
+  copy ConfBase.normal;
+  copy ConfBase.parse;
+  copy ConfBase.fileparse;
+
+# OLD Approach (deprecated values moved into JdlDefaultAttributes
+  parameter std::string(VirtualOrganisation) section normal;
+  parameter int(RetryCount = 3) section normal;
+  parameter int(ShallowRetryCount = 3) section normal;
+  parameter classad::ExprTree*(requirements) section normal;
+  parameter classad::ExprTree*(rank) section normal;
+  parameter std::string(HLRLocation) section normal;
+  parameter std::string(MyProxyServer) section normal;
+  parameter std::string(JobProvenance) section normal;
+  parameter std::string(LBAddress) section normal;  
+  parameter bool(PerusalFileEnable=false) section normal;
+  parameter bool(AllowZippedISB=false) section normal;
+# OLD Approach END
+
+# Minimal value for proxy validity (in minutes)
+  parameter int(DefaultProxyValidity= 5) section normal;
+  parameter int(DefaultStatusLevel  = 1) section normal;
+  parameter int(DefaultLoggingLevel = 0) section normal;
+  parameter std::string(ErrorStorage=   "/var/tmp") section fileparse;
+  parameter std::string(OutputStorage=  "/tmp") section fileparse;
+  parameter std::string(ListenerStorage="/tmp") section fileparse;
+
+# Service Discovery Types
+  parameter std::string ( LBServiceDiscoveryType      = "org.glite.lb.Server"  ) section normal;
+  parameter std::string ( WMProxyServiceDiscoveryType = "org.glite.wms.WMProxy") section normal;
+  parameter bool ( EnableServiceDiscovery = false ) section normal;
+
+
+  parameter std::vector<std::string>(WmProxyEndPoints) section normal;
+# LB WS-based interface not yet used:
+# parameter std::vector<std::string>(LBEndPoints) section normal;
+  parameter classad::ClassAd*(JdlDefaultAttributes) section normal;
+
+# SOAP Timeouts
+  parameter classad::ClassAd*(SoapTimeouts) section normal;
+  
+
+ parameter int( SoapSendTimeout = 360 ) section normal;
+ parameter int( SoapReceiveTimeout = 360 ) section normal; 
+
+
+
+# System Call Timeout  
+  parameter int(SystemCallTimeout) section normal;
 }
 class WMPConfiguration {
 
@@ -420,21 +474,19 @@ class WMPConfiguration {
   parameter std::string ( SandboxStagingPath = "/var/glite/SandboxDir" ) section fileparse;
   parameter std::string ( ListMatchRootPath = "/tmp" ) section fileparse;
 
-  parameter bool ( LBProxy = true ) section normal;
+  parameter bool ( ArgusAuthz = false ) section normal;
+  parameter std::vector<std::string> ( ArgusPepdEndpoints = "" ) section normal;
   parameter bool ( EnableServiceDiscovery = false ) section normal;
   parameter std::string ( LBServiceDiscoveryType      = "org.glite.lb.server"  ) section normal;
   parameter long ( ServiceDiscoveryInfoValidity = 3600 ) section normal;
   parameter long ( WeightsCacheValidity = 21600 ) section normal;
   parameter std::string ( WeightsCachePath = "/var/glite/wmproxy" ) section fileparse;
   parameter std::vector<std::string>( LBServer ) section normal;
-  parameter std::string ( LBLocalLogger ) section normal;
-  parameter classad::ExprTree*(SDJRequirements) section normal;
   parameter classad::ClassAd*( OperationLoadScripts ) section normal;
   parameter bool ( AsyncJobStart = true ) section normal;
   parameter long ( MaxServedRequests = 300 ) section normal;
 
   parameter int(listMatchTimeout = 600) section normal;
-
   parameter int(maxPerusalFiles = 15) section normal;
   parameter int(maxInputSandboxFiles = 10) section normal;
   parameter int(maxOutputSandboxFiles = 10) section normal;
@@ -458,29 +510,27 @@ class ICEConfiguration {
   copy ConfBase.fileparse;
 
 #  parameter bool( UseMaradonaFile = true ) section normal;
-#  parameter int(  pippo = 1000 ) section normal;
-  parameter int( listener_port = 9000) section normal;
+  parameter int( listener_port = 7010) section normal;
   parameter int( subscription_update_threshold_time = 1200) section normal;
   parameter int( subscription_duration = 86400) section normal;
-  parameter std::string( Input = "${EDG_WL_TMP}/workload_manager/Output.fl") section fileparse;
-  parameter std::string( cache_persist_file = "/tmp/ice_cache_persist_file") section fileparse;
+  parameter std::string( Input = "${GLITE_LOCATION_VAR}/ice/ice_fl") section fileparse;
   parameter std::string( logfile = "${GLITE_LOCATION_LOG}/ice.log") section fileparse;
   parameter bool( start_poller = true ) section normal;
   parameter bool( purge_jobs = true ) section normal;
   parameter bool( start_listener = true ) section normal;
   parameter bool( start_subscription_updater = true ) section normal;
-  parameter int( poller_delay = 60 ) section normal;
+  parameter int( poller_delay = 2*60 ) section normal;
   parameter std::string( cream_url_prefix = "https://") section normal;
   parameter std::string( cream_url_postfix = "/ce-cream/services/CREAM" ) section normal;
   parameter std::string( creamdelegation_url_prefix = "https://") section normal;
-  parameter std::string( creamdelegation_url_postfix = "/ce-cream/services/CREAMDelegation" ) section normal;
+  parameter std::string( creamdelegation_url_postfix = "/ce-cream/services/gridsite-delegation" ) section normal;
   parameter std::string( cemon_url_prefix = "https://") section normal;
   parameter std::string( cemon_url_postfix = "/ce-monitor/services/CEMonitor" ) section normal;
   parameter std::string( ice_topic = "CREAM_JOBS" ) section normal;
-  parameter int( poller_status_threshold_time = 60 ) section normal;
-  parameter bool( log_on_console = true ) section normal;
+  parameter int( poller_status_threshold_time = 30*60 ) section normal;
+  parameter bool( log_on_console = false ) section normal;
   parameter bool( log_on_file = true) section normal;
-  parameter int( notification_frequency = 60 ) section normal;
+  parameter int( notification_frequency = 3*60 ) section normal;
   parameter int( lease_delta_time = 3600 ) section normal;
   parameter int( ice_log_level = 400 ) section normal;
   parameter bool( listener_enable_authn = true ) section normal;
@@ -496,11 +546,20 @@ class ICEConfiguration {
   parameter unsigned int( max_ice_threads = 10 ) section normal;
   parameter std::string( persist_dir = "${GLITE_LOCATION_VAR}/ice/ice_db" ) section fileparse;
   parameter int( soap_timeout = 60) section normal;
-  parameter std::string( InputType = "filelist" ) section normal;
   parameter int( proxy_renewal_frequency = 600 ) section normal;
   parameter int( bulk_query_size = 100 ) section normal;
   parameter int( lease_update_frequency = 1800 ) section normal;
-  
+  parameter int( ice_empty_threshold = 600 ) section normal;
+  parameter long( max_ice_mem = 524288 ) section normal; 
+  parameter bool( disable_deregister = false ) section normal;
+  parameter bool( disable_purge_storage = false ) section normal;
+  parameter bool( no_listener_message = false ) section normal;
+  parameter bool( disable_lb = false ) section normal;
+  parameter int( ce_blacklist_opcount_max = 20 ) section normal;
+  parameter int( ce_blacklist_time = 30*60 ) section normal;
+  parameter bool( fail_job_blacklisted_ce = false ) section normal;
+  parameter int( proxy_renewal_timeout = 120 ) section normal;
+
 
 #  parameter int( MainLoopDuration = 3 ) section normal;
 #  parameter int( AbortedJobsTimeout = 600 ) section normal;

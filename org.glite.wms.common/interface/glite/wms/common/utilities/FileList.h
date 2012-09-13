@@ -1,3 +1,22 @@
+/*
+Copyright (c) Members of the EGEE Collaboration. 2004.
+See http://www.eu-egee.org/partners for details on the
+copyright holders.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
 #ifndef GLITE_WMS_COMMON_UTILITIES_FILELIST_H
 #define GLITE_WMS_COMMON_UTILITIES_FILELIST_H
 
@@ -127,20 +146,20 @@ public:
 };
 
 template<class Type, class Converter>
-FileList<Type, Converter>::FileList<Type, Converter>( void ) : _file_sequence_t() {}
+FileList<Type, Converter>::FileList( void ) : _file_sequence_t() {}
 
 template<class Type, class Converter>
-FileList<Type, Converter>::FileList<Type, Converter>( const std::string &filename ) :
+FileList<Type, Converter>::FileList( const std::string &filename ) :
   _file_sequence_t( filename.c_str() )
 {}
 
 template<class Type, class Converter>
-FileList<Type, Converter>::FileList<Type, Converter>( const char *filename ) :
+FileList<Type, Converter>::FileList( const char *filename ) :
   _file_sequence_t( filename )
 {}
 
 template<class Type, class Converter>
-FileList<Type, Converter>::~FileList<Type, Converter>( void ) {}
+FileList<Type, Converter>::~FileList( void ) {}
 
 template<> 
 inline void FileList<std::string>::push_front( const std::string &data ) { this->insertData( this->getBegin(), data ); }
@@ -166,3 +185,4 @@ inline void FileList<std::string>::remove( const std::string &val ) { this->remo
 // Local Variables:
 // mode: c++
 // End:
+

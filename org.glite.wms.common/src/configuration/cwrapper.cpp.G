@@ -1,6 +1,6 @@
 #include <cstdlib>
 
-#include <string>
+#include <cstring>
 
 #include "glite/wms/common/configuration/initializer.h"
 #include "glite/wms/common/configuration/Configuration.h"

@@ -1,3 +1,22 @@
+/*
+Copyright (c) Members of the EGEE Collaboration. 2004.
+See http://www.eu-egee.org/partners for details on the
+copyright holders.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
 #include <boost/regex.hpp>
 #include <classad_distribution.h>
 #include "glite/wmsutils/classads/classad_utils.h"
@@ -6,7 +25,8 @@
 
 using namespace std;
 
-namespace utilities = glite::wmsutils::classads;
+namespace classads = glite::wmsutils::classads;
+namespace utilities = glite::wms::common::utilities;
 
 namespace glite {
 namespace wms {
@@ -49,7 +69,7 @@ string confbase_c::getAndParseFileName( const char *name, const string &def ) co
 {
   string     unparsed( this->getAndParseString(name, def) );
 
-  return boost::filesystem::normalize_path( unparsed );
+  return utilities::normalize_path( unparsed );
 }
 
 bool confbase_c::getBool( const char *name, bool def ) const
@@ -96,7 +116,7 @@ vector<string> confbase_c::getVector( const char *name ) const
 {
   vector<string>   v;
 
-  utilities::EvaluateAttrListOrSingle( *this->cb_ad, name, v );
+  classads::EvaluateAttrListOrSingle( *this->cb_ad, name, v );
 
   return v;
 }

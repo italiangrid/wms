@@ -16,6 +16,12 @@ libglite_wms_LDIF2ClassAd_la_SOURCES = \
 	LDIFObject.cpp \
 	LDAPForwardIterator.cpp
 
+libglite_wms_LDIF2ClassAd_la_LIBADD = $(GLITE_WMSUTILS_EXCEPTION_LIBS) \
+        $(CLASSAD_LIBS) \
+        $(GLOBUS_COMMON_LIBS) \
+        $(BOOST_LIBS) \
+        $(LDAP_LIBS)
+
 ldif2classadincludedir = $(includedir)/glite/wms/common/ldif2classad
 ldif2classadinclude_HEADERS = \
 	LDAPFilterParser.h \
@@ -23,10 +29,11 @@ ldif2classadinclude_HEADERS = \
 
 AM_CPPFLAGS = -I$(top_srcdir)/interface \
 	-I$(top_srcdir)/src \
-	$(GLITE_CFLAGS) \
+	$(GLITE_WMSUTILS_EXCEPTION_CFLAGS) \
 	$(CLASSAD_CFLAGS) \
-	$(GLOBUS_THR_CFLAGS) \
+	$(GLOBUS_COMMON_CFLAGS) \
 	$(BOOST_CFLAGS) \
+        $(LDAP_CPPFLAGS) \
 	-DWITH_LDAP_EXCEPTIONS \
 	-DDONT_QUOTE_TRUE_FALSE
 

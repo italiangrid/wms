@@ -1,3 +1,22 @@
+/*
+Copyright (c) Members of the EGEE Collaboration. 2004.
+See http://www.eu-egee.org/partners for details on the
+copyright holders.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
 #ifndef GLITE_WMS_COMMON_UTILITIES_FILELISTITERATOR_H
 #define GLITE_WMS_COMMON_UTILITIES_FILELISTITERATOR_H
 
@@ -160,24 +179,24 @@ template <class Type, class Converter>
 Converter  FLIterator<Type, Converter>::fli_s_converter;
 
 template <class Type, class Converter>
-FLIterator<Type, Converter>::FLIterator<Type, Converter>( void ) : _base_iterator_t(), fli_object() {}
+FLIterator<Type, Converter>::FLIterator( void ) : _base_iterator_t(), fli_object() {}
 
 template <class Type, class Converter>
-FLIterator<Type, Converter>::FLIterator<Type, Converter>( const FLIterator<Type, Converter> &fli ) :
+FLIterator<Type, Converter>::FLIterator( const FLIterator<Type, Converter> &fli ) :
   _base_iterator_t( fli ), fli_object()
 {}
 
 template <class Type, class Converter>
-FLIterator<Type, Converter>::FLIterator<Type, Converter>( const _base_iterator_t &bi ) : _base_iterator_t( bi ), fli_object()
+FLIterator<Type, Converter>::FLIterator( const _base_iterator_t &bi ) : _base_iterator_t( bi ), fli_object()
 { this->read_string( false ); }
 
 template <class Type, class Converter>
-FLIterator<Type, Converter>::FLIterator<Type, Converter>( const FileIterator &it, _file_sequence_t &seq ) : _base_iterator_t( it, seq ),
+FLIterator<Type, Converter>::FLIterator( const FileIterator &it, _file_sequence_t &seq ) : _base_iterator_t( it, seq ),
 													    fli_object()
 { this->read_string( false ); }
 
 template <class Type, class Converter>
-FLIterator<Type, Converter>::~FLIterator<Type, Converter>( void ) {}
+FLIterator<Type, Converter>::~FLIterator( void ) {}
 
 template<> inline const std::string &FLIterator<std::string>::operator*( void ) const 
 { 
@@ -200,3 +219,4 @@ template<> inline const std::string *FLIterator<std::string>::operator->( void )
 // Local Variables:
 // mode: c++
 // End:
+

@@ -8,45 +8,35 @@
 
 CONF = $(top_builddir)/src/configuration/libglite_wms_conf.la
 
-sbin_PROGRAMS      = glite-wms-quota-adjust
-
 lib_LTLIBRARIES    = \
 	libglite_wms_util.la \
-	libglite_wms_globus_ftp_util.la \
 	libglite_wms_iiattrutil.la \
 	libglite_wms_quota.la
 
-libexec_PROGRAMS   = glite-wms-eval_ad_expr
+sbin_PROGRAMS      = glite-wms-quota-adjust
+
+libexec_PROGRAMS   = glite-wms-eval_ad_expr 
 
 glite_wms_eval_ad_expr_SOURCES = glite-wms-eval_ad_expr.cpp
 glite_wms_eval_ad_expr_LDADD   = \
         ./libglite_wms_util.la \
 	$(GLITE_WMSUTILS_CLASSADS_LIBS) \
 	$(BOOST_LIBS) \
-	$(CLASSAD_LIBS)
+	$(CLASSAD_LIBS) \
+        $(GLITE_JOBID_LIBS) 
 
 glite_wms_quota_adjust_SOURCES = glite_wms_quota_adjust.cpp
 glite_wms_quota_adjust_LDADD = \
         $(CONF) \
         ./libglite_wms_util.la \
         $(BOOST_FS_LIBS) -lpthread \
+	$(BOOST_LIBS) \
         $(BOOST_REGEX_LIBS) \
-	$(CLASSAD_LIBS)
-glite_wms_quota_adjust_LDFLAGS = -all-static
-
-libglite_wms_globus_ftp_util_la_SOURCES = \
-	globus_ftp_mkdir.cpp \
-	globus_ftp_put.cpp \
-        globus_ftp_get.cpp \
-	globus_ftp_exists.cpp
+	$(CLASSAD_LIBS) \
+        $(GLITE_WMSUTILS_CLASSADS_LIBS) \
+        $(GLITE_JOBID_LIBS)
 
 libglite_wms_util_la_SOURCES = \
-	filecontainer.cpp \
-	fstreamlock.cpp \
-	FileList.cpp \
-	FileListIterator.cpp \
-	FileListLock.cpp \
-	FileLocker.cpp \
 	LineParser.cpp \
 	LineParserExceptions.cpp \
 	mixed.cpp \
@@ -55,10 +45,13 @@ libglite_wms_util_la_SOURCES = \
 	jobdir.cpp \
 	input_reader.cpp \
 	jobdir_reader.cpp \
-	filelist_reader.cpp
+        manipulation.cpp
 
 libglite_wms_util_la_LIBADD = -lstdc++ \
-	$(BOOST_DATE_LIBS)
+	$(BOOST_LIBS) \
+	$(CLASSAD_LIBS) \
+	$(GLITE_WMSUTILS_CLASSADS_LIBS) \
+	$(GLITE_JOBID_LIBS)
 
 libglite_wms_iiattrutil_la_SOURCES = \
 	ii_attr_utils.cpp
@@ -70,28 +63,21 @@ utilitiesincludedir = $(includedir)/glite/wms/common/utilities
 utilitiesinclude_HEADERS = \
 	boost_fs_add.h \
 	streamdescriptor.h \
-	globus_ftp_macros.h \
-	globus_ftp_utils.h \
 	ii_attr_utils.h \
 	LineParserExceptions.h \
 	quota.h \
 	triple.h \
-	scope_guard.h \
-	jobdir.h \
-	input_reader.h \
-	jobdir_reader.h \
-	filelist_reader.h
+        manipulation.h
 
 AM_CPPFLAGS = -I$(top_srcdir)/interface \
 	-I$(top_srcdir)/src \
-	$(GLITE_CFLAGS) \
-	$(GLOBUS_THR_CFLAGS) \
+	$(GLITE_WMSUTILS_CLASSADS_CFLAGS) \
 	$(BOOST_CFLAGS) \
 	$(CLASSAD_CFLAGS) \
+        $(LDAP_CPPFLAGS) \
 	-DB_THREAD_SAFE
 
 EXTRA_DIST = \
 	triple.h 
 
 MAINTAINERCLEANFILES = Makefile.in *.*~
-
