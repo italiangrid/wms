@@ -1,0 +1,3 @@
+usr/lib/python2.6/site-packages/*.py
+usr/lib/python2.6/site-packages/*.pyc
+usr/lib/python2.6/site-packages/*.pyo
