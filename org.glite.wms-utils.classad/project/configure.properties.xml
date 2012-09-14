@@ -1,0 +1,9 @@
+	<!-- ======================================================
+                 Define extra properties here ...
+                 ====================================================== -->
+        
+	<project name="configure options">                                                                        
+        <property name="configure.args"
+               value="--prefix=${workspace.abs.dir}/stage --with-classads-prefix=${with.classads.prefix} --with-glite-location=${with.glite.location} --with-dist-location=${with.dist.location} --disable-optimization"/>
+
+	</project>
