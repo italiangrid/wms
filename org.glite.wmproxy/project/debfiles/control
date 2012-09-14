@@ -1,0 +1,14 @@
+Source:  glite-wms-wmproxy
+Section:  net
+Priority:  optional
+Maintainer:  WMS group <wms-support@lists.infn.it>
+Build-Depends: debhelper (>= 8.0.0~)
+Standards-Version:  3.9.1
+Homepage: http://glite.cern.ch/
+
+Package: glite-wms-wmproxy
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Workload Management Proxy service
+ Workload Management Proxy service
+

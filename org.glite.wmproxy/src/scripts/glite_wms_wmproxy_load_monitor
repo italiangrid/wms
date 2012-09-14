@@ -1,0 +1,670 @@
+#!/usr/bin/perl -U
+
+######
+#	Copyright (c) Members of the EGEE Collaboration. 2004.
+#	See http://www.eu-egee.org/partners/ for details on the copyright holders.
+#
+#	Licensed under the Apache License, Version 2.0 (the "License");
+#	you may not use this file except in compliance with the License.
+#	You may obtain a copy of the License at
+#
+#	    http://www.apache.org/licenses/LICENSE-2.0
+#
+#	Unless required by applicable law or agreed to in writing, software
+#	distributed under the License is distributed on an "AS IS" BASIS,
+#	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#	See the License for the specific language governing permissions and
+#	limitations under the License.
+#########
+
+$SIG{'INT'} = 'IGNORE';
+$SIG{'TERM'} = 'IGNORE';
+$SIG{'QUIT'} = 'IGNORE';
+
+require Getopt::Long;
+
+@envir=`. /etc/profile.d/grid-env.sh; set`;
+foreach my $env(@envir){
+        my ($key,$value)=split('=',$env);
+	chomp $key;
+	chomp $value;
+	next if ($key eq "SHELLOPTS" );
+        $ENV{$key}=$value;
+}
+
+$glitewmsdir=`printenv GLITE_WMS_LOCATION|head -n 1`;
+chomp $glitewmsdir;
+$glitewmsdir='/usr' unless($glitewmsdir);
+
+#valid keys for %mems:
+#MemTotal:MemFree:MemShared:Buffers:Cached
+#SwapCached:Active:Inactive:HighTotal:HighFree
+#LowTotal:LowFree:SwapTotal:SwapFree
+%mems=();
+
+#valid keys for %load:
+#1min:5min:15min
+%load=();
+
+#valid keys for %diskusage:
+#each mounted partition
+%diskusage=();
+
+%duwarn=();
+
+#valid keys for %load:
+#allocated:free:max
+%fds=();
+
+#ftpconn
+$ftpconn=0;
+
+%operations=(    
+                 'jobListMatch'  			=> 1,
+                 'jobSubmit'     			=> 1,
+                 'jobRegister'   			=> 1,
+                 'jobStart'				=> 1,
+                 'jobCancel'       	        	=> 2,
+                 'jobPurge'				=> 2,
+                 'getOutputFileList'        		=> 2,
+                 'getSandboxBulkDestURI'        	=> 2,
+                 'getSandboxDestURI'        		=> 2,
+                 'getVersion'        			=> 3,
+                 'getMaxInputSandboxSize'       	=> 3,
+                 'getFreeQuota'        			=> 3,
+                 'getTotalQuota '        		=> 3,
+                 'getJDL'        			=> 3,
+                 'getProxyReq'        			=> 3,
+                 'putProxy'        			=> 3,
+                 'getDelegatedProxyInfo'        	=> 3,
+                 'getJobProxyInfo '        		=> 3,
+                 'enableFilePerusal'        		=> 3,
+                 'getPerusalFiles'        		=> 3,
+                 'addACLItems'        			=> 3,
+                 'getACLItems'        			=> 3,
+                 'removeACLItem'        		=> 3,
+                 'getJobTemplate'        		=> 3,
+                 'getDAGTemplate'        		=> 3,
+                 'getCollectionTemplate'        	=> 3,
+                 'getIntParametricJobTemplate'  	=> 3,
+                 'getStringParametricJobTemplate'       => 3,
+                 'getTransferProtocols'        		=> 3,
+                 'Default' 				=> 4
+            );
+
+#Default Values
+
+$Load1     = 10;
+$Load5     = 10;
+$Load15    = 10;
+$MemUsage  = 95;
+$SwapUsage = 95;
+$FDNum     = 500;
+$DiskUsage = 95;
+$FLSize    = 204800;
+$FLNum     = 500;
+$JDSize    = 0;
+$JDNum     = 500;
+$FTPConn   = 30;
+$oper      = 'Default';
+$listoper  = 0;
+$show      = 0;
+$help      = 0;
+            
+$return=Getopt::Long::GetOptions ("load1=f"       => \$Load1,
+            	    "load5=f"       => \$Load5,
+                    "load15=f"      => \$Load15,
+                    "memusage=f"    => \$MemUsage,
+                    "swapusage=f"   => \$SwapUsage,
+                    "fdnum=i"       => \$FDNum,
+                    "diskusage=f"   => \$DiskUsage,
+                    "flsize=f"      => \$FLSize,
+                    "flnum=f"       => \$FLNum,
+                    "jdnum=f"       => \$JDNum,
+                    "jdsize=f"      => \$JDSize,
+                    "ftpconn=f"     => \$FTPConn,
+                    "oper=s"        => \$oper,
+                    "show"          => \$show,
+                    "list"          => \$listoper,
+                    "help"          => \$help
+                   );
+	    
+exit(1) unless($return);
+
+$oper='Default' if(!defined $operations{$oper});
+          
+&print_help() if($help);
+&print_list() if($listoper);
+
+&read_conf();
+
+&get_loadaverage();
+&get_mem_usage();
+&get_fd_usage();
+&get_disk_usage();
+&get_input();
+&get_ftpconn();
+
+&show_value() if($show);
+
+&test_threshold();
+
+#######Functions##########
+
+sub read_conf{
+
+	$wms_inputtype= `${glitewmsdir}/bin/glite-wms-get-configuration Workloadmanager.DispatcherType`;
+	chomp($wms_inputtype);
+	if(!$wms_inputtype){
+		$wms_inputtype='filelist';
+	}
+        $wms_input= `${glitewmsdir}/bin/glite-wms-get-configuration Workloadmanager.Input`;
+        chomp($wms_input);
+
+	$jc_inputtype= `${glitewmsdir}/bin/glite-wms-get-configuration JobController.InputType`;
+        chomp($jc_inputtype);
+        if(!$jc_inputtype){
+                $jc_inputtype='filelist';
+        }
+        $jc_input= `${glitewmsdir}/bin/glite-wms-get-configuration JobController.Input`;
+        chomp($jc_input);
+
+        $ice_inputtype= `${glitewmsdir}/bin/glite-wms-get-configuration ICE.InputType`;
+        chomp($ice_inputtype);
+        if(!$ice_inputtype){
+                $ice_inputtype='filelist';
+        }
+        $ice_input= `${glitewmsdir}/bin/glite-wms-get-configuration ICE.Input`;
+        chomp($ice_input);
+	
+	$wmp_sand=`${glitewmsdir}/bin/glite-wms-get-configuration WorkloadManagerProxy.SandboxStagingPath`;
+        chomp($wmp_sand);
+	
+	$ns_sand=`${glitewmsdir}/bin/glite-wms-get-configuration NetworkServer.SandboxStagingPath`;
+        chomp($ns_sand);
+
+}
+
+sub get_loadaverage{
+
+        my $load=`uptime`;
+        chomp $load;
+        ($dummy,$load_values)=split(/load average:/,$load);
+	($load{'1min'},$load{'5min'},$load{'15min'})=split(/\,/,$load_values);
+}
+
+sub get_fd_usage{
+
+        open (IN, '/proc/sys/fs/file-nr') || die "Could not open /proc/sys/fs/file-nr for reading: $!";
+#fd allocated:fd free:fd max
+        while (<IN>){
+                if (/(\d+)\s+(\d+)\s+(\d+)/){
+                        $fds{'allocated'}=$1;
+                        $fds{'free'}=$2;
+                        $fds{'max'}=$3;
+                }
+        }
+        close (IN);
+}
+
+sub get_mem_usage{
+
+        open (IN, '/proc/meminfo') || die "Could not open /proc/meminfo for reading: $!";
+        while (<IN>){
+                $mems{$1} = $2 if (/^(\w+):\s*(\d+)\s+kb/i);
+        }
+        close (IN);        
+}
+
+sub get_disk_usage{
+
+        foreach (`df -P|grep -v Filesystem`){
+                 $diskusage{$3} = $2 if (/^(\S+)\s+\d+\s+\d+\s+\d+\s+(\d+)\%\s+(\S+)/);
+        } 
+}
+
+sub get_input{
+
+	$wms_fl_size = 0;
+	$wms_fl_jobs = 0;
+        $wms_jd_size = 0;
+	$wms_jd_jobs = 0;
+	$jc_fl_size  = 0;
+        $jc_fl_jobs  = 0;
+	$jc_jd_size  = 0;
+        $jc_jd_jobs  = 0;
+        $ice_fl_size = 0;
+        $ice_fl_jobs = 0;
+        $ice_jd_size = 0;
+        $ice_jd_jobs = 0;
+
+	if($wms_inputtype eq 'filelist'){
+		if(-e $wms_input){
+			($wms_fl_size,$dummy)=split(/\s+/,`du -ks $wms_input`);
+                        $wms_fl_jobs=`grep ' g\$' $wms_input|wc -l`;
+                        $wms_fl_jobs=~s/\s//g;
+		}
+	}elsif($wms_inputtype eq 'jobdir'){
+                if(-d $wms_input){
+			#if $JDSize is ==0 (that is the default) du -ks is not performed
+			if($JDSize != 0){
+				($wms_jd_size,$dummy)=split(/\s+/,`du -ks $wms_input`);
+			}
+			$wms_jd_jobs_old=`ls -1 ${wms_input}/old|wc -l`;
+			$wms_jd_jobs_new=`ls -1 ${wms_input}/new|wc -l`;
+			$wms_jd_jobs=$wms_jd_jobs_old+$wms_jd_jobs_new;
+                }
+	}
+
+        if($jc_inputtype eq 'filelist'){
+                if(-e $jc_input){
+			($jc_fl_size,$dummy)=split(/\s+/,`du -ks $jc_input`);
+                        $jc_fl_jobs=`grep ' g\$' $jc_input|wc -l`;
+                        $jc_fl_jobs=~s/\s//g;
+                }
+        }elsif($jc_inputtype eq 'jobdir'){
+                if(-d $jc_input){
+                        #if $JDSize is ==0 (that is the default) du -ks is not performed
+                        if($JDSize != 0){
+				($jc_jd_size,$dummy)=split(/\s+/,`du -ks $jc_input`);
+			}
+                        $jc_jd_jobs_old=`ls -1 ${jc_input}/old|wc -l`;
+                        $jc_jd_jobs_new=`ls -1 ${jc_input}/new|wc -l`;
+                        $jc_jd_jobs=$jc_jd_jobs_old+$jc_jd_jobs_new;
+                }
+        }
+
+        if($ice_inputtype eq 'filelist'){
+                if(-e $ice_input){
+			($ice_fl_size,$dummy)=split(/\s+/,`du -ks $ice_input`);
+                        $ice_fl_jobs=`grep ' g\$' $ice_input|wc -l`;
+                        $ice_fl_jobs=~s/\s//g;
+                }
+        }elsif($ice_inputtype eq 'jobdir'){
+                if(-d $ice_input){
+                        #if $JDSize is ==0 (that is the default) du -ks is not performed
+                        if($JDSize != 0){
+				($ice_jd_size,$dummy)=split(/\s+/,`du -ks $ice_input`);
+			}
+                        $ice_jd_jobs_old=`ls -1 ${ice_input}/old|wc -l`;
+                        $ice_jd_jobs_new=`ls -1 ${ice_input}/new|wc -l`;
+                        $ice_jd_jobs=$ice_jd_jobs_old+$ice_jd_jobs_new;
+                }
+        }
+
+}
+
+sub get_ftpconn{
+
+        $ftpconn=`netstat -tapn 2>/dev/null| grep -c 2811`;
+	chomp $ftpconn;
+	
+}
+
+sub test_threshold{
+
+        my $load1warning  = 0;
+        my $load5warning  = 0;
+        my $load15warning = 0;
+        my $memwarning    = 0;
+        my $swapwarning   = 0;
+        my $fdwarning     = 0;
+        my $ftpwarning    = 0;
+
+	my $memperc       = 0;
+	my $swapperc      = 0;
+	my $fduse         = 0;
+        
+        my $disablecount  = 0;
+               
+	if($mems{'MemTotal'} == 0){
+		$memperc=100;
+	}else{
+		$memperc=100*$mems{'Active'}/$mems{'MemTotal'};
+	}
+	if($mems{'SwapTotal'} == 0){
+		$swapperc=100;
+	}else{
+		$swapperc=100*($mems{'SwapTotal'}-$mems{'SwapFree'})/$mems{'SwapTotal'};
+	}
+
+	$fduse=($fds{'max'}-($fds{'allocated'}-$fds{'free'}));
+
+        if($load{'1min'}>=$Load1){
+
+                $load1warning = 1;
+                $disablecount++;
+   
+        }
+
+        if(($load{'5min'}>=$Load5) && ($load{'1min'}>$load{'5min'})){
+           
+                $load5warning = 1;
+                $disablecount++;
+   
+        }
+	
+        if(($load{'15min'}>=$Load15) && ($load{'1min'}>$load{'15min'}) && ($load{'5min'}>$load{'15min'})){
+   
+                $load15warning = 1;
+                $disablecount++;
+   
+        }
+
+        if($memperc>=$MemUsage){
+
+                $memwarning = 1;
+                $disablecount++;
+        
+        }
+        if($swapperc>=$SwapUsage){
+
+                $swapwarning = 1;
+                $disablecount++;
+        
+        }
+
+        if($fduse<=$FDNum){
+
+                $fdwarning  = 1;
+                $disablecount++;
+        
+        }
+	
+	if($ftpconn>=$FTPConn){
+
+                $ftpwarning  = 1;
+                $disablecount++;
+        
+        }
+        
+        my $partptr=GetPartition();
+        
+        foreach my $part(@$partptr){
+        	chomp $part;
+                if($diskusage{$part}>=$DiskUsage){
+
+                        $duwarn{$part}=$diskusage{$part};
+                        $disablecount++;
+        
+                }
+        }
+
+        if($wms_fl_size > $FLSize){
+             	$wms_fl_sizewarning = 1;
+                $disablecount++;
+        }
+        if($wms_fl_jobs > $FLNum){
+             	$wms_fl_jobswarning = 1;
+                $disablecount++;
+        }
+        if($wms_jd_size > $JDSize && $JDSize != 0){
+                $wms_jd_sizewarning = 1;
+                $disablecount++;
+        }
+        if($wms_jd_jobs > $JDNum){
+                $wms_jd_jobswarning = 1;
+                $disablecount++;
+        }
+
+        if($jc_fl_size > $FLSize){
+                $jc_fl_sizewarning = 1;
+                $disablecount++;
+        }
+        if($jc_fl_jobs > $FLNum){
+                $jc_fl_jobswarning = 1;
+                $disablecount++;
+        }
+        if($jc_jd_size > $JDSize && $JDSize != 0){
+                $jc_jd_sizewarning = 1;
+                $disablecount++;
+        }
+        if($jc_jd_jobs > $JDNum){
+                $jc_jd_jobswarning = 1;
+                $disablecount++;
+        }
+
+        if($ice_fl_size > $FLSize){
+                $ice_fl_sizewarning = 1;
+                $disablecount++;
+        }
+        if($ice_fl_jobs > $FLNum){
+                $ice_fl_jobswarning = 1;
+                $disablecount++;
+        }
+        if($ice_jd_size > $JDSize && $JDSize != 0){
+                $ice_jd_sizewarning = 1;
+                $disablecount++;
+        }
+        if($ice_jd_jobs > $JDNum){
+                $ice_jd_jobswarning = 1;
+                $disablecount++;
+        }
+	
+	if($load1warning){
+		print STDERR "Threshold for Load Average(1 min): $Load1 => Detected value for Load Average(1 min): $load{'1min'}\n";
+	}else{
+		print STDOUT "Threshold for Load Average(1 min): $Load1 => Detected value for Load Average(1 min): $load{'1min'}\n";
+	}
+	      
+	if($load5warning){
+	        print STDERR "Threshold for Load Average(5 min): $Load5 => Detected value for Load Average(5 min): $load{'5min'}\n";
+	}else{
+	        print STDOUT "Threshold for Load Average(5 min): $Load5 => Detected value for Load Average(5 min): $load{'5min'}\n";
+	}
+
+	if($load15warning){
+	        print STDERR "Threshold for Load Average(15 min): $Load15 => Detected value for Load Average(15 min): $load{'15min'}\n";
+	}else{
+	        print STDOUT "Threshold for Load Average(15 min): $Load15 => Detected value for Load Average(15 min): $load{'15min'}\n";
+	}
+	
+	if($memwarning){
+	        printf STDERR "Threshold for Memory Usage: $MemUsage => Detected value for Memory Usage: %.2f",$memperc;print STDERR "\%\n";
+	}else{
+	        printf STDOUT "Threshold for Memory Usage: $MemUsage => Detected value for Memory Usage: %.2f",$memperc;print STDOUT "\%\n";
+	}
+        
+	if($swapwarning){
+	        printf STDERR "Threshold for Swap Usage: $SwapUsage => Detected value for Swap Usage: %.2f",$swapperc;print STDERR "\%\n";
+	}else{
+	        printf STDOUT "Threshold for Swap Usage: $SwapUsage => Detected value for Swap Usage: %.2f",$swapperc;print STDOUT "\%\n";
+	}
+
+	if($fdwarning){
+	        print STDERR "Threshold for Free FD: $FDNum => Detected value for Free FD: $fduse\n";
+	}else{
+	        print STDOUT "Threshold for Free FD: $FDNum => Detected value for Free FD: $fduse\n";
+	}
+	
+	if($ftpwarning){
+	        print STDERR "Threshold for FTP Connection: $FTPConn => Detected value for FTP Connection: $ftpconn\n";
+	}else{
+	        print STDOUT "Threshold for FTP Connection: $FTPConn => Detected value for FTP Connection: $ftpconn\n";
+	}
+        
+	foreach my $k(@$partptr){ 
+        	if(defined $duwarn{$k}){ 
+        		print STDERR "Threshold for Disk Usage: $DiskUsage\% => Detected value for Partition $k : $diskusage{$k}\%\n";
+        	} else{
+        		print STDOUT "Threshold for Disk Usage: $DiskUsage\% => Detected value for Partition $k : $diskusage{$k}\%\n";
+		}
+        }
+
+	if($wms_inputtype eq 'filelist'){
+	
+       		if($wms_fl_sizewarning){
+       			print STDERR "Threshold for WMS Input FileList size: $FLSize => Detected value for WMS Input FileList size $wms_input : $wms_fl_size\n";
+		}else{
+       			print STDOUT "Threshold for WMS Input FileList size: $FLSize => Detected value for WMS Input FileList size $wms_input : $wms_fl_size\n";
+ 		}
+ 		if($wms_fl_jobswarning){
+			print STDERR "Threshold for WMS Input FileList jobs: $FLNum => Detected value for WMS Input FileList jobs $wms_input : $wms_fl_jobs\n";
+       		} else{
+			print STDOUT "Threshold for WMS Input FileList jobs: $FLNum => Detected value for WMS Input FileList jobs $wms_input : $wms_fl_jobs\n";
+       		}
+	}elsif($wms_inputtype eq 'jobdir'){
+		if($JDSize !=0){
+                	if($wms_jd_sizewarning){
+                        	print STDERR "Threshold for WMS Input JobDir size: $JDSize => Detected value for WMS Input JobDir size $wms_input : $wms_jd_size\n";
+                	}else{
+                        	print STDOUT "Threshold for WMS Input JobDir size: $JDSize => Detected value for WMS Input JobDir size $wms_input : $wms_jd_size\n";
+                	}
+		}
+        	if($wms_jd_jobswarning){
+                	print STDERR "Threshold for WMS Input JobDir jobs: $JDNum => Detected value for WMS Input JobDir jobs $wms_input : $wms_jd_jobs\n";
+        	} else{
+                	print STDOUT "Threshold for WMS Input JobDir jobs: $JDNum => Detected value for WMS Input JobDir jobs $wms_input : $wms_jd_jobs\n";
+        	}
+	}
+
+        if($jc_inputtype eq 'filelist'){
+        
+        	if($jc_fl_sizewarning){
+                	print STDERR "Threshold for JC Input FileList size: $FLSize => Detected value for JC Input FileList size $jc_input : $jc_fl_size\n";
+        	}else{
+                	print STDOUT "Threshold for JC Input FileList size: $FLSize => Detected value for JC Input FileList size $jc_input : $jc_fl_size\n";
+        	}
+        	if($jc_fl_jobswarning){
+                	print STDERR "Threshold for JC Input FileList jobs: $FLNum => Detected value for JC Input FileList jobs $jc_input : $jc_fl_jobs\n";
+        	} else{
+                	print STDOUT "Threshold for JC Input FileList jobs: $FLNum => Detected value for JC Input FileList jobs $jc_input : $jc_fl_jobs\n";
+        	}
+        }elsif($jc_inputtype eq 'jobdir'){
+                if($JDSize !=0){
+                	if($jc_jd_sizewarning){
+                        	print STDERR "Threshold for JC Input JobDir size: $JDSize => Detected value for JC Input JobDir size $jc_input : $jc_jd_size\n";
+                	}else{
+                        	print STDOUT "Threshold for JC Input JobDir size: $JDSize => Detected value for JC Input JobDir size $jc_input : $jc_jd_size\n";
+                	}
+		}
+        	if($jc_jd_jobswarning){
+                	print STDERR "Threshold for JC Input JobDir jobs: $JDNum => Detected value for JC Input JobDir jobs $jc_input : $jc_jd_jobs\n";
+        	} else{
+                	print STDOUT "Threshold for JC Input JobDir jobs: $JDNum => Detected value for JC Input JobDir jobs $jc_input : $jc_jd_jobs\n";
+        	}
+	}
+	
+        if($ice_inputtype eq 'filelist'){
+        	if($ice_fl_sizewarning){
+               		print STDERR "Threshold for ICE Input FileList size: $FLSize => Detected value for ICE Input FileList size $ice_input : $ice_fl_size\n";
+        	}else{
+                	print STDOUT "Threshold for ICE Input FileList size: $FLSize => Detected value for ICE Input FileList size $ice_input : $ice_fl_size\n";
+       		}
+        	if($ice_fl_jobswarning){
+                	print STDERR "Threshold for ICE Input FileList jobs: $FLNum => Detected value for ICE Input FileList jobs $ice_input : $ice_fl_jobs\n";
+        	} else{
+                	print STDOUT "Threshold for ICE Input FileList jobs: $FLNum => Detected value for ICE Input FileList jobs $ice_input : $ice_fl_jobs\n";
+        	}
+        }elsif($ice_inputtype eq 'jobdir'){
+		if($JDSize !=0){
+                	if($ice_jd_sizewarning){
+                        	print STDERR "Threshold for ICE Input JobDir size: $JDSize => Detected value for ICE Input JobDir size $ice_input : $ice_jd_size\n";
+                	}else{
+                        	print STDOUT "Threshold for ICE Input JobDir size: $JDSize => Detected value for ICE Input JobDir size $ice_input : $ice_jd_size\n";
+                	}
+		}
+        	if($ice_jd_jobswarning){
+                	print STDERR "Threshold for ICE Input JobDir jobs: $JDNum => Detected value for ICE Input JobDir jobs $ice_input : $ice_jd_jobs\n";
+        	} else{
+                	print STDOUT "Threshold for ICE Input JobDir jobs: $JDNum => Detected value for ICE Input JobDir jobs $ice_input : $ice_jd_jobs\n";
+        	}
+	}
+        
+	$disablecount >= $operations{$oper} ? exit(1) : exit(0); 
+	
+}
+
+sub GetPartition{
+
+        my @list = ();
+
+        push (@list,`df -P / |grep -v Filesystem|awk -F" " '{ print \$6 }'`);
+        push (@list,`df -P /tmp |grep -v Filesystem|awk -F" " '{ print \$6 }'`);
+        push (@list,`df -P /var/lib/mysql |grep -v Filesystem|awk -F" " '{ print \$6 }'`);
+        push (@list,`df -P /var/log |grep -v Filesystem|awk -F" " '{ print \$6 }'`);
+	
+        push (@list,`df -P $wms_input|grep -v Filesystem|awk -F" " '{ print \$6 }'`);
+        push (@list,`df -P $jc_input|grep -v Filesystem|awk -F" " '{ print \$6 }'`);
+        push (@list,`df -P $ice_input|grep -v Filesystem|awk -F" " '{ print \$6 }'`);
+        push (@list,`df -P $wmp_sand|grep -v Filesystem|awk -F" " '{ print \$6 }'`);
+        push (@list,`df -P $ns_sand|grep -v Filesystem|awk -F" " '{ print \$6 }'`);
+	
+        my %seen = ();
+        foreach my $item (@list) {
+            $seen{$item}++;
+        }
+        my @uniq = keys %seen;
+
+        return \@uniq;
+
+}
+sub show_value{
+
+	my $memperc  = 0;
+	my $swapperc = 0;
+
+        if($mems{'MemTotal'} == 0){
+                $memperc=100;
+        }else{
+                $memperc=100*$mems{'Active'}/$mems{'MemTotal'};
+        }
+        if($mems{'SwapTotal'} == 0){
+                $swapperc=100;
+        }else{
+                $swapperc=100*($mems{'SwapTotal'}-$mems{'SwapFree'})/$mems{'SwapTotal'};
+        }
+
+	my $fduse=($fds{'max'}-($fds{'allocated'}-$fds{'free'}));
+        my $partptr=GetPartition();
+
+	print  "Load Average(1 min)  : $load{'1min'}\n";
+	print  "Load Average(5 min)  : $load{'5min'}\n";
+	print  "Load Average(15 min) : $load{'15min'}\n";
+	printf "Memory Usage         : %.2f",$memperc;print"\%\n";
+	printf "Swap Usage           : %.2f",$swapperc;print"\%\n";
+	print  "File Descriptor Usage: $fduse\n";
+	foreach my $k(@$partptr){ 
+		chomp $k;
+		print "Disk Usage for Partition $k : $diskusage{$k}\%\n";
+	}
+
+	exit(0);
+}
+
+sub print_help{
+
+	print "Usage:$0 [OPTIONS]...\n";
+	print "\t\t--load1\t\t threshold for load average (1min)\n";
+	print "\t\t--load5\t\t threshold for load average (5min)\n";
+	print "\t\t--load15\t threshold for load average (15min)\n";
+	print "\t\t--memusage\t threshold for memory usage (\%)\n";
+	print "\t\t--swapusage\t threshold for swap usage (\%)\n";
+	print "\t\t--fdnum\t\t threshold for used file descriptor\n";
+	print "\t\t--diskusage\t threshold for disk usage (\%)\n";
+	print "\t\t--flsize\t threshold for input filelist size (KB)\n";
+	print "\t\t--flnum\t threshold for number of unprocessed jobs (for filelist)\n";
+	print "\t\t--jdsize\t threshold for input jobdir size (KB)\n";
+	print "\t\t--jdnum\t threshold for number of unprocessed jobs (for jobdir)\n ";
+	print "\t\t--ftpconn\t threshold for number of FTP connections\n ";
+	print "\t\t--oper\t\t operation to monitor (can be listed with --list)\n";
+	print "\t\t--list\t\t list operation supported\n";
+	print "\t\t--show\t\t show all the current values\n";
+	print "\t\t--help\t\t print this help message\n";
+
+	exit(0);
+
+}
+
+sub print_list{
+
+	print "Operation supported:\n";
+	foreach my $k(sort{$operations{$a}<=>$operations{$b}}(keys %operations)){
+                next if($k eq 'Default');
+		print "$k\n";
+	}
+	
+	exit(0);
+	
+}
+

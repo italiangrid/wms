@@ -1,0 +1,14 @@
+<gacl>
+ <entry>
+   <person>
+   <dn>/C=IT/O=INFN/OU=Personal Certificate/L=DATAMAT DSAGRD/CN=Fabrizio Pacini</dn>
+   </person>
+   <allow><write/></allow>
+ </entry>
+ <entry>
+   <any-user/>
+   <allow><read/></allow>
+   <deny><list/></deny>
+ </entry>
+ </gacl>
+
