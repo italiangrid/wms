@@ -1,0 +1,224 @@
+#!/bin/sh
+
+# File: glite-wms-wm
+# Author: Francesco Giacomini <Francesco.Giacomini@cnaf.infn.it>
+# Copyright (c) 2002 EU DataGrid.
+# For license conditions see http://www.eu-datagrid.org/license.html
+#
+# Description: start, stop, status of the GLITE workload manager daemon
+#
+# $Id: glite-wms-wm.in,v 1.6.2.1.4.8.2.1.4.1.2.10 2012/07/12 07:50:45 mcecchi Exp $
+
+# chkconfig: 345 94 06 
+# description: WMS processing engine
+
+# return values:
+# 0 - daemon is running,
+# 1 = daemon is stopped and lock file is present,
+# 2 = daemon is stopped,
+# 3 = anything else.
+
+. /opt/glite/yaim/etc/grid-env-funcs.sh
+. /etc/profile.d/grid-env.sh 
+
+CONFIGURATION_FILE="glite_wms.conf"
+
+this_script_name=$0
+program_name=glite-wms-workload_manager
+binpath=${WMS_LOCATION_BIN}/${program_name}
+pid_file="${WMS_LOCATION_VAR}/run/${program_name}.pid"
+ret_code=0
+
+running()
+{
+    # no pidfile
+    if [ ! -r ${pid_file} ]; then
+        return 2
+    fi
+
+    pid=`cat ${pid_file} 2> /dev/null | awk '{print $1}'`
+
+    # an empty pid file is indicative of some weird error and
+    # doesn't relate to the expected status according to #16480;
+    # an error situation is in any case reported
+    if [ -z "${pid}" ]; then
+        return 3
+    fi
+    
+    local cmdline=`ps hwwwp ${pid} o command` # BSD style
+    local cmd=`echo ${cmdline} | awk '{print $1}'` # beware of white spaces in the command
+
+    # no workload_manager?
+    if [ "${cmd}" != "${binpath}" ]; then
+        # maybe the process has been swapped out
+        # the command name (the first 15 chars) appears between []
+        local expected_cmd="[`echo ${program_name} | cut -c1-15`]"
+        if [ "${cmd}" != "${expected_cmd}" ]; then
+            return 1;
+        fi
+    fi
+
+    return 0
+}
+
+set_input() # first parameter is the input, second is the input type
+{
+  mkdir -p $1/{tmp,new,old} 2>/dev/null
+  mkdir_ret=$?
+  chown -R ${GLITE_WMS_USER}:${GLITE_WMS_USER} "$1"
+  if [ $? -ne 0 -o $mkdir_ret -ne 0 ]; then
+    false
+  else
+    true
+  fi
+}
+
+check_input() # first parameter is the input, second is the input type
+{
+  if [ -d "$1" ]; then
+    set_input_ret=0
+    if [ ! -d $1/old -o ! -d $1/new -o ! -d $1/tmp ]; then
+      echo "input structure has changed, trying to (re)create it"
+      set_input "$1"
+      if [ $? != 0 ]; then
+        set_input_ret=1
+      fi
+    fi
+
+    if [ $set_input_ret -eq 0 ]; then
+      # mv of the whole dir would fail when too much populated
+      find "$1/old/" -type f | xargs -I '{}' mv '{}' "$1/new/" &>/dev/null
+      if [ $? != 0 ]; then
+        echo "error moving files from old to new dir, continuing"
+      fi
+      true
+    else
+      false
+    fi
+  else
+    set_input "$1"
+  fi
+}
+
+start()
+{
+    conf_file=glite_wms.conf
+    parse_attribute=WorkloadManager
+    . ${WMS_LOCATION_LIBEXEC}/glite-wms-parse-configuration.sh ${conf_file} ${parse_attribute}
+
+    echo -n "starting workload manager... "
+    if running; then
+      echo "ok (already running)"
+    else
+      ulimit -n 32768 # max fds
+      wm_input=`${WMS_LOCATION_BIN}/glite-wms-get-configuration WorkloadManager.input`
+      if [ -z ${wm_input} ]; then
+        echo "Please set Input parameter in ${CONFIGURATION_FILE} - WM section" 2>&1
+        ret_code=1 
+      fi 
+      jc_input=`${WMS_LOCATION_BIN}/glite-wms-get-configuration JobController.Input`
+      if [ -z ${jc_input} ]; then
+        echo "Please set Input parameter in ${CONFIGURATION_FILE} - JC section" 2>&1
+        ret_code=1
+      fi 
+      ice_input=`${WMS_LOCATION_BIN}/glite-wms-get-configuration ICE.Input`
+      if [ -z ${ice_input} ]; then
+        echo "Please set Input parameter in ${CONFIGURATION_FILE} - ICE section" 2>&1
+        ret_code=1
+      fi 
+      if [ ${ret_code} -eq 1 ]; then
+        echo "failure"
+        exit 1
+      fi
+
+      set_input ${jc_input}
+      set_input ${ice_input}
+      check_input ${wm_input}
+      if [ $? != 0 ]; then
+        echo "error setting up input structure... failure"
+        ret_code=1
+      else
+        runtime_malloc=`${WMS_LOCATION_BIN}/glite-wms-get-configuration WorkloadManager.RuntimeMalloc`
+        if [ -n ${runtime_malloc} ]; then
+          preload="LD_PRELOAD='${runtime_malloc}'"
+        fi
+        mkdir -p "${WMS_LOCATION_VAR}/run/"
+        eval ${preload} ${binpath} --conf ${conf_file} --daemon > /dev/null 2>&1
+        local pid=`/sbin/pidof ${program_name} 2>/dev/null`
+        if [ "x$pid" == "x" ]; then
+          echo "failure"
+          ret_code=1
+        else
+          echo "ok"
+        fi
+        echo $pid > ${pid_file}
+      fi
+    fi
+}
+
+stop()
+{
+    echo -n "stopping workload manager... "
+    killall ${program_name} 2>/dev/null # never say never, 'running' only checks the PID file
+    if running; then
+        pid=`cat ${pid_file} 2> /dev/null`
+        kill ${pid} 2> /dev/null
+        timeout=30
+        while [ $timeout -gt 0 ]; do
+          sleep 1
+          if ! running; then
+            echo "ok"
+            rm -f ${pid_file}
+            return
+          fi
+          let "--timeout"
+        done
+        kill -9 ${pid} 2>/dev/null
+    fi
+    rm -f ${pid_file} 2>/dev/null # moved outside the previous if. in fact,
+                              # if stop were issued after the process exited
+                              # abruptly, the pid file would be still present
+    echo "ok"
+}
+
+status()
+{
+    running
+    RETVAL=$?
+    if [ ${RETVAL} -eq 0 ]; then
+        pid=`cat ${pid_file} 2> /dev/null`
+        echo "${binpath} (pid ${pid}) is running..."
+    else
+        echo "${binpath} is not running"
+    fi
+    return ${RETVAL}
+}
+
+usage()
+{
+    echo "Usage: ${this_script_name} {start|stop|restart|status}"
+}
+
+case $1 in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    restart)
+        stop
+        if [ ${ret_code} -eq 0 ]; then
+            start
+        fi     
+        ;;
+    status)
+        status
+        ret_code=$?
+        ;;
+    *)
+        usage
+        ret_code=1
+esac
+
+exit ${ret_code}

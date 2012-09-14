@@ -1,0 +1,154 @@
+ QUICK INSTALL:
+
+simply execute ./setup.sh as root from current directory
+
+WHAT AM I
+
+glite-wms-stats is a python scrypt who retrieves informations about
+the status of a glite-based workload management system by analyzing a
+number of log files, querying the LBProxy database and the Condor-G
+system.
+
+------------------------------------------------------------
+
+INSTALLATION 
+
+The provided setup.sh script can authomatically set up for you 
+the requirements descripted below. It should run correctly in a
+tipical glite-based workload manager installation. It must be executed
+from root in the same directory where the script itself reside..
+
+Execution requirements
+
+To execute correctly the glite-wms-stats scrypt the following
+assumptions must be verified:
+
+1) The following environment variables are set 
+(You can check if they are using the env shell command)
+
+GLITE_WMS_TMP
+GLITE_LOCATION_LOG
+CONDORG_INSTALL_PATH
+CONDOR_CONFIG
+
+2) it has permission to read through $GLITE_WMS_TMP/SandboxDir (i.e.
+   you have to execute the script as root or grant read permissions to the
+   user or group who executes the script).
+
+3) a mysql database user exists with name lbserver20 who can access
+   the lbserver20 database from localhost with select permission.
+   From the superuser's mysql prompt issue these commands:
+
+mysql> GRANT SELECT ON lbserver20.* TO 'lbserver20'@'localhost';
+
+mysql> FLUSH PRIVILEGES;
+
+INSTALL BY HANDS
+If the setup.sh script fails here are the steps for a manual
+setup.
+Once verified the above requirements install proceeds as follow:
+
+[root@host wmsens]# chmod u+x ./glite-wms-stats
+[root@host wmsens]# cp ./glite-wms-stats $GLITE_LOCATION/bin/
+
+put in /etc/cron.d/ a glite-wms-stats.cron file with the following
+line in it:
+
+13,43 * * * * root /usr/local/bin/glite-wms-stats -plain >/var/log/glite-wms-stats.last && cat /var/log/glite-wms-stats.last >>/var/log/glite-wms-stats.history 
+
+please change the above 13,43 with two random minutes with 30 minutes
+ofdifference. You can ask bash for a hint by issuing these two
+commands:
+
+BASE=$(($RANDOM%60))
+echo $BASE,$((($BASE+30)%60))
+
+------------------------------------------------------------
+
+MORE IN DEPTH DOCUMENTATION
+
+glite-wms-stats is a python scrypt who retrieves informations about
+the status of a glite-based workload management system by analyzing a
+number of log files, querying the LBProxy database and the Condor-G
+system.
+
+Once Executed it returns to stdout a line whose sintax is as follow:
+<key1>=<NumericValue1>:<key2>=<NumericValue2>: ...
+
+When NumericValue is a negative value or anything else than a non
+negative integer, something wrong happened, e.g the queryed subsystem
+returned wrong values or error messages.
+
+Following is an example list of <key>/<value> pairs returned by 
+current glite-wms-stats version.
+Meaning is intended to be self explaining. For a more detailed
+explanation refer to http://goc.grid.sinica.edu.tw/gocwiki/RB_Passive_Sensor
+
+WMS_Sensor_Version=0.9
+CG_EndedJobs1H=0
+CG_HeldJobs=1
+CG_RunningJobs=3
+CG_SubmittedJobs1H=0
+CG_WaitingJobs=0
+JC_InputFileListSize=371
+JC_WaitingRequests=0
+WMS_Jobs_Aborted=16
+WMS_Jobs_Cancelled=0
+WMS_Jobs_Cleared=2
+WMS_Jobs_Done=9
+WMS_Jobs_Purged=0
+WMS_Jobs_Ready=0
+WMS_Jobs_Running=0
+WMS_Jobs_Scheduled=0
+WMS_Jobs_Submitted=0
+WMS_Jobs_Unknown=0
+WMS_Jobs_Waiting=0
+WMS_Jobs_Aborted1H=28
+WMS_Jobs_Cancelled1H=0
+WMS_Jobs_Cleared1H=0
+WMS_Jobs_Done1H=0
+WMS_Jobs_Purged1H=0
+WMS_Jobs_Ready1H=0
+WMS_Jobs_Running1H=0
+WMS_Jobs_Scheduled1H=0
+WMS_Jobs_Submitted1H=0
+WMS_Jobs_Unknown1H=0
+WMS_Jobs_Waiting1H=0
+WMS_SandBox_InputSandBoxMaxSize=4609
+WMS_SandBox_InputSandBoxNumber=17
+WMS_SandBox_InputSandBoxSizeTotal=50074
+WMS_SandBox_OutputSandBoxMaxSize=5151
+WMS_SandBox_OutputSandBoxNumber=9
+WMS_SandBox_OutputSandBoxSizeTotal=44637
+WM_InputFileListSize=371
+WM_WaitingRequests=0
+
+
+------------------------------------------------------------
+
+BUGS
+
+Check of data consistency is not yet fully implemented. As a side
+effect the <NumericValue> part may not be an integer number. It is
+assumed that non a numeric and nonnegative returned value means that
+something wrong happened asking the system for that value.
+
+Data are not always shown in the same order
+
+------------------------------------------------------------
+TODO
+
+- Implement more <keys>.
+- Implement xml output
+
+------------------------------------------------------------
+AUTHORS
+
+Stefano Dal Pra
+stefano.dalpra@cnaf.infn.it
+
+Credits
+
+Sergio Andreozzi
+sergio.andreozzi@cnaf.infn.it
+
