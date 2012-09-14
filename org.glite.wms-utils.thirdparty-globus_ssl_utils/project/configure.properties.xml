@@ -1,0 +1,9 @@
+	<!-- ======================================================
+                 Define extra properties here ...
+                 ====================================================== -->
+        
+	<project name="configure options">                                                                        
+        <property name="configure.args"
+               value="--prefix=${stage.abs.dir} --with-globus-prefix=${with.globus.prefix} --with-globus-thr-flavor=${with.globus.thr.flavor} --with-globus-nothr-flavor=${with.globus.nothr.flavor} --with-cppunit-prefix=${with.cppunit.prefix} --with-glite-location=${with.glite.location} --with-dist-location=${with.dist.location} --disable-optimization"/>
+
+	</project>
