@@ -1,0 +1,81 @@
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+          "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
+
+    <!ENTITY dhtitle "User Manuals">
+    <!ENTITY dhcommand "glite-wms-log_monitor">
+    <!ENTITY dhsection "1">
+    
+    <!ENTITY dhfirstname "Marco">
+    <!ENTITY dhsurname "Cecchi">
+    <!ENTITY dhemail "marco.cecchi@cnaf.infn.it">
+    <!ENTITY dhcontrib "Developer of the WMS">
+    
+]>
+
+
+
+<refentry>
+
+    <refentryinfo>
+        <title>&dhtitle;</title>
+        <productname>&dhcommand;</productname>
+        <authorgroup>
+            <author>
+                <firstname>&dhfirstname;</firstname>
+                <surname>&dhsurname;</surname>
+                <contrib>&dhcontrib;</contrib>
+                <address>
+                    <email>&dhemail;</email>
+                </address>
+            </author>
+        </authorgroup>
+    </refentryinfo>
+
+    <refmeta>
+        <refentrytitle>&dhcommand;</refentrytitle>
+        <manvolnum>&dhsection;</manvolnum>
+    </refmeta>
+
+    <refnamediv>
+        <refname>&dhcommand;</refname>
+        <refpurpose>Runs the WM Log Monitor.</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+        <cmdsynopsis>
+            <command>&dhcommand;</command>
+            <arg choice="opt"><option>options</option></arg>
+        </cmdsynopsis>
+    </refsynopsisdiv>
+
+    <refsect1>
+        <title>DESCRIPTION</title>
+        <para><command>&dhcommand;</command> runs the WM Log Monitor.</para>
+        
+        
+    </refsect1>
+
+    <refsect1>
+        <title>OPTIONS</title>
+        <variablelist>
+
+            <varlistentry>
+                <term><option>--help</option></term>
+                <term><option>-h</option></term>
+                <listitem>
+                    <para>Displays command usage.</para>
+                </listitem>
+            </varlistentry>
+
+            
+        </variablelist>
+    </refsect1>
+
+    <refsect1>
+        <title>EXIT STATUS</title>
+        <para><command>&dhcommand;</command> exits with a value of 0 if the status of all the specified jobs is retrieved correctly, >0 if errors occurred.</para>
+    </refsect1>
+
+
+</refentry>
+

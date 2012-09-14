@@ -1,0 +1,283 @@
+#!/bin/bash
+#
+# glite-wms-lm:      Starts the LogMonitor daemon
+#
+# Version:        @(#) /etc/rc.d/init.d/glite-wms-lm   2.0
+#
+# chkconfig: 345 95 06 
+# description: Starts, stops and checks the EGEE \
+#              LogMonitor daemon.
+#
+# processname: glite-wms-log_monitor
+# config: /opt/glite/etc/glite_wms.conf
+# hide: false
+
+#########################################################
+. /opt/glite/yaim/etc/grid-env-funcs.sh
+. /etc/profile.d/grid-env.sh 
+
+. /etc/rc.d/init.d/functions
+########################################
+
+INIT=/var/lock/subsys/`basename $0 | \
+sed -e 's/^[SK][0-9][0-9]//'`
+
+init_variables()
+{
+    # All these things must go in some centralized place...
+    GLITE_WMS_BIN_DIR=${WMS_LOCATION_BIN}
+
+    # All these things should stay there
+    CONFIGURATION_FILE="glite_wms.conf"
+
+    MONITORBASE=glite-wms-log_monitor
+    LOGMONITOR=${WMS_LOCATION_BIN}/${MONITORBASE}
+
+    LOCKFILE=`${WMS_LOCATION_BIN}/glite-wms-get-configuration LogMonitor.LockFile`
+    SCRIPT_UID=`/usr/bin/id -u`
+
+    GLITEUSER_HOME=`eval echo ~${GLITE_WMS_USER}`
+    [ -d ${GLITEUSER_HOME} ] || do_failure "Missing user directory ${GLITEUSER_HOME}"
+
+}
+
+set_input() # first parameter is the input, second is the input type
+{
+  mkdir -p $1/{tmp,new,old} 2>/dev/null
+  mkdir_ret=$?
+  chown -R ${GLITE_WMS_USER}:${GLITE_WMS_USER} "$1"
+  if [ $? -ne 0 -o $mkdir_ret -ne 0 ]; then
+    false
+  else
+    true
+  fi
+}
+
+remove_lockfile()
+{
+  if [ -f "${LOCKFILE}" ]; then
+    action "A stale lock file still exists, removing it.." /bin/rm -f  ${LOCKFILE}
+  fi
+}
+
+
+do_failure()
+{
+    echo "$*"
+    failure $1
+    echo ""
+
+    exit 1
+}
+
+start()
+{   
+    wm_input=`${WMS_LOCATION_BIN}/glite-wms-get-configuration WorkloadManager.input`
+    if [ -z ${wm_input} ]; then
+      do_failure "Please set Input parameter in ${CONFIGURATION_FILE} - WM section"
+    fi 
+    set_input ${wm_input}
+    if [ $? != 0 ]; then
+        echo "error setting up input structure... failure"
+    fi
+
+    daemon ${LOGMONITOR} -c ${CONFIGURATION_FILE}
+    local result=$?
+    echo ""
+
+    if [ ${result} -eq 1 ]; then # Startup of the daemon is failed, try to understand the cause
+	local pid=`pidofproc ${LOGMONITOR}`
+
+	if [ -z "${pid}" -a -f "${LOCKFILE}" ]; then
+	    echo "LogMonitor is not running, but a stale lock file exists."
+	    echo "Check situation and try to start again."
+	    echo "Lock file path is: ${LOCKFILE}"
+	elif [ -n "${pid}" ]; then
+	    echo "LogMonitor already running with pid ${pid}"
+	fi
+    elif [ ${SCRIPT_UID} -eq 0 ]; then
+	echo `pidofproc ${LOGMONITOR}` > /var/run/${MONITORBASE}.pid
+    fi
+}
+
+reload()
+{
+    local pid=`pidofproc ${LOGMONITOR}`
+
+    if [ -z "${pid}" -a -f "${LOCKFILE}" ]; then
+	pid=`/bin/cat ${LOCKFILE}`
+    fi
+
+    if [ -n "${pid}" ]; then
+	action "Reloading LogMonitor configuration " /bin/kill -HUP ${pid}
+    fi
+}
+
+stop()
+{
+    local times pidfile pid lpid result=0
+
+    pid=`pidofproc ${LOGMONITOR}`
+    if [ -f "/var/run/${MONITORBASE}.pid" ]; then
+        pidfile=`/bin/cat /var/run/${MONITORBASE}.pid`
+    fi
+
+    if [ -n "${pid}" -a -n "${pidfile}" ]; then
+        if [ "${pid}" != "${pidfile}" ]; then
+            result=1
+            echo -ne "\t\tCould not reliably find LogMonitor pid!\n"
+            pid=
+            pidfile=
+        fi
+    else
+        if [ -z "${pidfile}" ]; then
+            pidfile=$pid
+        fi
+    fi
+
+    if [ -n "${pidfile}" ]; then
+        if [ -f "${LOCKFILE}" ]; then
+           lpid=`/bin/cat ${LOCKFILE}`
+        fi
+        if [ "${pidfile}" == "${lpid}" ]; then
+            if [ -n "${pid}" ]; then
+                /bin/kill -TERM $pid
+                for (( times = 10; times >= 0; times-- )); do
+                    [ -f "${LOCKFILE}" ] || { success $"LogMonitor terminated normally" && echo && break; }
+                    if [ $times -eq 0 ]; then
+                        killproc ${LOGMONITOR}
+                        result=$?
+                        echo
+                    else
+                        sleep 1
+                    fi
+                done
+                if [ $result -eq 0 ]; then
+                    remove_lockfile
+                    if [ ${SCRIPT_UID} -eq 0 ]; then
+                        rm -f /var/run/${MONITORBASE}.pid
+                    fi
+                fi
+            else
+                result=1
+                failure $"LogMonitor not running, but lock file found"
+                echo
+		remove_lockfile
+                echo
+            fi
+        else
+            if [ ! -f "${LOCKFILE}" ]; then
+                if [ -n "${pid}" ]; then
+                    action "" /bin/kill -KILL $pid
+                    result=$?
+                else
+                    success $"LogMonitor was not running"
+                    echo
+                fi
+                if [ $result -eq 0 -a ${SCRIPT_UID} -eq 0 ]; then
+                    rm -f /var/run/${MONITORBASE}.pid
+                fi
+            else
+                result=1
+                failure $"Inconsistent LogMonitor lock files"
+                echo
+            fi
+        fi
+    else
+        if [ $result -eq 0 ]; then
+            if [ -f "${LOCKFILE}" ]; then
+                success
+                echo
+                remove_lockfile
+            else
+                echo -ne "\t\tLogMonitor not running!\n"
+            fi
+        fi
+    fi
+}
+
+status()
+{
+    local pid=
+
+    pid=`pidofproc ${LOGMONITOR}`
+
+    if [ -n "$pid" ]; then
+	echo "Logmonitor running..."
+    elif [ -f "${LOCKFILE}" ]; then
+	echo "LogMonitor not running but stale lock file present."
+	exit 1
+    else
+	echo "LogMonitor stopped."
+	exit 2
+    fi
+}
+
+check()
+{
+    status=`${LOGMONITOR} -Cc ${CONFIGURATION_FILE} 2>&1`
+
+    if [ $? -eq 0 ]; then
+	success $"check"
+	echo ""
+    else
+	failure $"check"
+	echo ""
+	echo $status
+    fi
+}
+
+cd /tmp
+
+case $1 in
+    start)
+	echo -n "Starting LogMonitor..."
+
+	init_variables
+	start
+	RETVAL=$?
+        [ $RETVAL -eq 0 ] && touch $INIT
+
+    ;;
+    stop)
+	echo -n "Stopping LogMonitor..."
+
+	init_variables
+	stop
+	RETVAL=$?
+        [ $RETVAL -eq 0 ] && rm -f $INIT
+    ;;
+    restart)
+	echo -n "Stopping LogMonitor..."
+
+	init_variables
+	stop
+
+	echo -n "Starting LogMonitor..."
+	start
+	RETVAL=$?
+        [ $RETVAL -eq 0 ] && touch $INIT
+    ;;
+    reload)
+	init_variables
+	reload
+	RETVAL=$?
+    ;;
+    status)
+        init_variables
+	status
+	RETVAL=$?
+    ;;
+    check)
+        echo -n "Checking installation..."
+
+	init_variables
+	check
+	RETVAL=$?
+    ;;
+    *)
+	echo "Usage: $0 {start|stop|restart|status|check}"
+	RETVAL=1
+    ;;
+esac
+exit $RETVAL

@@ -1,0 +1,68 @@
+#!/usr/bin/make -f
+export DH_COMPAT=7
+#export DH_VERBOSE=1
+
+INSTALLDIR=$(CURDIR)/debian/tmp
+
+build-stamp:
+	touch build-stamp
+	
+build:build-stamp
+ifndef extbuilddir
+	./configure --prefix=$(INSTALLDIR)/usr --sysconfdir=$(INSTALLDIR)/etc --disable-static PVER=$(version)
+	make
+endif
+
+clean:
+	dh_testdir
+	dh_testroot
+	rm -rf build-stamp
+	rm -rf configure-stamp
+	rm -rf $(INSTALLDIR)
+	dh_clean
+	
+install: build
+	dh_testdir
+	dh_testroot
+	dh_prep
+	dh_installdirs
+ifdef extbuilddir
+	mkdir -p $(INSTALLDIR) && cp -R $(extbuilddir)/* $(INSTALLDIR)
+else
+	make install
+endif
+	rm $(INSTALLDIR)/usr/lib/*.la
+	sed 's|^prefix=.*|prefix=/usr|g' $(INSTALLDIR)/usr/lib/pkgconfig/wms-jss-controller-adapter.pc > $(INSTALLDIR)/usr/lib/pkgconfig/wms-jss-controller-adapter.pc.new
+	mv $(INSTALLDIR)/usr/lib/pkgconfig/wms-jss-controller-adapter.pc.new $(INSTALLDIR)/usr/lib/pkgconfig/wms-jss-controller-adapter.pc
+	sed 's|^prefix=.*|prefix=/usr|g' $(INSTALLDIR)/usr/lib/pkgconfig/wms-jss-controller.pc > $(INSTALLDIR)/usr/lib/pkgconfig/wms-jss-controller.pc.new
+	mv $(INSTALLDIR)/usr/lib/pkgconfig/wms-jss-controller.pc.new $(INSTALLDIR)/usr/lib/pkgconfig/wms-jss-controller.pc
+	sed 's|^prefix=.*|prefix=/usr|g' $(INSTALLDIR)/usr/lib/pkgconfig/wms-jss-controller-wrapper.pc > $(INSTALLDIR)/usr/lib/pkgconfig/wms-jss-controller-wrapper.pc.new
+	mv $(INSTALLDIR)/usr/lib/pkgconfig/wms-jss-controller-wrapper.pc.new $(INSTALLDIR)/usr/lib/pkgconfig/wms-jss-controller-wrapper.pc
+	sed 's|^prefix=.*|prefix=/usr|g' $(INSTALLDIR)/usr/lib/pkgconfig/wms-jss-logmonitor.pc > $(INSTALLDIR)/usr/lib/pkgconfig/wms-jss-logmonitor.pc.new
+	mv $(INSTALLDIR)/usr/lib/pkgconfig/wms-jss-logmonitor.pc.new $(INSTALLDIR)/usr/lib/pkgconfig/wms-jss-logmonitor.pc
+	sed 's|^prefix=.*|prefix=/usr|g' $(INSTALLDIR)/usr/lib/pkgconfig/wms-jss-common.pc > $(INSTALLDIR)/usr/lib/pkgconfig/wms-jss-common.pc.new
+	mv $(INSTALLDIR)/usr/lib/pkgconfig/wms-jss-common.pc.new $(INSTALLDIR)/usr/lib/pkgconfig/wms-jss-common.pc
+
+binary-indep: build install
+
+binary-arch: build install
+	dh_testdir
+	dh_testroot
+	dh_installdocs
+	dh_installman
+	dh_installchangelogs
+	dh_installinit
+	dh_install
+	dh_link
+	dh_strip
+	dh_compress
+	dh_fixperms
+	dh_installdeb
+	dh_makeshlibs
+	dh_shlibdeps
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb --destdir=debs
+
+binary: binary-indep binary-arch
+.PHONY: build clean binary-indep binary-arch binary install

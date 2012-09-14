@@ -1,0 +1,49 @@
+#!/bin/sh
+
+echo "Condor log recycle dir cleaner started at: `/bin/date`"
+
+# Exit status of the script
+status=0
+
+EDG_WL_LOCATION=${EDG_WL_LOCATION:-/opt/glite}
+
+if [ -z "$EDG_WL_USER" || -z "$EDG_WL_CONFIG_DIR" ]; then
+   . $EDG_WL_LOCATION/etc/edg-wl-vars.sh
+   . ${EDG_WL_LOCATION}/etc/profile.d/edg-wl.sh
+   . ${EDG_WL_LOCATION}/etc/profile.d/edg-wl-config.sh
+fi
+
+GetConfiguration=${EDG_WL_LOCATION}/bin/edg-wl-get-configuration
+
+if [ -x ${GetConfiguration} ]; then
+    RecycleDir=`${GetConfiguration} LogMonitor.CondorLogRecycleDir`
+
+    if [ -d ${RecycleDir} ]; then
+	LogFiles=`/usr/bin/find ${RecycleDir} "(" -type f -and ! -name \*.tar.gz ")"`
+	TarredFile=${RecycleDir}/OldLogs.`/bin/date +%Y%m%d`.tar.gz
+
+	if [ -n "${LogFiles}" ]; then
+	    echo "Tarring log files to new tar file: ${TarredFile}..."
+	    /bin/tar -cf - ${LogFiles} | /bin/gzip -9c > ${TarredFile}
+
+	    if [ $? = 0 ]; then
+		echo "Removing tarred log files..."
+		/bin/rm -rf ${LogFiles}
+	    else
+		echo "Tarring of log files failed, aborting..."
+		status=1
+	    fi
+	else
+	    echo "Condor log recycle dir (${RecycleDir}) does not contain new files."
+	    echo "No action taken..."
+	fi
+    else
+	echo "Condor log recycle dir (${RecycleDir}) not present." >&2
+	status=1
+    fi
+else
+    echo "${GetConfiguration} not present or unreadable" >&2
+    status=1
+fi
+
+exit ${status}

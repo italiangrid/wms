@@ -1,0 +1,376 @@
+#!/bin/bash
+#
+# glite-wms-jc:      Starts the JobController daemon(s)
+#
+# Version:        @(#) /etc/rc.d/init.d/glite-wms-jc   2.0
+#
+# chkconfig: 345 95 06 
+# description: Starts, stops and checks the EGEE \
+#              JobController daemon. It also starts the CondorG \
+#              thinghie.
+#
+# processname: glite-wms-job_controller condor_master condor_schedd
+# config: /opt/glite/etc/glite_wms.conf
+# hide: false
+
+#########################################################
+. /opt/glite/yaim/etc/grid-env-funcs.sh
+. /etc/profile.d/grid-env.sh
+########################################
+
+INIT=/var/lock/subsys/`basename $0 | \
+sed -e 's/^[SK][0-9][0-9]//'`
+
+. /etc/rc.d/init.d/functions
+CONFIGURATION_FILE=glite_wms.conf
+CONTROLLERBASE=glite-wms-job_controller
+MASTERBASE=condor_master
+gliteuid=`id -u ${GLITE_WMS_USER} 2>&1` || do_failure $gliteuid
+glitegid=`id -g ${GLITE_WMS_USER} 2>&1` || do_failure $glitegid
+export CONDOR_IDS="$gliteuid.$glitegid"
+CONDOR_MASTER=${CONDORG_INSTALL_PATH}/sbin/${MASTERBASE}
+CONDOR_OFF=${CONDORG_INSTALL_PATH}/sbin/condor_off
+CONDOR_SCHEDD=${CONDORG_INSTALL_PATH}/sbin/condor_schedd
+JOBCONTROLLER=${WMS_LOCATION_BIN}/${CONTROLLERBASE}
+LOCKFILE=`${WMS_LOCATION_BIN}/glite-wms-get-configuration JobController.LockFile`
+SCRIPT_UID=`/usr/bin/id -u`
+GLITEUSER_HOME=`eval echo ~${GLITE_WMS_USER}`
+[ -d ${GLITEUSER_HOME} ] || do_failure "Missing user directory ${GLITEUSER_HOME}"
+
+do_failure()
+{
+    echo -n " $*"
+    failure $1
+    echo ""
+
+    exit 1
+}
+
+set_input()
+{
+  mkdir -p ${input}/{tmp,new,old} 2>/dev/null
+  mkdir_ret=$?
+  chown ${GLITE_WMS_USER}:${GLITE_WMS_USER} ${input} ${input}/{tmp,new,old}
+  if [ $? -ne 0 -o $mkdir_ret -ne 0 ]; then
+    false
+  else 
+    true
+  fi
+}
+
+check_input()
+{
+  if [ -d ${input} ]; then
+    set_input_ret=0
+    if [ ! -d ${input}/old -o ! -d ${input}/new -o ! -d ${input}/tmp ]; then
+      echo "input structure has changed, trying to (re)create it"
+      set_input
+      if [ $? != 0 ]; then
+        set_input_ret=1
+      fi
+    fi
+
+    if [ $set_input_ret -eq 0 ]; then
+      # mv of the whole dir would fail when too much populated
+      find ${input}/old/ -type f | xargs -I '{}' mv '{}' ${input}/new/ &>/dev/null
+      if [ $? != 0 ]; then
+        echo "error moving files from old to new dir, continuing"
+      fi
+      true
+    else
+      false
+    fi
+  else
+    set_input
+  fi
+}
+
+remove_lockfile()
+{
+  if [ -f "${LOCKFILE}" ]; then
+    action "A stale lock file still exists, removing it.." /bin/rm -f  ${LOCKFILE}
+  fi
+}   
+
+
+start()
+{
+  input=`${WMS_LOCATION_BIN}/glite-wms-get-configuration JobController.input`
+    if [ -z ${input} ]; then
+      do_failure "Please set Input parameter in ${CONFIGURATION_FILE} - JC section"
+    fi 
+
+  if [ "x$1" = "xJobController" -o "x$1" = "x" ]; then
+    check_input
+    if [ $? != 0 ]; then
+      echo "error setting up input structure... failure"
+    else
+      echo -ne "\tStarting JobController..."
+      daemon ${JOBCONTROLLER} -c ${CONFIGURATION_FILE}
+      local result=$?
+      echo
+      if [ ${result} -eq 1 ]; then # Startup of the daemon is failed, try to understand the cause
+        local pid=`pidofproc ${JOBCONTROLLER}`
+        if [ -z "${pid}" -a -f "${LOCKFILE}" ]; then
+          echo "JobController is not running, but a stale lock file exists."
+          echo "Check situation and try to start again."
+          echo "Lock file path is: ${LOCKFILE}"
+        elif [ -n "${pid}" ]; then
+        echo "JobController already running with pid ${pid}"
+        fi
+      elif [ ${SCRIPT_UID} -eq 0 ]; then
+        echo `pidofproc ${JOBCONTROLLER}` > /var/run/${CONTROLLERBASE}.pid
+      fi
+    fi
+  fi
+
+  if [ "x$1" = "xCondorG" -o "x$1" = "x" ]; then
+    echo -ne "\tStarting CondorG..."
+    ulimit -n 32768
+    daemon --user ${GLITE_WMS_USER} ${CONDOR_MASTER}
+    echo
+
+    if [ ${SCRIPT_UID} -eq 0 ]; then
+      echo `pidofproc ${CONDOR_MASTER}` > /var/run/${MASTERBASE}.pid
+    fi
+  fi
+}
+
+reload()
+{
+    local pid=`pidofproc ${JOBCONTROLLER}`
+
+    if [ -z "${pid}" -a -f "${LOCKFILE}" ]; then
+	pid=`/bin/cat ${LOCKFILE}`
+    fi
+
+    if [ -n "${pid}" ]; then
+	action "Reloading JobController configuration " /bin/kill -HUP ${pid}
+    fi
+}
+
+stop()
+{
+    local times pidfile pid lpid result=0
+
+    if [ "x$1" = "xJobController" -o "x$1" = "x" ]; then
+	echo -ne "\tStopping JobController..."
+
+        pid=`pidofproc ${JOBCONTROLLER}`
+        if [ -f "/var/run/${CONTROLLERBASE}.pid" ]; then
+            pidfile=`/bin/cat /var/run/${CONTROLLERBASE}.pid`
+        fi
+        
+        if [ -n "${pid}" -a -n "${pidfile}" ]; then
+            if [ "${pid}" != "${pidfile}" ]; then
+                result=1
+                echo -ne "\t\tCould not reliably find JobController pid!\n"
+                pid=
+                pidfile=
+            fi
+        else
+            if [ -z "${pidfile}" ]; then
+                pidfile=$pid
+            fi
+        fi
+
+	if [ -n "${pidfile}" ]; then
+            if [ -f "${LOCKFILE}" ]; then
+                lpid=`/bin/cat ${LOCKFILE}`
+            fi
+            if [ "${pidfile}" == "${lpid}" ]; then
+                if [ -n "${pid}" ]; then
+                    /bin/kill -TERM $pid
+                    for (( times = 10; times >= 0; times-- )); do
+                        [ -f "${LOCKFILE}" ] || { success $"JobController terminated normally" && echo && break; }
+                        if [ $times -eq 0 ]; then
+                            killproc ${JOBCONTROLLER}
+                            result=$?
+                            echo
+                        else
+                            sleep 1
+                        fi
+                    done
+                    if [ $result -eq 0 ]; then
+                        remove_lockfile
+                        if [ ${SCRIPT_UID} -eq 0 ]; then
+                            rm -f /var/run/${CONTROLLERBASE}.pid
+                        fi
+                    fi
+                else
+                    result=1
+                    failure $"JobController not running, but lock file found."
+                    echo
+		    remove_lockfile
+		    echo
+                fi
+            else
+                if [ ! -f "${LOCKFILE}" ]; then
+                    if [ -n "${pid}" ]; then
+                        action "" /bin/kill -KILL $pid
+                        result=$?
+                    else
+                        success $"JobController was not running"
+                        echo
+                    fi
+                    if [ $result -eq 0 -a ${SCRIPT_UID} -eq 0 ]; then
+                        rm -f /var/run/${CONTROLLERBASE}.pid
+                    fi
+                else
+                    result=1
+                    failure $"Inconsistent JobController lock files"
+                    echo
+                fi
+            fi
+        else
+            if [ $result -eq 0 ]; then
+                if [ -f "${LOCKFILE}" ]; then
+                    success
+                    echo
+                    remove_lockfile
+                else
+                    echo -ne "\t\tJobController not running!\n"
+                fi
+            fi
+        fi
+    fi
+
+    if [ "x$1" = "xCondorG" -o "x$1" = "x" ]; then
+	echo -ne "\tStopping CondorG..."
+
+	pid=`pidofproc ${CONDOR_MASTER}`
+	if [ "x$pid" = "x" ]; then
+	    # do_failure "CondorG not running"
+	    echo -ne "\t\tCondorG not running!\n"
+	else
+	    ${CONDOR_OFF} -master > /dev/null 2>&1
+	    sleep_cycle=5
+            # hope this is enough for Condor
+           for (( times = 24; times >= 0; times-- )); do
+                sleep $sleep_cycle 
+                if ! checkpid $pid 2>&1; then
+                   success
+                   echo ""
+
+                   if [ ${SCRIPT_UID} -eq 0 ]; then
+                       rm -rf /var/run/${MASTERBASE}.pid
+                   fi
+                   break
+               fi
+           done
+            if checkpid $pid 2>&1; then
+                echo -ne "\t\tcondor_master didn't exit. Sending SIGKILL to it."
+                echo -ne " WARNING: This may leave sched universe processes"
+                echo -ne " behind, that should be checked manually!\n"
+                killproc ${CONDOR_SCHEDD}		
+		killproc ${CONDOR_MASTER}
+		echo ""
+	    fi
+	fi
+    fi
+}
+
+status()
+{
+    local pid=
+
+    if [ "x$1" = "xJobController" -o "x$1" = "x" ]; then
+	pid=`pidofproc ${JOBCONTROLLER}`
+
+        if [ -n "$pid" ]; then
+           echo "JobController running in pid: ${pid}"
+        elif [ -f "${LOCKFILE}" ]; then
+           echo "JobController not running but stale lock file present."
+           exit 1
+        else
+           echo "JobController stopped."
+	   exit 2
+        fi
+
+    fi
+
+    if [ "x$1" = "xJobController" -o "x$1" = "x" ]; then
+	pid=`pidofproc ${CONDOR_MASTER}`
+
+        if [ -n "$pid" ]; then
+           echo "CondorG master running in pid: ${pid}"
+        elif [ -f /var/run/${MASTERBASE}.pid ]; then
+           echo "CondorG master not running but stale pid file present."
+           exit 1
+        else
+           echo "CondorG master stopped."
+	   exit 2
+        fi
+
+	pid=`pidofproc ${CONDOR_SCHEDD}`
+
+	if [ -n "$pid" ]; then
+	    echo "CondorG schedd running in pid: $pid"
+	else
+	    echo "CondorG schedd not running"
+	    exit 2
+	fi
+    fi
+}
+
+check()
+{
+    status=`${JOBCONTROLLER} -Cc ${CONFIGURATION_FILE} 2>&1`
+
+    if [ $? -eq 0 ]; then
+	success $"check"
+	echo ""
+    else
+	failure $"check"
+	echo ""
+	echo $status
+    fi
+}
+
+cd /tmp
+
+case $1 in
+    start)
+	echo "Starting JobController daemon(s)"
+
+	start $2
+	RETVAL=$?
+        [ $RETVAL -eq 0 ] && touch $INIT
+    ;;
+    stop)
+	echo "Stopping JobController daemon(s)"
+
+	stop $2
+	RETVAL=$?
+        [ $RETVAL -eq 0 ] && rm -f $INIT
+    ;;
+    restart)
+	echo "Restarting JobController daemon(s)"
+
+	stop $2
+	start $2
+	RETVAL=$?
+        [ $RETVAL -eq 0 ] && touch $INIT
+    ;;
+    reload)
+	reload
+	RETVAL=$?
+    ;;
+    status)
+	status $2
+	RETVAL=$?
+    ;;
+    check)
+	echo -n "Checking installation..."
+
+	check
+	RETVAL=$?
+    ;;
+    *)
+	echo "Usage: $0 {start|stop|restart|reload|status|check} [JobController|CondorG]"
+	RETVAL=1
+    ;;
+esac
+exit $RETVAL
+
+
