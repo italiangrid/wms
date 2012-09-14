@@ -1,0 +1,47 @@
+[
+   Common = [
+      DGUser = "${GLITE_WMS_USER}";
+      HostProxyFile = "/tmp/x509up_uICE";
+   ];
+   JobController = [
+   ];
+   LogMonitor = [
+   ];
+   NetworkServer = [
+   ];
+   WorkloadManager = [
+     Input = "/tmp/ns_fl";
+   ];
+   WorkloadManagerProxy = [
+   ];
+   WmsClient = [
+   ];
+   ICE = [
+     listener_port = 7010;
+     Input = "/tmp/wm_fl";
+     cache_persist_file = "/tmp/jobCachePersistFile";
+     log_on_file = false;
+     log_on_console = true;
+     logfile = "/tmp/ice.log";
+     loglevel = 800;
+     start_poller = true;
+     start_listener = false;
+     notification_frequency = 7;
+     start_subscription_updater = false;
+     poller_delay = 10;
+     poller_status_threshold_time = 30;
+     cream_url_prefix = "https://";
+     cream_url_postfix = "/ce-cream/services/CREAM";
+     creamdelegation_url_prefix = "https://";
+     creamdelegation_url_postfix = "/ce-cream/services/CREAMDelegation";
+     cemon_url_prefix = "https://";
+     cemon_url_postfix = "/ce-monitor/services/CEMonitor";
+     ice_topic = "ICE";
+     subscription_duration = 1200;
+     subscription_update_threshold_time = 60;
+     max_jobcache_operation_before_dump = 5;
+     lease_threshold_time = 20;
+     lease_delta_time = 60;
+   ];
+]
+

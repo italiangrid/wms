@@ -1,0 +1,174 @@
+THIS IS NOT A PUBLIC DOCUMENTATION, THEN IT IS IN ITALIAN AND RAPIDLY 
+EVOLVING
+
+C'e' in ICE una mappa (chiave, valore), cioé (DN, BetterProxy) 
+gestita dalla classe DNProxyManager. Il better proxy è un
+proxy gestito da ICE, garantito essere sempre valido 
+e utilizzato per operazioni cumulative
+di polling o altro verso il CE.
+
+Inoltre c'é una tabella di DelegationID da [ri-]utilizzare per le 
+operazioni di registrazione dei job a CREAM.
+
+Ci sono due modi per cercare un better proxy per un dato DN:
+1. si cerca un better proxy in corrispondenza di una qualunque chiave
+   che contenga DN+FQAN come parte iniziale. In tal modo si ottiene 
+   un qualunque better proxy valido per l'utente in questione, 
+   indipendentemente dal fatto che sia relativo ad un proxy arrivato 
+   con un job che aveva MYPROXYSERVER settato.
+
+2. si cerca un better proxy in corrispondenza della chiave esatta
+   DN+FQAN+"_MYPROXYSERVERNAME"; cioe' si cerca un better proxy
+   relativo ad un utente che ha sottomesso almeno un job con 
+   MYPROXYSERVER settato.
+
+Quindi si evince che all'interno della mappa dei better proxy ci
+sono due tipi di proxy. Quelli relativi a chiavi "pure" 
+DN+FQAN e quelli relativi a chiare complesse 
+DN+FQAN+"_MYPROXYSERVERNAME". Quelli del primo tipo in generale
+sono garantiti essere per ogni DN il proxy piu' longevo. Quelli
+del secondo tipo, essendo registrati al myproxy renewal (come
+si vedra' in seguito) sono garantiti essere sempre validi.
+
+		* * * * * * * * * * 
+
+
+SOTTOMISSIONE:
+
+=> Arriva un job con MYPROXY settato
+ - Si cerca se esiste nella mappa DelegationID una chiave DN+FQAN
+   - c'e', si estrare il corrispondente delegation ID per la registrazione del 
+     job corrente
+   - non c'e', si crea una nuova delega sul CE con un delegation ID 
+     codificato a partire dal jobID e lo inserisce nella mappa DelegationID
+     in corrispondenza di una nuova chiave pari al DN+FQAN del proprietario
+     del job.
+ - Si cerca se c'e' una entry con chiave pari al DN+FQAN+"_MYPROXYSERVERNAME"
+   del proprietario del job corrente nella mappa dei better proxy.
+   - c'e' -> si incrementa un contatore di job per questo better proxy e non 
+     si fa nient'altro
+   - non c'e' -> si registra il proxy corrente al myproxy server 
+     (con ID = forma_compressa_di(DN+FQAN) ); 
+     - la registrazione torna un path che viene symlinkato ad un file il cui 
+       nome e' pari al DN+FQAN corrente e che risiedera' nelle persistdir di ICE.
+       - il symlink fallisce -> si deregistra il proxy appena registrato al 
+         myproxyserver (se fallisce la un-register si ignora). Si "calcola" il 
+         better alla vecchia maniera e in caso verra' inserito nella mappa 
+         dei better proxy se piu' nuovo di quelle eventualmente 
+	 gia' esistente per il corrente DN.
+           
+         
+         - il symlink va a buon fine -> si inserisce nella mappa dei
+	   better proxy la coppia 
+           (DN+FQAN+"_MYPROXYSERVERNAME", symlink-appena-creato), 
+	   si setta il contatore a 1
+     - la registrazione fallisce, si "calcola" il better alla vecchia maniera 
+       e in caso verra' inserito nella mappa dei better proxy
+       se piu' nuovo di quelle eventualmente gia' esistente per il 
+       corrente DN+FQAN.
+
+
+		* * * * * * * * * * 
+
+
+=> Arriva un job con MYPROXY NON settato (il proxy del job corrente e' 
+   candidato a diventare betterproxy, previa verifica dei tempi residui)
+
+   - si calcola lo SHA1_DIGEST del certificato dentro il associato al job
+     corrente
+   - si cerca questo SHA1_DIGEST come chiave all'interno della mappa DelegationID
+     - c'e', si estrare il corrispondente delegation ID per la registrazione del 
+     job corrente
+     - non c'e', si crea una nuova delega sul CE con un delegation ID 
+     codificato a partire dal jobID e lo inserisce nella mappa DelegationID
+     in corrispondenza di una nuova chiave pari al SHA1_DIGEST
+     precedentemente calcolato.
+
+   - Si cerca se c'e' una entry con chiave pari al DN+FQAN
+     del proprietario del job corrente nella mappa dei better proxy.
+     - c'e': si controlla se il betterproxy corrispondente e' meno longevo di 
+       quello con cui e' arrivato il job e si fa la sostituzione se necessario.
+       - fallisce l'estrazione del tempo redisuo dal proxy candidato a 
+         diventare betterproxy nella mappa: non si fa nulla 
+         (alla prossima sottomissione si ritenta la procedura)
+	 
+
+ALE SAID: precisiamo: siamo nel ramo in cui "c'e` gia' un betterproxy" quindi 
+          per un po' il job e' coperto (non era l'unico job sottomesso) e 
+          inoltre non sono necessari i rinnovi quindi non facciamo casino. 
+          Il problema se vogliamo fare come dice mbuto la punto allo s... 
+          e' se il nuovo job ha un proxy + longevo, in tal caso l'ultima parte 
+          della vita di quel job (ossia da quando scade il mio betterproxy e 
+          il proxy del job) non sara' coperta... 
+
+          L'unica strada in questo caso e' quella di usare il proxy del job, 
+          ma essendo un caso estremo possiamo anche far finta di nulla....
+
+
+
+    - non c'e': si inserisce la coppia (DN+FQAN, proxy_del_job_corrente) nella 
+      mappa dei better proxy in modo da avere un betterproxy per il 
+      DN+FQAN corrente.
+
+		* * * * * * * * * * 
+
+=> Ad ICE arriva una notifica di job terminato 
+   (ABORTED, DONE-OK, DONE-FAILED, CANCELLED) oppure la ottiene mediante poll
+   - se per il DN+FQAN relativo al job corrente se c'e' la coppia 
+     (DN+FQAN+"_MYPROXYSERVERNAME", BetterProxy) 
+     nella mappa dei better proxy, decrementa il contatore
+   - se il contatore e' 0 (non ci sono piu' job relativo a questo BetterProxy)
+     deregistra il betterproxy, rimuove dalla mappa
+     la coppia (DN+FQAN+"_MYPROXYSERVERNAME", BetterProxy), 
+     unlinka dalla persist dir il 
+     link al betterproxy fisico mantenuto dal myproxyserver per 
+     l'ID=forma_compressa_di(DN+FQAN)
+     - la deregister fallisce, si ignora
+     - l'unlink fallisce, si ignora
+     ATTENZIONE PROBLEMA: la unregister e' fallita. Quindi nel myproxyserver 
+                          c'e' ancora una registrazione fantasma per quell'ID. 
+                          La prossima registrazione per lo stesso ID di un 
+                          betterproxy fallira' ?
+
+ALE SAID: da verificare
+
+     ATTENZIONE PROBLEMA: l'unlink fallisce. Il prossimo tentativo di symlink 
+		          per lo stesso DN fallira'.
+
+
+     		* * * * * * * * * * 
+
+
+=> Operazioni varie al CE se non si trova il better proxy:
+ - Purge: si tenta il purge con il proxy nella sandbox del job
+ - Poll: se non si trova il betterproxy del DN dei 100 job da pollare si
+         rinuncia
+ - LBContext:  si tenta con il proxy dell'host
+
+ - Subscribe: fallisce il check della sottoscrizione per conto dell'utente
+              DN+FQAN, 
+              fallisce la richiesta getCEMonDN, fallisce la subscribe o 
+              l'update => Niente NOTIFICHE
+
+ - Lease: NIENTE rinnovo del LEASE
+ - Cancel: si prova a usare il proxy nella sandbox del job da cancellare
+ - Lease: fallisce
+
+
+     		* * * * * * * * * * 
+
+=> Il PROXYRENEWAL
+ - si caricano dalla memoria le deleghe relative a job che sono stati 
+   sottomessi con MYPROXYSERVER settato
+ - ad ogni delega e' associato un DN+FQAN. Si fa un loop su queste deleghe.
+ - si cerca il BetterProxy per il DN+FQAN+"_MYPROXYSERVERNAME" corrente.
+   - tale betterproxy e' EXPIRED: si rimuove la delega dalla memoria. 
+     Si rimuove il betterproxy dalla mappa dei better proxy. 
+     Si deregistra il better proxy dal myproxyserver e si 
+     cancella il symlink.
+     - fallisce questa deregister: si ignora.
+   - tale betterproxy e' "BUONO": si rinnova la delega con tale betterproxy, 
+     settando la scadenza della delega pari alla scadenza di tale betterproxy. 
+     In tutti i job relativi a tale delega si aggiorna la scadenza della 
+     stessa in modo da renderla persistente nel database di ICE.
+

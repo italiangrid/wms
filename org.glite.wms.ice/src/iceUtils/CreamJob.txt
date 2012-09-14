@@ -1,0 +1,229 @@
+MEMBER:text,std::string,grid_jobid#PRIMARYKEY#,""
+MEMBER:text,std::string,cream_jobid,""
+MEMBER:text,std::string,complete_cream_jobid,""
+MEMBER:blob,std::string,jdl,""
+MEMBER:text,std::string,ceid,""
+MEMBER:text,std::string,endpoint,""
+MEMBER:text,std::string,cream_address,""
+MEMBER:text,std::string,cream_deleg_address,""
+MEMBER:text,std::string,user_proxyfile,""
+MEMBER:text,std::string,user_dn,""
+MEMBER:text,std::string,sequence_code,""
+MEMBER:text,std::string,delegation_id,""
+MEMBER:text,std::string,wn_sequence_code,""
+MEMBER:integer(2),unsigned short int,prev_status,11
+MEMBER:integer(2),unsigned short int,status,11
+MEMBER:integer(2),unsigned short int,num_logged_status_changes,0
+MEMBER:integer(8),time_t,last_seen,0
+MEMBER:text,std::string,lease_id,""
+MEMBER:integer(2),unsigned short int,status_poll_retry_count,0
+MEMBER:integer(2),unsigned short int,exit_code,0
+MEMBER:blob,std::string,failure_reason,""
+MEMBER:text,std::string,worker_node,""
+MEMBER:integer(1),bool,killed_byice,0
+MEMBER:integer(8),time_t,last_empty_notification_time,0
+MEMBER:integer(1),bool,proxy_renewable,0
+MEMBER:text,std::string,myproxy_address,""
+MEMBER:integer(8),time_t,isbproxy_time_end,0
+MEMBER:blob,std::string,modified_jdl,""
+MEMBER:integer(8),time_t,last_poller_visited,0
+MEMBER:integer(8),unsigned long long int,cream_dbid,0
+MEMBER:text,std::string,token_file,""
+MEMBER:text,std::string,cancel_sequence_code,""
+
+METHOD:void,set_status,( const glite::ce::cream_client_api::job_statuses::job_status& st ) {
+  m_changed_status = true;
+  m_changed_prev_status  = true;
+  m_prev_status = m_status; m_status = st;
+}
+ENDMETHOD:
+METHOD:void,set_cream_jobid,( const std::string& cid ) { 
+  m_cream_jobid = cid; 
+  if(!m_cream_jobid.empty() && !m_cream_address.empty()) {
+    m_complete_cream_jobid = m_cream_address;
+    boost::replace_all( m_complete_cream_jobid, IceConfManager::instance()->getConfiguration()->ice()->cream_url_postfix(), "" );
+    m_complete_cream_jobid += "/" + m_cream_jobid;
+  }
+  m_changed_cream_jobid = true;
+  m_changed_complete_cream_jobid = true;
+}
+ENDMETHOD:
+METHOD:void,set_jdl,( const std::string& j, const std::string& cmdtype ) 
+ throw( ClassadSyntax_ex& )
+{
+  /**
+   * Classad-mutex protected region
+   */
+  boost::recursive_mutex::scoped_lock M_classad( this->s_classad_mutex );
+  classad::ClassAdParser parser;
+  classad::ClassAd *jdlAd = parser.ParseClassAd( j );
+  
+  if ( 0 == jdlAd ) {
+    throw ClassadSyntax_ex( string("unable to parse jdl=[") + j + "]" );
+  }
+  
+  boost::scoped_ptr< classad::ClassAd > classad_safe_ptr( jdlAd );
+  
+  m_jdl = j;
+  
+  // Look for the "ce_id" attribute
+  if ( !classad_safe_ptr->EvaluateAttrString( "ce_id", m_ceid ) ) {
+    throw ClassadSyntax_ex("ce_id attribute not found, or is not a string");
+  }
+  boost::trim_if(m_ceid, boost::is_any_of("\"") );
+  
+  string shallow;
+  m_token_file = "";
+  if ( !classad_safe_ptr->EvaluateAttrString( "ReallyRunningToken", m_token_file ) ) {
+    throw ClassadSyntax_ex("ReallyRunningToken attribute not found, or is not a string");
+  }
+  
+  if(m_token_file.empty())
+    m_token_file = "/nofile";
+  
+  if( classad_safe_ptr->EvaluateAttrString( "ShallowRetryCount", shallow ) ) {
+    if( atoi( shallow.c_str() ) == -1 )
+      m_token_file = "";
+  }
+  
+  boost::trim_if(m_token_file, boost::is_any_of("\"") );
+  
+  // Look for the "X509UserProxy" attribute
+  if ( !classad_safe_ptr->EvaluateAttrString( "X509UserProxy", m_user_proxyfile ) ) {
+    throw ClassadSyntax_ex("X509UserProxy attribute not found, or is not a string");
+  }
+  
+  string tmp;
+  
+  m_proxy_renewable = false;
+  
+  if ( classad_safe_ptr->EvaluateAttrString( "MYPROXYSERVER", tmp ) ) {
+  
+    boost::trim_if(tmp, boost::is_any_of(" ") );
+    
+    if( !tmp.empty() ) {
+      m_proxy_renewable = true;
+      m_myproxy_address = tmp;
+    }
+    
+  } 
+  
+  boost::trim_if(m_user_proxyfile, boost::is_any_of("\""));
+  
+  // Look for the "LBSequenceCode" attribute (if this attribute is not in the classad, the sequence code is set to the empty string
+  if ( classad_safe_ptr->EvaluateAttrString( "LB_sequence_code", m_sequence_code ) ) {
+    boost::trim_if(m_sequence_code, boost::is_any_of("\""));
+  }
+  
+  // Look for the "edg_jobid" attribute
+  if ( !classad_safe_ptr->EvaluateAttrString( "edg_jobid", m_grid_jobid ) ) {
+    throw ClassadSyntax_ex( "edg_jobid attribute not found, or is not a string" );
+  }
+  boost::trim_if(m_grid_jobid, boost::is_any_of("\"") );
+  
+  vector<string> pieces;
+  try{
+    api::util::CEUrl::parseCEID(m_ceid, pieces);
+  } catch(api::util::CEUrl::ceid_syntax_ex& ex) {
+    throw ClassadSyntax_ex(ex.what());
+  }
+  
+  m_endpoint = pieces[0] + ":" + pieces[1];
+  
+  m_cream_address = IceConfManager::instance()->getConfiguration()->ice()->cream_url_prefix() 
+    + m_endpoint + IceConfManager::instance()->getConfiguration()->ice()->cream_url_postfix();
+  
+  m_cream_deleg_address = IceConfManager::instance()->getConfiguration()->ice()->creamdelegation_url_prefix() 
+    + m_endpoint + IceConfManager::instance()->getConfiguration()->ice()->creamdelegation_url_postfix();
+  
+  // It is important to get the jdl from the job itself, rather
+  // than using the m_jdl attribute. This is because the
+  // sequence_code attribute inside the jdl classad has been
+  // modified by the L&B calls, and we have to pass to CREAM the
+  // "last" sequence code as the job wrapper will need to log
+  // the "really running" event.
+  //if( boost::algorithm::iequals( cmdtype, "submit" ) )
+  glite::wms::ice::util::IceUtils::cream_jdl_helper( (const string&)this->jdl(), m_modified_jdl );// can throw ClassadSyntax_ex
+  
+  // release of Classad-mutex
+  m_changed_jdl = true;
+  m_changed_modified_jdl = true;
+}
+ENDMETHOD:
+METHOD:bool,is_active,( void ) const
+{
+    if( this->killed_byice() ) return false;
+
+    return ( ( m_status == api::job_statuses::REGISTERED ) ||
+             ( m_status == api::job_statuses::PENDING ) ||
+             ( m_status == api::job_statuses::IDLE ) ||
+             ( m_status == api::job_statuses::RUNNING ) ||
+	     ( m_status == api::job_statuses::REALLY_RUNNING) ||
+             ( m_status == api::job_statuses::HELD ) );
+}
+ENDMETHOD:
+METHOD:bool,can_be_purged,( void ) const
+{
+    return ( ( m_status == api::job_statuses::DONE_OK ) ||
+             ( m_status == api::job_statuses::CANCELLED ) ||
+             ( m_status == api::job_statuses::DONE_FAILED ) ||
+             ( m_status == api::job_statuses::ABORTED ) );
+}
+ENDMETHOD:
+METHOD:bool,can_be_resubmitted,( void ) const
+{ 
+    int threshold( IceConfManager::instance()->getConfiguration()->ice()->job_cancellation_threshold_time() );
+    api::soap_proxy::VOMSWrapper V( this->user_proxyfile( ) );
+    if ( !V.IsValid() || 
+         ( V.getProxyTimeEnd() < time(0) + threshold ) ) {
+        return false;
+    }
+    return ( ( m_status == api::job_statuses::DONE_FAILED ) ||
+             ( m_status == api::job_statuses::ABORTED ) );
+}
+ENDMETHOD:
+METHOD:string,describe,( void ) const
+{
+    string result;
+    result.append( "GRIDJobID=\"" );
+    result.append( m_grid_jobid );
+    result.append( "\" CREAMJobID=\"" );
+    result.append( m_complete_cream_jobid );
+    result.append( "\"" );
+    return result;
+}
+ENDMETHOD:
+METHOD:void,set_sequence_code,( const std::string& seq )
+{
+    string old_seq_code = m_sequence_code; 
+    m_sequence_code = seq;
+
+    boost::replace_all( m_jdl, old_seq_code, seq );
+    boost::replace_all( m_modified_jdl, old_seq_code, seq );
+
+    m_changed_sequence_code = true;
+}
+ENDMETHOD:
+METHOD:void,set_failure_reason,( const std::string& f ) { 
+if( f.empty() )
+  m_failure_reason = " "; 
+else
+  m_failure_reason = f;
+
+  m_changed_failure_reason = true;
+}
+ENDMETHOD:
+METHOD:string,token_file,( void ) const {
+
+  glite::wms::ice::util::Url url( m_token_file );
+  if(!url.is_valid() )
+    return url.get_error();
+
+  if(url.get_path().at(0) == '/')
+    return url.get_path( );
+  else {
+    return string("/")+url.get_path( ); 
+  }
+
+}
+ENDMETHOD:

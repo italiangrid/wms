@@ -1,0 +1,147 @@
+#!/bin/sh
+
+# chkconfig: 345 95 06
+# description: startup script for the ICE process
+
+
+########################################
+. /opt/glite/yaim/etc/grid-env-funcs.sh
+. /etc/profile.d/grid-env.sh 
+########################################
+
+ 
+GLITE_WMS_CONFIG_DIR=${WMS_LOCATION_ETC}
+export GLITE_WMS_CONFIG_DIR
+this_script_name=$0
+
+program_name=glite-wms-ice-safe
+binpath=${WMS_LOCATION_BIN}/${program_name}
+#pid_file=/var/run/${program_name}.pid
+pid_file=${WMS_LOCATION_VAR}/run/${program_name}.pid
+
+running()
+{
+    pidsafe=`/bin/ps -efu glite|grep ${WMS_LOCATION_BIN}/glite-wms-ice-safe|grep -v grep|awk '{print $2}'`  
+#    pidsafe=`/bin/ps h -o pid -C glite-wms-ice-safe`
+    pid=`/bin/ps -efu glite|grep ${WMS_LOCATION_BIN}/glite-wms-ice|grep -v grep|grep -v glite-wms-ice-safe|grep -v "sh -c"|awk '{print $2}'`
+#    pid=`/bin/ps h -o pid -C glite-wms-ice`
+    
+    
+    if [ -z "${pidsafe}" ]; then
+        return 1
+    fi    
+    
+    return 0
+}
+
+ret_code=0
+
+start()
+{
+    chmod 600 ${WMS_LOCATION_VAR}/ice/persist_dir/*.betterproxy >& /dev/null
+    conf_file=glite_wms.conf
+    GET_CONF=${WMS_LOCATION_BIN}/glite-wms-get-configuration
+    if [ -f ${GET_CONF} ]; then
+       err_logfile=`${GET_CONF} ICE.logfile`;
+       su_dguser=`${GET_CONF} Common.DGUser`;
+    else
+       err_logfile="/dev/null"; # redirects output to /dev/null
+       su_dguser="root"; # default root user
+    fi
+
+
+    echo -n "starting ICE... "
+    if running; then
+        echo "ok (already running)"
+    else
+	mkdir -p ${WMS_LOCATION_VAR}/run/
+        rm -f ${pid_file}
+	touch ${pid_file}
+	#chown ${GLITE_USER}:${GLITE_USER} ${pid_file}
+
+        # FIXME: This is a temporary fix for setting up the correct
+        # LD_LIBRARY_PATH value 
+        if [ -z "$LD_LIBRARY_PATH" ]; then
+            LD_LIBRARY_PATH=/opt/log4cpp/lib/
+        else
+            LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/opt/log4cpp/lib/
+        fi
+        export LD_LIBRARY_PATH
+        su ${su_dguser} -c "${binpath} --conf ${conf_file} --daemon ${pid_file} >> ${err_logfile} 2>&1"
+	local pid=`pidof ${binpath} 2>/dev/null`
+	echo $pid > ${pid_file}
+
+        # there is a race condition due to some delay between becoming
+        # a daemon (hence returning control to this script) and
+        # writing the pid file; the following sleep should be enough
+        # to get around it
+        sleep 1
+        if running; then
+            echo "ok"
+        else
+            echo "failure"
+            ret_code=1
+        fi
+    fi
+}
+
+stop()
+{
+  if running; then
+   echo -n "stopping ICE... "
+   pidsafe=`/bin/ps -efu glite|grep ${WMS_LOCATION_BIN}/glite-wms-ice-safe|grep -v grep|awk '{print $2}'`
+   pid=`/bin/ps -efu glite|grep ${WMS_LOCATION_BIN}/glite-wms-ice|grep -v grep|grep -v glite-wms-ice-safe|grep -v "sh -c"|awk '{print $2}'`
+#    pidsafe=`/bin/ps h -o pid -C glite-wms-ice-safe`
+#    pid=`/bin/ps h -o pid -C glite-wms-ice`
+
+   kill $pidsafe
+   sleep 1
+   kill $pid
+   sleep 1
+   echo "ok"
+  fi
+   return
+}
+
+status()
+{
+    running
+    RETVAL=$?
+    if [ ${RETVAL} -eq 0 ]; then
+	 pid=`/bin/ps h -o pid -C glite-wms-ice-safe`
+        #pid=`cat ${pid_file} 2> /dev/null`
+        echo "${binpath} (pid ${pid}) is running..."
+    else
+        echo "${binpath} is not running"
+    fi
+    return ${RETVAL}
+}
+
+usage()
+{
+    echo "Usage: ${this_script_name} {start|stop|restart|status}"
+}
+
+case $1 in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    restart)
+        stop
+        if [ ${ret_code} -eq 0 ]; then
+            start
+        fi     
+        ;;
+    status)
+        status
+        ret_code=$?
+        ;;
+    *)
+        usage
+        ret_code=1
+esac
+
+exit ${ret_code}
