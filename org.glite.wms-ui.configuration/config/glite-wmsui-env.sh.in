@@ -1,0 +1,13 @@
+#!/bin/sh
+
+GLITE_WMS_LOCATION=${GLITE_WMS_LOCATION:-@prefix@}
+
+. ${GLITE_WMS_LOCATION}/etc/glite-wmsui-vars.sh
+. ${GLITE_WMS_LOCATION}/etc/profile.d/glite-wmsui.sh
+
+if [ -z "$MANPATH" ]; then
+   export MANPATH=$GLITE_WMS_LOCATION/man
+else
+   export MANPATH=$MANPATH":"$GLITE_WMS_LOCATION/man
+fi
+

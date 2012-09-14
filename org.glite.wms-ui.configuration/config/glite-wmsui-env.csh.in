@@ -1,0 +1,15 @@
+#!/bin/csh
+
+if ( ! $?GLITE_WMS_LOCATION ) then
+  setenv GLITE_WMS_LOCATION @prefix@
+endif
+
+source ${GLITE_WMS_LOCATION}/etc/glite-wmsui-vars.csh
+source ${GLITE_WMS_LOCATION}/etc/profile.d/glite-wmsui.csh
+
+if( $?MANPATH ) then
+    setenv MANPATH $MANPATH":"$GLITE_WMS_LOCATION/man
+else
+    setenv MANPATH $GLITE_WMS_LOCATION/man
+endif
+

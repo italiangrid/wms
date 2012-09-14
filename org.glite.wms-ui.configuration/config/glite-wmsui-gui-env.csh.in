@@ -1,0 +1,22 @@
+#!/bin/csh
+
+if ( ! $?GLITE_WMS_LOCATION ) then
+  setenv GLITE_WMS_LOCATION @prefix@
+endif
+
+if( ! $?JGLOBUS_INSTALL_PATH ) then
+    setenv JGLOBUS_INSTALL_PATH $GLITE_WMS_LOCATION/externals/jglobus-1.1/lib
+endif
+
+if( ! $?JCLASSAD_INSTALL_PATH ) then
+   setenv JCLASSAD_INSTALL_PATH $GLITE_WMS_LOCATION/externals/jclassads-2.1
+endif
+
+if( ! $?JAVA_INSTALL_PATH ) then
+    setenv JAVA_INSTALL_PATH "@JAVA_INSTALL_PATH@"
+endif
+
+if( ! $?LOG4J_INSTALL_PATH ) then
+    setenv LOG4J_INSTALL_PATH $GLITE_WMS_LOCATION/externals/share/java
+endif
+

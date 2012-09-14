@@ -1,0 +1,49 @@
+if [ -f /etc/sysconfig/glite ]; then
+   . /etc/sysconfig/glite
+fi
+
+if [ -z "$GLITE_LOCATION" ]; then
+   GLITE_LOCATION=@prefix@
+fi
+
+export GLITE_LOCATION
+
+if [ -z "$GLITE_WMS_LOCATION" ]; then
+   GLITE_WMS_LOCATION=@prefix@
+fi
+
+export GLITE_WMS_LOCATION
+
+if [ -z "$GLITE_WMS_TMP" ]; then
+   . $GLITE_WMS_LOCATION/etc/glite-wms-vars.sh
+fi
+
+export GLITE_WMS_TMP
+
+if [ ! -d $GLOBUS_LOCATION ]; then
+   . $GLITE_WMS_LOCATION/etc/glite-wms-vars.sh
+fi
+
+if [ ! -d $GLOBUS_LOCATION ]; then
+   echo "GLOBUS_LOCATION not found"
+fi
+
+if [ -z "$GLITE_WMS_PATH" ]; then
+   . $GLITE_WMS_LOCATION/etc/glite-wms-vars.sh
+fi
+
+if [ -z "$PATH" ]; then
+   export PATH=$GLITE_WMS_PATH
+else
+   export PATH=$PATH":"$GLITE_WMS_PATH
+fi
+
+if [ -z "$GLITE_WMS_LIBRARY_PATH" ]; then
+   . $GLITE_WMS_LOCATION/etc/glite-wms-vars.sh
+fi
+
+if [ -z "$LD_LIBRARY_PATH" ]; then
+   export LD_LIBRARY_PATH=$GLITE_WMS_LIBRARY_PATH
+else
+   export LD_LIBRARY_PATH=$LD_LIBRARY_PATH":"$GLITE_WMS_LIBRARY_PATH
+fi
