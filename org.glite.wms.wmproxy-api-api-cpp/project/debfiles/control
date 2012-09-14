@@ -1,0 +1,26 @@
+Source:  glite-wms-wmproxy-api-cpp
+Section:  libs
+Priority:  optional
+Maintainer:  WMS group <wms-support@lists.infn.it>
+Build-Depends: debhelper (>= 8.0.0~)
+Standards-Version:  3.9.1
+Homepage: http://glite.cern.ch/
+
+Package: glite-wms-wmproxy-api-cpp
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: C/C++ libraries for the WM Proxy service
+ The package contains C/C++ libraries for the WM Proxy service
+
+Package: glite-wms-wmproxy-api-cpp-dev
+Section: libdevel
+Depends: glite-wms-wmproxy-api-cpp (= ${binary:Version})
+Description: Development files for the client of the CREAM service
+ The package contains development files for the WM Proxy client
+
+Package: glite-wms-wmproxy-api-cpp-doc
+Section: libdevel
+Description: Development files for the client of the CREAM service
+ The package contains development files for the WM Proxy client
+
+
