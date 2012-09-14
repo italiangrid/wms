@@ -1,0 +1,3 @@
+usr/include/glite/wms/purger/purger.h
+usr/lib/pkgconfig/wms-purger.pc
+usr/lib/libglite_wms_purger.so

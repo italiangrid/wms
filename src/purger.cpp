@@ -1,8 +1,19 @@
 // File: purger.cpp
 // Author: Salvatore Monforte <salvatore.monforte@ct.infn.it>
-// Copyright (c) 2001 EU DataGrid.
-// For license conditions see http://www.eu-datagrid.org/license.html
-//
+
+// Copyright (c) Members of the EGEE Collaboration. 2009. 
+// See http://www.eu-egee.org/partners/ for details on the copyright holders.  
+
+// Licensed under the Apache License, Version 2.0 (the "License"); 
+// you may not use this file except in compliance with the License. 
+// You may obtain a copy of the License at 
+//     http://www.apache.org/licenses/LICENSE-2.0 
+// Unless required by applicable law or agreed to in writing, software 
+// distributed under the License is distributed on an "AS IS" BASIS, 
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+// See the License for the specific language governing permissions and 
+// limitations under the License.
+
 // $Id$
 
 #include <boost/filesystem/operations.hpp> 
@@ -10,6 +21,8 @@
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/bind.hpp>
+
+#include "ssl_utils.h"
 
 #include "glite/jobid/JobId.h"
 
@@ -20,8 +33,10 @@
 
 #include "glite/wmsutils/classads/classad_utils.h"
 
-#include "glite/wms/common/logger/logging.h"
+#include "glite/wms/common/logger/logger_utils.h"
+#include "glite/wms/common/logger/manipulators.h"
 #include "glite/wms/common/utilities/scope_guard.h"
+#include "glite/wms/common/utilities/manipulation.h"
 
 #include "glite/lb/Job.h"
 #include "lb_utils.h"
@@ -32,12 +47,15 @@
 #include "glite/lb/LoggingExceptions.h"
 #include <string>
 #include <time.h>
+#include <cerrno>
 
 namespace fs            = boost::filesystem;
 namespace jobid         = glite::jobid;
+namespace logger	= glite::wms::common::logger::threadsafe;
 namespace logging       = glite::lb;
 namespace configuration = glite::wms::common::configuration;
 namespace utilities     = glite::wms::common::utilities;
+namespace utils		= glite::wmsutils::classads;
 
 namespace {
 
@@ -92,38 +110,35 @@ std::string get_staging_path()
     f_conf->wp()->sandbox_staging_path()
   );
   return sandbox_staging_path;
-}  
+}
 
-bool 
+int
 query_job_status(
   edg_wll_JobStat& job_status, 
   jobid::JobId const& jobid, 
   ContextPtr const& log_ctx 
 ) 
 {
-  glite_jobid_t c_id;
-  glite_jobid_dup(jobid.c_jobid(), &c_id);
   if (edg_wll_JobStatus(
-        log_ctx.get(), c_id,
+        log_ctx.get(), jobid.c_jobid(),
         EDG_WLL_STAT_CLASSADS | EDG_WLL_STAT_CHILDREN,
         &job_status
       )
      ) {
     char* etxt = 0;
     char* edsc = 0;
-    edg_wll_Error(log_ctx.get(), &etxt, &edsc);
-    GLITE_LOG_ACCESS_ERROR
-      << jobid.toString() << ": edg_wll_JobStat " << etxt;
+    int ecode = edg_wll_Error(log_ctx.get(), &etxt, &edsc);
+    Error(
+       jobid.toString() << ": edg_wll_JobStat [" << ecode << "] " << std::string(etxt) <<
+       (edsc ? ("(" + std::string(edsc) + ")") : "")
+    );
     free(etxt);
     free(edsc);
-
-    glite_jobid_free(c_id);
-    return false;
+    return ecode;
   }
 
-  glite_jobid_free(c_id);
-  return true;
-}
+  return 0;
+} 
 
 fs::path
 jobid_to_absolute_path(jobid::JobId const& id)
@@ -132,7 +147,7 @@ jobid_to_absolute_path(jobid::JobId const& id)
   return fs::path(
     fs::path(get_staging_path(), fs::native) /
     fs::path(unique.substr(0,2), fs::native) /
-    fs::path(unique, fs::native)
+    fs::path(utilities::to_filename(id), fs::native)
   );
 }
 
@@ -164,11 +179,31 @@ bool is_status_removable(edg_wll_JobStat const& job_status)
 
 } // anonymous namespace
 
-Purger::Purger() :
-  m_logging_fn(edg_wll_LogClearUSER), m_threshold(3600),
-  m_skip_status_checking(true), m_skip_threshold_checking(true),
-  m_force_orphan_node_removal(false), m_force_dag_node_removal(false)
+Purger::Purger(bool have_lb_proxy) :
+  m_have_lb_proxy(have_lb_proxy),
+  m_threshold(0),
+  m_skip_status_checking(true),
+  m_force_orphan_node_removal(false),
+  m_force_dag_node_removal(false),
+  m_logging_fn(have_lb_proxy ? edg_wll_LogClearUSERProxy : edg_wll_LogClearUSER)
 {
+  if (sslutils::proxy_expires_within(get_host_x509_proxy(), 21600)) // 6 hours
+  {
+
+    std::string const cert(std::getenv("GLITE_HOST_CERT") ? 
+      std::getenv("GLITE_HOST_CERT") : "/home/glite/.certs/hostcert.pem"
+    );
+    std::string const key(std::getenv("GLITE_HOST_KEY") ?
+      std::getenv("GLITE_HOST_KEY") : "/home/glite/.certs/hostkey.pem"
+    );
+    if (!sslutils::proxy_init(cert, key, get_host_x509_proxy(), 86400)) // 24 hours
+    {
+      Error(
+        "Unable to renew expired host proxy '" << get_host_x509_proxy() << "': check certificates "
+        "and what GLITE_HOST_CERT / GLITE_HOST_KEY environment variables refer to."
+      );
+    }
+  }
 }
 
 Purger&
@@ -189,13 +224,6 @@ Purger&
 Purger::skip_status_checking(bool b)
 {
   m_skip_status_checking = b;
-  return *this;
-}
-
-Purger&
-Purger::skip_threshold_checking(bool b)
-{
-  m_skip_threshold_checking = b;
   return *this;
 }
 
@@ -221,12 +249,14 @@ Purger::remove_path(
   bool result = false;
   try {
     fs::remove_all(p);
+    assert( !exists(p) );
     if (!(result = !(m_logging_fn( log_ctx.get() ) != 0))) {
-      GLITE_LOG_ACCESS_ERROR
-        << "LB event logging failed " << get_lb_message(log_ctx);
+      Error(
+        "LB event logging failed " << get_lb_message(log_ctx)
+      );
     }
   } catch(fs::filesystem_error& fse) {
-    GLITE_LOG_ACCESS_ERROR << fse.what();
+    Error(fse.what());
   }
   return result;
 }
@@ -235,25 +265,59 @@ bool
 Purger::operator()(jobid::JobId const& id)
 {
   ContextPtr log_ctx;
+
   try {
     log_ctx = create_context(id, get_host_x509_proxy(), f_sequence_code);
   }
   catch (CannotCreateLBContext& e) {
-    GLITE_LOG_ACCESS_ERROR
-      << id.toString()
+    Error(
+      id.toString()
       << ": CannotCreateLBContext from host proxy, error code #"
-      << e.error_code();
+      << e.error_code()
+    );
     return false;
   }
+
+  ContextPtr log_proxy_ctx;
+  if (m_have_lb_proxy) {
+    try {
+      log_proxy_ctx = create_context_proxy(id, get_host_x509_proxy(), f_sequence_code);
+    } catch (CannotCreateLBContext& e) {
+      Error(
+        id.toString()
+        << ": CannotCreateLBProxyContext from host proxy, error code #"
+        << e.error_code()
+      );
+      log_proxy_ctx = log_ctx;
+    }
+  }
+
   edg_wll_JobStat job_status;
   edg_wll_InitStatus(&job_status);
 
   utilities::scope_guard free_job_status(
     boost::bind(edg_wll_FreeStatus, &job_status)
   );
+  switch( query_job_status(job_status, id, log_ctx) ) {
+    case 0: break; // query succeeded
+    case EIDRM: // identifier removed(matching job already purged) 
+    case ENOENT: // no matching jobs found
 
-  if (!query_job_status(job_status, id, log_ctx)) {
-      return false;
+      Info(id.toString() << ": forced removal, unknown/removed L&B job");
+      
+      if (m_have_lb_proxy) {
+        return remove_path(
+          jobid_to_absolute_path(id),  
+          log_proxy_ctx
+        );
+      } else {
+        return remove_path(
+          jobid_to_absolute_path(id),  
+          log_ctx
+        );
+      }
+   default: 
+    return false;
   }
 
   // Reads the TYPE of the JOB...
@@ -263,35 +327,48 @@ Purger::operator()(jobid::JobId const& id)
   
   if (is_dag && 
       (m_skip_status_checking || is_status_removable(job_status)) &&
-      (m_skip_threshold_checking || is_threshold_overcome(job_status, m_threshold))
+      ( !m_threshold || is_threshold_overcome(job_status, m_threshold))
   ) { // removing dag and children
     
     std::vector<std::string> children;
     if (job_status.children) {
-      std::copy(
-        &job_status.children[0],
-        &job_status.children[job_status.children_num],
-        std::back_inserter(children)
-      );
+      char** i = &job_status.children[0];
+      while(*i) {
+        children.push_back(std::string(*i));
+        ++i;
+      }
     }
+
+    ContextPtr this_context = (m_have_lb_proxy) ? log_proxy_ctx : log_ctx;
+
     std::vector<std::string>::const_iterator i = children.begin();
     std::vector<std::string>::const_iterator const e = children.end();
     size_t n = 0;
     for( ; i != e; ++i ) {
-      if (!remove_path(strid_to_absolute_path(*i), log_ctx)) {
-        ++n;
-      }
+    
+      jobid::JobId const job_id(*i);
+      change_logging_job(this_context, job_id, m_have_lb_proxy);
+    
+        if (!remove_path(strid_to_absolute_path(*i), log_proxy_ctx)) {
+          ++n;
+        }
     }
-    GLITE_LOG_ACCESS_INFO
-      << id.toString() << ": " 
-      << children.size() - n << '/' << children.size() << " nodes removed";
-
-    bool const path_removed(
-      remove_path(jobid_to_absolute_path(id), log_ctx)
+    Info(
+      id.toString() << ": " 
+      << children.size() - n << '/' << children.size() << " nodes removed"
     );
+
+    change_logging_job(this_context, jobid::JobId(id), m_have_lb_proxy);
+
+    bool path_removed = remove_path(
+        jobid_to_absolute_path(id), 
+        this_context
+    );
+
     if (path_removed) {
-      GLITE_LOG_ACCESS_INFO
-        << id.toString()<< ": removed " << StatToString(job_status) << " dag ";
+      Info(
+        id.toString()<< ": removed " << StatToString(job_status) << " dag "
+      );
     }
     return path_removed;
   }
@@ -301,13 +378,23 @@ Purger::operator()(jobid::JobId const& id)
   // if the job is a dag node we should skip its removal
   // unless it is an orphan node or so requested
   if (is_dag_node && m_force_dag_node_removal ) {
-    bool const path_removed(
-      remove_path(jobid_to_absolute_path(id), log_ctx)
-    );
+    bool path_removed = false;
+    if (m_have_lb_proxy) {
+      path_removed = remove_path(
+        jobid_to_absolute_path(id), 
+        log_proxy_ctx
+      );
+    } else {
+      path_removed = remove_path(
+        jobid_to_absolute_path(id), 
+        log_ctx
+      );
+    }
     if (path_removed) {
-      GLITE_LOG_ACCESS_INFO
-        << id.toString() << ": removed "
-        << StatToString(job_status) << " node";
+      Info(
+	id.toString() << ": removed "
+        << StatToString(job_status) << " node"
+      );
     }
     return path_removed;
   }
@@ -317,13 +404,23 @@ Purger::operator()(jobid::JobId const& id)
     jobid::JobId const p_id(job_status.parent_job);
     fs::path pp(jobid_to_absolute_path(p_id));
     if (!fs::exists(pp)) {
-      bool const path_removed(
-        remove_path(jobid_to_absolute_path(id), log_ctx)
-      );
+      bool path_removed = false;
+      if (m_have_lb_proxy) {
+        path_removed = remove_path(
+          jobid_to_absolute_path(id), 
+          log_proxy_ctx
+        );
+      } else {
+        path_removed = remove_path(
+          jobid_to_absolute_path(id), 
+          log_ctx
+        );
+      }
       if (path_removed) {
-        GLITE_LOG_ACCESS_INFO
-          << id.toString() << ": removed "
-          << StatToString(job_status) << " orphan node";
+        Info(
+          id.toString() << ": removed "
+          << StatToString(job_status) << " orphan node"
+        );
       }
       return path_removed;
     }
@@ -332,22 +429,32 @@ Purger::operator()(jobid::JobId const& id)
   }
 
   if ((m_skip_status_checking || is_status_removable(job_status))
-      && (m_skip_threshold_checking
+      && (!m_threshold
           || is_threshold_overcome(job_status, m_threshold)
          )
-     ) { // removing normal job
-    bool const path_removed(
-      remove_path(jobid_to_absolute_path(id), log_ctx)
-    );
+     )
+  { // removing normal job
+    bool path_removed = false;
+    if (m_have_lb_proxy) {
+      path_removed = remove_path(
+        jobid_to_absolute_path(id), 
+        log_proxy_ctx
+      );
+    } else {
+      path_removed = remove_path(
+        jobid_to_absolute_path(id), 
+        log_ctx
+      );
+    }
     if (path_removed) {
-      GLITE_LOG_ACCESS_INFO
-        << id.toString() << ": removed " << StatToString(job_status) << " job";
+      Info(
+        id.toString() << ": removed " << StatToString(job_status) << " job"
+      );
       return path_removed;
     }
   }
   return false;
 }
-
 } // namespace purger
 } // namespace wms
-} // namesapce glite
+} // namesnapce glite

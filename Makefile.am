@@ -10,11 +10,11 @@
 
 EXTRA_DIST = LICENSE
 
-docdir = $(datadir)/doc/@PACKAGE@-@VERSION@
+docdir = $(datadir)/doc/@PACKAGE@-@PVER@
 doc_DATA = LICENSE
 
 ## Subdirectories list
-SUBDIRS = src  
+SUBDIRS = config src  
 
 ## Default flags to run aclocal
 ACLOCAL_AMFLAGS = -I project

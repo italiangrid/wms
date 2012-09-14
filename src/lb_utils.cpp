@@ -1,8 +1,19 @@
 // File: lb_utils.cpp
 // Author: Francesco Giacomini <Francesco.Giacomini@cnaf.infn.it>
 // Author: Salvatore Monforte <Salvatore.Monforte@ct.infn.it> 
-// Copyright (c) 2002 EU DataGrid.
-// For license conditions see http://www.eu-datagrid.org/license.html
+
+// Copyright (c) Members of the EGEE Collaboration. 2009. 
+// See http://www.eu-egee.org/partners/ for details on the copyright holders.  
+
+// Licensed under the Apache License, Version 2.0 (the "License"); 
+// you may not use this file except in compliance with the License. 
+// You may obtain a copy of the License at 
+//     http://www.apache.org/licenses/LICENSE-2.0 
+// Unless required by applicable law or agreed to in writing, software 
+// distributed under the License is distributed on an "AS IS" BASIS, 
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+// See the License for the specific language governing permissions and 
+// limitations under the License.
 
 
 #include "lb_utils.h"
@@ -11,18 +22,23 @@
 #include <map>
 #include <boost/tuple/tuple.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/bind.hpp>
 #include <openssl/pem.h>
 #include <openssl/x509.h>
 #include "glite/jobid/JobId.h"
+#include "glite/wms/common/utilities/manipulation.h"
+#include "glite/wms/common/utilities/scope_guard.h"
 #include "glite/lb/producer.h"
 #include "glite/security/proxyrenewal/renewal.h"
 #include "glite/wms/common/configuration/Configuration.h"
 #include "glite/wms/common/configuration/NSConfiguration.h"
 #include "glite/wms/common/configuration/CommonConfiguration.h"
+#include <ctime>
 
 namespace jobid = glite::jobid;
 
 namespace configuration = glite::wms::common::configuration;
+namespace utilities = glite::wms::common::utilities;
 
 namespace glite {
 namespace wms {
@@ -53,9 +69,7 @@ create_context(
   
   const int flag = EDG_WLL_SEQ_NORMAL;
   // the following fails if the sequence code is not formally correct
-  glite_jobid_t id_;
-  glite_jobid_dup(id.c_jobid(), &id_);
-  errcode |= edg_wll_SetLoggingJob(context, id_, sequence_code.c_str(), flag);
+  errcode |= edg_wll_SetLoggingJob(context, id.c_jobid(), sequence_code.c_str(), flag);
 
   if (errcode) {
     throw CannotCreateLBContext(errcode);
@@ -66,14 +80,35 @@ create_context(
 
 namespace {
 
+
+bool
+proxy_expires_within(std::string const& x509_proxy, time_t seconds)
+{
+  ::FILE* fd = ::fopen(x509_proxy.c_str(), "r");
+  if (!fd) return true; // invalid proxy
+
+  boost::shared_ptr< ::FILE> fd_(fd, ::fclose);
+
+  ::X509* const cert = ::PEM_read_X509(fd, 0, 0, 0);
+  if (!cert) return true;
+
+  boost::shared_ptr< ::X509> cert_(cert, ::X509_free);
+
+  return (
+    ASN1_UTCTIME_cmp_time_t(
+      X509_get_notAfter(cert), std::time(0)+seconds
+    ) < 0
+  );
+}
+
 std::string
 get_proxy_subject(std::string const& x509_proxy)
 {
   static std::string const null_string;
 
-  std::FILE* fd = std::fopen(x509_proxy.c_str(), "r");
+  ::FILE* fd = ::fopen(x509_proxy.c_str(), "r");
   if (!fd) return null_string;
-  boost::shared_ptr<std::FILE> fd_(fd, std::fclose);
+  boost::shared_ptr< ::FILE> fd_(fd, ::fclose);
 
   ::X509* const cert = ::PEM_read_X509(fd, 0, 0, 0);
   if (!cert) return null_string;
@@ -118,11 +153,9 @@ create_context_proxy(
 
   std::string const user_dn = get_proxy_subject(x509_proxy);
   int const flag = EDG_WLL_SEQ_NORMAL;
-  glite_jobid_t id_;
-  glite_jobid_dup(id.c_jobid(), &id_);
   errcode |= edg_wll_SetLoggingJobProxy(
     context,
-    id_,
+    id.c_jobid(),
     sequence_code.empty() ? 0 : sequence_code.c_str(),
     user_dn.c_str(),
     flag
@@ -143,9 +176,7 @@ get_original_jdl(edg_wll_Context context, jobid::JobId const& id)
   edg_wll_QueryRec job_conditions[2];
   job_conditions[0].attr    = EDG_WLL_QUERY_ATTR_JOBID;
   job_conditions[0].op      = EDG_WLL_QUERY_OP_EQUAL;
-  glite_jobid_t id_;
-  glite_jobid_dup(id.c_jobid(), &id_);
-  job_conditions[0].value.j = id_;
+  job_conditions[0].value.j = glite_jobid_t(id.c_jobid());
   job_conditions[1].attr    = EDG_WLL_QUERY_ATTR_UNDEF;
 
   edg_wll_QueryRec event_conditions[3];
@@ -179,6 +210,16 @@ get_original_jdl(edg_wll_Context context, jobid::JobId const& id)
 
 namespace {
 
+std::string get_lb_proxy_user(ContextPtr context)
+{ 
+  char *s = 0;
+  utilities::scope_guard free_char(
+    boost::bind(std::free, s)
+  );
+  edg_wll_GetParam(&(*context), EDG_WLL_PARAM_LBPROXY_USER, &s);
+  return std::string(s);
+}
+
 boost::tuple<int,std::string,std::string>
 get_error_info(edg_wll_Context context)
 {
@@ -202,7 +243,45 @@ get_error_info(edg_wll_Context context)
   return boost::make_tuple(error, error_txt, description_txt);
 }
 
+std::string
+get_lb_sequence_code(ContextPtr context)
+{
+  char* c_sequence_code = edg_wll_GetSequenceCode(context.get());
+  std::string sequence_code(c_sequence_code);
+  free(c_sequence_code);
+  return sequence_code;
+}
+
 } // anonymous
+
+void change_logging_job(
+  ContextPtr context,
+  jobid::JobId const& id,
+  bool have_lbproxy
+)
+{
+  int const flag = EDG_WLL_SEQ_NORMAL;
+  std::string const sequence_code = get_lb_sequence_code(context);
+
+  if (have_lbproxy) {
+    std::string const user_dn = get_lb_proxy_user(context);
+    edg_wll_SetLoggingJobProxy(
+      &(*context),
+      id.c_jobid(),
+      sequence_code.empty() ? 0 : sequence_code.c_str(),
+      user_dn.c_str(),
+      flag
+    );
+  } else {
+    edg_wll_SetLoggingJob(
+      &(*context),
+      id.c_jobid(),
+      sequence_code.empty() ? 0 : sequence_code.c_str(),
+      flag
+    );
+  }
+}
+
 
 std::string
 get_lb_message(ContextPtr const& context)
