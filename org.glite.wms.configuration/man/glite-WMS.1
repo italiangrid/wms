@@ -1,0 +1,92 @@
+YAIM - Yet Another Installation ManaYAIM1- Yet Another Installation Manager(1)
+ 
+NAME
+       yaim  -  YAIM  (YAIM Aint an Installation Manager) is, as the name sug-
+       gests, a way of configuring Grid Services.  The aim of YAIM is to  pro-
+       vide a simple installation and configuration method that can be used to
+       set up a simple Grid Site but can be easily  adapted  and  extended  to
+       meet the need of larger sites. The yaim-node-type module is configuring
+       the NODE TYPE.
+ 
+DESCRIPTION
+       The yaim-wms module allows you to configure WMS
+ 
+CONFIGURATION VARIABLES
+       This is the list of variables needed to set up in  order  to  configure
+       the WMS.
+ 
+       For more details, please check:
+ 
+       https://twiki.cern.ch/twiki/bin/view/LCG/WMS_configuration_vari-
+       ables
+ 
+       Mandatory Variables:
+              sys  admins  must  ensure  these  variables are properly defined
+              according to the features of the site
+ 
+       site-info.def variables: VAR_1, VAR_2, VAR_3
+ 
+       VARIABLE_1 : description. Value type.
+ 
+       VARIABLE_2 : description. Value type.
+ 
+       Optional Variables:
+              sys admins do not need to change the value of these vari-
+              ables since YAIM provides a suitable default value
+ 
+       VARIABLE_3 : description. Value Type. Default value.
+ 
+       Advanced configuration:
+              sys  admins  should  not change the value of these
+              variables unless they know what  they  are  doing.
+              These  variables  are  used internally by YAIM and
+              are    coming    with    default     values     in
+              /opt/glite/yaim/defaults/node-type.pre(post).
+              Their value can be  reset  in  your  site-info.def
+              file if necessary.
+ 
+       VARIABLE_4 : description. Value Type. Default Value.
+                                                                                                                           
+EXAMPLES
+       How to configure the NODE TYPE node.
+                                                                                                                           
+       ./yaim -c -s /root/site-info.def -n glite-node-type
+                                                                                                                           
+       To debug the configuration process:
+                                                                                                                           
+       ./yaim -c -s /root/site-info.def -n glite-node-type -d 6
+                                                                                                                           
+DOCUMENTATION
+       You can find useful information on these web pages:
+                                                                                                                           
+       Entry point for NODE_TYPE documentation:
+                                                                                                                           
+       http:// URL_for_your_NODE_TYPE_documentation.html
+                                                                                                                           
+       Entry point for YAIM documentation:
+                                                                                                                           
+       https://twiki.cern.ch/twiki/bin/view/EGEE/YAIM
+                                                                                                                           
+       The Generic Installation and Configuration guides as well
+       as the YAIM guides:
+                                                                                                                           
+       https://twiki.cern.ch/twiki/bin/view/LCG/LcgDocs
+                                                                                                                           
+       Useful links:
+                                                                                                                           
+       http://lcg.web.cern.ch/LCG/Sites/the-LCG-directory.html
+                                                                                                                           
+AUTHORS
+      Maria  Allandes  Pradillo,  Gergely  Debreczeni, Laurence
+       Field, Nuno  Orestes  Vaz  Da  Silva,  Di  Qing,  Andreas
+       Unterkircher,  Oliver  Keeble, Steve Traylen, Owen Synge,
+       Gavin Mccance , Maarten Litmaath, Sophie Lemaitre
+                                                                                                                           
+       ,and we are happy to receive patches from everybody !
+                                                                                                                           
+CONTACT
+       To contact YAIM people use the yaim-contact@cern.ch email
+       address.
+                                                                                                                           
+                                    YAIM - Yet Another Installation Manager(1)
+
