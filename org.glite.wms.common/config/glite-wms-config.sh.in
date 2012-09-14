@@ -1,0 +1,73 @@
+#!/bin/sh
+
+if [ -f /etc/sysconfig/globus ]; then
+   . /etc/sysconfig/globus
+fi
+
+if [ -n "$GLOBUS_TCP_PORT_RANGE" ]; then
+   export GLOBUS_TCP_PORT_RANGE
+fi
+
+if [ -n "$GLOBUS_UDP_PORT_RANGE" ]; then
+   export GLOBUS_UDP_PORT_RANGE
+fi
+
+if [ "x${CONDORG_INSTALL_PATH}" = "x" ]; then
+   export CONDORG_INSTALL_PATH=@CONDORG_INSTALL_PATH@
+fi
+
+if [ ! -d $CONDORG_INSTALL_PATH ]; then
+   export CONDORG_INSTALL_PATH=@CONDORG_INSTALL_PATH@
+fi
+
+export PATH=$PATH":"$CONDORG_INSTALL_PATH/bin":"$CONDORG_INSTALL_PATH/sbin
+
+if [ -f /etc/sysconfig/glite ]; then
+   . /etc/sysconfig/glite
+fi
+
+if [ -z "$GLITE_WMS_LOCATION" ]; then
+   if [ -f /etc/sysconfig/glite ]; then
+   . /etc/sysconfig/glite
+   fi
+   . ${GLITE_LOCATION}/etc/profile.d/glite-wms.sh
+fi
+
+if [ "x${GLITE_WMS_CONFIG_DIR}" = "x" \
+   -a \( "${GLITE_WMS_LOCATION}" != "/opt/glite" -o "${GLITE_WMS_LOCATION}" != "/usr/local" \) ]; then
+   export GLITE_WMS_CONFIG_DIR="${GLITE_WMS_LOCATION}/etc"
+fi
+
+if [ "x${GRIDMAP}" = "x" ]; then
+   export GRIDMAP=/etc/grid-security/grid-mapfile
+else
+   export GRIDMAP   
+fi
+
+if [ ! -r $GRIDMAP ]; then
+   export GRIDMAP=/etc/grid-security/grid-mapfile
+fi
+
+if [ "x${GRIDMAPDIR}" = "x" ]; then
+   export GRIDMAPDIR=/etc/grid-security/gridmapdir
+else
+   export GRIDMAPDIR
+fi
+
+if [ ! -d $GRIDMAPDIR ]; then
+   export GRIDMAPDIR=/etc/grid-security/gridmapdir
+fi
+
+if [ "x${CONDOR_CONFIG}" = "x" ]; then
+   export CONDOR_CONFIG=@CONDORG_INSTALL_PATH@/etc/condor.conf
+fi
+
+if [ ! -r $CONDOR_CONFIG ]; then
+   export CONDOR_CONFIG=@CONDORG_INSTALL_PATH@/etc/condor.conf
+fi
+
+if [ "x${GLITE_WMS_LOG_DESTINATION}" = "x" ]; then
+   val=`hostname`
+   GLITE_WMS_LOG_DESTINATION=$val:9002
+   export GLITE_WMS_LOG_DESTINATION
+fi

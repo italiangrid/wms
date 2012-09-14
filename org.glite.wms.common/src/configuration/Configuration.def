@@ -1,0 +1,575 @@
+%style wide
+
+class ConfBase {
+
+  wrapper {
+    context = configuration::Configuration::instance();
+  }
+
+  section normal {
+
+    parameter int( LogLevel );
+
+    template( bool )
+    inline @ATTRTYPE@ @.@( @ATTRTYPE@ def = @ATTRDEF@ ) <const> { return this->getBool( @ATTRNAME@, def ); }
+
+    template( int )
+    inline @ATTRTYPE@ @.@( @ATTRTYPE@ def = @ATTRDEF@ ) <const> { return this->getInt( @ATTRNAME@, def ); }
+
+    template( unsigned int, long, size_t, std::streamsize )
+    inline @ATTRTYPE@ @.@( @ATTRTYPE@ def = @ATTRDEF@ ) <const> { return static_cast<@ATTRTYPE@>( this->getInt(@ATTRNAME@, def) ); }
+
+    template( double )
+    inline @ATTRTYPE@ @.@( @ATTRTYPE@ def = @ATTRDEF@ ) <const> { return this->getDouble( @ATTRNAME@, def ); }
+
+    template( std::string )
+    inline @ATTRTYPE@ @.@( const @ATTRTYPE@ &def = @ATTRDEF@ ) <const> { return this->getString( @ATTRNAME@, def ); }
+
+    template( std::vector<std::string> )
+    inline @ATTRTYPE@ @.@( void ) <const> { return this->getVector(@ATTRNAME@); }
+
+    template( classad::ExprTree* )
+    inline @ATTRTYPE@ @.@( void ) <const> { return this->getExpression( @ATTRNAME@ ); }
+
+    template( classad::ClassAd* )
+    inline @ATTRTYPE@ @.@( void ) <const> { return this->getClassAd( @ATTRNAME@ ); }
+
+
+    ctemplate( bool -> int, std::streamsize -> long, unsigned int, int, long, size_t, double )
+    @ATTRTYPE@ @CLASSPREFIX@@.@( config_error_t *error )
+    {
+      const configuration::Configuration   *general = @CLASSCONTEXT@;
+      @CONTEXTTYPE@  config;
+      @ATTRTYPE@     res( 0 );
+
+      if( general == NULL ) {
+        edg_wlcc_SetConfigurationError( "Configuration not initialized" );
+        *error = edg_wlcc_uninitialized;
+      }
+      else {
+        config = general->@CONTEXTFUNC@();
+
+        res = static_cast<@ATTRTYPE@>( config->@FUNCNAME@() );
+        *error = edg_wlcc_OK;
+      }
+ 
+      return res;
+    }
+
+    ctemplate( std::string -> char * )
+    @ATTRTYPE@ @CLASSPREFIX@@.@( @ATTRTYPE@ copy, size_t *len, config_error_t *error )
+    {
+      const configuration::Configuration   *general = @CLASSCONTEXT@;
+      @CONTEXTTYPE@ config;
+      string  attr;
+
+      if( general == NULL ) {
+        edg_wlcc_SetConfigurationError( "Configuration not initialized" );
+        *error = edg_wlcc_uninitialized;
+
+        copy = NULL;
+      }
+      else {
+        config = general->@CONTEXTFUNC@();
+
+        attr.assign( config->@FUNCNAME@() );
+        *error = edg_wlcc_OK;
+
+        if( copy == NULL ) {
+          copy = reinterpret_cast<char *>(malloc(attr.length() + 1));
+          *len = attr.length();
+          strcpy( copy, attr.c_str() );
+        }
+        else if( *len < attr.length() ) {
+          copy = NULL;
+          edg_wlcc_SetConfigurationError( "Must reallocate output string." );
+          *error = edg_wlcc_mustrealloc;
+        }
+        else {
+          strcpy( copy, attr.c_str() );
+          *len = attr.length();
+        }
+      }
+
+      return copy;
+    }
+  }
+
+  section fileparse {
+
+    parameter std::string( LogFile );
+    parameter std::string( LockFile );
+
+    template( std::string )
+    inline @ATTRTYPE@ @.@( const @ATTRTYPE@ &def = @ATTRDEF@ ) <const> { return this->getAndParseFileName(@ATTRNAME@, def); }
+
+    ctemplate( std::string -> char * )
+    @ATTRTYPE@ @CLASSPREFIX@@.@( @ATTRTYPE@ copy, size_t *len, config_error_t *error )
+    {
+      const configuration::Configuration   *general = @CLASSCONTEXT@;
+      @CONTEXTTYPE@ config;
+      string  attr;
+
+      if( general == NULL ) {
+        edg_wlcc_SetConfigurationError( "Configuration not initialized" );
+        *error = edg_wlcc_uninitialized;
+
+        copy = NULL;
+      }
+      else {
+        config = general->@CONTEXTFUNC@();
+
+        attr.assign( config->@FUNCNAME@() );
+        *error = edg_wlcc_OK;
+
+        if( copy == NULL ) {
+          copy = reinterpret_cast<char *>(malloc(attr.length() + 1));
+          *len = attr.length();
+          strcpy( copy, attr.c_str() );
+        }
+        else if( *len < attr.length() ) {
+          copy = NULL;
+          edg_wlcc_SetConfigurationError( "Must reallocate output string." );
+          *error = edg_wlcc_mustrealloc;
+        }
+        else {
+          strcpy( copy, attr.c_str() );
+          *len = attr.length();
+        }
+      }
+
+      return copy;
+    }
+  }
+
+  section parse {
+
+    template( std::string )
+    inline @ATTRTYPE@ @.@( const @ATTRTYPE@ &def = @ATTRDEF@ ) <const> { return this->getAndParseString(@ATTRNAME@, def); }
+
+    ctemplate( std::string -> char * )
+    @ATTRTYPE@ @CLASSPREFIX@@.@( @ATTRTYPE@ copy, size_t *len, config_error_t *error )
+    {
+      const configuration::Configuration  *general = @CLASSCONTEXT@;
+      @CONTEXTTYPE@ config;
+      string  attr;
+
+      if( general == NULL ) {
+        edg_wlcc_SetConfigurationError( "Configuration not initialized" );
+        *error = edg_wlcc_uninitialized;
+
+        copy = NULL;
+      }
+      else {
+        config = general->@CONTEXTFUNC@();
+
+        attr.assign( config->@FUNCNAME@() );
+        *error = edg_wlcc_OK;
+
+        if( copy == NULL ) {
+          copy = reinterpret_cast<char *>(malloc(attr.length() + 1));
+          *len = attr.length();
+          strcpy( copy, attr.c_str() );
+        }
+        else if( *len < attr.length() ) {
+          copy = NULL;
+          edg_wlcc_SetConfigurationError( "Must reallocate output string." );
+          *error = edg_wlcc_mustrealloc;
+        }
+        else {
+          strcpy( copy, attr.c_str() );
+          *len = attr.length();
+        }
+      }
+
+      return copy;
+    }
+  }
+
+}
+
+class CommonConfiguration {
+
+  defaultvalue int = 0;
+  defaultvalue std::string = "";
+
+  wrapper {
+    prefix = edg_wlcc_Common_;
+    contexttype = const configuration::CommonConfiguration *;
+    contextfunc = common;
+  }
+
+  copy ConfBase.parse;
+  copy ConfBase.fileparse;
+  copy ConfBase.normal;
+
+  parameter std::string( DGUser = "dguser" ) section parse;
+  parameter std::string( HostProxyFile ) section fileparse;
+  parameter bool ( LBProxy = true ) section normal;
+}
+
+class JCConfiguration {
+
+  defaultvalue bool = false;
+  defaultvalue int = 0;
+  defaultvalue std::string = "";
+
+  wrapper {
+    prefix = edg_wlcc_JobController_;
+    contexttype = const configuration::JCConfiguration *;
+    contextfunc = jc;
+  }
+
+  copy ConfBase.parse;
+  copy ConfBase.fileparse;
+  copy ConfBase.normal;
+
+  parameter bool( UseFakeForProxy ) section normal;
+  parameter bool( UseFakeForReal ) section normal;
+
+  parameter int( ContainerRefreshThreshold = 1000 ) section normal;
+
+  parameter std::string( CondorSubmit ) section fileparse;
+  parameter std::string(CondorRelease) section fileparse;
+  parameter std::string( CondorRemove ) section fileparse;
+  parameter std::string( CondorDagman ) section fileparse;
+  parameter int( MaximumTimeAllowedForCondorMatch = 900 ) section normal;
+
+  parameter std::string( Input ) section fileparse;
+  parameter std::string( SubmitFileDir ) section fileparse;
+  parameter std::string( OutputFileDir ) section fileparse;
+}
+
+class LMConfiguration {
+
+  defaultvalue bool = true;
+  defaultvalue int = 0;
+  defaultvalue size_t = 0;
+  defaultvalue std::string = "";
+
+  wrapper {
+    prefix = edg_wlcc_LogMonitor_;
+    contexttype = const configuration::LMConfiguration *;
+    contextfunc = lm;
+  }
+
+  copy ConfBase.normal;
+  copy ConfBase.parse;
+  copy ConfBase.fileparse;
+
+  parameter bool( RemoveJobFiles = true ) section normal;
+  parameter bool( UseMaradonaFile = true ) section normal;
+  parameter int( JobsPerCondorLog = 1000 ) section normal;
+  parameter int( MainLoopDuration = 3 ) section normal;
+  parameter int( AbortedJobsTimeout = 600 ) section normal;
+  parameter int( GlobusDownTimeout = 600 ) section normal;
+  parameter int( ForceCancellationRetries = 10 ) section normal;
+  parameter size_t( ContainersCompactThreshold = 1000 ) section normal;
+  parameter std::string( CondorLogDir ) section fileparse;
+  parameter std::string( CondorLogRecycleDir ) section fileparse;
+  parameter std::string( ExternalLogFile ) section fileparse;
+  parameter std::string( MonitorInternalDir ) section fileparse;
+  parameter std::string( IdRepositoryName ) section fileparse;
+  parameter std::string( MaradonaTransportProtocol = "gsiftp" ) section parse; 
+}
+
+class NSConfiguration {
+
+  defaultvalue int = 0;
+  defaultvalue std::string = "";
+  defaultvalue bool = false;
+  defaultvalue double = 0.0;
+
+  wrapper {
+    prefix = edg_wlcc_NetworkServer_;
+    contexttype = const configuration::NSConfiguration *;
+    contextfunc = ns;
+  }
+
+  copy ConfBase.normal;
+  copy ConfBase.parse;
+  copy ConfBase.fileparse;
+
+  parameter long( ConnectionTimeout = 120 ) section normal;
+  parameter long( QuotaAdjustmentAmount = 10000 ) section normal;
+
+  parameter std::string( SandboxStagingPath = "${GLITE_WMS_TMP}/SandboxDir" ) section fileparse;
+  parameter std::string( ListMatchRootPath = "/tmp" ) section fileparse;
+
+  parameter bool( EnableQuotaManagement = false ) section normal; 
+  parameter bool( EnableDynamicQuotaAdjustment = false) section normal;
+
+  parameter double( QuotaInsensibleDiskPortion = 0.0 ) section normal;  
+  parameter double( MaxInputSandboxSize = 10000000 ) section normal;
+
+#
+#  Parameters to query the II for the schema...
+#
+  parameter int( II_Port = 2170 ) section normal;
+  parameter int( Gris_Port = 2135 ) section normal;
+  parameter int( II_Timeout = 60 ) section normal;
+  parameter int( GrisTimeout = 60 ) section normal;
+  parameter std::string( II_DN ) section normal;
+  parameter std::string( Gris_DN ) section normal;
+  parameter std::string( II_Contact ) section normal;
+#
+# If RLS should used for a VO, the following vector determines
+# whether a certain VO uses RLS. Example usage:
+# RLSCatalog = { "lhcb","cms","anotherVo"};
+# Should probably be moved out of NSi config, like the II config above.
+#
+  parameter std::vector<std::string> ( RLSCatalog ) section normal;
+
+# Remote catalog connection and IO timeout
+  parameter int ( DLI_SI_CatalogTimeout = 0 ) section normal;
+
+}
+
+class WMConfiguration {
+
+  defaultvalue bool = false;
+  defaultvalue int = 0;
+  defaultvalue std::string = "";
+
+  wrapper {
+    prefix = edg_wlcc_WorkloadManager_;
+    contexttype = const configuration::WMConfiguration *;
+    contextfunc = wm;
+  }
+
+  copy ConfBase.normal;
+  copy ConfBase.parse;
+  copy ConfBase.fileparse;
+
+  parameter int(QueueSize = 500) section normal;
+  parameter int(ReplanGracePeriod = 3600) section normal;
+  parameter int(WorkerThreads = 10) section normal;
+  parameter bool(IsmThreads = true) section normal;
+  parameter std::string(RuntimeMalloc = "") section fileparse;
+  parameter int(MaxRetryCount = 10) section normal;
+  parameter int(MaxShallowRetryCount = 10) section normal;
+  parameter int(MaxReplansCount = 5) section normal;
+  parameter bool(EnableRecovery = false) section normal;
+  parameter bool(EnableStatusCheck = false) section normal;
+  parameter std::string(Input = "${EDG_WL_TMP}/workload_manager/input.fl") section fileparse;
+  parameter std::string(BrokerLib = "libglite_wms_helper_broker_ism.so") section fileparse;
+  parameter std::string(IiGlueLib = "libglite_wms_ism_ii_purchaser.so.0") section fileparse;
+  parameter std::string(IsmDump = "${GLITE_WMS_TMP}/workload_manager/ismdump.fl") section fileparse;
+  parameter int(IsmUpdateRate = 799) section normal;
+  parameter std::vector<std::string>(IsmBlackList) section normal;
+  parameter std::vector<std::string>(CeMonitorServices) section normal;
+  parameter int(CeMonitorAsynchPort = -1) section normal;
+  parameter int(IsmIiPurchasingRate = 240) section normal;
+  parameter std::string(IsmIiLDAPCEFilterExt = "") section normal;
+  parameter std::string(IsmIiG2LDAPCEFilterExt = "") section normal;
+  parameter std::string(IsmIiG2LDAPSEFilterExt = "") section normal;
+  parameter int(IsmCEMonPurchasingRate = 120) section normal;
+  parameter int(IsmCEMonAsynchPurchasingRate = 30) section normal;
+  parameter bool(DisablePurchasingFromGris = false) section normal;
+  parameter bool(EnablePurchasingFromRgma = false) section normal;
+  parameter bool(EnableReplanner = false) section normal;
+  parameter bool(EnableIsmIiGlue20Purchasing = true) section normal;
+  parameter bool(EnableIsmIiGlue13Purchasing = true) section normal;
+  parameter int(RgmaQueryTimeout = 30) section normal;
+  parameter int(RgmaConsumerTtl = 300) section normal;
+  parameter int(RgmaConsumerLifeCycle = 30) section normal;
+  parameter int(IsmRgmaPurchasingRate = 120) section normal;
+  parameter std::string(TokenFile = "token.txt") section fileparse;
+  parameter std::string(DliServiceName = "data-location-interface") section normal;
+  parameter std::string(SiServiceName = "org.glite.SEIndex") section normal;
+  parameter std::string(JobWrapperTemplateDir = "${GLITE_WMS_LOCATION}/etc/templates") section fileparse;
+  parameter std::vector<std::string>(CeForwardParameters) section normal;
+  parameter int(MatchRetryPeriod = 1000) section normal;
+  parameter int(ExpiryPeriod = 86400) section normal;
+  parameter double( MaxOutputSandboxSize = 100000000 ) section normal;
+  parameter bool(SbRetryDifferentProtocols = false) section normal;
+  parameter classad::ExprTree*(PropagateToLRMS) section normal;
+  parameter classad::ExprTree*(WmsRequirements) section normal;
+}
+class WMCConfiguration {
+
+  defaultvalue bool = false;
+  defaultvalue int = 0;
+  defaultvalue std::string = "";
+
+  wrapper {
+    prefix = edg_wlcc_WmsClient_;
+    contexttype = const configuration::WMCConfiguration *;
+    contextfunc = wc;
+  }
+
+  copy ConfBase.normal;
+  copy ConfBase.parse;
+  copy ConfBase.fileparse;
+
+# OLD Approach (deprecated values moved into JdlDefaultAttributes
+  parameter std::string(VirtualOrganisation) section normal;
+  parameter int(RetryCount = 3) section normal;
+  parameter int(ShallowRetryCount = 3) section normal;
+  parameter classad::ExprTree*(requirements) section normal;
+  parameter classad::ExprTree*(rank) section normal;
+  parameter std::string(HLRLocation) section normal;
+  parameter std::string(MyProxyServer) section normal;
+  parameter std::string(JobProvenance) section normal;
+  parameter std::string(LBAddress) section normal;  
+  parameter bool(PerusalFileEnable=false) section normal;
+  parameter bool(AllowZippedISB=false) section normal;
+# OLD Approach END
+
+# Minimal value for proxy validity (in minutes)
+  parameter int(DefaultProxyValidity= 5) section normal;
+  parameter int(DefaultStatusLevel  = 1) section normal;
+  parameter int(DefaultLoggingLevel = 0) section normal;
+  parameter std::string(ErrorStorage=   "/var/tmp") section fileparse;
+  parameter std::string(OutputStorage=  "/tmp") section fileparse;
+  parameter std::string(ListenerStorage="/tmp") section fileparse;
+
+# Service Discovery Types
+  parameter std::string ( LBServiceDiscoveryType      = "org.glite.lb.Server"  ) section normal;
+  parameter std::string ( WMProxyServiceDiscoveryType = "org.glite.wms.WMProxy") section normal;
+  parameter bool ( EnableServiceDiscovery = false ) section normal;
+
+
+  parameter std::vector<std::string>(WmProxyEndPoints) section normal;
+# LB WS-based interface not yet used:
+# parameter std::vector<std::string>(LBEndPoints) section normal;
+  parameter classad::ClassAd*(JdlDefaultAttributes) section normal;
+
+# SOAP Timeouts
+  parameter classad::ClassAd*(SoapTimeouts) section normal;
+  
+
+ parameter int( SoapSendTimeout = 360 ) section normal;
+ parameter int( SoapReceiveTimeout = 360 ) section normal; 
+
+
+
+# System Call Timeout  
+  parameter int(SystemCallTimeout) section normal;
+}
+class WMPConfiguration {
+
+  defaultvalue bool = false;
+  defaultvalue int = 0;
+  defaultvalue std::string = "";
+
+  wrapper {
+    prefix = edg_wlcc_WorkloadManagerProxy_;
+    contexttype = const configuration::WMPConfiguration *;
+    contextfunc = wp;
+  }
+
+  copy ConfBase.normal;
+  copy ConfBase.parse;
+  copy ConfBase.fileparse;
+
+  parameter int ( HTTPSPort ) section normal;
+  parameter int ( GridFTPPort ) section normal;
+
+  parameter int ( MinPerusalTimeInterval = 1000 ) section normal;
+
+  parameter std::string ( DefaultProtocol ) section normal;
+
+  parameter double ( MaxInputSandboxSize = 10000000 ) section normal;
+  parameter std::string ( SandboxStagingPath = "/var/glite/SandboxDir" ) section fileparse;
+  parameter std::string ( ListMatchRootPath = "/tmp" ) section fileparse;
+
+  parameter bool ( ArgusAuthz = false ) section normal;
+  parameter std::vector<std::string> ( ArgusPepdEndpoints = "" ) section normal;
+  parameter bool ( EnableServiceDiscovery = false ) section normal;
+  parameter std::string ( LBServiceDiscoveryType      = "org.glite.lb.server"  ) section normal;
+  parameter long ( ServiceDiscoveryInfoValidity = 3600 ) section normal;
+  parameter long ( WeightsCacheValidity = 21600 ) section normal;
+  parameter std::string ( WeightsCachePath = "/var/glite/wmproxy" ) section fileparse;
+  parameter std::vector<std::string>( LBServer ) section normal;
+  parameter classad::ClassAd*( OperationLoadScripts ) section normal;
+  parameter bool ( AsyncJobStart = true ) section normal;
+  parameter long ( MaxServedRequests = 300 ) section normal;
+
+  parameter int(listMatchTimeout = 600) section normal;
+  parameter int(maxPerusalFiles = 15) section normal;
+  parameter int(maxInputSandboxFiles = 10) section normal;
+  parameter int(maxOutputSandboxFiles = 10) section normal;
+}
+
+class ICEConfiguration {
+
+  defaultvalue bool = true;
+  defaultvalue int = 0;
+  defaultvalue size_t = 0;
+  defaultvalue std::string = "";
+
+  wrapper {
+    prefix = edg_wlcc_IceMonitor_;
+    contexttype = const configuration::ICEConfiguration *;
+    contextfunc = ice;
+  }
+
+  copy ConfBase.normal;
+  copy ConfBase.parse;
+  copy ConfBase.fileparse;
+
+#  parameter bool( UseMaradonaFile = true ) section normal;
+  parameter int( listener_port = 7010) section normal;
+  parameter int( subscription_update_threshold_time = 1200) section normal;
+  parameter int( subscription_duration = 86400) section normal;
+  parameter std::string( Input = "${GLITE_LOCATION_VAR}/ice/ice_fl") section fileparse;
+  parameter std::string( logfile = "${GLITE_LOCATION_LOG}/ice.log") section fileparse;
+  parameter bool( start_poller = true ) section normal;
+  parameter bool( purge_jobs = true ) section normal;
+  parameter bool( start_listener = true ) section normal;
+  parameter bool( start_subscription_updater = true ) section normal;
+  parameter int( poller_delay = 2*60 ) section normal;
+  parameter std::string( cream_url_prefix = "https://") section normal;
+  parameter std::string( cream_url_postfix = "/ce-cream/services/CREAM" ) section normal;
+  parameter std::string( creamdelegation_url_prefix = "https://") section normal;
+  parameter std::string( creamdelegation_url_postfix = "/ce-cream/services/gridsite-delegation" ) section normal;
+  parameter std::string( cemon_url_prefix = "https://") section normal;
+  parameter std::string( cemon_url_postfix = "/ce-monitor/services/CEMonitor" ) section normal;
+  parameter std::string( ice_topic = "CREAM_JOBS" ) section normal;
+  parameter int( poller_status_threshold_time = 30*60 ) section normal;
+  parameter bool( log_on_console = false ) section normal;
+  parameter bool( log_on_file = true) section normal;
+  parameter int( notification_frequency = 3*60 ) section normal;
+  parameter int( lease_delta_time = 3600 ) section normal;
+  parameter int( ice_log_level = 400 ) section normal;
+  parameter bool( listener_enable_authn = true ) section normal;
+  parameter bool( listener_enable_authz = true ) section normal;
+  parameter int( job_cancellation_threshold_time = 300 ) section normal;
+  parameter bool( start_job_killer = true ) section normal;
+  parameter bool( start_proxy_renewer = true) section normal;
+  parameter bool( start_lease_updater = true) section normal;
+  parameter std::string( ice_host_key = "${GLITE_HOST_KEY}" ) section fileparse;
+  parameter std::string( ice_host_cert = "${GLITE_HOST_CERT}" ) section fileparse;
+  parameter size_t( max_logfile_size = 500*1024 ) section normal;
+  parameter unsigned int( max_logfile_rotations = 10 ) section normal;
+  parameter unsigned int( max_ice_threads = 10 ) section normal;
+  parameter std::string( persist_dir = "${GLITE_LOCATION_VAR}/ice/ice_db" ) section fileparse;
+  parameter int( soap_timeout = 60) section normal;
+  parameter int( proxy_renewal_frequency = 600 ) section normal;
+  parameter int( bulk_query_size = 100 ) section normal;
+  parameter int( lease_update_frequency = 1800 ) section normal;
+  parameter int( ice_empty_threshold = 600 ) section normal;
+  parameter long( max_ice_mem = 524288 ) section normal; 
+  parameter bool( disable_deregister = false ) section normal;
+  parameter bool( disable_purge_storage = false ) section normal;
+  parameter bool( no_listener_message = false ) section normal;
+  parameter bool( disable_lb = false ) section normal;
+  parameter int( ce_blacklist_opcount_max = 20 ) section normal;
+  parameter int( ce_blacklist_time = 30*60 ) section normal;
+  parameter bool( fail_job_blacklisted_ce = false ) section normal;
+  parameter int( proxy_renewal_timeout = 120 ) section normal;
+
+
+#  parameter int( MainLoopDuration = 3 ) section normal;
+#  parameter int( AbortedJobsTimeout = 600 ) section normal;
+#  parameter int( GlobusDownTimeout = 600 ) section normal;
+#  parameter int( ForceCancellationRetries = 10 ) section normal;
+#  parameter size_t( ContainersCompactThreshold = 1000 ) section normal;
+#  parameter std::string( CondorLogDir ) section fileparse;
+#  parameter std::string( CondorLogRecycleDir ) section fileparse;
+#  parameter std::string( ExternalLogFile ) section fileparse;
+#  parameter std::string( MonitorInternalDir ) section fileparse;
+#  parameter std::string( IdRepositoryName ) section fileparse;
+#  parameter std::string( MaradonaTransportProtocol = "gsiftp" ) section parse; 
+}

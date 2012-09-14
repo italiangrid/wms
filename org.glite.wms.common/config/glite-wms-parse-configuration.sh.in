@@ -1,0 +1,91 @@
+#!/bin/sh
+
+ConfFile=$1
+DaemonName=$2
+
+jc=JobController
+lm=LogMonitor
+wm=WorkloadManager
+ns=NetworkServer
+
+GLITE_WMS_LOCATION=${GLITE_WMS_LOCATION:-/}
+
+if [ -z "$GLITE_WMS_USER" ] || [ -z "$GLITE_WMS_CONFIG_DIR" ]; then
+   . ${WMS_LOCATION_ETC}/glite-wms-vars.sh
+   . ${WMS_LOCATION_ETC}/profile.d/glite-wms.sh
+   . ${WMS_LOCATION_ETC}/profile.d/glite-wms-config.sh
+fi
+
+if [ -z "$GLITE_WMS_GROUP" ]; then
+   export GLITE_WMS_GROUP = $GLITE_WMS_USER
+fi
+
+if [ ! -d "$GLITE_WMS_TMP" ] ; then
+  mkdir -p $GLITE_WMS_TMP
+  chmod +775 $GLITE_WMS_TMP
+  chown -R $GLITE_WMS_USER.$GLITE_WMS_GROUP $GLITE_WMS_TMP
+fi
+
+GET_CONF=${WMS_LOCATION_BIN}/glite-wms-get-configuration
+
+if [ -f ${GET_CONF} ]; then
+
+  if [ $DaemonName = $jc ]; then
+    pathSubmit=`${GET_CONF} $2.SubmitFileDir`
+
+    pathOutput=`${GET_CONF} $2.OutputFileDir`
+    
+    for location in $pathSubmit $pathOutput; do
+      mkdir -p $location
+      file=${location##/*/}
+      dir=${location/$file/}
+      chown -R $GLITE_WMS_USER.$GLITE_WMS_GROUP $dir
+    done
+  fi
+
+  if [ $DaemonName = $lm ]; then
+    pathCondorLog=`${GET_CONF} $2.CondorLogDir`
+
+    pathCondorLogR=`${GET_CONF} $2.CondorLogRecycleDir`
+
+    for location in $pathCondorLog $pathCondorLogR; do
+      mkdir -p $location
+      file=${location##/*/}
+      dir=${location/$file/}
+      chown -R $GLITE_WMS_USER.$GLITE_WMS_GROUP $dir
+    done
+  fi
+
+  if [ $DaemonName = $ns ]; then
+    dirStaging=`${GET_CONF} $2.SandboxStagingPath`
+
+    path=`${GET_CONF} $2.LogFile`
+    dir=$(dirname "$path")
+    dirLogFile=$(dirname "$dir")
+
+    #for location in $dirStaging $dirLogFile $dir; do
+    for location in $dirStaging $dir; do
+      mkdir -p $location
+      chown -R $GLITE_WMS_USER.$GLITE_WMS_GROUP $location
+    done
+
+    chmod 0773 $dirStaging
+  fi
+
+  if [ $DaemonName = $wm ]; then
+    path=`${GET_CONF} $2.Input`
+    file=${path##/*/}
+    dirInput=${path/$file/}
+
+    path=`${GET_CONF} $2.LogFile`
+    dir=$(dirname "$path")
+    dirLogFile=$(dirname "$dir")
+
+    #for location in $dirInput $dirLogFile $dir; do
+    for location in $dirInput $dir; do
+      mkdir -p $location
+      chown $GLITE_WMS_USER.$GLITE_WMS_GROUP $location
+    done
+  fi
+fi
+
