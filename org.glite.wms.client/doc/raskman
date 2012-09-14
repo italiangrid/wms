@@ -1,0 +1,553 @@
+#! /usr/bin/env python2.2
+
+from py2man import *
+import sys
+
+# General Variables
+VERSION = "1.1.0"
+
+# Iterate over commands:
+errors=[]
+endl= "\n"
+TAGS ={"normal":["<<<",">>>"] , "high":["###","###"]}
+
+# man pages
+MAN_TAG="MAN_TAG"
+# latec
+TXT_TAG="TXT_TAG"
+# wiki pages
+WKI_TAG="WKI_TAG"
+# plain text
+PLT_TAG="PLT_TAG"
+
+try:
+	int(RASKMAN_DEBUG)
+except ValueError:
+	print "Warning: wrong RASKMAN_DEBUG"
+	print "(check value inside py2man.py file)"
+	RASKMAN_DEBUG=0
+
+def questionYN(question):
+	keep=1
+	question=question+ ' [y/n]n :'
+	while keep:
+		ans=raw_input(question)
+		if (ans=='n')or(ans=='N') or(ans==''):
+			return 0
+			keep=0
+		elif (ans=='y')or(ans=='Y'):
+			return 1
+			keep=0
+
+def errorsAppend(err):
+	debug ("!!ERROR!!",err)
+	errors.append(err)
+	if RASKMAN_DEBUG:
+		if not questionYN("Do you wish to continue?"):
+			print "bye"
+			sys.exit(0)
+
+
+def debug(*args):
+	if RASKMAN_DEBUG:
+		if len(args)>1:
+			print ">>>DEBUG"
+			for arg in args:
+				print "\t",arg
+		else:
+			print ">>>DEBUG" , args
+		if RASKMAN_DEBUG>1:
+			if questionYN("exit?"):
+				print "bye"
+				sys.exit(0)
+
+def comment(line, man):
+	""" Generate a comment line """
+	if man==MAN_TAG:
+		return '.\\" ' + line + endl
+	elif man==TXT_TAG:
+		return "% " + line + endl
+	elif man==WKI_TAG:
+		return ""
+	elif man==PLT_TAG:
+		return ""
+
+def mainTitle(line, man):
+	""" Generate a title """
+	if man==MAN_TAG:
+		return endl + '.SH ' + "NAME:\n"+line +endl
+	elif man==TXT_TAG:
+		return endl + '\\medskip'+endl + '\\textbf{'+line+'}' + endl +'\\smallskip' +endl +endl
+	elif man==WKI_TAG:
+		return endl + "(:title " +line+":)"+endl
+	elif man==PLT_TAG:
+		return endl + "%"+"%"+"beginJob-"+line[len("glite-job-"):]+"%"+"%"+endl
+
+def title(line, man):
+	""" Generate a title """
+	if man==MAN_TAG:
+		return endl + '.SH ' + line +endl
+	elif man==TXT_TAG:
+		return endl + '\\medskip'+endl + '\\textbf{'+line+'}' + endl +'\\smallskip' +endl +endl
+	elif man==WKI_TAG:
+		return endl + '!!' + line+ endl
+	elif man==PLT_TAG:
+		return endl +endl + "\t"+line +endl
+
+def parseSpecial(line, man):
+	if man==MAN_TAG:
+		return line
+	elif man==TXT_TAG:
+		# Special latex characters:
+		for sp in ["_","$","#","&"]:
+			line=line.replace(sp,'\\'+sp)
+			#line = line.replace(sp, "-")
+		return line+endl
+	elif man==WKI_TAG:
+		return line
+	elif man==PLT_TAG:
+		return line
+
+def shortOptBis(line,man):
+	"""
+	This line will preceed long option description
+	"""
+	result = ""
+	ln,st,vl = line
+	if man==MAN_TAG:
+		return shortOpt(line, man) + endl + ".IP"
+	elif man==TXT_TAG:
+		# long option (mandatory)
+		result = '\\textbf{' + "--" + ln +"}"
+		# shortcut (optional)
+		if st:
+			result+= ', '+'\\textbf{'+ "-" +st+"}"
+		# value (optional)
+		if vl:
+			result+= " <" + vl +">"
+		result =parseSpecial(result,man)
+	elif man==WKI_TAG:
+		# long option (mandatory)
+		result = "--"+ "'''" + ln +"'''"
+		# shortcut (optional)
+		if st:
+			result+= ', ' + "-"+ "'''" + st +"'''"
+		# value (optional)
+		if vl:
+			result+= " < ''" + vl+"'' >"
+		result =result +endl
+	elif man==PLT_TAG:
+		# long option (mandatory)
+		result = "\t--"+ ln
+		# shortcut (optional)
+		if st:
+			result+= ', ' + "-"+ st
+		# value (optional)
+		if vl:
+			result+= " <"+ vl+">"
+		result =endl+result
+	return result
+
+
+def shortOpt(line,man):
+	result = ""
+	ln,st,vl = line
+	if man==MAN_TAG:
+		result+='.HP'+ endl
+		# long option (mandatory)
+		result+='\\fB' +"--" +ln +'\\fR'
+		# shortcut (optional)
+		if st:
+			result+=', \\fB' +"-" +st +'\\fR'
+		# value (optional)
+		if vl:
+			result+=endl+"<"+vl+">"
+		result +=endl
+	elif man==TXT_TAG:
+		# long option (mandatory)
+		result = "\t--"+ ln
+		# shortcut (optional)
+		if st:
+			result+= ', ' + "-" +st
+		# value (optional)
+		if vl:
+			result+= " <" + vl+">"
+		result +=endl
+	elif man==WKI_TAG:
+		return "-> " + shortOptBis(line, man)
+	elif man==PLT_TAG:
+		result+=shortOptBis(line, man)
+	return result
+
+
+
+
+"""
+PARSING METHODS
+"""
+def getTag(line, TAGS):
+	LEN  = len(TAGS[0])
+	if line[0:LEN]==TAGS[0]  and   line[-LEN:]==TAGS[1] :
+		return line[LEN:-LEN]
+	return ""
+
+def parseDescriptionFile(fi, tags):
+	debug ("parseDescriptionFile FILE: ", fi, tags)
+	infile = open(fi)
+	lines=infile.readlines()
+	infile.close()
+	return parseDescriptionLines(lines,tags)
+def parseDescriptionLines(lines, tags):
+	"""
+	Parses the input description files and returns
+	a python dictionary
+	FILE FORMAT:
+		TAGS[0] tag name TAGS[1]
+		description
+		TAGS[0] tag name TAGS[1]
+	returns a dictionary
+	"""
+	dict ={}
+	names=[]
+	name = ""
+	soFar=""
+	for line in lines:
+			if name:
+				#Begin tag already found, look for end
+				tmp = getTag(line.strip(), tags)
+				if tmp==name:
+					# END TAG, update dict
+					if dict.has_key(name):
+						error= "Warning: tag " + tags[0] + name +tags[1]+ \
+						"Repeated more than once!"
+						errorsAppend(error)
+					dict[name]=soFar
+					name = ""
+					soFar=""
+				elif tmp:
+					error= "Warning: tag " + tags[0] + tmp +tags[1]+ \
+					" init but "+tags[0] + name +tags[1] + " not yet finished"
+					errorsAppend(error)
+					name = tmp
+				else:
+					# Keep description
+					soFar += "\n" +line.strip()
+			else:
+				# Name not yet found:
+				name = getTag(line.strip(), tags)
+				if name:
+					if RASKMAN_DEBUG:
+						names.append(name)
+	debug ("Gotcha Names: ", names)
+	return dict
+
+
+
+"""  STATIC VARIABLES: """
+COMMENT = "PLEASE DO NOT MODIFY THIS FILE! It was generated by raskman version: " + VERSION
+options2description  = parseDescriptionFile(options2descriptionFile , TAGS["normal"])
+commands2description = parseDescriptionFile(commands2descriptionFile, TAGS["high"])
+debug("OPTIONS KEYS = " , options2description.keys())
+debug("COMMAND KEYS = " , commands2description.keys())
+
+if GENERATE_PLT:
+	#PLT are appended to the same file: remove it
+	import os
+	try:
+		os.remove(PLT_OUTPUT)
+	except OSError:
+		#Unable to remove
+		pass
+
+class RaskMan:
+ 	""" STATIC Dictonary of TAGS available by command"""
+	commonTags  = {}
+	def __init__(self,command, options, commandTags):
+		""" the name of the command"""
+		self.command = command
+		""" List of options available by command"""
+		self.options = options
+		""" Dictonary of TAGS available by command"""
+		self.commandTags = commandTags
+		self.manFile = MAN_OUTPUT + command + ".1"
+		self.texFile = TXT_OUTPUT + command + ".tex"
+		self.wkiFile = WKI_OUTPUT + command + ".wki"
+		self.pltFile = PLT_OUTPUT # All output appended
+		# Opening Input Streams
+		self.manStream=self.tryANDopen(GENERATE_MAN,self.manFile,"w")
+		self.texStream=self.tryANDopen(GENERATE_TXT,self.texFile,"w")
+		self.wkiStream=self.tryANDopen(GENERATE_WKI,self.wkiFile,"w")
+		self.pltStream=self.tryANDopen(GENERATE_PLT,self.pltFile,"a+")
+
+
+	def setCommon(self, common):
+		self.common  = common
+
+	def tryANDopen(self, GENERATE_XYZ, xyzFile, mode):
+		try:
+			if GENERATE_XYZ:
+				return open(xyzFile,mode)
+		except IOError, err:
+			print "Unable to generate "+ xyzFile+ "\nPlease either disable that documentation part or allow writing that directory"
+			sys.exit(0)
+		return 0
+
+
+
+	def write(self, method,arg):
+		"""
+		Parse the argument into all languages
+		and eventually write to the proper stream
+		"""
+		if GENERATE_MAN:
+			self.manStream.write(method(arg,MAN_TAG))
+		if GENERATE_TXT:
+			self.texStream.write(method(arg,TXT_TAG))
+		if GENERATE_WKI:
+			self.wkiStream.write(method(arg,WKI_TAG))
+		if GENERATE_PLT:
+			self.pltStream.write(method(arg,PLT_TAG))
+
+	def writeArg(self,arg):
+		# Man pages
+		if GENERATE_MAN:
+			self.manStream.write(arg)
+			self.manStream.write(endl)
+		# TXT pages
+		if GENERATE_TXT:
+			self.texStream.write(arg)
+			self.texStream.write(endl)
+		# WKI pages
+		if GENERATE_WKI:
+			self.wkiStream.write(arg)
+			self.wkiStream.write(endl)
+		# PLT pages
+		if GENERATE_PLT:
+			self.pltStream.write(arg)
+			self.pltStream.write(endl)
+
+
+	def headerTag (self, line, man):
+		debug (self.command,"headerTag(..)")
+		result=""
+		if man==MAN_TAG:
+			result += ".TH " + self.command.upper() +' "1" '
+			result += '"' + self.command.upper()+'" '
+			result +='"'+line+'"'
+		elif man==TXT_TAG:
+			#result +="\\documentclass[12pt]{article}"
+			#result +="\\begin{document}"+endl
+			result +="\\subsection{"+self.command +"}"+ endl
+			result +="\\label{"+ self.command +"}"
+		elif man==WKI_TAG:
+			result+= "!! " +self.command + endl
+		elif man==PLT_TAG:
+			result+= ""
+		return result +endl
+
+	def synopsisTag(self, line, man):
+		debug (self.command,"synopsisTag(..)")
+		"""
+		Create Synopsis
+		"""
+		result =""
+		if man==MAN_TAG:
+			line = line.replace("[", "[\\fI")
+			line = line.replace("]", "\\fR]")
+			line = line.replace("<", "<\\fI")
+			line = line.replace(">", "\\fR>")
+			result +=".B "+self.command + endl + line.strip()
+		elif man==TXT_TAG:
+			line = line.replace("<", "$<$")
+			line = line.replace(">", "$>$")
+			result +="\\textbf{"+self.command + " " + line.strip().replace("_",'\\'+"_") +"}" +endl
+			result +"\\medskip"+endl
+			result +='{\\begin{verbatim}'
+		elif man==WKI_TAG:
+			result +="[+"+self.command +"+]    " + line.strip()
+		elif man==PLT_TAG:
+			result += self.command +" " + line.strip()
+		result += endl
+		# Common Options
+		if man==MAN_TAG:
+			result += endl
+		elif man==TXT_TAG:
+			result +=endl+"options:" +endl
+		elif man==WKI_TAG:
+			result +=endl+"options:" +endl
+		elif man==PLT_TAG:
+			result +=endl+"options:" +endl
+		try:
+			# Common (to all commands) options:
+			for opt in common_options:
+				result+=shortOpt(options2short[opt],man)
+			# Command specific options
+			for opt in self.options:
+				result+=shortOpt(options2short[opt],man)
+		except KeyError:
+				debug("options2short values:",options2short.keys())
+				errorsAppend(self.command+"->  option not found among options2short: "+opt)
+		if man==MAN_TAG:
+			pass
+		elif man==TXT_TAG:
+			result +='\\end{verbatim}'
+		elif man==WKI_TAG:
+			pass
+		elif man==PLT_TAG:
+			pass
+		return result +endl
+
+	def optionTag(self,options, man):
+		debug (self.command,"optionTag(..)", man)
+		result =""
+		for opt in options:
+			""" Parses option 2 short """
+			try:
+				result+=shortOptBis(options2short[opt],man)
+			except KeyError:
+				errorsAppend(self.command+"->  FATAL ERROR, missing in options2short: "+opt)
+			""" Parses option 2 descripiton """
+			try:
+				result+=parseSpecial(options2description[opt]+endl,man)
+			except KeyError:
+				errorsAppend(self.command+"->  option not found among options2description: "+opt)
+			if man==MAN_TAG:
+				result+=".PP"+endl
+			elif man==TXT_TAG:
+				pass
+			elif man==WKI_TAG:
+				result +=endl
+			elif man==WKI_TAG:
+				result +=endl
+		return result
+
+
+	def create(self):
+		"""
+		MAIN method: create the desired man pages
+		"""
+		debug (self.command,"create(self)")
+		try:
+			"""   header  """
+			self.write(comment,COMMENT)
+			self.write(self.headerTag,"GLITE User Guide")
+			#self.write(title, "NAME: \n "+ self.command)
+			self.write(mainTitle, self.command)
+			"""  synopsis """
+			section="SYNOPSIS"
+			self.write(title,section)
+			self.write(self.synopsisTag,self.commandTags[section])
+			del self.commandTags[section]
+			"""  description """
+			section="DESCRIPTION"
+			self.write(title,section)
+			self.write(parseSpecial,self.commandTags[section])
+			del self.commandTags[section]
+			"""  options  """
+			section="OPTIONS"
+			self.write (title, section)
+			self.write(self.optionTag,common_options)
+			self.write(self.optionTag,self.options)
+			"""  Environment,Files, Author"""
+			for section in ["ENVIRONMENT", "FILES","AUTHORS","EXAMPLES"]:
+				if self.commandTags.has_key(section):
+					self.write(title,section)
+					self.write(parseSpecial,self.commandTags[section])
+					del self.commandTags[section]
+				else:
+					debug ("NOT Available Section:", section)
+			"""  Other Unkwnown sections..."""
+			for section in commandTags.keys():
+				self.write(title,section)
+				self.write(parseSpecial,self.commandTags[section])
+				del self.commandTags[section]
+				errorsAppend(self.command+"-> (Warning) appending unknwon section: " + section)
+			"""  Common sections..."""
+			for section in self.commonTags.keys():
+				self.write(title,section)
+				self.write(parseSpecial,self.commonTags[section])
+		except KeyError:
+			errorsAppend(self.command+"-> section not found: " + section)
+		except IOError, err:
+			errorsAppend(self.command+"-> Unable to write file: ")
+		self.end()
+
+	def end(self):
+		if GENERATE_MAN:
+			self.manStream.write(endl)
+			self.manStream.close()
+		if GENERATE_TXT:
+			self.texStream.write(endl)
+			self.texStream.close()
+		if GENERATE_WKI:
+			self.wkiStream.write(endl)
+			self.wkiStream.close()
+		if GENERATE_PLT:
+			endStr= endl + "%"+"%"+"endJob-"+self.command[len("glite-job-"):]+"%"+"%"+endl
+			self.pltStream.write(endStr)
+			self.pltStream.close()
+
+
+
+
+print "\n**** CREATING DOCUMENTATION ***"
+
+if commands2description.has_key("COMMON"):
+	RaskMan.commonTags =parseDescriptionLines(commands2description["COMMON"].split("\n"), TAGS["normal"])
+
+for command in commands2options.keys():
+	try:
+		debug ("Parsing command:" ,command)
+		print "creating man pages for:" , command
+		commandTags =  parseDescriptionLines(commands2description[command].split("\n"), TAGS["normal"])
+		try:
+			raskman = RaskMan(command,commands2options[command],commandTags)
+			raskman.create()
+		except KeyError:
+			errorsAppend(command+ "-> Fatal description ERROR for command")
+	except KeyError:
+		errorsAppend(command+ "-> Unable to find command inside commands2description")
+		pass
+	except IOError, err:
+		errorsAppend(command+ "-> Unable write file: "+ str(err))
+		break
+
+
+if errors:
+	print "ERRORS FOUND:"
+	for err in errors:
+		print err
+	sys.exit(1)		
+else:
+	print "Documentation properly created in the following directories:"
+	if GENERATE_MAN:
+		print "MAN documtentation(to view man pages: groff -man -Tascii <input file>):"
+		if MAN_OUTPUT:
+			print "\t"+ MAN_OUTPUT
+		else:
+			print "\t"+ "(locally created)"
+
+	if GENERATE_TXT:
+		print "TXT documtentation: "
+		if TXT_OUTPUT:
+			print "\t"+ TXT_OUTPUT
+		else:
+			print "\t"+ "(locally created)"
+
+
+
+	if GENERATE_WKI:
+		print "WKI documtentation: "
+		if WKI_OUTPUT:
+			print "\t"+ WKI_OUTPUT
+		else:
+			print "\t"+ "(locally created)"
+
+	if GENERATE_PLT:
+		print "PLT documtentation: "
+		if PLT_OUTPUT:
+			print "\t"+ PLT_OUTPUT
+		else:
+			print "\t"+ "(locally created)"
+
+	print "\n**** DOCUMENTATION PROPERLY GENERATED ***"

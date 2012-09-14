@@ -1,0 +1,16 @@
+GLITE_REP=../../
+echo "Using REPOSITORY =" $GLITE_REP
+GLOBUS_LOCATION=$GLITE_REP/repository/globus/2.4.3-VDT-1.2.2/rhel30_gcc32/
+CLASSAD=$GLITE_REP/repository/classads/0.9.6/rhel30_gcc32/
+BOOST=$GLITE_REP/repository/boost/1.32.0/rhel30_gcc32/
+ARES=$GLITE_REP/ares/1.1.1/rhel30_gcc32
+CPPUNIT=$GLITE_REP/repository/cppunit/1.10.2/rhel30_gcc32/
+WMS_CLIENT_LIBS=../src/services:../src/utilities
+EXTERNALS=/usr/local/
+
+
+export LD_LIBRARY_PATH=$GLOBUS_LOCATION/lib:$GLITE_REP/lib:$CLASSAD/lib:$BOOST/lib:$ARES/lib
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$GLITE_REP/stage/lib:$CPPUNIT/lib:$WMS_CLIENT_LIBS:$EXTERNALS/lib
+
+env | grep LD_
+
