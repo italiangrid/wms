@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	Copyright (c) 2004 on behalf of the EU EGEE Project: 
+	The European Organization for Nuclear Research (CERN), 
+	Istituto Nazionale di Fisica Nucleare (INFN), Italy
+	Datamat Spa, Italy
+	Centre National de la Recherche Scientifique (CNRS), France
+	CS Systeme d'Information (CSSI), France
+	Royal Institute of Technology, Center for Parallel Computers (KTH-PDC), Sweden
+	Universiteit van Amsterdam (UvA), Netherlands
+	University of Helsinki (UH.HIP), Finland
+	University of Bergen (UiB), Norway
+	Council for the Central Laboratory of the Research Councils (CCLRC), United Kingdom
+
+	Common build properties file for the Glite WMS Common component
+	
+	Authors: Alberto Di Meglio <alberto.di.meglio@cern.ch>		
+			 Joachim Flammer <Joachim.Flammer@cern.ch>
+	Version info: $Id$
+	Release: $Name$	
+	
+	Revision history:
+	$Log$
+	Revision 1.8  2006/03/15 20:54:44  eronchie
+	Updated accorting to the new location of jdl and classad utils libraries
+
+	Revision 1.7  2005/10/14 15:44:54  fpacini
+	add java.m4
+	
+	Revision 1.6  2005/01/31 10:41:59  amarasch
+	Partitioner component moved from wms-ui into wms subsystem
+	
+	Revision 1.5  2004/12/20 17:04:36  amarasch
+	Checkpointing and partitioning libraries added
+	
+	Revision 1.4  2004/10/15 09:46:28  fpacini
+	fixed miisng deps
+	
+	Revision 1.3  2004/10/11 17:14:37  fpacini
+	added missing deps
+	
+	Revision 1.2  2004/08/12 16:04:21  eronchie
+	Updated
+	
+	Revision 1.1  2004/08/12 10:25:50  eronchie
+	Updated
+	
+	
+-->
+
+<project name="WMS UI wrap java component common properties">
+
+	<!-- Include build properties to allow overwriting 
+	     of properties for subsystem                    -->
+	<property file="project/build.properties" />	
+
+	<!-- ======================================================
+          Define corresponding subsystem properties
+		 ====================================================== -->
+
+	<!-- Subsystem name -->
+	<property name="subsystem.name" value="${wms-ui.subsystem.name}"/>
+		
+	<!-- Subsystem prefix -->
+	<property name="subsystem.prefix" value="${wms-ui.subsystem.prefix}"/>
+
+	<!-- ======================================================
+          Define component properties
+		 ====================================================== -->
+		 		
+	<!-- Component name prefix -->
+	<property name="component.prefix" value="wrap-java" />
+			
+	<!-- ======================================================
+          Define general component properties
+		 ====================================================== -->
+	
+	<import file="${component.general.properties.file}" />
+						
+	<!-- ======================================================
+		 Define extra properties here ...
+		 ====================================================== -->
+		 
+        <property name="m4files.list" value="globus.m4 classads.m4 boost.m4 glite.m4 cppunit.m4 expat.m4 ares.m4 glite_wmsutils.m4 glite_wms.m4 glite_lb.m4 glite_dgas.m4 glite_dgas_common.m4 glite_security.m4 glite_jdl.m4 glite_wms_partitioner.m4 java.m4"/>
+
+
+
+</project>
