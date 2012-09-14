@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	Copyright (c) 2004 on behalf of the EU EGEE Project: 
+	The European Organization for Nuclear Research (CERN), 
+	Istituto Nazionale di Fisica Nucleare (INFN), Italy
+	Datamat Spa, Italy
+	Centre National de la Recherche Scientifique (CNRS), France
+	CS Systeme d'Information (CSSI), France
+	Royal Institute of Technology, Center for Parallel Computers (KTH-PDC), Sweden
+	Universiteit van Amsterdam (UvA), Netherlands
+	University of Helsinki (UH.HIP), Finland
+	University of Bergen (UiB), Norway
+	Council for the Central Laboratory of the Research Councils (CCLRC), United Kingdom
+
+	Authors: Elisabetta Ronchieri <elisabetta.ronchieri@cnaf.infn.it>		
+	Version info: $Id$
+	Release: $Name$	
+	
+	Revision 1.1.2.1  2005/04/11 12:08:53  eronchie
+	Added AC_OPTIMIZE
+	Added disable-optimization
+	Added optimize.m4
+	
+	Revision 1.1  2004/07/07 17:20:46  dimeglio
+	Renamed from configure-options.xml
+	
+-->
+
+	<project name="gLite WMS Broker configure options">                                                                        
+        <property name="configure.args"
+               value="--prefix=${workspace.abs.dir}/stage --with-globus-prefix=${with.globus.prefix} --with-globus-thr-flavor=${with.globus.thr.flavor} --with-globus-nothr-flavor=${with.globus.nothr.flavor} --with-classads-prefix=${with.classads.prefix} --with-boost-prefix=${with.boost.prefix} --enable-boost_debug=${enable.boost.debug} --with-glite-location=${with.glite.location} --with-dist-location=${with.dist.location} --enable-optimization=${enable.optimization} --enable-syslog-logging=${enable.syslog.logging}"/>
+	</project>
