@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	Copyright (c) 2004 on behalf of the EU EGEE Project: 
+	The European Organization for Nuclear Research (CERN), 
+	Istituto Nazionale di Fisica Nucleare (INFN), Italy
+	Datamat Spa, Italy
+	Centre National de la Recherche Scientifique (CNRS), France
+	CS Systeme d'Information (CSSI), France
+	Royal Institute of Technology, Center for Parallel Computers (KTH-PDC), Sweden
+	Universiteit van Amsterdam (UvA), Netherlands
+	University of Helsinki (UH.HIP), Finland
+	University of Bergen (UiB), Norway
+	Council for the Central Laboratory of the Research Councils (CCLRC), United Kingdom
+
+	Common build properties file for the GLite subsystem_template component_template component
+	
+	Authors: Joachim Flammer <Joachim.Flammer@cern.ch>
+	Version info: $Id$
+	Release: $Name$	
+	
+	Revision history:
+	$Log$
+	Revision 1.8  2007/03/05 11:44:11  mcecchi
+	lb dependencies newly carried by by wms_utils
+
+	Revision 1.7  2006/11/22 15:35:12  emartel
+	added StorageIndex and DLI catalog interfaces
+
+	Revision 1.6  2004/10/17 14:57:21  eronchie
+	......
+
+	Revision 1.5  2004/10/17 14:44:13  eronchie
+	Updated properties
+	
+	Revision 1.4  2004/10/12 12:22:59  eronchie
+	Updated
+	
+	Revision 1.3  2004/10/06 10:51:04  eronchie
+	Start adding rls
+	
+	Revision 1.2  2004/10/05 14:12:58  monforte
+	*** WORK IN PROGRESS ***
+	
+	Revision 1.1  2004/10/05 11:08:04  monforte
+	Initial porting of RLS: *** WORK IN PROGRESS ***
+	
+	Revision 1.4  2004/07/20 16:08:30  flammer
+	Changed incorrect my_... instead of .._template entries for subsystem and component.
+	
+	Revision 1.3  2004/07/16 14:56:55  flammer
+	Corrected input path of build.properties.
+	
+	Revision 1.2  2004/07/16 14:36:49  flammer
+	
+	Corrected build.properties include.
+	
+	Revision 1.1.1.1  2004/06/18 12:40:17  flammer
+	Added general component template.
+	
+	
+-->
+
+<project name="wms rls common properties">
+
+	<!-- Include build properties to allow overwriting 
+	     of properties for subsystem                    -->
+	<property file="project/build.properties" />	
+
+	<!-- ======================================================
+              Define corresponding subsystem properties
+	     ====================================================== -->
+
+	<!-- Subsystem name -->
+	<property name="subsystem.name" value="${wms.subsystem.name}"/>
+		
+	<!-- Subsystem prefix -->
+	<property name="subsystem.prefix" value="${wms.subsystem.prefix}"/>
+
+	<!-- ======================================================
+              Define component properties
+	     ====================================================== -->
+		 		
+	<!-- Component name prefix -->
+	<property name="component.prefix" value="rls" />
+			
+	<!-- ======================================================
+              Define general component properties
+	     ====================================================== -->
+	
+	<import file="${component.general.properties.file}" />
+						
+	<!-- ======================================================
+	      Define extra properties here ...
+	     ====================================================== -->
+	<property name="m4files.list" value="boost.m4 globus.m4 replica.m4 gsoap.m4 classads.m4 glite.m4 glite_service_discovery.m4 glite_jdl.m4 glite_security.m4 glite_lb.m4 cppunit.m4 glite_wmsutils.m4 glite_wms_common.m4 glite_jdl.m4 optimize.m4"/>
+		
+</project>
