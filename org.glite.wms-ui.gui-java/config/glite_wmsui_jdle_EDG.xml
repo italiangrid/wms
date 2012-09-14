@@ -1,0 +1,327 @@
+<?xml version="1.0" standalone="yes"?>
+<!-- JDL Editor xml configuration file -->
+<!--<!DOCTYPE edg:jdleconfig SYSTEM "file:jdleconfig.dtd">-->
+<!--|edg:architectureAttName|edg:operatingSystemAttName|edg:versionAttName|edg:inboundAttName
+	|edg:outboundAttName|specInt2000AttName|edg:specFloat2000AttName|edg:LRMSTypeAttName
+	|edg:LRMSVersionAttName|edg:minMainMemoryAttName|edg:minMainMemoryAttName|edg:maxCPUTimeAttName
+	|edg:estimatedTraversalTimeAttName|edg:runtimeEnvironmentAttName|edg:exprAttributeName
+-->
+<!DOCTYPE edg:jdleconfig [
+  <!ELEMENT edg:jdleconfig (edg:attribute|edg:function|edg:replicacatalog|edg:dataaccessprotocol|edg:exprAttributeName)*>
+  <!ELEMENT edg:attribute (edg:name, edg:type, edg:multi?)>
+  <!ELEMENT edg:function (edg:name, edg:type, edg:params?)>
+  <!ELEMENT edg:params (edg:type?, edg:type?, edg:type?)>
+  <!ELEMENT edg:replicacatalog (#PCDATA)>
+  <!ELEMENT edg:exprAttributeName (#PCDATA)>
+  <!ELEMENT edg:dataaccessprotocol (#PCDATA)>
+  <!ELEMENT edg:name (#PCDATA)>
+  <!ELEMENT edg:type (edg:INTEGER|edg:FLOAT|edg:STRING|edg:BOOLEAN|
+            edg:ABSTIME|edg:RELTIME|edg:MEMORY|edg:SECONDS|edg:LIST|
+            edg:VALUE)>
+  <!ELEMENT edg:multi EMPTY>
+  <!ELEMENT edg:INTEGER EMPTY>
+  <!ELEMENT edg:FLOAT EMPTY>
+  <!ELEMENT edg:STRING EMPTY>
+  <!ELEMENT edg:BOOLEAN EMPTY>
+  <!ELEMENT edg:ABSTIME EMPTY>
+  <!ELEMENT edg:RELTIME EMPTY>
+  <!ELEMENT edg:MEMORY EMPTY>
+  <!ELEMENT edg:SECONDS EMPTY>
+  <!ELEMENT edg:LIST EMPTY>
+  <!ELEMENT edg:VALUE EMPTY>
+
+  <!ATTLIST edg:jdleconfig xmlns:edg CDATA #REQUIRED>
+
+  <!-- Attributes for exprAttributeName tag (Requirements and Rank simple panels) -->
+  <!ATTLIST edg:exprAttributeName architecture CDATA #IMPLIED>
+  <!ATTLIST edg:exprAttributeName OSType CDATA #IMPLIED>
+  <!ATTLIST edg:exprAttributeName OSVersion CDATA #IMPLIED>
+  <!ATTLIST edg:exprAttributeName OSTypeAndVersion CDATA #IMPLIED>
+  <!ATTLIST edg:exprAttributeName inbound CDATA #IMPLIED>
+  <!ATTLIST edg:exprAttributeName outbound CDATA #IMPLIED>
+  <!ATTLIST edg:exprAttributeName specInt2000 CDATA #IMPLIED>
+  <!ATTLIST edg:exprAttributeName specFloat2000 CDATA #IMPLIED>
+  <!ATTLIST edg:exprAttributeName LRMSType CDATA #IMPLIED>
+  <!ATTLIST edg:exprAttributeName LRMSVersion CDATA #IMPLIED>
+  <!ATTLIST edg:exprAttributeName minMainMemory CDATA #IMPLIED>
+  <!ATTLIST edg:exprAttributeName minNumberOfFreeCPUs CDATA #IMPLIED>
+  <!ATTLIST edg:exprAttributeName maxAvailableCPUTime CDATA #IMPLIED>
+  <!ATTLIST edg:exprAttributeName timeToTraverseQueue CDATA #IMPLIED>
+  <!ATTLIST edg:exprAttributeName runtimeEnvironment CDATA #IMPLIED>
+  <!ATTLIST edg:exprAttributeName maxNumberOfAvailableCPUs CDATA #IMPLIED>
+  <!ATTLIST edg:exprAttributeName minNumberOfHandledJobs CDATA #IMPLIED>
+
+  ]>
+
+<edg:jdleconfig xmlns:edg='edg.workload.userinterface.gui'>
+   <edg:exprAttributeName
+        architecture = 'Architecture'
+        OSType = 'GlueHostOperatingSystemName'
+        OSVersion = 'GlueHostOperatingSystemVersion'
+        OSTypeAndVersion = 'OpSys'
+        inbound = 'InboundIP'
+        outbound = 'OutboundIP'
+        specInt2000 = 'AverageSI00'
+        specFloat2000 = ''
+        LRMSType = 'LRMSType'
+        LRMSVersion = 'LRMSVersion'
+        minMainMemory = 'MinPhysicalMemory'
+        minNumberOfFreeCPUs = 'FreeCPUs'
+        maxAvailableCPUTime = 'MaxCPUTime'
+        timeToTraverseQueue = 'EstimatedTraversalTime'
+        runtimeEnvironment = 'RuntimeEnvironment'
+        maxNumberOfAvailableCPUs = 'TotalCPUs'
+        minNumberOfHandledJobs = 'TotalJobs'
+   ></edg:exprAttributeName>
+
+   <edg:replicacatalog>ldap</edg:replicacatalog>
+
+   <edg:dataaccessprotocol>gridftp</edg:dataaccessprotocol>
+   <edg:dataaccessprotocol>rfio</edg:dataaccessprotocol>
+   <edg:dataaccessprotocol>file</edg:dataaccessprotocol>
+
+   <!--"Active", "AFSAvailable", "Architecture", "AverageSI00", "CEId"
+        BOOLEAN, INTEGER, STRING, FLOAT, STRING-->
+   <edg:attribute>
+        <edg:name>Active</edg:name><edg:type><edg:BOOLEAN/></edg:type>
+   </edg:attribute>
+   <edg:attribute>
+	<edg:name>AFSAvailable</edg:name><edg:type><edg:BOOLEAN/></edg:type>
+   </edg:attribute>
+   <edg:attribute>
+	<edg:name>Architecture</edg:name><edg:type><edg:STRING/></edg:type>
+   </edg:attribute>
+   <edg:attribute>
+	<edg:name>AverageSI00</edg:name><edg:type><edg:FLOAT/></edg:type>
+   </edg:attribute>
+   <edg:attribute>
+	<edg:name>CEId</edg:name><edg:type><edg:STRING/></edg:type>
+   </edg:attribute>
+
+   <!--"EstimatedTraversalTime", "FreeCPUs", "GRAMVersion", "IdleJobs"
+        ABSTIME, INTEGER, STRING, INTEGER-->
+   <edg:attribute>
+	<edg:name>EstimatedTraversalTime</edg:name><edg:type><edg:SECONDS/></edg:type>
+   </edg:attribute>
+   <edg:attribute>
+	<edg:name>FreeCPUs</edg:name><edg:type><edg:INTEGER/></edg:type>
+   </edg:attribute>
+   <edg:attribute>
+	<edg:name>GRAMVersion</edg:name><edg:type><edg:STRING/></edg:type>
+   </edg:attribute>
+   <edg:attribute>
+	<edg:name>IdleJobs</edg:name><edg:type><edg:INTEGER/></edg:type>
+   </edg:attribute>
+
+   <!--"InboundIP", "LRMSType", "LRMSVersion", "MaxCPUTime", "MaxRunningJobs"
+        BOOLEAN, STRING, STRING, ABSTIME, INTEGER-->
+   <edg:attribute>
+	<edg:name>InboundIP</edg:name><edg:type><edg:BOOLEAN/></edg:type>
+   </edg:attribute>
+   <edg:attribute>
+	<edg:name>LRMSType</edg:name><edg:type><edg:STRING/></edg:type>
+   </edg:attribute>
+   <edg:attribute>
+	<edg:name>LRMSVersion</edg:name><edg:type><edg:STRING/></edg:type>
+   </edg:attribute>
+   <edg:attribute>
+	<edg:name>MaxCPUTime</edg:name><edg:type><edg:SECONDS/></edg:type>
+   </edg:attribute>
+   <edg:attribute>
+	<edg:name>MaxRunningJobs</edg:name><edg:type><edg:INTEGER/></edg:type>
+   </edg:attribute>
+
+   <!--"MaxSI00", "MaxSPUProcessors",  "MaxTotalJobs", "MaxWallClockTime", "MinLocalDiskSpace"
+        FLOAT, INTEGER, INTEGER, ABSTIME, MEMORY-->
+   <edg:attribute>
+	<edg:name>MaxSI00</edg:name><edg:type><edg:FLOAT/></edg:type>
+   </edg:attribute>
+   <edg:attribute>
+	<edg:name>MaxSPUProcessors</edg:name><edg:type><edg:INTEGER/></edg:type>
+   </edg:attribute>
+   <edg:attribute>
+	<edg:name>MaxTotalJobs</edg:name><edg:type><edg:INTEGER/></edg:type>
+   </edg:attribute>
+   <edg:attribute>
+	<edg:name>MaxWallClockTime</edg:name><edg:type><edg:SECONDS/></edg:type>
+   </edg:attribute>
+   <edg:attribute>
+	<edg:name>MinLocalDiskSpace</edg:name><edg:type><edg:MEMORY/></edg:type>
+   </edg:attribute>
+
+    <!--"MinPhysicalMemory", "MinSI00", "MinSPUProcessors", "NumSMPs", "OpSys"
+        MEMORY, FLOAT, INTEGER, INTEGER, STRING-->
+   <edg:attribute>
+	<edg:name>MinPhysicalMemory</edg:name><edg:type><edg:MEMORY/></edg:type>
+   </edg:attribute>
+   <edg:attribute>
+	<edg:name>MinSI00</edg:name><edg:type><edg:FLOAT/></edg:type>
+   </edg:attribute>
+   <edg:attribute>
+	<edg:name>MinSPUProcessors</edg:name><edg:type><edg:INTEGER/></edg:type>
+   </edg:attribute>
+   <edg:attribute>
+	<edg:name>NumSMPs</edg:name><edg:type><edg:INTEGER/></edg:type>
+   </edg:attribute>
+   <edg:attribute>
+	<edg:name>OpSys</edg:name><edg:type><edg:STRING/></edg:type>
+   </edg:attribute>
+
+   <!--"OutboundIP", "Priority", "RunningJobs", "RunTimeEnvironment", "TotalCPUs"
+        BOOLEAN, BOOLEAN, INTEGER, STRING, INTEGER-->
+   <edg:attribute>
+	<edg:name>OutboundIP</edg:name><edg:type><edg:BOOLEAN/></edg:type>
+   </edg:attribute>
+   <edg:attribute>
+	<edg:name>Priority</edg:name><edg:type><edg:BOOLEAN/></edg:type>
+   </edg:attribute>
+   <edg:attribute>
+	<edg:name>RunningJobs</edg:name><edg:type><edg:INTEGER/></edg:type>
+   </edg:attribute>
+   <edg:attribute>
+	<edg:name>RunTimeEnvironment</edg:name><edg:type><edg:STRING/></edg:type><edg:multi/>
+   </edg:attribute>
+   <edg:attribute>
+	<edg:name>TotalCPUs</edg:name><edg:type><edg:INTEGER/></edg:type>
+   </edg:attribute>
+
+   <!--"TotalJobs", "WrostTraversalTime", "GlobusResourceContactString", "AuthorizedUser"
+        INTEGER, ABSTIME, STRING, STRING-->
+   <edg:attribute>
+	<edg:name>TotalJobs</edg:name><edg:type><edg:INTEGER/></edg:type>
+   </edg:attribute>
+   <edg:attribute>
+	<edg:name>WorstTraversalTime</edg:name><edg:type><edg:SECONDS/></edg:type>
+   </edg:attribute>
+   <edg:attribute>
+	<edg:name>GlobusResourceContactString</edg:name><edg:type><edg:STRING/></edg:type>
+   </edg:attribute>
+   <edg:attribute>
+	<edg:name>AuthorizedUser</edg:name><edg:type><edg:STRING/></edg:type><edg:multi/>
+   </edg:attribute>
+   <edg:attribute>
+	<edg:name>QueueName</edg:name><edg:type><edg:STRING/></edg:type>
+   </edg:attribute>
+
+
+   <edg:function>
+	<edg:name>Member(L, V)</edg:name>
+	<edg:type><edg:BOOLEAN/></edg:type>
+	<edg:params>
+	   <edg:type><edg:LIST/></edg:type>
+           <edg:type><edg:VALUE/></edg:type>
+           <!--<edg:type><edg:VALUE/></edg:type>-->
+	</edg:params>
+   </edg:function>
+   <edg:function>
+	<edg:name>IsMember(L, V)</edg:name>
+	<edg:type><edg:BOOLEAN/></edg:type>
+	<edg:params>
+	   <edg:type><edg:LIST/></edg:type>
+	   <edg:type><edg:VALUE/></edg:type>
+	</edg:params>
+   </edg:function>
+   <edg:function>
+	<edg:name>StrCat(S, S)</edg:name>
+	<edg:type><edg:STRING/></edg:type>
+	<edg:params>
+	   <edg:type><edg:STRING/></edg:type>
+           <edg:type><edg:STRING/></edg:type>
+	</edg:params>
+   </edg:function>
+   <edg:function>
+	<edg:name>StrCat(S, S, S)</edg:name>
+	<edg:type><edg:STRING/></edg:type>
+	<edg:params>
+	   <edg:type><edg:STRING/></edg:type>
+	   <edg:type><edg:STRING/></edg:type>
+           <edg:type><edg:STRING/></edg:type>
+	</edg:params>
+   </edg:function>
+   <edg:function>
+	<edg:name>ToUpper(S)</edg:name>
+	<edg:type><edg:STRING/></edg:type>
+	<edg:params>
+	   <edg:type><edg:STRING/></edg:type>
+	</edg:params>
+   </edg:function>
+   <edg:function>
+	<edg:name>ToLower(S)</edg:name>
+	<edg:type><edg:STRING/></edg:type>
+	<edg:params>
+	   <edg:type><edg:STRING/></edg:type>
+	</edg:params>
+   </edg:function>
+   <edg:function>
+	<edg:name>SubStr(S, I)</edg:name>
+	<edg:type><edg:STRING/></edg:type>
+	<edg:params>
+	   <edg:type><edg:STRING/></edg:type>
+	   <edg:type><edg:INTEGER/></edg:type>
+	</edg:params>
+   </edg:function>
+   <edg:function>
+	<edg:name>SubStr(S, I, I)</edg:name>
+	<edg:type><edg:STRING/></edg:type>
+	<edg:params>
+	   <edg:type><edg:STRING/></edg:type>
+	   <edg:type><edg:INTEGER/></edg:type>
+           <edg:type><edg:INTEGER/></edg:type>
+	</edg:params>
+   </edg:function>
+   <edg:function>
+	<edg:name>RegExp(S, S)</edg:name>
+	<edg:type><edg:BOOLEAN/></edg:type>
+	<edg:params>
+	   <edg:type><edg:STRING/></edg:type>
+	   <edg:type><edg:STRING/></edg:type>
+	</edg:params>
+   </edg:function>
+   <edg:function>
+	<edg:name>Floor(F)</edg:name>
+	<edg:type><edg:INTEGER/></edg:type>
+	<edg:params>
+	   <edg:type><edg:FLOAT/></edg:type>
+	</edg:params>
+   </edg:function>
+   <edg:function>
+	<edg:name>Ceil(F)</edg:name>
+	<edg:type><edg:INTEGER/></edg:type>
+	<edg:params>
+	   <edg:type><edg:FLOAT/></edg:type>
+	</edg:params>
+   </edg:function>
+   <edg:function>
+	<edg:name>Round(F)</edg:name>
+	<edg:type><edg:INTEGER/></edg:type>
+	<edg:params>
+	   <edg:type><edg:FLOAT/></edg:type>
+	</edg:params>
+   </edg:function>
+   <!-- To add after the check of classad time functions format -->
+   <!--<edg:function>
+	<edg:name>CurrentTime()</edg:name>
+	<edg:type><edg:ABSTIME/></edg:type>
+   </edg:function>
+   <edg:function>
+	<edg:name>DayTime()</edg:name>
+	<edg:type><edg:RELTIME/></edg:type>
+   </edg:function>
+   <edg:function>
+	<edg:name>RelTime(S)</edg:name>
+	<edg:type><edg:RELTIME/></edg:type>
+	<edg:params>
+          <edg:type><edg:SECONDS/></edg:type>
+        </edg:params>
+   </edg:function>-->
+</edg:jdleconfig>
+
+
+
+
+
+
+
+
+
+
