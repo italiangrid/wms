@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+	Copyright (c) 2004 on behalf of the EU EGEE Project: 
+	The European Organization for Nuclear Research (CERN), 
+	Istituto Nazionale di Fisica Nucleare (INFN), Italy
+	Datamat Spa, Italy
+	Centre National de la Recherche Scientifique (CNRS), France
+	CS Systeme d'Information (CSSI), France
+	Royal Institute of Technology, Center for Parallel Computers (KTH-PDC), Sweden
+	Universiteit van Amsterdam (UvA), Netherlands
+	University of Helsinki (UH.HIP), Finland
+	University of Bergen (UiB), Norway
+	Council for the Central Laboratory of the Research Councils (CCLRC), United Kingdom
+
+	Build file for the GLite Middleware WMS Subsystem
+	
+	Authors: Elisabetta Ronchieri <elisabetta.ronchieri@cnaf.infn.it>		
+	Version info: $Id$
+	Release: $Name$
+
+	Revision history:
+	$Log$
+	Revision 1.29  2006/03/17 15:39:50  eronchie
+	Renamed classads component in classad
+
+	Revision 1.28  2006/03/15 17:29:31  eronchie
+	Added classads
+	
+	Revision 1.27  2005/05/26 15:21:48  zurek
+	inserted module.build.file
+	
+	Revision 1.26  2004/10/29 22:54:37  dimeglio
+	Use envset target
+	
+	Revision 1.25  2004/10/28 22:59:26  dimeglio
+	Quoted ant command line parameters
+	
+	Revision 1.24  2004/10/28 18:31:51  dimeglio
+	Added envcheck to individual components
+	
+	Revision 1.23  2004/10/26 13:24:26  dimeglio
+	Fixed spelling error in envchecks
+	
+	Revision 1.22  2004/10/26 13:17:09  dimeglio
+	Added dependency of clean on envchecks
+	
+	Revision 1.21  2004/10/25 21:01:40  dimeglio
+	Use antExec
+	
+	Revision 1.20  2004/10/12 14:21:21  eronchie
+	Removed ssl_utils dependency
+	
+	Revision 1.19  2004/10/11 17:04:48  eronchie
+	Removed ssl_utils as tls dependency
+	
+	Revision 1.18  2004/10/11 17:02:48  eronchie
+	Removed ssl_utils as jobid dependency
+	
+	Revision 1.17  2004/09/29 13:19:52  flammer
+	Only update of formatting os small.memory lines.
+	
+	Revision 1.16  2004/09/09 21:10:38  dimeglio
+	Moved tag target to targets-common
+	
+	Revision 1.15  2004/08/27 03:04:04  dimeglio
+	Preserve original timestamp when copying file and overwrite when new
+	
+	Revision 1.14  2004/08/27 02:47:49  dimeglio
+	Added logic to create the tagged dependencies properties file
+	
+	Revision 1.13  2004/08/26 23:56:43  dimeglio
+	Added generation of cruisecontrol config file entry
+	
+	Revision 1.12  2004/08/20 09:51:39  eronchie
+	Updated buildmodules orders
+	
+	Revision 1.11  2004/08/09 04:55:18  dimeglio
+	Replaced rtag with tag
+	
+	Revision 1.10  2004/08/09 04:35:22  dimeglio
+	Fixed inheritance of do.cvs.tag property
+	
+	Revision 1.9  2004/08/09 03:05:21  dimeglio
+	Fixed inheritance of failonerror property
+	
+	Revision 1.8  2004/08/09 02:41:53  dimeglio
+	Set default value for failonerror
+	
+	Revision 1.7  2004/08/08 19:48:03  dimeglio
+	Added small.memory type of build
+	
+	Revision 1.6  2004/08/04 07:30:29  eronchie
+	Added cppunit
+	
+	Revision 1.5  2004/07/29 07:31:26  dimeglio
+	Removed local envinfo target (must use common one)
+	
+	Revision 1.4  2004/07/29 07:28:43  dimeglio
+	Removed local envcheck task (must use common one)
+	
+	Revision 1.3  2004/07/23 10:43:13  eronchie
+	Removed s
+	
+	Revision 1.2  2004/07/23 07:56:24  eronchie
+	Added wms-utils
+	WARNING: work in progress
+	
+	Revision 1.1.1.1  2004/07/21 16:32:21  eronchie
+	Start adding new subsystem
+	
+	
+-->
+
+<project name="wms-utils" default="dist">
+
+	<description>
+		Ant build file to build the GLite WMS Utils Subsystem
+	</description>
+	
+	<!-- =========================================
+	     Import properties (order is important) 
+	     ========================================= -->
+	
+	<!-- Import baseline & user properties -->
+	<import file="../org.glite/project/baseline.properties.xml" />
+
+	<!-- Import subsystem build properties, 
+	                      subsystem properties & 
+	                      subsystem common properties -->
+	<import file="./project/properties.xml" />
+
+	<!-- Import global build properties and global properties -->
+	<import file="${global.properties.file}" />
+				
+	<!-- =========================================
+		 Load dependencies properties files (order is important) 
+	     ========================================= -->
+	<property file="${user.dependencies.file}"/>
+	<property file="${subsystem.dependencies.file}"/>
+	<property file="${global.dependencies.file}"/>	
+	
+	<!-- =========================================
+                 Load configure options
+             ========================================= -->
+        <import file="${global.configure.options.file}"/>
+		
+	<!-- =========================================
+		 Import global task definitions
+	     ========================================= -->
+	<import file="${global.taskdefs.file}" />
+	
+	<!-- =========================================
+	     Import global compiler definitions
+  	     ========================================= -->
+	<import file="${global.compilerdefs.file}" />
+		
+	<!-- =========================================
+		 Import targets 
+	     ========================================= -->
+	<import file="${global.targets-common.file}" />
+	
+	<!-- =========================================
+		 Load version file 
+	     ========================================= -->
+	<property file="${module.version.file}"/>
+	<property file="${module.build.file}"/>
+	
+	<!-- ===============================================
+		  Public common targets
+	     =============================================== -->
+	
+	<target name="localinit" depends="envcheck">
+
+		<echo> Preparing directories ... </echo>
+		
+		<mkdir dir="${stage.bin.dir}" />
+		<mkdir dir="${stage.lib.dir}" />
+		<mkdir dir="${stage.java.dir}" />
+		<mkdir dir="${stage.inc.dir}" />
+		<mkdir dir="${stage.int.dir}" />
+
+		<mkdir dir="${dist.dir}" />
+
+	</target>
+
+	<target name="init" depends="localinit">
+		<antcall target="buildmodules">
+			<param name="target" value="init"/>
+		</antcall>
+	</target>
+
+	<target name="checkstyle" depends="localinit">
+		<antcall target="buildmodules">
+			<param name="target" value="checkstyle"/>
+		</antcall>
+	</target>
+
+	<target name="compile" depends="localinit">
+		<antcall target="buildmodules">
+			<param name="target" value="compile"/>
+		</antcall>
+	</target>
+
+	<target name="compiletest" depends="localinit">
+		<antcall target="buildmodules">
+			<param name="target" value="compiletest"/>
+		</antcall>
+	</target>
+
+	<target name="unittest" depends="localinit">
+		<antcall target="buildmodules">
+			<param name="target" value="unittest"/>
+		</antcall>
+	</target>
+
+	<target name="unitcoverage" depends="localinit">
+		<antcall target="buildmodules">
+			<param name="target" value="unitcoverage"/>
+		</antcall>
+	</target>
+
+	<target name="doc" depends="localinit">
+		<antcall target="buildmodules">
+			<param name="target" value="doc"/>
+		</antcall>
+	</target>
+
+        <target name="stage" depends="localinit">
+                <antcall target="buildmodules">
+                        <param name="target" value="stage"/>
+                </antcall>
+        </target>
+
+	<target name="dist" depends="localinit">
+		<antcall target="buildmodules">
+			<param name="target" value="dist"/>
+		</antcall>
+	</target>
+
+	<target name="install" depends="localinit">
+		<antcall target="buildmodules">
+			<param name="target" value="install"/>
+		</antcall>
+	</target>
+
+	<target name="all" depends="localinit">
+		<antcall target="buildmodules">
+			<param name="target" value="all"/>
+		</antcall>
+	</target>
+
+	<target name="clean" depends="envcheck">
+
+		<property name="offline.repository" value="true" />
+		<antcall target="buildmodules">
+			<param name="target" value="clean"/>
+		</antcall>
+
+		<delete dir="${module.bin.dir}" />
+		<delete dir="${module.lib.dir}" />
+		<delete dir="${module.autosrc.dir}" />
+		<delete dir="${module.autodoc.dir}" />
+		<delete dir="${module.test.reports.dir}" />
+
+	</target>
+
+	<target name="cleanAll" depends="clean"/>
+
+	<!-- ===============================================
+		 Private targets
+	     =============================================== -->
+	
+	<!-- ===============================================
+		 Modules proxy targets
+	     =============================================== -->
+
+	<!-- component targets definitions tag = do not remove = -->
+
+	<target name="exception" unless="setenvonly" depends="envset, boost,classads,cppunit">
+		<if>
+			<isset property="small.memory" />
+			<then>
+				<exec dir="${wms-utils.subsystem.dir}.exception" executable="${antExec}" failonerror="${failonerror}">
+					<arg line="${target} &quot;-Dsmall.memory=true&quot; &quot;-Dbootstrap=${bootstrap}&quot; &quot;-Dfailonerror=${failonerror}&quot; &quot;-Ddo.cvs.tag=${do.cvs.tag}&quot;"/>
+				</exec>
+			</then>
+			<else>
+				<ant dir="${wms-utils.subsystem.dir}.exception"
+	                    	     target="${target}"
+	                    	     inheritall="false" />
+			</else>
+		</if>
+	</target>
+
+    	<target name="tls" unless="setenvonly" depends="envset, boost,classads,globus,cppunit,exception">
+		<if>
+			<isset property="small.memory" />
+			<then>
+				<exec dir="${wms-utils.subsystem.dir}.tls" executable="${antExec}" failonerror="${failonerror}">
+					<arg line="${target} &quot;-Dsmall.memory=true&quot; &quot;-Dbootstrap=${bootstrap}&quot; &quot;-Dfailonerror=${failonerror}&quot; &quot;-Ddo.cvs.tag=${do.cvs.tag}&quot;"/>
+				</exec>
+			</then>
+			<else>
+				<ant dir="${wms-utils.subsystem.dir}.tls"
+	                    	     target="${target}"
+	                    	     inheritall="false" />
+			</else>
+		</if>
+    	</target>
+
+	<target name="jobid" unless="setenvonly" depends="envset, boost,classads,globus,cppunit,exception">
+		<if>
+			<isset property="small.memory" />
+			<then>
+				<exec dir="${wms-utils.subsystem.dir}.jobid" executable="${antExec}" failonerror="${failonerror}">
+					<arg line="${target} &quot;-Dsmall.memory=true&quot; &quot;-Dbootstrap=${bootstrap}&quot; &quot;-Dfailonerror=${failonerror}&quot; &quot;-Ddo.cvs.tag=${do.cvs.tag}&quot;"/>
+				</exec>
+			</then>
+			<else>
+				<ant dir="${wms-utils.subsystem.dir}.jobid"
+	                    	     target="${target}"
+	                    	     inheritall="false" />
+			</else>
+		</if>
+    	</target>
+
+	<target name="classad" unless="setenvonly" depends="envset,classads">
+                <if>
+                        <isset property="small.memory" />
+                        <then>
+                                <exec dir="${wms-utils.subsystem.dir}.classad" executable="${antExec}" failonerror="${failonerror}">
+                                        <arg line="${target} &quot;-Dsmall.memory=true&quot; &quot;-Dbootstrap=${bootstrap}&quot; &quot;-Dfailonerror=${failonerror}&quot; &quot;-Ddo.cvs.tag=${do.cvs.tag}&quot;"/>
+                                </exec>
+                        </then>
+                        <else>
+                                <ant dir="${wms-utils.subsystem.dir}.classad"
+                                     target="${target}"
+                                     inheritall="false" />
+                        </else>
+                </if>
+        </target>
+
+	<!-- Main proxy -->
+	<target name="buildmodules" depends="envset,
+					     exception,
+				             classad,
+					     tls,
+					     jobid">
+		<echo append="true" file="${global.project.dir}/cruisecontrol-stub.xml">
+	&lt;project name="${subsystem.name}" type="post-subsystem" packageName="${global.prefix}-${subsystem.prefix}"/&gt;
+		</echo>
+	</target>
+
+</project>
