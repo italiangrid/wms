@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	Copyright (c) 2004 on behalf of the EU EGEE Project: 
+	The European Organization for Nuclear Research (CERN), 
+	Istituto Nazionale di Fisica Nucleare (INFN), Italy
+	Datamat Spa, Italy
+	Centre National de la Recherche Scientifique (CNRS), France
+	CS Systeme d'Information (CSSI), France
+	Royal Institute of Technology, Center for Parallel Computers (KTH-PDC), Sweden
+	Universiteit van Amsterdam (UvA), Netherlands
+	University of Helsinki (UH.HIP), Finland
+	University of Bergen (UiB), Norway
+	Council for the Central Laboratory of the Research Councils (CCLRC), United Kingdom
+
+	Common build properties file for the Glite WMS Common component
+	
+	Authors: Alberto Di Meglio <alberto.di.meglio@cern.ch>		
+		   Joachim Flammer <Joachim.Flammer@cern.ch>
+	Version info: $Id$
+	Release: $Name$	
+	
+	Revision 1.7.2.2  2005/04/13 10:31:19  eronchie
+	Removed  in the log message
+	
+	Revision 1.7.2.1  2005/04/11 12:13:22  eronchie
+	Added AC_OPTIMIZE
+	Added disable-optimization
+	Added optimize.m4
+	
+	Revision 1.7  2004/12/09 11:18:13  eronchie
+	Updated data info
+	
+	Revision 1.6  2004/12/09 10:18:37  eronchie
+	Moved gsoap_base.m4 in gsoap.m4
+	
+	Revision 1.5  2004/12/07 18:47:45  eronchie
+	Work In progress
+	
+	Revision 1.4  2004/12/02 16:45:53  emartel
+	Added Storage Index catalog interface and Data Location catalog interface
+	
+	Revision 1.3  2004/07/28 12:27:43  eronchie
+	Added m4files.list property
+	
+	Revision 1.2  2004/07/16 14:56:56  flammer
+	Corrected input path of build.properties.
+	
+	Revision 1.1  2004/06/28 22:58:08  eronchie
+	Start adding brokerinfo
+	WARNING: work in progress
+	
+	
+-->
+
+<project name="WMS Brokerinfo component common properties">
+
+	<!-- Include build properties to allow overwriting 
+	     of properties for subsystem                    -->
+	<property file="project/build.properties" />	
+
+	<!-- ======================================================
+          Define corresponding subsystem properties
+		 ====================================================== -->
+
+	<!-- Subsystem name -->
+	<property name="subsystem.name" value="${wms.subsystem.name}"/>
+		
+	<!-- Subsystem prefix -->
+	<property name="subsystem.prefix" value="${wms.subsystem.prefix}"/>
+
+	<!-- ======================================================
+          Define component properties
+		 ====================================================== -->
+		 		
+	<!-- Component name prefix -->
+	<property name="component.prefix" value="brokerinfo" />
+			
+	<!-- ======================================================
+          Define general component properties
+		 ====================================================== -->
+	
+	<import file="${component.general.properties.file}" />
+						
+	<!-- ======================================================
+		 Define extra properties here ...
+		 ====================================================== -->
+		 
+	<property name="m4files.list" value="globus.m4 classads.m4 boost.m4 glite.m4 gsoap.m4 glite_wms.m4 glite_wmsutils.m4 glite_wms_common.m4 glite_jdl.m4 glite_wms_ism.m4 replica.m4 glite_data.m4 glite_service_discovery.m4 optimize.m4 ares.m4 glite_security.m4"/>
+
+	<property name="build.rpm.spec.file" value="true" />
+
+</project>
