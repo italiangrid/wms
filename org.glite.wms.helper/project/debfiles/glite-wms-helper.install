@@ -1,0 +1,4 @@
+usr/share/glite-wms/jobwrapper.template.sh
+usr/lib/libglite_wms_helper*.so.0.0.0
+usr/lib/libglite_wms_helper*.so.0
+

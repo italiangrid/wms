@@ -1,0 +1,6 @@
+usr/include/glite/wms/helper/*.h
+usr/include/glite/wms/helper/jobadapter/*.h
+usr/lib/pkgconfig/wms-helper-jobadapter.pc
+usr/lib/pkgconfig/wms-helper-broker-ism.pc
+usr/lib/pkgconfig/wms-helper.pc
+usr/lib/libglite_wms_helper*.so
