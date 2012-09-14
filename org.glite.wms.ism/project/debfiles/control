@@ -1,0 +1,20 @@
+Source:  glite-wms-ism
+Section:  libs
+Priority:  optional
+Maintainer:  WMS group <wms-support@lists.infn.it>
+Build-Depends: debhelper (>= 8.0.0~)
+Standards-Version:  3.9.1
+Homepage: http://glite.cern.ch/
+
+Package: glite-wms-ism
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Information Supermarket for the Workload Management System
+ Information Supermarket for the Workload Management System
+
+Package: glite-wms-ism-dev
+Section: libdevel
+Depends: glite-wms-ism (= ${binary:Version})
+Description: Development files for the WMS information superkmarket
+ Development files for the WMS information superkmarket
+
