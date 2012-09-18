@@ -1,3 +1,18 @@
+/* Copyright (c) Members of the EGEE Collaboration. 2004.
+See http://www.eu-egee.org/partners/ for details on the copyright
+holders.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License. */
 #include <exception>
 #include <iostream>
 #include <vector>
@@ -32,6 +47,8 @@ utilities::LineOption  options[] = {
     "\t\tWill override the one given in the configuration file.\n" },
   { 'l', no_argument, "disable_logging", "\t\tDisables loggings to the L&B." },
   { 'r', no_argument, "allow_root",      "\t\tAllow running as root user." },
+  { 'V', no_argument, "version",         "\t\tShow program version." },
+  { 'v', no_argument, "verbose",         "\t\tRun the server in verbose mode." }
 };
 
 int run_instance( const string &conffile, const utilities::LineParser &options, 
@@ -62,23 +79,26 @@ int run_instance( const string &conffile, const utilities::LineParser &options,
       elog::cedglog << logger::setlevel( logger::fatal ) << "I/O error while creating lockfile..." << endl;
 
     res = 1;
-  } else if (lockfile->good()) {
-    if (!options.is_present('C')) {
-      if(!options.is_present('f')) {
+  }
+  else if( lockfile->good() ) {
+    if( !options.is_present('C') ) {
+      if( !options.is_present('f') ) {
+	if( options.is_present('v') )
+	  clog << "Detaching daemon..." << endl;
 
-        process::Process::self()->make_daemon(); // Do the dirty job in a detached process
-        lockfile->reset_pid();
+	process::Process::self()->make_daemon(); // Do the dirty job in a detached process
+	lockfile->reset_pid();
       }
 
       code = controller_loop.run();
-      res = static_cast<int>(code);
+      res = static_cast<int>( code );
     }
   }
 
   return res;
 }
 
-}; // anonymous namespace
+} // Anonymous namespace
 
 int main( int argn, char *argv[] )
 {
@@ -91,21 +111,37 @@ int main( int argn, char *argv[] )
 
   try {
     options.parse( argn, argv );
-    conffile.assign( options.is_present('c') ? options['c'].getStringValue() : "glite_wms_jc.conf" );
 
-    do {
-      res = run_instance( conffile, options, lockfile, code );
-    } while (code == daemons::ControllerLoop::reload);
-  } catch (utilities::LineParsingError &error) {
+    if( options.is_present('V') ) {
+      clog << "European DataGrid JobController daemon v." << daemons::ControllerLoop::version() << endl
+	   << "Built at " << daemons::ControllerLoop::compile_date() << ", " << daemons::ControllerLoop::compile_time();
+
+      if( (daemons::ControllerLoop::build_user() != NULL) && (daemons::ControllerLoop::build_host() != NULL) )
+	clog << "\nBy: " << daemons::ControllerLoop::build_user() << "@" << daemons::ControllerLoop::build_host();
+
+      clog << endl << endl;
+    }
+    else {
+      conffile.assign( options.is_present('c') ? options['c'].getStringValue() : "glite_wms_jc.conf" );
+
+      do {
+	res = run_instance( conffile, options, lockfile, code );
+      } while( code == daemons::ControllerLoop::reload );
+    }
+  }
+  catch( utilities::LineParsingError &error ) {
     clog << error << endl;
     res = error.return_code();
-  } catch (configuration::CannotConfigure &error) {
+  }
+  catch( configuration::CannotConfigure &error ) {
     clog << error << endl;
     res = 1;
-  } catch( daemons::CannotStart &error ) {
+  }
+  catch( daemons::CannotStart &error ) {
     clog << "Cannot create the Loop object: " << error.reason() << endl;
     res = 1;
-  } catch( exception &standard ) {
+  }
+  catch( exception &standard ) {
     clog << logger::setfunction( "::main()" ) << logger::setlevel( logger::null )
 	 << "Caught a standard exception." << endl
 	 << "What = " << standard.what() << endl;

@@ -1,15 +1,29 @@
+/* Copyright (c) Members of the EGEE Collaboration. 2004.
+See http://www.eu-egee.org/partners/ for details on the copyright
+holders.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License. */
 #include <cstdio>
 #include <ctime>
-
 #include <string>
+#include <stdint.h>
 
-#include <user_log.c++.h>
+#include <condor/user_log.c++.h>
 
 #include "glite/wms/common/logger/logstream.h"
 #include "glite/wms/common/logger/manipulators.h"
-#include "glite/wmsutils/jobid/JobId.h"
 #include "common/EventLogger.h"
-#include "common/IdContainer.h"
+#include "common/id_container.h"
 #include "common/JobFilePurger.h"
 #include "common/ProxyUnregistrar.h"
 #include "logmonitor/exceptions.h"
@@ -41,7 +55,7 @@ EventTerminated::~EventTerminated( void )
 void EventTerminated::processNormalJob( jccommon::IdContainer::iterator &position )
 {
   int                     retcode, stat;
-  string                  errors, sc;
+  string                  errors, sc, done_reason;
   JobWrapperOutputParser  parser( position->edg_id() );
   logger::StatePusher     pusher( elog::cedglog, "EventTerminated::processNormalJob(...)" );
 
@@ -50,76 +64,69 @@ void EventTerminated::processNormalJob( jccommon::IdContainer::iterator &positio
 		<< "Return value = " << this->et_event->returnValue << endl;
   
   this->ei_data->md_timer->remove_all_timeouts( this->et_event->cluster ); // Remove any installed timeout for this job.
-
   this->ei_data->md_sizefile->decrement_pending();
 
-  if( this->ei_data->md_aborted->search(this->ei_condor) ) { // Previously aborting job...
+  // why aborting a terminated job with a previous error? better getting the job home, errors do not
+  // necessarily mean that everything screwed up 
+  /* if( this->ei_data->md_aborted->search(this->ei_condor) ) { // Previously aborting job...
     elog::cedglog << logger::setlevel( logger::info )
 		  << "This job has got a previous error, aborting it." << endl;
 
     this->ei_data->md_aborted->remove( this->ei_condor );
 
-#ifdef GLITE_WMS_HAVE_LBPROXY
-    this->ei_data->md_logger->set_LBProxy_context( position->edg_id(), position->sequence_code(), position->proxy_file() );
-#else
-    this->ei_data->md_logger->reset_user_proxy( position->proxy_file() ).reset_context( position->edg_id(), position->sequence_code() );
-#endif  
+    if (this->ei_data->md_logger->have_lbproxy()) {
+      this->ei_data->md_logger->set_LBProxy_context( position->edg_id(), position->sequence_code(), position->proxy_file() );
+    } else {
+      this->ei_data->md_logger->reset_user_proxy( position->proxy_file() ).reset_context( position->edg_id(), position->sequence_code() );
+    }
     this->ei_data->md_logger->failed_on_error_event( ei_s_joberror );
 
-    jccommon::JobFilePurger( position->edg_id() ).do_purge();
-    this->ei_data->md_resubmitter->resubmit(
-      position->last_status(),
-      position->edg_id(),
-      position->sequence_code(),
-      boost::shared_ptr<jccommon::IdContainer>()
-    );
+    jccommon::JobFilePurger( position->edg_id(), this->ei_data->md_logger->have_lbproxy(), false ).do_purge();
+    this->ei_data->md_resubmitter->resubmit( position->last_status(), position->edg_id(), position->sequence_code() );
 
     this->ei_data->md_container->update_pointer( position, this->ei_data->md_logger->sequence_code(), this->et_event->eventNumber );
-  }
-  else if( (stat = parser.parse_file(retcode, errors, sc)) == JWOP::good ) { // Job terminated successfully...
+  } else 
+  */
+  if( (stat = parser.parse_file(retcode, errors, sc, done_reason)) == JWOP::good ) { // Job terminated successfully...
     elog::cedglog << logger::setlevel( logger::info ) << "Real return code: " << retcode << endl;
 
-#ifdef GLITE_WMS_HAVE_LBPROXY
-    this->ei_data->md_logger->set_LBProxy_context( position->edg_id(), position->sequence_code(), position->proxy_file() );
-#else
-    this->ei_data->md_logger->reset_user_proxy( position->proxy_file() ).reset_context( position->edg_id(), position->sequence_code() );
-#endif   
+    if (this->ei_data->md_logger->have_lbproxy()) {
+      this->ei_data->md_logger->set_LBProxy_context( position->edg_id(), position->sequence_code(), position->proxy_file() );
+    } else {
+      this->ei_data->md_logger->reset_user_proxy( position->proxy_file() ).reset_context( position->edg_id(), position->sequence_code() );
+    }
 
     if ( !sc.empty() && ( sc != "NoToken" ) )
       this->ei_data->md_logger->job_really_run_event( sc ); // logged really running event
 
-    this->ei_data->md_logger->terminated_event( retcode ); // This call discriminates between 0 and all other codes.
+    this->ei_data->md_logger->terminated_event(retcode); // This call discriminates between 0 and all other codes.
 
     this->ei_data->md_container->update_pointer( position, this->ei_data->md_logger->sequence_code(), this->et_event->eventNumber );
 
     jccommon::ProxyUnregistrar( position->edg_id() ).unregister();
-    jccommon::JobFilePurger( position->edg_id() ).do_purge();
+    jccommon::JobFilePurger( position->edg_id(), this->ei_data->md_logger->have_lbproxy()).do_purge();
   }
   else { // Job got an error in the jobwrapper
     elog::cedglog << logger::setlevel( logger::warning ) << "Last job terminated (" << this->ei_condor
 		  << ") aborted." << endl
 		  << "Reason: \"" << errors << "\"." << endl;
 
-#ifdef GLITE_WMS_HAVE_LBPROXY
-    this->ei_data->md_logger->set_LBProxy_context( position->edg_id(), position->sequence_code(), position->proxy_file() );
-#else
-    this->ei_data->md_logger->reset_user_proxy( position->proxy_file() ).reset_context( position->edg_id(), position->sequence_code() );
-#endif
+    if (this->ei_data->md_logger->have_lbproxy()) {
+      this->ei_data->md_logger->set_LBProxy_context( position->edg_id(), position->sequence_code(), position->proxy_file() );
+    } else {
+      this->ei_data->md_logger->reset_user_proxy( position->proxy_file() ).reset_context( position->edg_id(), position->sequence_code() );
+    }
 
     if ( !sc.empty() && ( sc != "NoToken" ) )
       this->ei_data->md_logger->job_really_run_event( sc ); // logged really running event
 
-    this->ei_data->md_logger->failed_on_error_event( errors );
+    this->ei_data->md_logger->failed_on_error_event(errors + '\n' + done_reason);
 
-    jccommon::JobFilePurger   purger( position->edg_id() );
+    jccommon::JobFilePurger   purger( position->edg_id(), this->ei_data->md_logger->have_lbproxy());
     switch( stat ) {
     case JWOP::resubmit:
       purger.do_purge();
-      this->ei_data->md_resubmitter->resubmit(
-        jccommon::undefined_status,
-        position->edg_id(),
-        position->sequence_code(),
-        boost::shared_ptr<jccommon::IdContainer>());
+      this->ei_data->md_resubmitter->resubmit( jccommon::undefined_status, position->edg_id(), position->sequence_code() );
 
       break;
     case JWOP::abort:
@@ -149,53 +156,10 @@ void EventTerminated::process_event( void )
 
   position = this->ei_data->md_container->position_by_condor_id( this->ei_condor );
 
-  if( position == this->ei_data->md_container->end() )
+  if (position == this->ei_data->md_container->end()) {
     elog::cedglog << logger::setlevel( logger::warning ) << ei_s_notsub << endl;
-  else {
-    if( this->ei_data->md_isDagLog && (this->ei_data->md_dagId == position->edg_id()) ) {
-      /*
-	We are in a dag log file... And this is the terminated event for
-	the main DAG...
-      */
-      elog::cedglog << logger::setlevel( logger::info ) << ei_s_dagideq << position->edg_id() << endl
-		    << "Return code = " << this->et_event->returnValue << endl;
-
-#ifdef GLITE_WMS_HAVE_LBPROXY
-      this->ei_data->md_logger->set_LBProxy_context( position->edg_id(), position->sequence_code(), position->proxy_file() );
-#else
-      this->ei_data->md_logger->reset_user_proxy( position->proxy_file() ).reset_context( position->edg_id(), position->sequence_code() );
-#endif
-      
-      if( this->ei_data->md_aborted->search(this->ei_condor) ) { // The POST script bug
-	this->ei_data->md_aborted->remove( this->ei_condor );
-
-	elog::cedglog << logger::setlevel( logger::error )
-		      << "Because of the POST script bug, this DAG has terminated while it should be failing." << endl
-		      << logger::setlevel( logger::warning ) << "Aborting it." << endl;
-
-	this->ei_data->md_logger->abort_on_error_event( ei_s_dagfailed );
-      }
-      else
-	this->ei_data->md_logger->terminated_event( this->et_event->returnValue );
-
-      this->ei_data->md_container->update_pointer( position, this->ei_data->md_logger->sequence_code(), this->et_event->eventNumber );
-
-      jccommon::ProxyUnregistrar( position->edg_id() ).unregister();
-      jccommon::JobFilePurger( position->edg_id(), true ).do_purge();
-
-      this->ei_data->md_sizefile->decrement_pending();
-    }
-    else if( !this->ei_data->md_isDagLog ) // Common jobs only...
-      this->processNormalJob( position );
-    else { // DAG subjobs...
-      elog::cedglog << logger::setlevel( logger::info )
-		    << ei_s_edgideq << position->edg_id() << endl
-		    << ei_s_subnodeof << this->ei_data->md_dagId << endl
-		    << "Ignoring this event, waiting for a POST_TERMINATED one..." << endl;
-
-      remove = false;
-    }
-
+  } else {
+    this->processNormalJob(position);
     if( remove && this->ei_data->md_container->remove(position) ) {
       elog::cedglog << logger::setlevel( logger::fatal ) << ei_s_errremcorr << endl
 		    << "For job: " << position->edg_id() << endl
@@ -210,4 +174,4 @@ void EventTerminated::process_event( void )
 
 }} // namespace processer, logmonitor
 
-} JOBCONTROL_NAMESPACE_END;
+} JOBCONTROL_NAMESPACE_END

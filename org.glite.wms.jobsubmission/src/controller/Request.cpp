@@ -1,3 +1,18 @@
+/* Copyright (c) Members of the EGEE Collaboration. 2004.
+See http://www.eu-egee.org/partners/ for details on the copyright
+holders.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License. */
 #include <iostream>
 #include <string>
 
@@ -18,7 +33,7 @@ JOBCONTROL_NAMESPACE_BEGIN {
 
 namespace controller {
 
-const char   *Request::r_s_commands[] = { "Unknown", "Submit", "Cancel", "CondorCancel" };
+const char   *Request::r_s_commands[] = { "Unknown", "Submit", "Cancel", "CondorCancel" , "CondorRelease"};
 const char   *Request::r_s_proto_version = "1.0.0";
 const char   *Request::r_s_Arguments = "Arguments", *Request::r_s_Protocol = "Protocol", *Request::r_s_Command = "Command";
 const char   *Request::r_s_Source = "Source";
@@ -31,6 +46,9 @@ const char   *RemoveRequest::cr_s_ProxyFile = "ProxyFile";
 
 const char   *CondorRemoveRequest::crr_s_CondorId = "CondorId";
 const char   *CondorRemoveRequest::crr_s_LogFile = "LogFile";
+
+const char   *CondorReleaseRequest::crr_s_CondorId = "CondorId";
+const char   *CondorReleaseRequest::crr_s_LogFile = "LogFile";
 
 const char *Request::string_command( request_code_t command )
 {
@@ -182,7 +200,7 @@ void SubmitRequest::set_sequence_code( const string &code )
   return;
 }
 
-classad::ClassAd *SubmitRequest::get_jobad( void ) const
+const classad::ClassAd *SubmitRequest::get_jobad( void ) const
 {
   classad::ClassAd     *jobad;
 
@@ -277,6 +295,47 @@ string RemoveRequest::get_proxyfile( void ) const
   return file;
 }
 
+CondorReleaseRequest::CondorReleaseRequest(int condorid, int source)
+  : Request(condorrelease, source)
+{
+  this->r_arguments->InsertAttr(crr_s_CondorId, condorid);
+}
+
+CondorReleaseRequest::~CondorReleaseRequest() { }
+
+CondorReleaseRequest&
+CondorReleaseRequest::set_logfile(string const& logfile)
+{
+  this->r_arguments->InsertAttr( crr_s_LogFile, logfile );
+
+  return *this;
+}
+
+int CondorReleaseRequest::get_condorid() const
+{
+  int  condorid = 0;
+  this->checkProtocol();
+  if( !this->r_arguments || !this->r_arguments->EvaluateAttrInt(crr_s_CondorId, condorid) ) {
+    throw MalformedRequest( *this->r_request );
+  }
+
+  return condorid;
+}
+
+std::string CondorReleaseRequest::get_logfile( void ) const
+{
+  string   file;
+
+  this->checkProtocol();
+  if( this->r_arguments ) {
+    if( !this->r_arguments->EvaluateAttrString(crr_s_LogFile, file) )
+      file.erase();
+  }
+  else throw MalformedRequest( *this->r_request );
+
+  return file;
+}
+
 CondorRemoveRequest::CondorRemoveRequest( int condorid, int source ) : Request( condorremove, source )
 {
   this->r_arguments->InsertAttr( crr_s_CondorId, condorid );
@@ -284,7 +343,8 @@ CondorRemoveRequest::CondorRemoveRequest( int condorid, int source ) : Request( 
 
 CondorRemoveRequest::~CondorRemoveRequest( void ) {}
 
-CondorRemoveRequest &CondorRemoveRequest::set_logfile( const string &logfile )
+CondorRemoveRequest&
+CondorRemoveRequest::set_logfile( const string &logfile )
 {
   this->r_arguments->InsertAttr( crr_s_LogFile, logfile );
 
@@ -318,6 +378,6 @@ string CondorRemoveRequest::get_logfile( void ) const
   return file;
 }
 
-}; // Namespace controller
+} // Namespace controller
 
-} JOBCONTROL_NAMESPACE_END;
+} JOBCONTROL_NAMESPACE_END

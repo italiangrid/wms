@@ -1,3 +1,18 @@
+/* Copyright (c) Members of the EGEE Collaboration. 2004.
+See http://www.eu-egee.org/partners/ for details on the copyright
+holders.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License. */
 #ifndef EDG_WORKLOAD_JOBCONTROL_LOGMONITOR_PROCESSER_EVENTINTERFACE_H
 #define EDG_WORKLOAD_JOBCONTROL_LOGMONITOR_PROCESSER_EVENTINTERFACE_H
 
@@ -9,8 +24,8 @@
 class ULogEvent;
 
 JOBCONTROL_NAMESPACE_BEGIN {
-namespace logmonitor {
-namespace processer {
+
+namespace logmonitor { namespace processer {
 
 struct MonitorData;
 class SubmitReader;
@@ -28,7 +43,7 @@ protected:
   MonitorData      *ei_data;
   std::string       ei_condor;
 
-  static const std::string  ei_s_edgideq, ei_s_subnodeof, ei_s_notsub, ei_s_dagfailed, ei_s_dagideq;
+  static const std::string  ei_s_edgideq, ei_s_subnodeof, ei_s_notsub;
   static const std::string  ei_s_joberror, ei_s_jobwrapfail;
   static const std::string  ei_s_errremcorr, ei_s_failedinsertion;
 
@@ -39,7 +54,7 @@ private:
 
 }} // Namespace processer, logmonitor
 
-} JOBCONTROL_NAMESPACE_END;
+} JOBCONTROL_NAMESPACE_END
 
 #endif /* EDG_WORKLOAD_JOBCONTROL_LOGMONITOR_PROCESSER_EVENTINTERFACE_H */
 

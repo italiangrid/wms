@@ -1,30 +1,72 @@
-#
-#       Copyright (c) 2004 on behalf of the EU EGEE Project:
-#       The European Organization for Nuclear Research (CERN),
-#       Istituto Nazionale di Fisica Nucleare (INFN), Italy
-#       Datamat Spa, Italy
-#       Centre National de la Recherche Scientifique (CNRS), France
-#       CS Systeme d'Information (CSSI), France
-#       Royal Institute of Technology, Center for Parallel Computers (KTH-PDC), Sweden
-#       Universiteit van Amsterdam (UvA), Netherlands
-#       University of Helsinki (UH.HIP), Finland
-#       University of Bergen (UiB), Norway
-#       Council for the Central Laboratory of the Research Councils (CCLRC), United Kingdom
+## Copyright (c) Members of the EGEE Collaboration. 2009. 
+## See http://www.eu-egee.org/partners/ for details on the copyright holders.  
+
+## Licensed under the Apache License, Version 2.0 (the "License"); 
+## you may not use this file except in compliance with the License. 
+## You may obtain a copy of the License at 
+##     http://www.apache.org/licenses/LICENSE-2.0 
+## Unless required by applicable law or agreed to in writing, software 
+## distributed under the License is distributed on an "AS IS" BASIS, 
+## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+## See the License for the specific language governing permissions and 
+## limitations under the License.
 #
 #       Authors: Paolo Andreetto <paolo.andreetto@pd.infn.it>
-#       Version info: $Id$
-#       Release: $Name$
+#       Version info: $Id: Makefile.am,v 1.20.2.2.4.1.2.7.2.7 2012/06/20 13:44:34 pandreet Exp $
+#       Release: $Name: glite-wms-jobsubmission_branch_3_5 $
 #
 #       Revision history:
-#       $Log$
-#       Revision 1.23  2009/02/05 16:07:23  mcecchi
-#       enabling bunch submission to condor (work in progress)
+#       $Log: Makefile.am,v $
+#       Revision 1.20.2.2.4.1.2.7.2.7  2012/06/20 13:44:34  pandreet
+#       Used pkgconfig macro for condorg
 #
-#       Revision 1.22  2008/10/01 13:13:07  mcecchi
-#       enabling multiple job submission for a single user
+#       Revision 1.20.2.2.4.1.2.7.2.6  2012/06/18 11:58:06  mcecchi
+#       reintroduced id repository in JC. cleanup
 #
-#       Revision 1.21  2007/11/12 10:36:45  giaco
-#       cleanup deps
+#       Revision 1.20.2.2.4.1.2.7.2.5  2012/02/23 13:38:30  pandreet
+#       Replaced macros with pkg files
+#
+#       Revision 1.20.2.2.4.1.2.7.2.4  2012/02/15 10:38:00  pandreet
+#       Replaced macro for globus
+#
+#       Revision 1.20.2.2.4.1.2.7.2.3  2012/02/10 16:17:07  mcecchi
+#       filelist in isolated JC/LM locations. possible future redesign
+#
+#       Revision 1.20.2.2.4.1.2.7.2.2  2012/02/07 14:36:30  mcecchi
+#       removed support for filelist - work in progress
+#
+#       Revision 1.20.2.2.4.1.2.7.2.1  2011/09/12 09:25:38  pandreet
+#       Fixed conflict with lb macro
+#
+#       Revision 1.20.2.2.4.1.2.7  2011/03/11 15:00:04  pandreet
+#       Removed with-glite-location
+#
+#       Revision 1.20.2.2.4.1.2.6  2011/01/05 08:50:58  pandreet
+#       New build definitions for jobsubmission
+#
+#       Revision 1.20.2.2.4.1.2.5  2010/09/03 10:11:46  pandreet
+#       Ares AC definitions in build files
+#
+#       Revision 1.20.2.2.4.1.2.4  2010/02/16 15:23:28  fcapanni
+#       wrong lib staging by lb
+#
+#       Revision 1.20.2.2.4.1.2.3  2010/01/15 12:33:43  mcecchi
+#       bug #48636
+#
+#       Revision 1.20.2.2.4.1.2.2  2009/09/11 13:59:47  mcecchi
+#       bug #55452 + some compilation warnings removed
+#
+#       Revision 1.20.2.2.4.1.2.1  2009/06/16 13:40:49  fcapanni
+#       porting to org.glite.jobid
+#
+#       Revision 1.20.2.2.4.1  2009/02/17 15:35:47  mcecchi
+#       LB type run-time selection
+#
+#       Revision 1.20.2.2  2008/02/04 07:12:34  giaco
+#       - remove deps from expat and libtar
+#
+#       Revision 1.20.2.1  2006/04/03 16:17:04  gianelle
+#       emoved JP dependencies (GLITE_WMS_OPTIONAL_JP_LIBS)
 #
 #       Revision 1.20  2006/03/16 17:28:40  gianelle
 #       Migration to "new" jdl library
@@ -129,28 +171,30 @@ SUBDIRS = processer
 libexec_PROGRAMS = glite-wms-lm-job_status
 
 glite_wms_lm_job_status_SOURCES = jobstatus.cpp \
-	JobStatusExtractor.cpp
+				JobStatusExtractor.cpp
+
 glite_wms_lm_job_status_LDADD = libglite_wms_jss_logmonitor.la \
 	../controller/libglite_wms_jss_controller.la \
 	../controller/libglite_wms_jss_controller_adapter.la \
 	../common/libglite_wms_jss_common.la \
 	$(GLITE_WMS_COMMON_CONF_LIBS) \
-	$(GLITE_WMSUTILS_JOBID_LIBS) \
-	$(GLITE_WMSUTILS_CJOBID_LIBS) \
+	$(GLITE_JOBID_LIBS) \
 	$(GLITE_WMS_COMMON_LOGGER_LIBS) \
 	$(GLITE_JDL_LIBS) \
 	$(GLITE_WMSUTILS_CLASSADS_LIBS) \
         $(GLITE_WMS_COMMON_UT_UTIL_LIBS) \
 	$(GLITE_WMSUTILS_EXCEPTION_LIBS) \
 	$(BOOST_FS_LIBS) $(BOOST_THREAD_LIBS) $(BOOST_REGEX_LIBS) \
-	$(GLOBUS_LIBS) $(GLOBUS_SSL_NOTHR_LIBS) \
-	$(GLOBUS_GSS_NOTHR_LIBS) \
-	$(GLOBUS_COMMON_NOTHR_LIBS) \
-	$(CLASSAD_LIBS) $(CONDORG_LIBS) \
-	$(GLITE_LB_NOTHR_CLIENT_LIBS) $(GLITE_LB_NOTHR_CLIENTPP_LIBS) \
-	$(GLITE_LB_NOTHR_COMMON_LIBS) \
-	$(GLITE_SECURITY_RENEWAL_NOTHR_LIBS) $(GLITE_WMS_PURGER_LIBS) \
-        $(RENEWAL_NOTHR_LIBS)	
+	$(CLASSAD_LIBS) \
+	$(CONDORG_LIBS) \
+	$(ARES_LIBS) \
+	$(GLITE_LB_CLIENT_LIBS) \
+	$(GLITE_LB_CLIENTPP_LIBS) \
+	$(GLITE_LB_COMMON_LIBS) \
+	$(RENEWAL_LIBS) \
+	$(GLITE_WMS_PURGER_LIBS) \
+        $(RENEWAL_LIBS) \
+	$(GLITE_JOBID_LIBS)
 
 libglite_wms_jss_logmonitor_la_SOURCES = CondorMonitor.cpp \
 	EventAd.cpp \
@@ -175,18 +219,23 @@ libglite_wms_jss_logmonitor_la_SOURCES = CondorMonitor.cpp \
 	./processer/EventGlobusResourceUp.cpp \
 	./processer/EventGridResourceUp.cpp \
 	./processer/EventJobHeld.cpp \
+	./processer/EventJobReleased.cpp \
 	./processer/EventGeneric.cpp \
 	./processer/MonitorData.cpp \
 	./processer/SubmitReader.cpp \
 	./processer/JobResubmitter.cpp
 
-libglite_wms_jss_logmonitor_la_LIBADD = $(CONDORG_LIBS)
+libglite_wms_jss_logmonitor_la_LIBADD = ../common/libglite_wms_jss_common.la \
+					$(CONDORG_LIBS)
 
 AM_CPPFLAGS = -I$(top_srcdir)/src \
-	$(GLITE_CFLAGS) \
-	$(GLOBUS_NOTHR_CFLAGS) \
+	-I/usr/include \
+	$(GLITE_JOBID_CFLAGS) \
+	$(GLITE_WMS_COMMON_UT_UTIL_CFLAGS) \
+	$(GLITE_WMS_COMMON_CONF_CFLAGS) \
+	$(GLOBUS_GRAM_PROT_CFLAGS) \
 	$(BOOST_CFLAGS) \
 	$(CLASSAD_CFLAGS) \
-	$(CONDORG_CFLAGS) #-DGLITE_WMS_HAVE_LBPROXY 
+	$(CONDORG_CFLAGS) -DCONDORG_VERSION=$(CONDORG_VERSION)
 
 MAINTAINERCLEANFILES = Makefile.in *~

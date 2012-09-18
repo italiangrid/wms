@@ -13,15 +13,15 @@
 
 #include <cstdio>
 #include <ctime>
-
+#include <stdint.h>
 #include <memory>
 #include <string>
 
-#include <user_log.c++.h>
+#include <condor/user_log.c++.h>
 
 #include "glite/wms/common/logger/logstream.h"
 #include "glite/wms/common/logger/manipulators.h"
-#include "common/IdContainer.h"
+#include "common/id_container.h"
 #include "common/EventLogger.h"
 #include "controller/JobController.h"
 #include "logmonitor/exceptions.h"
@@ -60,7 +60,7 @@ void EventGlobusSubmitFailed::process_event( void )
   logger::StatePusher                    pusher( elog::cedglog, "EventGlobusSubmitFailed::process_event()" );
 
   elog::cedglog << logger::setlevel( logger::info ) << "Got globus submit failed event." << endl
-    << "For cluster: " << this->ei_condor << ", reason: " << this->egsf_event->reason << endl;
+		<< "For cluster: " << this->ei_condor << ", reason: " << this->egsf_event->reason << endl;
 
   position = this->ei_data->md_container->position_by_condor_id( this->ei_condor );
 
@@ -68,9 +68,6 @@ void EventGlobusSubmitFailed::process_event( void )
     elog::cedglog << logger::setlevel( logger::warning ) << ei_s_notsub << endl;
   else {
     elog::cedglog << logger::setlevel( logger::info ) << ei_s_edgideq << position->edg_id() << endl;
-
-    if( this->ei_data->md_isDagLog )
-      elog::cedglog << ei_s_subnodeof << this->ei_data->md_dagId << endl;
 
     if( this->ei_data->md_aborted->insert(this->ei_condor) ) {
       elog::cedglog << logger::setlevel( logger::fatal ) << ei_s_failedinsertion << endl;

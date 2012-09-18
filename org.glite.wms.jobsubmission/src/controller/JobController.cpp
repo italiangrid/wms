@@ -1,10 +1,20 @@
 // File: JobController.cpp
 // Author: Francesco Giacomini <Francesco.Giacomini@cnaf.infn.it>
 //         Rosario Peluso <Rosario.Peluso@pd.infn.it>
-// Copyright (c) 2001 EU DataGrid.
-// For license conditions see http://www.eu-datagrid.org/license.html
+// Copyright (c) Members of the EGEE Collaboration. 2009. 
+// See http://www.eu-egee.org/partners/ for details on the copyright holders.  
 
-// $Id$
+// Licensed under the Apache License, Version 2.0 (the "License"); 
+// you may not use this file except in compliance with the License. 
+// You may obtain a copy of the License at 
+//     http://www.apache.org/licenses/LICENSE-2.0 
+// Unless required by applicable law or agreed to in writing, software 
+// distributed under the License is distributed on an "AS IS" BASIS, 
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+// See the License for the specific language governing permissions and 
+// limitations under the License.
+
+// $Id: JobController.cpp,v 1.3.28.2.6.3 2009/10/05 15:22:04 fcapanni Exp $
 
 #include "JobController.h"
 #include "JobControllerImpl.h"
@@ -14,25 +24,28 @@ JOBCONTROL_NAMESPACE_BEGIN {
 
 namespace controller {
 
-JobController::JobController(boost::shared_ptr<jccommon::EventLogger> ctx)
- : jc_impl(JobControllerFactory::instance()->create_server(ctx))
-{ }
+JobController::JobController( edg_wll_Context *cont ) : jc_impl( JobControllerFactory::instance()->create_server( cont ) )
+{}
 
-JobController::~JobController()
+JobController::~JobController( void )
 { delete this->jc_impl; }
 
-int JobController::msubmit(std::vector<classad::ClassAd*> v)
-{ return this->jc_impl->msubmit(v); }
+int JobController::submit( const classad::ClassAd *ad )
+{ return this->jc_impl->submit( ad ); }
 
-int JobController::submit(classad::ClassAd *ad)
-{ return this->jc_impl->submit(ad); }
-
-bool JobController::cancel( const glite::wmsutils::jobid::JobId &id, const char *logfile )
+bool JobController::cancel( const glite::jobid::JobId &id, const char *logfile )
 { return this->jc_impl->cancel( id, logfile ); }
 
 bool JobController::cancel( int condorid, const char *logfile )
 { return this->jc_impl->cancel( condorid, logfile ); }
 
-}; // namespace controller
-} JOBCONTROL_NAMESPACE_END;
+bool JobController::release(int condorid, char const* logfile)
+{ return this->jc_impl->release( condorid, logfile ); }
+
+size_t JobController::queue_size( void )
+{ return this->jc_impl->queue_size(); }
+
+} // namespace controller
+
+} JOBCONTROL_NAMESPACE_END
 

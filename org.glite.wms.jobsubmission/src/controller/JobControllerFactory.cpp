@@ -1,9 +1,17 @@
-// File: JobControllerFactory.cpp
-// Author: Francesco Giacomini <Francesco.Giacomini@cnaf.infn.it>
-// Copyright (c) 2001 EU DataGrid.
-// For license conditions see http://www.eu-datagrid.org/license.html
+// Copyright (c) Members of the EGEE Collaboration. 2009. 
+// See http://www.eu-egee.org/partners/ for details on the copyright holders.  
 
-// $Id$
+// Licensed under the Apache License, Version 2.0 (the "License"); 
+// you may not use this file except in compliance with the License. 
+// You may obtain a copy of the License at 
+//     http://www.apache.org/licenses/LICENSE-2.0 
+// Unless required by applicable law or agreed to in writing, software 
+// distributed under the License is distributed on an "AS IS" BASIS, 
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+// See the License for the specific language governing permissions and 
+// limitations under the License.
+
+// $Id: JobControllerFactory.cpp,v 1.1.28.3.4.2.2.1 2012/02/07 14:36:29 mcecchi Exp $
 
 #include <string>
 
@@ -14,7 +22,6 @@
 #include "JobControllerProxy.h"
 #include "JobControllerReal.h"
 #include "JobControllerFake.h"
-#include "JobControllerClientReal.h"
 #include "JobControllerClientJD.h"
 #include "JobControllerExceptions.h"
 
@@ -28,86 +35,65 @@ JobControllerFactory *JobControllerFactory::jcf_s_instance = NULL;
 
 void JobControllerFactory::createQueue()
 {
-  const configuration::JCConfiguration 
-    *config = configuration::Configuration::instance()->jc();
+  const configuration::JCConfiguration *jc_config
+    = configuration::Configuration::instance()->jc();
 
-  if (config->input_type() == "filelist") {
-    try {
-      this->jcf_queue.reset(new queue_type(config->input()));
-      this->jcf_mutex.reset(new mutex_type(*this->jcf_queue));
-    } catch (utilities::FileContainerError const& e) {
-      throw CannotCreate(e.string_error());
-    }  
-  } else {
-    try {
-     this->jcf_jobdir.reset(
-        new utilities::JobDir(
-        boost::filesystem::path(config->input(), boost::filesystem::native)
-      )
-    );
-    } catch(utilities::JobDirError const& e) {
-      throw CannotCreate(e.what());
-    }
+  try {
+   boost::filesystem::path base(jc_config->input(), boost::filesystem::native);
+   this->jcf_jobdir.reset(new utilities::JobDir(base));
+  } catch(utilities::JobDirError &error) {
+    throw CannotCreate(error.what());
   }
 }
 
 JobControllerFactory::JobControllerFactory()
 {
-  configuration::Configuration const* const configure
+  const configuration::Configuration *configure
     = configuration::Configuration::instance();
 
-  if (configure->get_module() != configuration::ModuleType::job_controller) {
+  if(configure->get_module() != configuration::ModuleType::job_controller) {
     this->createQueue();
   }
 }
 
-JobControllerFactory *JobControllerFactory::instance()
+JobControllerFactory *JobControllerFactory::instance( void )
 {
-  if (!jcf_s_instance) {
-    jcf_s_instance = new JobControllerFactory;
-  }
+  if( jcf_s_instance == NULL ) jcf_s_instance = new JobControllerFactory;
 
   return jcf_s_instance;
 }
 
-JobControllerImpl *JobControllerFactory::create_server(boost::shared_ptr<jccommon::EventLogger> ctx)
-{
-  const configuration::Configuration *configure = configuration::Configuration::instance();
-  JobControllerImpl *result = NULL;
-
-  if (configure->get_module() == configuration::ModuleType::job_controller) {
-    if (configure->jc()->use_fake_for_real()) {
-      result = new JobControllerFake;
-    } else {
-      result = new JobControllerReal(ctx);
-    }
-  } else {
-    if (configure->jc()->use_fake_for_proxy()) {
-      result = new JobControllerFake;
-    } else {
-      result = new JobControllerProxy(this->jcf_queue, this->jcf_mutex, this->jcf_jobdir, ctx);
-    }
-  }
-
-  return result;
-}
-
-JobControllerClientImpl *JobControllerFactory::create_client()
+JobControllerImpl *JobControllerFactory::create_server( edg_wll_Context *cont )
 {
   const configuration::Configuration      *configure = configuration::Configuration::instance();
-  JobControllerClientImpl                 *result = 0;
+  JobControllerImpl                       *result = NULL;
 
-  if (configure->get_module() == configuration::ModuleType::job_controller) {
-    if (configure->jc()->input_type() == "filelist") {
-      result = new JobControllerClientReal();
-    } else {
-      result = new JobControllerClientJD();
-    }
+  if( configure->get_module() == configuration::ModuleType::job_controller ) {
+    if( configure->jc()->use_fake_for_real() ) result = new JobControllerFake;
+    else result = new JobControllerReal( cont );
+  }
+  else {
+    if( configure->jc()->use_fake_for_proxy() ) result = new JobControllerFake;
+    else result = new JobControllerProxy(this->jcf_jobdir, cont);
   }
 
   return result;
 }
 
-}; // namespace controller
+JobControllerClientImpl *JobControllerFactory::create_client( void )
+{
+  const configuration::Configuration      *configure = configuration::Configuration::instance();
+  JobControllerClientImpl                 *result = NULL;
 
-} JOBCONTROL_NAMESPACE_END;
+  if( configure->get_module() == configuration::ModuleType::job_controller ) {
+      result = new JobControllerClientJD();
+  } else {
+    result = new JobControllerClientUnknown();
+  }
+
+  return result;
+}
+
+} // namespace controller
+
+} JOBCONTROL_NAMESPACE_END

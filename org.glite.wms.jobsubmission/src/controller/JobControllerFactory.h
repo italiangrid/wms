@@ -1,3 +1,18 @@
+/* Copyright (c) Members of the EGEE Collaboration. 2004.
+See http://www.eu-egee.org/partners/ for details on the copyright
+holders.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License. */
 #ifndef EDG_WORKLOAD_JOBCONTROL_CONTROLLER_JOBCONTROLLERFACTORY_H
 #define EDG_WORKLOAD_JOBCONTROL_CONTROLLER_JOBCONTROLLERFACTORY_H
 
@@ -6,59 +21,48 @@
 // Copyright (c) 2001 EU DataGrid.
 // For license conditions see http://www.eu-datagrid.org/license.html
 
-// $Id$
+// $Id: JobControllerFactory.h,v 1.1.28.2.4.2.2.1 2012/02/07 14:36:29 mcecchi Exp $
 
 #include <memory>
-
+#include <classad_distribution.h>
 #include <boost/shared_ptr.hpp>
 
-#include <classad_distribution.h>
-
-#include "glite/wms/common/utilities/FileList.h"
-#include "glite/wms/common/utilities/FileListLock.h"
 #include "glite/wms/common/utilities/jobdir.h"
 #include "jobcontrol_namespace.h"
 
+typedef  struct _edg_wll_Context  *edg_wll_Context;
+
 JOBCONTROL_NAMESPACE_BEGIN {
 
-namespace jccommon { class EventLogger; }
+namespace utilities = glite::wms::common::utilities;
 
 namespace controller {
 
 class JobControllerImpl;
 class JobControllerClientImpl;
 
-class Empty { };
+class Empty {};
 
 class JobControllerFactory {
   friend class Empty;
 
 public:
-  JobControllerImpl *create_server(boost::shared_ptr<jccommon::EventLogger> ctx);
-  JobControllerClientImpl *create_client();
-  static JobControllerFactory *instance();
+  JobControllerFactory();
+
+  JobControllerImpl *create_server( edg_wll_Context *cont );
+  JobControllerClientImpl *create_client( void );
+  static JobControllerFactory *instance( void );
+  void createQueue();
 
 private:
-  typedef glite::wms::common::utilities::FileList<classad::ClassAd>    queue_type;
-  typedef glite::wms::common::utilities::FileListMutex                 mutex_type;
-
-  JobControllerFactory(const JobControllerFactory &rhs); // Not implemented
-  JobControllerFactory &operator=( const JobControllerFactory &rhs ); // Not implemented
-
-  JobControllerFactory( void );
-
-  void createQueue( void );
-
-  boost::shared_ptr<mutex_type> jcf_mutex;
-  boost::shared_ptr<queue_type> jcf_queue;
-  boost::shared_ptr<glite::wms::common::utilities::JobDir> jcf_jobdir;
+  boost::shared_ptr<utilities::JobDir>                      jcf_jobdir;
 
   static JobControllerFactory *jcf_s_instance;
 };
 
 } // namespace controller
 
-} JOBCONTROL_NAMESPACE_END;
+} JOBCONTROL_NAMESPACE_END
 
 #endif /* EDG_WORKLOAD_JOBCONTROL_CONTROLLER_JOBCONTROLLERFACTORY_H */
 

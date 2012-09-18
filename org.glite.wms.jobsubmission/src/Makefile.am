@@ -12,18 +12,31 @@
 #       Council for the Central Laboratory of the Research Councils (CCLRC), United Kingdom
 #
 #       Authors: Paolo Andreetto <paolo.andreetto@pd.infn.it>
-#       Version info: $Id$
-#       Release: $Name$
+#       Version info: $Id: Makefile.am,v 1.1.34.1.2.2 2012/02/10 16:17:05 mcecchi Exp $
+#       Release: $Name: glite-wms-jobsubmission_branch_3_5 $
 #
 #       Revision history:
-#       $Log$
-#       Revision 1.2  2008/10/01 13:13:06  mcecchi
-#       enabling multiple job submission for a single user
+#       $Log: Makefile.am,v $
+#       Revision 1.1.34.1.2.2  2012/02/10 16:17:05  mcecchi
+#       filelist in isolated JC/LM locations. possible future redesign
+#
+#       Revision 1.1.34.1.2.1  2012/02/07 14:36:29  mcecchi
+#       removed support for filelist - work in progress
+#
+#       Revision 1.1.34.1  2011/01/05 11:10:57  pandreet
+#       Pkg-config support for jss
 #
 #       Revision 1.1  2004/07/06 10:09:03  pandreet
 #       Insert jobcontrol_namespace and Makefile
 #
 
 SUBDIRS = common controller logmonitor daemons
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = wms-jss-controller-adapter.pc \
+		wms-jss-controller-wrapper.pc \
+		wms-jss-common.pc \
+		wms-jss-controller.pc \
+		wms-jss-logmonitor.pc
 
 MAINTAINERCLEANFILES = Makefile.in

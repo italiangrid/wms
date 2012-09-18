@@ -1,19 +1,41 @@
+/* Copyright (c) Members of the EGEE Collaboration. 2004.
+See http://www.eu-egee.org/partners/ for details on the copyright
+holders.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License. */
 #ifndef EDG_WORKLOAD_JOBCONTROL_CONTROLLER_JOBCONTROLLERPROXY_H
 #define EDG_WORKLOAD_JOBCONTROL_CONTROLLER_JOBCONTROLLERPROXY_H
 
 // File: JobControllerProxy.h
 // Author: Francesco Giacomini <Francesco.Giacomini@cnaf.infn.it>
 //         Rosario Peluso <Rosario.Peluso@pd.infn.it>
-// Copyright (c) 2001 EU DataGrid.
-// For license conditions see http://www.eu-datagrid.org/license.html
+// Copyright (c) Members of the EGEE Collaboration. 2009. 
+// See http://www.eu-egee.org/partners/ for details on the copyright holders.  
 
-// $Id$
+// Licensed under the Apache License, Version 2.0 (the "License"); 
+// you may not use this file except in compliance with the License. 
+// You may obtain a copy of the License at 
+//     http://www.apache.org/licenses/LICENSE-2.0 
+// Unless required by applicable law or agreed to in writing, software 
+// distributed under the License is distributed on an "AS IS" BASIS, 
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+// See the License for the specific language governing permissions and 
+// limitations under the License.
 
-#include <vector>
+// $Id: JobControllerProxy.h,v 1.2.28.3.4.4.2.1 2012/02/07 14:36:29 mcecchi Exp $
+
 #include <classad_distribution.h>
 
-#include "glite/wms/common/utilities/FileList.h"
-#include "glite/wms/common/utilities/FileListLock.h"
 #include "glite/wms/common/utilities/jobdir.h"
 
 #include "common/EventLogger.h"
@@ -31,28 +53,25 @@ class JobControllerProxy: public JobControllerImpl {
 
   int                      jcp_source;
 
-  boost::shared_ptr<utils::FileListMutex>               jcp_mutex;
-  boost::shared_ptr<utils::FileList<classad::ClassAd> > jcp_queue;
   boost::shared_ptr<utils::JobDir>                      jcp_jobdir;
 
-  boost::shared_ptr<jccommon::EventLogger> jcp_logger;
+  jccommon::EventLogger    jcp_logger;
 public:
   JobControllerProxy(
-    boost::shared_ptr<utils::FileList<classad::ClassAd> >q,
-    boost::shared_ptr<utils::FileListMutex> m,
     boost::shared_ptr<utils::JobDir> jcp_jd,
-    boost::shared_ptr<jccommon::EventLogger> ctx
+    edg_wll_Context *cont
   );
 
-  virtual int msubmit(std::vector<classad::ClassAd*>&);
-  virtual int submit(classad::ClassAd *ad);
-  virtual bool cancel(const glite::wmsutils::jobid::JobId &id, const char *logfile);
-  virtual bool cancel(int condorid, const char *logfile);
+  virtual int submit( const classad::ClassAd *ad );
+  virtual bool cancel( const glite::jobid::JobId &id, const char *logfile );
+  virtual bool cancel( int condorid, const char *logfile );
+  virtual bool release(int condorid, char const* logfile);
+  virtual size_t queue_size( void );
 };
 
-}; // namespace controller
+} // namespace controller
 
-} JOBCONTROL_NAMESPACE_END;
+} JOBCONTROL_NAMESPACE_END
 
 #endif /* EDG_WORKLOAD_JOBCONTROL_CONTROLLER_JOBCONTROLLERPROXY_H */
 

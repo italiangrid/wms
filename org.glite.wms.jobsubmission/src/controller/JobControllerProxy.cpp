@@ -1,10 +1,20 @@
 // File: JobControllerProxy.cpp
 // Author: Francesco Giacomini <Francesco.Giacomini@cnaf.infn.it>,
 //         Rosario Peluso <Rosario.Peluso@na.infn.it>
-// Copyright (c) 2001 EU DataGrid.
-// For license conditions see http://www.eu-datagrid.org/license.html
+// Copyright (c) Members of the EGEE Collaboration. 2009. 
+// See http://www.eu-egee.org/partners/ for details on the copyright holders.  
 
-// $Id$
+// Licensed under the Apache License, Version 2.0 (the "License"); 
+// you may not use this file except in compliance with the License. 
+// You may obtain a copy of the License at 
+//     http://www.apache.org/licenses/LICENSE-2.0 
+// Unless required by applicable law or agreed to in writing, software 
+// distributed under the License is distributed on an "AS IS" BASIS, 
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+// See the License for the specific language governing permissions and 
+// limitations under the License.
+
+// $Id: JobControllerProxy.cpp,v 1.5.2.3.4.3.2.2 2012/06/06 08:16:07 mcecchi Exp $
 
 #include <string>
 #include <fstream>
@@ -14,11 +24,13 @@
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
 
+#include <condor/user_log.c++.h>
+
 #include "glite/lb/producer.h"
 #include "glite/wms/common/configuration/JCConfiguration.h"
 #include "glite/wms/common/configuration/Configuration.h"
 
-#include "glite/wmsutils/jobid/JobId.h"
+#include "glite/jobid/JobId.h"
 #include "glite/wmsutils/classads/classad_utils.h"
 
 #include "glite/wms/common/logger/manipulators.h"
@@ -45,95 +57,63 @@ JOBCONTROL_NAMESPACE_BEGIN {
 
 namespace controller {
 
+/*
+  Public methods
+*/
 JobControllerProxy::JobControllerProxy(
-  boost::shared_ptr<utilities::FileList<classad::ClassAd> > q,
-  boost::shared_ptr<utilities::FileListMutex> m,
   boost::shared_ptr<utils::JobDir> jcp_jd,
-  boost::shared_ptr<jccommon::EventLogger> ctx
+  edg_wll_Context *cont
 ) : 
   jcp_source(static_cast<int>(configuration::Configuration::instance()->get_module())),
-  jcp_mutex(m),
-  jcp_queue(q),
   jcp_jobdir(jcp_jd),
-  jcp_logger(ctx)
+  jcp_logger(cont)
 {}
 
 int
-JobControllerProxy::msubmit(std::vector<classad::ClassAd*>&) try
-{
-  return 0;
-} catch( glite::jdl::ManipulationException &par ) {
-  string   error( "Cannot extract " );
-  
-  error.append( par.parameter() );
-  error.append( " from passed classad." );
-  
-  throw CannotExecute( error );
-} catch( RequestException &err ) {
-  string    error( err.what() );
-  throw CannotExecute( error );
-}
-
-int
-JobControllerProxy::submit(classad::ClassAd *ad) try
+JobControllerProxy::submit(const classad::ClassAd *ad) try
 {
   string                  jobid( glite::jdl::get_edg_jobid(*ad) );
   SubmitRequest           request(*ad, this->jcp_source);
   logger::StatePusher     pusher( ts::edglog, "JobControllerProxy::submit(...)" );
 
-  request.set_sequence_code(this->jcp_logger->sequence_code());
+  request.set_sequence_code( this->jcp_logger.sequence_code() );
 
-  if (this->jcp_queue) {
-    this->jcp_logger->job_enqueued_start_event(this->jcp_queue->filename(), 0);      
-    try {
-      utilities::FileListLock     lock( *this->jcp_mutex );
-      this->jcp_queue->push_back(request);
-    } catch(utilities::FileContainerError &error) {
-      this->jcp_logger->job_enqueued_failed_event(
-        this->jcp_queue->filename(),
-        error.string_error(),
-        &request.get_request()
-      );
-      throw CannotExecute(error.string_error());
-    }
-    this->jcp_logger->job_enqueued_ok_event(
-      this->jcp_queue->filename(), &request.get_request()
-    );
-  } else {
-    this->jcp_logger->job_enqueued_start_event(
-      this->jcp_jobdir->base_dir().native_file_string(), 0
-    );
-    std::string const ad_str(ca::unparse_classad(request.get_request()));
-    try {
-      this->jcp_jobdir->deliver(ad_str);
-    } catch(utilities::JobDirError &error) {
-      this->jcp_logger->job_enqueued_failed_event(
-        this->jcp_jobdir->base_dir().native_file_string(),
-        error.what(),
-        &request.get_request()
-      );
-      throw CannotExecute(error.what());
-    }
-    this->jcp_logger->job_enqueued_ok_event(
+  this->jcp_logger.job_enqueued_start_event(
+    this->jcp_jobdir->base_dir().native_file_string(), 0
+  );
+  std::string const ad_str(ca::unparse_classad(*ad));
+  try {
+    this->jcp_jobdir->deliver(ad_str);
+  } catch(utilities::JobDirError &error) {
+    this->jcp_logger.job_enqueued_failed_event(
       this->jcp_jobdir->base_dir().native_file_string(),
+      error.what(),
       &request.get_request()
     );
+    throw CannotExecute(error.what());
   }
+  this->jcp_logger.job_enqueued_ok_event(
+    this->jcp_jobdir->base_dir().native_file_string(),
+    &request.get_request()
+  );
 
   return 0;
-} catch( glite::jdl::ManipulationException &par ) {
+}
+catch( glite::jdl::ManipulationException &par ) {
   string   error( "Cannot extract " );
   
   error.append( par.parameter() );
   error.append( " from passed classad." );
   
   throw CannotExecute( error );
-} catch( RequestException &err ) {
+}
+catch( RequestException &err ) {
   string    error( err.what() );
+
   throw CannotExecute( error );
 }
 
-bool JobControllerProxy::cancel( const glite::wmsutils::jobid::JobId &id, const char *logfile )
+bool JobControllerProxy::cancel( const glite::jobid::JobId &id, const char *logfile )
 {
   bool                          good;
   string                        proxyfile, lf;
@@ -162,24 +142,15 @@ bool JobControllerProxy::cancel( const glite::wmsutils::jobid::JobId &id, const 
     ifs.close();
   }
 
-  request.set_sequence_code(this->jcp_logger->sequence_code());
+  request.set_sequence_code(this->jcp_logger.sequence_code());
   if(logfile) {
     request.set_logfile(string(logfile));
   }
 
-  if (this->jcp_queue) {
-    try {
-      utilities::FileListLock lock(*this->jcp_mutex);
-      this->jcp_queue->push_back(request);
-    } catch(utilities::FileContainerError &error) {
-      throw CannotExecute(error.string_error());
-    }
-  } else if (this->jcp_jobdir) {
-    std::string const ad_str(ca::unparse_classad(classad::ClassAd(request)));
-    try {
-      this->jcp_jobdir->deliver(ad_str);
-    } catch(utilities::JobDirError &error) {
-    }
+  std::string const ad_str(ca::unparse_classad(classad::ClassAd(request)));
+  try {
+    this->jcp_jobdir->deliver(ad_str);
+  } catch(utilities::JobDirError &error) {
   }
 
   return true;
@@ -193,24 +164,36 @@ bool JobControllerProxy::cancel( int condorid, const char *logfile )
     request.set_logfile( string(logfile));
   }
 
-  if (this->jcp_queue) {
-    try {
-      utilities::FileListLock lock(*this->jcp_mutex);
-      this->jcp_queue->push_back(request);
-    }
-    catch(utilities::FileContainerError &error) {
-      throw CannotExecute(error.string_error());
-    }
-  } else {
-    std::string const ad_str(ca::unparse_classad(classad::ClassAd(request)));
-    try {
-      this->jcp_jobdir->deliver(ad_str);
-    } catch(utilities::JobDirError &error) {
-    }
+  std::string const ad_str(ca::unparse_classad(classad::ClassAd(request)));
+  try {
+    this->jcp_jobdir->deliver(ad_str);
+  } catch(utilities::JobDirError &error) {
   }
 
   return true;
 }
 
-}; // namespace jobcontrol
-} JOBCONTROL_NAMESPACE_END;
+bool JobControllerProxy::release(int condorid, const char *logfile)
+{   
+  CondorReleaseRequest request(condorid, this->jcp_source);
+  if (logfile) {
+    request.set_logfile(string(logfile));
+  } 
+    
+  std::string const ad_str(ca::unparse_classad(classad::ClassAd(request)));
+  try {
+    this->jcp_jobdir->deliver(ad_str);
+  } catch(utilities::JobDirError &error) {
+  }
+
+  return true;
+} 
+
+size_t JobControllerProxy::queue_size( void )
+{
+  return 0;
+}
+
+} // namespace jobcontrol
+
+} JOBCONTROL_NAMESPACE_END

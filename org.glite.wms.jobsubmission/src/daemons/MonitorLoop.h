@@ -1,10 +1,23 @@
+/* Copyright (c) Members of the EGEE Collaboration. 2004.
+See http://www.eu-egee.org/partners/ for details on the copyright
+holders.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License. */
 #ifndef EDG_WORKLOAD_JOBCONTROL_DAEMONS_MONITORLOOP_H
 #define EDG_WORKLOAD_JOBCONTROL_DAEMONS_MONITORLOOP_H
 
 #include <memory>
 #include <iosfwd>
-
-#include <boost/shared_ptr.hpp>
 
 #include "glite/wms/common/logger/logstream.h"
 #include "jobcontrol_namespace.h"
@@ -55,14 +68,14 @@ private:
   void activateSignalHandling( void );
   bool checkSignal( run_code_t &return_code );
 
-  bool ml_verbose;
-  glite::wms::common::logger::logstream &ml_stream;
-  boost::shared_ptr<jccommon::EventLogger> ml_logger;
-  boost::shared_ptr<jccommon::IdContainer> ml_idContainer;
-  boost::shared_ptr<logmonitor::AbortedContainer> ml_abContainer;
-  boost::shared_ptr<logmonitor::processer::JobResubmitter> ml_resubmitter;
+  bool                                                  ml_verbose;
+  glite::wms::common::logger::logstream                            &ml_stream;
+  std::auto_ptr<jccommon::EventLogger>                  ml_logger;
+  std::auto_ptr<jccommon::IdContainer>                  ml_idContainer;
+  std::auto_ptr<logmonitor::AbortedContainer>           ml_abContainer;
+  std::auto_ptr<logmonitor::processer::JobResubmitter>  ml_resubmitter;
 
-  const glite::wms::common::utilities::LineParser& ml_options;
+  const glite::wms::common::utilities::LineParser         &ml_options;
 
   static const char       *ml_s_version, *ml_s_time, *ml_s_date, *ml_s_abortedFileName;
   static const char       *ml_s_buildUser, *ml_s_buildHost;
@@ -70,9 +83,9 @@ private:
   static MonitorLoop      *ml_s_instance;
 };
 
-}; // Namespace daemons
+} // Namespace daemons
 
-} JOBCONTROL_NAMESPACE_END;
+} JOBCONTROL_NAMESPACE_END
 
 #endif /* EDG_WORKLOAD_JOBCONTROL_DAEMONS_MONITORLOOP_H */
 

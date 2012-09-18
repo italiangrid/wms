@@ -1,3 +1,16 @@
+// Copyright (c) Members of the EGEE Collaboration. 2009. 
+// See http://www.eu-egee.org/partners/ for details on the copyright holders.  
+
+// Licensed under the Apache License, Version 2.0 (the "License"); 
+// you may not use this file except in compliance with the License. 
+// You may obtain a copy of the License at 
+//     http://www.apache.org/licenses/LICENSE-2.0 
+// Unless required by applicable law or agreed to in writing, software 
+// distributed under the License is distributed on an "AS IS" BASIS, 
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+// See the License for the specific language governing permissions and 
+// limitations under the License.
+
 #include <iostream>
 #include <fstream>
 
@@ -12,7 +25,7 @@
 #include "glite/wms/common/logger/logstream.h"
 #include "glite/wms/common/logger/manipulators.h"
 
-#include "glite/wmsutils/jobid/JobId.h"
+#include "glite/jobid/JobId.h"
 
 #include "JobControllerFake.h"
 #include "JobControllerExceptions.h"
@@ -31,16 +44,7 @@ JobControllerFake::JobControllerFake( void ) {}
 
 JobControllerFake::~JobControllerFake( void ) {}
 
-int JobControllerFake::msubmit(
-  std::vector<classad::ClassAd*>& v
-) try
-{
-  return 0;
-} catch (SubmitAdException &error) {
-  throw CannotExecute(error.error());
-}
-
-int JobControllerFake::submit(classad::ClassAd *pad)
+int JobControllerFake::submit( const classad::ClassAd *pad )
 try {
   ofstream              ofs;
   SubmitAd              ad( pad );
@@ -68,7 +72,7 @@ try {
 }
 catch( SubmitAdException &error ) { throw CannotExecute( error.error() ); }
 
-bool JobControllerFake::cancel( const glite::wmsutils::jobid::JobId &id, const char *logfile )
+bool JobControllerFake::cancel( const glite::jobid::JobId &id, const char *logfile )
 {
   logger::StatePusher     pusher( elog::cedglog, "JobControllerFake::cancel(...)" );
 
@@ -90,5 +94,22 @@ bool JobControllerFake::cancel( int condorid, const char *logfile )
   return true;
 }
 
-}; // namespace controller
-} JOBCONTROL_NAMESPACE_END;
+bool JobControllerFake::release(int condorid, char const* logfile)
+{
+  logger::StatePusher     pusher( elog::cedglog, "JobControllerFake::release(...)" );
+
+  elog::cedglog << logger::setlevel( logger::null )
+		<< "Got request for releasing a job." << endl
+		<< "condor Id = " << condorid << endl;
+
+  return true;
+}
+
+size_t JobControllerFake::queue_size( void )
+{
+  return 0;
+}
+
+} // namespace controller
+
+} JOBCONTROL_NAMESPACE_END

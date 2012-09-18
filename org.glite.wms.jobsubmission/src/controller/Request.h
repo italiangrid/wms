@@ -1,10 +1,23 @@
+/* Copyright (c) Members of the EGEE Collaboration. 2004.
+See http://www.eu-egee.org/partners/ for details on the copyright
+holders.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License. */
 #ifndef EDG_WORKLOAD_JOBCONTROL_CONTROLLER_REQUEST_H
 #define EDG_WORKLOAD_JOBCONTROL_CONTROLLER_REQUEST_H
 
 #include <string>
 #include <memory>
-
-#include <boost/shared_ptr.hpp>
 
 JOBCONTROL_NAMESPACE_BEGIN {
 
@@ -12,7 +25,7 @@ namespace controller {
 
 class Request {
 public:
-  enum request_code_t { unknown, submit, remove, condorremove, __last_command };
+  enum request_code_t { unknown, submit, remove, condorremove, condorrelease, __last_command };
 
   Request( void );
   Request( const classad::ClassAd &ad );
@@ -21,7 +34,7 @@ public:
 
   Request &operator=( const Request &r );
   inline Request &operator=( const classad::ClassAd &ad ) { return this->reset( ad ); }
-  inline operator const classad::ClassAd &() const { return *this->r_request; }
+  inline operator const classad::ClassAd &( void ) const { return *this->r_request; }
   Request &reset( const classad::ClassAd &ad );
 
   int get_source( void ) const;
@@ -30,8 +43,8 @@ public:
   std::string get_string_command( void ) const;
 
   inline bool check_protocol( void ) const { return( this->get_protocol() == std::string(r_s_proto_version) ); }
-  inline const classad::ClassAd &get_arguments() const { return *this->r_arguments; }
-  inline const classad::ClassAd &get_request() const { return *this->r_request; }
+  inline const classad::ClassAd &get_arguments( void ) const { return *this->r_arguments; }
+  inline const classad::ClassAd &get_request( void ) const { return *this->r_request; }
 
   static const char *string_command( request_code_t command );
 
@@ -43,7 +56,7 @@ protected:
   void checkProtocol( void ) const;
 
   classad::ClassAd                  *r_arguments;
-  boost::shared_ptr<classad::ClassAd>    r_request;
+  std::auto_ptr<classad::ClassAd>    r_request;
 
   static const char    *r_s_commands[];
   static const char    *r_s_proto_version;
@@ -58,7 +71,7 @@ public:
 
   void set_sequence_code( const std::string &code );
 
-  classad::ClassAd *get_jobad( void ) const;
+  const classad::ClassAd *get_jobad( void ) const;
 
 private:
   static const char    *sr_s_JobAd;
@@ -83,6 +96,21 @@ private:
   static const char    *cr_s_SequenceCode, *cr_s_LogFile, *cr_s_ProxyFile;
 };
 
+class CondorReleaseRequest : public Request {
+public:
+  CondorReleaseRequest(int condorid, int source );
+  virtual ~CondorReleaseRequest();
+
+  CondorReleaseRequest& set_logfile(std::string const& logfile);
+
+  int get_condorid() const;
+  std::string get_logfile() const;
+
+private:
+  static const char   *crr_s_CondorId, *crr_s_LogFile;
+};
+
+
 class CondorRemoveRequest : public Request {
 public:
   CondorRemoveRequest( int condorid, int source );
@@ -97,9 +125,9 @@ private:
   static const char   *crr_s_CondorId, *crr_s_LogFile;
 };
 
-}; // Namespace controller
+} // Namespace controller
 
-} JOBCONTROL_NAMESPACE_END;
+} JOBCONTROL_NAMESPACE_END
 
 #endif /* EDG_WORKLOAD_JOBCONTROL_CONTROLLER_REQUEST_H */
 

@@ -12,19 +12,25 @@
 #       Council for the Central Laboratory of the Research Councils (CCLRC), United Kingdom
 #
 #       Authors: Paolo Andreetto <paolo.andreetto@pd.infn.it>
-#       Version info: $Id$
-#       Release: $Name$
+#       Version info: $Id: Makefile.am,v 1.6.2.1.4.1.2.2.2.1 2012/06/18 11:58:06 mcecchi Exp $
+#       Release: $Name: glite-wms-jobsubmission_branch_3_5 $
 #
 #       Revision history:
-#       $Log$
-#       Revision 1.9  2009/02/05 16:07:23  mcecchi
-#       enabling bunch submission to condor (work in progress)
+#       $Log: Makefile.am,v $
+#       Revision 1.6.2.1.4.1.2.2.2.1  2012/06/18 11:58:06  mcecchi
+#       reintroduced id repository in JC. cleanup
 #
-#       Revision 1.8  2008/10/01 13:13:07  mcecchi
-#       enabling multiple job submission for a single user
+#       Revision 1.6.2.1.4.1.2.2  2010/01/15 12:34:09  mcecchi
+#       bug #48636
 #
-#       Revision 1.7  2007/11/12 10:36:46  giaco
-#       cleanup deps
+#       Revision 1.6.2.1.4.1.2.1  2009/09/11 12:25:47  mcecchi
+#       bug #55452
+#
+#       Revision 1.6.2.1.4.1  2009/02/17 15:35:47  mcecchi
+#       LB type run-time selection
+#
+#       Revision 1.6.2.1  2008/02/04 07:12:34  giaco
+#       - remove deps from expat and libtar
 #
 #       Revision 1.6  2006/03/15 13:19:55  gianelle
 #       Drops any explicit references to ares.
@@ -79,6 +85,7 @@ noinst_HEADERS = \
 	EventGlobusResourceUp.h \
 	EventGridResourceUp.h \
 	EventJobHeld.h \
+	EventJobReleased.h \
 	EventGeneric.h \
 	EventUnhandled.h \
 	MonitorData.h \
@@ -101,11 +108,12 @@ EXTRA_DIST = EventFactory.cpp \
 	EventGlobusResourceUp.cpp \
 	EventGridResourceUp.cpp \
 	EventJobHeld.cpp \
+	EventJobReleased.cpp \
 	EventGeneric.cpp \
 	MonitorData.cpp \
 	SubmitReader.cpp \
 	JobResubmitter.cpp
 
-AM_CPPFLAGS = -DGLITE_WMS_HAVE_LBPROXY
+AM_CPPFLAGS = -I/usr/include
 
 MAINTAINERCLEANFILES = Makefile.in *~

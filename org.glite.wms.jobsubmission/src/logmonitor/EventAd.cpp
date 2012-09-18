@@ -1,3 +1,18 @@
+/* Copyright (c) Members of the EGEE Collaboration. 2004.
+See http://www.eu-egee.org/partners/ for details on the copyright
+holders.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License. */
 #include <ctime>
 #include <cstdio>
 #include <cstring>
@@ -7,7 +22,7 @@
 #include <boost/lexical_cast.hpp>
 
 #include <classad_distribution.h>
-#include <user_log.c++.h>
+#include <condor/user_log.c++.h>
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -105,11 +120,11 @@ Rusage classad_to_rusage( const classad::ClassAd *ad )
   return ru;
 }
 
-}; // Anonymous namespace
+} // Anonymous namespace
 
 const char   *EventAd::ea_s_EventTime = "EventTime", *EventAd::ea_s_EventNumber = "EventNumber";
 const char   *EventAd::ea_s_Cluster = "Cluster", *EventAd::ea_s_Proc = "Proc", *EventAd::ea_s_SubProc = "SubProc";
-const char   *EventAd::ea_s_SubmitHost = "SubmitHost", *EventAd::ea_s_LogNotes = "LogNotes";
+const char   *EventAd::ea_s_LogNotes = "LogNotes";
 const char   *EventAd::ea_s_ExecuteHost = "ExecuteHost";
 const char   *EventAd::ea_s_ExecErrorType = "ExecErrorType", *EventAd::ea_s_Node = "Node";
 const char   *EventAd::ea_s_RunLocalRusage = "RunLocalRusage", *EventAd::ea_s_RunRemoteRusage = "RunRemoteRusage";
@@ -124,16 +139,11 @@ const char   *EventAd::ea_s_Message = "Message", *EventAd::ea_s_Info = "Info", *
 const char   *EventAd::ea_s_RestartableJM = "RestartableJM", *EventAd::ea_s_RmContact = "RmContact";
 const char   *EventAd::ea_s_JmContact = "JmContact"; 
 
-#if CONDORG_AT_LEAST(6,5,3)
 const char   *EventAd::ea_s_DaemonName = "DaemonName", *EventAd::ea_s_ErrorStr = "ErrorStr";
 const char   *EventAd::ea_s_CriticalError = "CriticalError";
 const char   *EventAd::ea_s_ReasonCode = "ReasonCode", *EventAd::ea_s_ReasonSubCode = "ReasonSubCode";
 const char   *EventAd::ea_s_UserNotes = "UserNotes";
-#endif
-
-#if CONDORG_AT_LEAST(6,7,14)
 const char   *EventAd::ea_s_ResourceName= "GridResource", *EventAd::ea_s_JobId = "GridJobId";
-#endif
 
 EventAd::EventAd( void ) : ea_ad()
 {}
@@ -166,9 +176,6 @@ EventAd &EventAd::from_event( const ULogEvent *const_event )
   switch( event->eventNumber ) {
   case ULOG_SUBMIT: {
     SubmitEvent    *sev = dynamic_cast<SubmitEvent *>( event );
-    NullString      host( sev->submitHost );
-
-    this->ea_ad.InsertAttr( ea_s_SubmitHost, host );
 
     if( sev->submitEventLogNotes ) {
       NullString    lnotes( sev->submitEventLogNotes );
@@ -176,22 +183,15 @@ EventAd &EventAd::from_event( const ULogEvent *const_event )
       this->ea_ad.InsertAttr( ea_s_LogNotes, lnotes );
     }
 
-#if CONDORG_AT_LEAST(6,5,3)
     if( sev->submitEventUserNotes ) {
       NullString    unotes( sev->submitEventUserNotes );
 	
       this->ea_ad.InsertAttr( ea_s_UserNotes, unotes );
     }
-#endif
 
     break;
   }
   case ULOG_EXECUTE: {
-    ExecuteEvent   *eev = dynamic_cast<ExecuteEvent *>( event );
-    NullString      host( eev->executeHost );
-
-    this->ea_ad.InsertAttr( ea_s_ExecuteHost, host );
-
     break;
   }
   case ULOG_EXECUTABLE_ERROR: {
@@ -249,7 +249,7 @@ EventAd &EventAd::from_event( const ULogEvent *const_event )
   case ULOG_IMAGE_SIZE: {
     JobImageSizeEvent   *jisev = dynamic_cast<JobImageSizeEvent *>( event );
 
-    this->ea_ad.InsertAttr( ea_s_Size, jisev->size );
+    this->ea_ad.InsertAttr(ea_s_Size, (int)jisev->image_size_kb);
 
     break;
   }
@@ -292,10 +292,8 @@ EventAd &EventAd::from_event( const ULogEvent *const_event )
     NullString      reason( jhev->getReason() );
 
     this->ea_ad.InsertAttr( ea_s_Reason, reason );
-#if CONDORG_AT_LEAST(6,5,3)
     this->ea_ad.InsertAttr( ea_s_ReasonCode, jhev->getReasonCode() );
     this->ea_ad.InsertAttr( ea_s_ReasonSubCode, jhev->getReasonSubCode() );
-#endif
 
     break;
   }
@@ -316,7 +314,6 @@ EventAd &EventAd::from_event( const ULogEvent *const_event )
 
 ULogEvent *EventAd::create_event( void )
 {
-  bool                  boolean_value;
   int                   integer_value;
   time_t                epoch;
   ULogEventNumber       eventN;
@@ -343,16 +340,11 @@ ULogEvent *EventAd::create_event( void )
     case ULOG_SUBMIT: {
       SubmitEvent   *sev = dynamic_cast<SubmitEvent *>( event.get() );
 
-      this->ea_ad.EvaluateAttrString( ea_s_SubmitHost, string_value );
-      strncpy( sev->submitHost, string_value.c_str(), 128 );
-
       if( this->ea_ad.EvaluateAttrString(ea_s_LogNotes, string_value) )
 	sev->submitEventLogNotes = local_strdup( string_value );
 
-#if CONDORG_AT_LEAST(6,5,3)
       if( this->ea_ad.EvaluateAttrString(ea_s_UserNotes, string_value) )
 	sev->submitEventUserNotes = local_strdup( string_value );
-#endif
 
       break;
     }
@@ -360,7 +352,7 @@ ULogEvent *EventAd::create_event( void )
       ExecuteEvent    *eev = dynamic_cast<ExecuteEvent *>( event.get() );
 
       this->ea_ad.EvaluateAttrString( ea_s_ExecuteHost, string_value );
-      strncpy( eev->executeHost, string_value.c_str(), 128 );
+      eev->setExecuteHost(local_strdup(string_value.substr(0, 128)));
 
       break;
     }
@@ -441,7 +433,8 @@ ULogEvent *EventAd::create_event( void )
     case ULOG_IMAGE_SIZE: {
       JobImageSizeEvent   *jisev = dynamic_cast<JobImageSizeEvent *>( event.get() );
 
-      this->ea_ad.EvaluateAttrNumber( ea_s_Size, jisev->size );
+      int size = jisev->image_size_kb;
+      this->ea_ad.EvaluateAttrNumber(ea_s_Size, size);
 
       break;
     }
@@ -486,13 +479,11 @@ ULogEvent *EventAd::create_event( void )
       this->ea_ad.EvaluateAttrString( ea_s_Reason, string_value );
       jhev->setReason( local_strdup(string_value) );
 
-#if CONDORG_AT_LEAST(6,5,3)
       this->ea_ad.EvaluateAttrNumber( ea_s_ReasonCode, integer_value );
       jhev->setReasonCode( integer_value );
 
       this->ea_ad.EvaluateAttrNumber( ea_s_ReasonSubCode, integer_value );
       jhev->setReasonSubCode( integer_value );
-#endif
 
       break;
     }
@@ -510,7 +501,7 @@ ULogEvent *EventAd::create_event( void )
       this->ea_ad.EvaluateAttrNumber( ea_s_Node, neev->node );
 
       this->ea_ad.EvaluateAttrString( ea_s_ExecuteHost, string_value );
-      strncpy( neev->executeHost, string_value.c_str(), 128 );
+      neev->setExecuteHost(local_strdup(string_value.substr(0, 128)));
 
       break;
     }
@@ -591,7 +582,6 @@ ULogEvent *EventAd::create_event( void )
 
       break;
     }
-#if CONDORG_AT_LEAST(6,5,3)
     case ULOG_REMOTE_ERROR: {
       RemoteErrorEvent        *reev = dynamic_cast<RemoteErrorEvent *>( event.get() );
       
@@ -604,13 +594,12 @@ ULogEvent *EventAd::create_event( void )
       this->ea_ad.EvaluateAttrString( ea_s_ErrorStr, string_value );
       reev->setErrorText( local_strdup(string_value) );
 
+      bool boolean_value = false;
       this->ea_ad.EvaluateAttrBool( ea_s_CriticalError, boolean_value );
       reev->setCriticalError( boolean_value );
      
       break;
     }
-#endif
-#if CONDORG_AT_LEAST(6,7,14)
     case ULOG_GRID_SUBMIT: {
       GridSubmitEvent    *gsev = dynamic_cast<GridSubmitEvent *>( event.get() );
 
@@ -638,7 +627,6 @@ ULogEvent *EventAd::create_event( void )
 
       break;
     }
-#endif // 6.7.14 and beyond
     default: // Nothing to do, by now..
       break;
     }
@@ -654,6 +642,6 @@ EventAd &EventAd::set_time( time_t epoch )
   return *this;
 }
 
-}; // Namespace logmonitor
+} // Namespace logmonitor
 
-} JOBCONTROL_NAMESPACE_END;
+} JOBCONTROL_NAMESPACE_END

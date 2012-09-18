@@ -1,3 +1,18 @@
+/* Copyright (c) Members of the EGEE Collaboration. 2004.
+See http://www.eu-egee.org/partners/ for details on the copyright
+holders.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License. */
 #include <iostream>
 
 #include <boost/filesystem/path.hpp>
@@ -25,115 +40,117 @@ JOBCONTROL_NAMESPACE_BEGIN {
 
 namespace controller {
 
-JobControllerClientJD::JobControllerClientJD() :
-  JobControllerClientImpl(),
-  jccjd_currentGood(false),
-  jccjd_current(),
-  jccjd_request(),
-  jccjd_queue()
+JobControllerClientUnknown::JobControllerClientUnknown( void ) : jccu_request()
+{}
+
+JobControllerClientUnknown::~JobControllerClientUnknown( void ) {}
+
+void JobControllerClientUnknown::release_request( void )
+{
+  return;
+}
+
+void JobControllerClientUnknown::extract_next_request( void )
+{
+  return;
+}
+
+const Request *JobControllerClientUnknown::get_current_request( void )
+{
+  return &this->jccu_request;
+}
+
+JobControllerClientJD::JobControllerClientJD( void ) : JobControllerClientImpl(),
+						       jccjd_currentGood( false ), jccjd_current(), 
+                                                       jccjd_request(), jccjd_queue()
 {
   const configuration::JCConfiguration       *config = configuration::Configuration::instance()->jc();
   const fs::path                              listname( config->input(), fs::native );
   logger::StatePusher                         pusher( clog, "JobControllerClientJD::JobControllerClientJD()" );
 
   try {
-    this->jccjd_jd.reset(new utilities::JobDir(listname));
-    clog << logger::setlevel( logger::info ) << "Created jobdir queue object.\n";
+    this->jccjd_jd =  new utilities::JobDir( listname );
+    clog << logger::setlevel( logger::info ) << "Create jobdir queue object." << endl;
  
-   // check if there are "old" requests not yet managed
+   // Check if there are "old" requests not managed
     utilities::JobDir::iterator b, e;
     boost::tie(b, e) = this->jccjd_jd->old_entries();
 
-    for ( ; b != e; ++b) {
-      this->jccjd_queue.insert(std::make_pair(std::time(0), *b));
-      this->jccjd_current = this->jccjd_queue.begin()->second;
-      this->jccjd_currentGood = true;
-    }
-  } catch(utilities::JobDirError &error) {
-    clog << logger::setlevel(logger::fatal)
-      << "Error while setting jobdir.\nReason: " << error.what() << '\n';
+    for ( ; b != e; ++b)
+      this->jccjd_queue.push( *b );    
+
+  }
+
+  catch( utilities::JobDirError &error ) {
+    clog << logger::setlevel( logger::fatal )
+	 << "Error while setting jobdir." << endl
+	 << "Reason: " << error.what() << endl;
 
     throw CannotCreate( error.what() );
   }
 }
 
-void JobControllerClientJD::extract_next_request()
+JobControllerClientJD::~JobControllerClientJD( void )
 {
-  logger::StatePusher pusher(clog, "JobControllerClientJD::extract_next_request()");
+  delete this->jccjd_jd;
+}
+
+void JobControllerClientJD::extract_next_request( void )
+{
+  logger::StatePusher         pusher( clog, "JobControllerClientJD::get_next_request()" );
+
+  clog << logger::setlevel( logger::info ) << "Looking for new requests..." << endl;
   jccommon::SignalChecker::instance()->throw_on_signal();
 
-  utilities::JobDir::iterator b, e;
-  boost::tie(b, e) = this->jccjd_jd->new_entries();
+  if( this->jccjd_queue.empty() ) { // look for new requests 
+
+    while( true ) {
+      utilities::JobDir::iterator b, e;
+      boost::tie(b, e) = this->jccjd_jd->new_entries();		
       
-  if (b != e) {
-    for ( ; b != e; ++b) {
-      this->jccjd_queue.insert(
-        std::make_pair(std::time(0),
-        this->jccjd_jd->set_old(*b)));
-//] = this->jccjd_jd->set_old(*b);
+      for ( ; b != e; ++b)  
+	this->jccjd_queue.push( this->jccjd_jd->set_old( *b ) );
+      
+      if( this->jccjd_queue.empty() ) {
+        sleep( 2 ); // wait for new requests
+        jccommon::SignalChecker::instance()->throw_on_signal();
+      } else { // we have found some requests
+        break;
+      }
     }
-    this->jccjd_current = this->jccjd_queue.begin()->second;
-    this->jccjd_currentGood = true;
-    return;
   }
 
-  // even if no new events were found, older requests
-  // can be queued
-  if (this->jccjd_queue.empty()) {
+  this->jccjd_current = this->jccjd_queue.front();
+  this->jccjd_currentGood = true;
+
+  return;
+}
+
+void JobControllerClientJD::release_request( void )
+{
+  if( this->jccjd_currentGood ) {	
+    fs::remove( this->jccjd_current );	
+    this->jccjd_queue.pop();
     this->jccjd_currentGood = false;
-  } else {
-    this->jccjd_current = this->jccjd_queue.begin()->second;
-    this->jccjd_currentGood = true;
   }
 
   return;
 }
 
-std::string const JobControllerClientJD::get_current_request_name() const {
-  return this->jccjd_current.native_file_string();
-}
-
-void JobControllerClientJD::release_request()
+const Request *JobControllerClientJD::get_current_request( void )
 {
-  if (this->jccjd_currentGood) {	
-    fs::remove(this->jccjd_current);
-    std::multimap<
-      std::time_t,
-      boost::filesystem::path
-    >::iterator it, it_end = this->jccjd_queue.end();
-    for (it = this->jccjd_queue.begin(); it != it_end; ++it) {
-      if (it->second == this->jccjd_current) {
-        this->jccjd_queue.erase(it);
-        break;
-      }
-    }
+   classad::ClassAdParser parser;
 
-    this->jccjd_queue.erase(it);
-    if (this->jccjd_queue.empty()) {
-      this->jccjd_currentGood = false;
-    }
-  }
-}
+   fs::ifstream is( this->jccjd_current );
+   boost::shared_ptr<classad::ClassAd> command_ad( parser.ParseClassAd(is) );
+         
+   this->jccjd_request.reset( *command_ad );
 
-const Request *JobControllerClientJD::get_current_request()
-{
-  if (!this->jccjd_currentGood) {
-    return 0;
-  }
+   clog << logger::setlevel( logger::debug ) << "Got new request..." << endl;
 
-  fs::ifstream is(this->jccjd_current);
-  classad::ClassAdParser parser;
-  boost::shared_ptr<classad::ClassAd> command_ad(
-    parser.ParseClassAd(is)
-  );
-  
-  this->jccjd_request.reset(*command_ad);
-  if (command_ad.get()) {
-    return &this->jccjd_request;
-  } else {
-    return 0;
-  }
+   return &this->jccjd_request;
 }
 
 } // end namespace controller
-} JOBCONTROL_NAMESPACE_END;
+
+} JOBCONTROL_NAMESPACE_END

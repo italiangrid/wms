@@ -1,21 +1,32 @@
+// Copyright (c) Members of the EGEE Collaboration. 2009. 
+// See http://www.eu-egee.org/partners/ for details on the copyright holders.  
+
+// Licensed under the Apache License, Version 2.0 (the "License"); 
+// you may not use this file except in compliance with the License. 
+// You may obtain a copy of the License at 
+//     http://www.apache.org/licenses/LICENSE-2.0 
+// Unless required by applicable law or agreed to in writing, software 
+// distributed under the License is distributed on an "AS IS" BASIS, 
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+// See the License for the specific language governing permissions and 
+// limitations under the License.
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-// This event can be defined only for Condor versions >= 6.7.14
-#if CONDORG_AT_LEAST(6,7,14)
 
 #include <cstdio>
 #include <ctime>
 
 #include <memory>
 #include <string>
+#include <stdint.h>
 
-#include <user_log.c++.h>
+#include <condor/user_log.c++.h>
 
-#include "glite/wmsutils/jobid/JobId.h"
 #include "glite/wms/common/logger/logstream.h"
 #include "glite/wms/common/logger/manipulators.h"
-#include "common/IdContainer.h"
+#include "common/id_container.h"
 #include "common/EventLogger.h"
 
 #include "EventGridSubmit.h"
@@ -71,17 +82,14 @@ void EventGridSubmit::process_event( void )
     else {
       elog::cedglog << logger::setlevel( logger::info ) << ei_s_edgideq << position->edg_id() << endl;
 
-      if( this->ei_data->md_isDagLog )
-        elog::cedglog << ei_s_subnodeof << this->ei_data->md_dagId << endl;
-
       reader.reset( this->createReader(position->edg_id()) );
 
 
-#ifdef GLITE_WMS_HAVE_LBPROXY
-      this->ei_data->md_logger->set_LBProxy_context( position->edg_id(), position->sequence_code(), position->proxy_file() );
-#else
-      this->ei_data->md_logger->reset_user_proxy( position->proxy_file() ).reset_context( position->edg_id(), position->sequence_code() );
-#endif
+      if (this->ei_data->md_logger->have_lbproxy()) {
+        this->ei_data->md_logger->set_LBProxy_context( position->edg_id(), position->sequence_code(), position->proxy_file() );
+      } else {
+        this->ei_data->md_logger->reset_user_proxy( position->proxy_file() ).reset_context( position->edg_id(), position->sequence_code() );
+      }
       this->ei_data->md_logger->grid_submit_event( ce, this->ei_data->md_logfile_name );
     
 
@@ -94,6 +102,4 @@ void EventGridSubmit::process_event( void )
 
 }} // namespace processer, logmonitor
 
-} JOBCONTROL_NAMESPACE_END;
-
-#endif // Condor v6.7.14 and beyond.
+} JOBCONTROL_NAMESPACE_END

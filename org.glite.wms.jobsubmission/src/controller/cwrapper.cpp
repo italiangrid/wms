@@ -1,3 +1,16 @@
+// Copyright (c) Members of the EGEE Collaboration. 2009. 
+// See http://www.eu-egee.org/partners/ for details on the copyright holders.  
+
+// Licensed under the Apache License, Version 2.0 (the "License"); 
+// you may not use this file except in compliance with the License. 
+// You may obtain a copy of the License at 
+//     http://www.apache.org/licenses/LICENSE-2.0 
+// Unless required by applicable law or agreed to in writing, software 
+// distributed under the License is distributed on an "AS IS" BASIS, 
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+// See the License for the specific language governing permissions and 
+// limitations under the License.
+
 #include <cstring>
 #include <cstdlib>
 
@@ -6,11 +19,11 @@
 
 #include <classad_distribution.h>
 
-#include "glite/wmsutils/jobid/JobId.h"
+#include "glite/jobid/JobId.h"
+
 #include "glite/lb/producer.h"
 #include "glite/lb/context.h"
 
-#include "common/EventLogger.h"
 #include "JobController.h"
 #include "JobControllerExceptions.h"
 #include "cwrapper.h"
@@ -31,9 +44,10 @@ edg_wljc_Context edg_wljc_ContextInitialize( edg_wll_Context *logcont )
   edg_wljc_jobcontroller_t    *wrapper = new edg_wljc_jobcontroller_t;
 
   wrapper->jc_context = NULL; wrapper->jc_error = NULL;
-  boost::shared_ptr<jccommon::EventLogger> el(new jccommon::EventLogger(logcont));
+
   try {
-    cont = new controller::JobController(el);
+    cont = new controller::JobController( logcont );
+
     wrapper->jc_context = reinterpret_cast<void *>( cont );
   }
   catch( exception &err ) {
@@ -113,7 +127,7 @@ int edg_wljc_Submit( edg_wljc_Context wrapper, const char *classad )
   return res;
 }
 
-int edg_wljc_Cancel( edg_wljc_Context wrapper, edg_wlc_JobId id )
+int edg_wljc_Cancel( edg_wljc_Context wrapper, const edg_wlc_JobId id )
 {
   int    res = 1;
 
@@ -121,7 +135,7 @@ int edg_wljc_Cancel( edg_wljc_Context wrapper, edg_wlc_JobId id )
     controller::JobController      *cont = reinterpret_cast<controller::JobController *>( wrapper->jc_context );
 
     try {
-      res = cont->cancel( id );
+      res = cont->cancel( glite::jobid::JobId(id) );
     }
     catch( controller::ControllerError &err ) {
       string    reason( err.what() );

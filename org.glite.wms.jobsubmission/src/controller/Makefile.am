@@ -12,20 +12,34 @@
 #       Council for the Central Laboratory of the Research Councils (CCLRC), United Kingdom
 #
 #       Authors: Paolo Andreetto <paolo.andreetto@pd.infn.it>
-#       Version info: $Id$
-#       Release: $Name$
+#       Version info: $Id: Makefile.am,v 1.2.28.2.6.2.2.4 2012/06/20 13:44:33 pandreet Exp $
+#       Release: $Name: glite-wms-jobsubmission_branch_3_5 $
 #
 #       Revision history:
-#       $Log$
-#       Revision 1.5  2009/02/05 16:07:23  mcecchi
-#       enabling bunch submission to condor (work in progress)
+#       $Log: Makefile.am,v $
+#       Revision 1.2.28.2.6.2.2.4  2012/06/20 13:44:33  pandreet
+#       Used pkgconfig macro for condorg
 #
-#       Revision 1.4  2008/10/01 13:13:06  mcecchi
-#       enabling multiple job submission for a single user
+#       Revision 1.2.28.2.6.2.2.3  2012/06/18 11:58:06  mcecchi
+#       reintroduced id repository in JC. cleanup
 #
-#       Revision 1.3  2007/01/22 15:47:19  gianelle
-#       Sincronize HEAD repository with the 3.1 branch
-#       Add the JobDir support
+#       Revision 1.2.28.2.6.2.2.2  2012/02/10 16:17:07  mcecchi
+#       filelist in isolated JC/LM locations. possible future redesign
+#
+#       Revision 1.2.28.2.6.2.2.1  2012/02/07 14:36:30  mcecchi
+#       removed support for filelist - work in progress
+#
+#       Revision 1.2.28.2.6.2  2011/03/11 15:00:04  pandreet
+#       Removed with-glite-location
+#
+#       Revision 1.2.28.2.6.1  2011/01/05 08:50:58  pandreet
+#       New build definitions for jobsubmission
+#
+#       Revision 1.2.28.2  2007/01/22 15:46:05  gianelle
+#       Add support for JobDir (for the moment only the read part)
+#
+#       Revision 1.2.28.1  2006/10/10 11:33:15  gianelle
+#       Install SubmitAdapter.h because it is used by the planner
 #
 #       Revision 1.2  2004/08/10 12:01:43  eronchie
 #       Updated
@@ -50,7 +64,6 @@ noinst_HEADERS = \
 	JobControllerReal.h \
 	JobControllerClient.h \
 	JobControllerClientImpl.h \
-	JobControllerClientReal.h \
 	JobControllerClientJD.h \
 	Request.h \
 	RequestExceptions.h \
@@ -73,16 +86,18 @@ libglite_wms_jss_controller_la_SOURCES = CondorG.cpp \
 	JobControllerReal.cpp \
 	JobControllerFake.cpp \
 	JobControllerClient.cpp \
-	JobControllerClientJD.cpp \
-	JobControllerClientReal.cpp
+	JobControllerClientJD.cpp
 
-libglite_wms_jss_controller_la_LIBADD = $(CONDORG_LIBS)
+
+libglite_wms_jss_controller_la_LIBADD = ../common/libglite_wms_jss_common.la \
+					$(CONDORG_LIBS)
 
 AM_CPPFLAGS = -I$(top_srcdir)/src \
-        -I$(top_srcdir)/interface \
-	$(GLITE_CFLAGS) \
+	-I$(top_srcdir)/interface \
+	-I/usr/include \
+	$(GLITE_WMS_COMMON_CONF_CFLAGS) \
 	$(BOOST_CFLAGS) \
 	$(CLASSAD_CFLAGS) \
-	$(CONDORG_CFLAGS)
+	$(CONDORG_CFLAGS) -DCONDORG_VERSION=$(CONDORG_VERSION)
 
 MAINTAINERCLEANFILES = Makefile.in *~

@@ -1,3 +1,18 @@
+/* Copyright (c) Members of the EGEE Collaboration. 2004.
+See http://www.eu-egee.org/partners/ for details on the copyright
+holders.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License. */
 #ifndef EDG_WORKLOAD_JOBCONTROL_LOGMONITOR_TIMER_H
 #define EDG_WORKLOAD_JOBCONTROL_LOGMONITOR_TIMER_H
 
@@ -12,7 +27,7 @@
 
 #include <classad_distribution.h>
 
-#include "glite/wms/common/utilities/FileList.h"
+#include "common/filelist.h"
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -30,7 +45,7 @@ class TimeoutEvent {
   friend class Timer;
 
 private:
-  typedef glite::wms::common::utilities::FileList<classad::ClassAd>   FileContainer;
+  typedef glite::wms::jobsubmission::jccommon::FileList<classad::ClassAd> FileContainer;
 
 public:
   ~TimeoutEvent( void );
@@ -57,7 +72,7 @@ private:
   FileContainer::iterator              te_pointer;
 
   static const char     *te_s_Timeout, *te_s_EventNumber, *te_s_EventTime, *te_s_Cluster, *te_s_Proc, *te_s_SubProc;
-  static const char     *te_s_SubmitHost, *te_s_LogNotes;
+  static const char     *te_s_LogNotes;
   static const char     *te_s_ExecuteHost, *te_s_Node;
   static const char     *te_s_ExecErrorType;
   static const char     *te_s_RunLocalRusage, *te_s_RunRemoteRusage, *te_s_TotalLocalRusage, *te_s_TotalRemoteRusage;
@@ -66,18 +81,11 @@ private:
   static const char     *te_s_Size, *te_s_Message, *te_s_Info, *te_s_NumPids;
   static const char     *te_s_RmContact, *te_s_JmContact, *te_s_RestartableJM;
   static const char     *te_s_CheckPointed;
-#if CONDORG_AT_LEAST(6,5,3)
   static const char     *te_s_DaemonName, *te_s_ErrorStr, *te_s_CriticalError;
   static const char     *te_s_ReasonCode, *te_s_ReasonSubCode, *te_s_UserNotes;
-#endif
-#if CONDORG_AT_LEAST(6,7,0)
   static const char      *te_s_StartdAddr, *te_s_StartdName, *te_s_StarterAddr;
   static const char      *te_s_DisconnReason, *te_s_NoReconnReason, *te_s_CanReconn;
- 	
-#endif
-#if CONDORG_AT_LEAST(6,7,14)
   static const char     *te_s_ResourceName, *te_s_JobId; 
-#endif
 };
 
 class Timer {
@@ -85,8 +93,8 @@ public:
   typedef  boost::shared_ptr<TimeoutEvent>   EventPointer;
 
 private:
-  typedef  std::multimap<std::time_t, EventPointer>                 EventMap;
-  typedef  glite::wms::common::utilities::FileList<classad::ClassAd>            FileContainer;
+  typedef std::multimap<std::time_t, EventPointer> EventMap;
+  typedef glite::wms::jobsubmission::jccommon::FileList<classad::ClassAd> FileContainer;
 
 public:
   typedef  EventMap::iterator                EventIterator;
@@ -112,9 +120,9 @@ private:
   FileContainer  t_backup;
 };
 
-}; // Namespace logmonitor
+} // Namespace logmonitor
 
-} JOBCONTROL_NAMESPACE_END;
+} JOBCONTROL_NAMESPACE_END
 
 #endif /* EDG_WORKLOAD_JOBCONTROL_LOGMONITOR_TIMER_H */
 

@@ -1,27 +1,36 @@
-#ifndef EDG_WORKLOAD_JOBCONTROL_CONTROLLER_JOBCONTROLLER_H
-#define EDG_WORKLOAD_JOBCONTROL_CONTROLLER_JOBCONTROLLER_H
-
 // File: JobController.h
 // Author: Francesco Giacomini <Francesco.Giacomini@cnaf.infn.it>
 //         Rosario Peluso <Rosario.Peluso@pd.infn.it>
-// Copyright (c) 2001 EU DataGrid.
-// For license conditions see http://www.eu-datagrid.org/license.html
 
-// $Id$
+// Copyright (c) Members of the EGEE Collaboration. 2009. 
+// See http://www.eu-egee.org/partners/ for details on the copyright holders.  
 
-#include <vector>
+// Licensed under the Apache License, Version 2.0 (the "License"); 
+// you may not use this file except in compliance with the License. 
+// You may obtain a copy of the License at 
+//     http://www.apache.org/licenses/LICENSE-2.0 
+// Unless required by applicable law or agreed to in writing, software 
+// distributed under the License is distributed on an "AS IS" BASIS, 
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+// See the License for the specific language governing permissions and 
+// limitations under the License.
+
+// $Id: JobController.h,v 1.5.2.2.6.3 2009/10/05 15:22:04 fcapanni Exp $
+
+#ifndef EDG_WORKLOAD_JOBCONTROL_CONTROLLER_JOBCONTROLLER_H
+#define EDG_WORKLOAD_JOBCONTROL_CONTROLLER_JOBCONTROLLER_H
+
+
 #include <cstdio>
 
-#include <boost/shared_ptr.hpp>
-
 #include "jobcontrol_namespace.h"
-#include <glite/wmsutils/jobid/JobId.h>
+#include <glite/jobid/JobId.h>
+
+typedef  struct _edg_wll_Context  *edg_wll_Context;
 
 namespace classad { class ClassAd; }
 
 JOBCONTROL_NAMESPACE_BEGIN {
-
-namespace jccommon { class EventLogger; }
 
 namespace controller {
 
@@ -30,13 +39,14 @@ class JobControllerImpl;
 class JobController
 {
 public:
-  JobController(boost::shared_ptr<jccommon::EventLogger> ctx);
-  ~JobController();
+  JobController( edg_wll_Context *cont = NULL );
+  ~JobController( void );
 
-  int msubmit(std::vector<classad::ClassAd*>);
-  int submit(classad::ClassAd*);
-  bool cancel( const glite::wmsutils::jobid::JobId &id, const char *logfile = NULL );
+  int submit( const classad::ClassAd *ad );
+  bool cancel( const glite::jobid::JobId &id, const char *logfile = NULL );
   bool cancel( int condorid, const char *logfile = NULL );
+  bool release(int condorid, char const* logfile = NULL);
+  size_t queue_size( void );
 
 private:
   JobController( const JobController &rhs ); // Not implemented
@@ -47,7 +57,7 @@ private:
 
 } // namespace controller
 
-} JOBCONTROL_NAMESPACE_END;
+} JOBCONTROL_NAMESPACE_END
 
 #endif /* EDG_WORKLOAD_JOBCONTROL_CONTROLLER_JOBCONTROLLER_H */
 

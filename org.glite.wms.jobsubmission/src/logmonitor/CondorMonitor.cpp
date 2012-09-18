@@ -1,31 +1,48 @@
+// Copyright (c) Members of the EGEE Collaboration. 2009. 
+// See http://www.eu-egee.org/partners/ for details on the copyright holders.  
+
+// Licensed under the Apache License, Version 2.0 (the "License"); 
+// you may not use this file except in compliance with the License. 
+// You may obtain a copy of the License at 
+//     http://www.apache.org/licenses/LICENSE-2.0 
+// Unless required by applicable law or agreed to in writing, software 
+// distributed under the License is distributed on an "AS IS" BASIS, 
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+// See the License for the specific language governing permissions and 
+// limitations under the License.
+
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 #include <cstdio>
 #include <ctime>
-
 #include <string>
 #include <memory>
+#include <stdint.h>
 
-#include <user_log.c++.h>
+#include <condor/user_log.c++.h> // condor API for reading log file
 
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/exception.hpp>
 #include <boost/regex.hpp>
+#include <boost/lexical_cast.hpp>
 
 #include "glite/wms/common/configuration/Configuration.h"
 #include "glite/wms/common/configuration/LMConfiguration.h"
 
-#include "glite/wmsutils/jobid/JobId.h"
-#include "glite/wmsutils/jobid/JobIdExceptions.h"
+#include "glite/jobid/JobId.h"
 
 #include "glite/wms/common/logger/logstream.h"
 #include "glite/wms/common/logger/manipulators.h"
 #include "glite/wms/common/utilities/boost_fs_add.h"
 #include "glite/wms/common/utilities/streamdescriptor.h"
-#include "jobcontrol_namespace.h"
+
 #include "logmonitor/processer/EventFactory.h"
 #include "logmonitor/processer/EventInterface.h"
 #include "logmonitor/processer/MonitorData.h"
 
+#include "jobcontrol_namespace.h"
 #include "CondorMonitor.h"
 #include "Timer.h"
 #include "SizeFile.h"
@@ -162,15 +179,13 @@ CondorMonitor::CondorMonitor( const string &filename, MonitorData &data ) :
   fs::path                         timer_path( conf->monitor_internal_dir(), fs::native );
   logger::StatePusher                             pusher( elog::cedglog, "CondorMonitor::CondorMonitor()" );
 
-  static boost::regex   dagid_expression( ".*DagId = ([^\\s]+).*" );
-
   if( fs::exists(logfile_path) ) {
     this->cm_shared_data->md_sizefile.reset( new SizeFile(logfile_name.c_str()) );
 
     elog::cedglog << logger::setlevel( logger::info ) << "Opened old log position file." << endl;
   }
   else {
-    utilities::create_file( logfile_name.c_str() );
+    glite::wms::common::utilities::create_file( logfile_name.c_str() );
     this->cm_shared_data->md_sizefile.reset( new SizeFile(logfile_name.c_str(), true) );
 
     elog::cedglog << logger::setlevel( logger::info ) << "Created new log position file." << endl;
@@ -186,30 +201,6 @@ CondorMonitor::CondorMonitor( const string &filename, MonitorData &data ) :
 
   elog::cedglog << logger::setlevel( logger::info ) << "Condor log file parser initialized." << endl;
 
-  if( boost::regex_match(this->cm_shared_data->md_sizefile->header().header(), match_pieces, dagid_expression) ) {
-    this->cm_shared_data->md_dagId.assign( match_pieces[1].first, match_pieces[2].second );
-    try {
-      glite::wmsutils::jobid::JobId     dId( this->cm_shared_data->md_dagId );
-      this->cm_shared_data->md_isDagLog = true;
-      dId.clear();
-    }
-    catch( const glite::wmsutils::jobid::JobIdException &err ) {
-      elog::cedglog << logger::setlevel( logger::debug ) << "I can not setting the DagId, Error is: "
-                    << err.what() << endl; 
-      this->cm_shared_data->md_dagId.clear();
-      this->cm_shared_data->md_isDagLog = false;
-    }
-  }
-  else {
-
-    this->cm_shared_data->md_dagId.clear();
-    this->cm_shared_data->md_isDagLog = false;
-  }
-
-  if( this->cm_shared_data->md_isDagLog )
-    elog::cedglog << logger::setlevel( logger::info ) << "Log file is attached to DAG id: " << this->cm_shared_data->md_dagId << endl
-		  << "Entering DAG mode..." << endl;
-  
   logfile_nopath.append( ".timer" );
   timer_path /= logfile_nopath;
 
@@ -276,19 +267,19 @@ CondorMonitor::status_t CondorMonitor::process_next_event( void )
   }
 
   if( size > this->cm_shared_data->md_sizefile->size_field().position() ) {
-    ReadUserLog id_logfile_parser;
-    id_logfile_parser.initialize(this->cm_shared_data->md_logfile_name.c_str());
-    if( id_logfile_parser.getfd() == -1 ) {
+
+    FILE *fp = fopen(cm_shared_data->md_logfile_name.c_str(), "r");
+    if ( fp == NULL ) {
       elog::cedglog << logger::setlevel( logger::severe )
-                    << "Cannot open Condor log file \"" << logfile_name << "\"." << endl;
+        << "Cannot open Condor log file \"" << logfile_name << "\"." << endl;
 
       throw CannotOpenFile( this->cm_shared_data->md_logfile_name );
     }
+    ReadUserLog id_logfile_parser(fp, false);
+    id_logfile_parser.initialize(this->cm_shared_data->md_logfile_name.c_str());
 
     // Seek to last 'position'
-    FILE *fp = id_logfile_parser.getfp();
     std::string error;
-
     if( fseek(fp, this->cm_shared_data->md_sizefile->size_field().position(), SEEK_SET) == -1 ) {
       error.assign( "Cannot seek file \"" ); error.append( this->cm_shared_data->md_logfile_name );
       error.append( "\" to old position " );
@@ -297,8 +288,8 @@ CondorMonitor::status_t CondorMonitor::process_next_event( void )
       error.append( strerror(errno) ); error.append( "." );
 
       elog::cedglog << logger::setlevel( logger::fatal ) << "Cannot seek file \"" << logfile_name
-		    << "\" to old position " << this->cm_shared_data->md_sizefile->size_field().position() << endl
-		    << "Due to: \"" << strerror(errno) << "\"" << endl;
+        << "\" to old position " << this->cm_shared_data->md_sizefile->size_field().position() << endl
+        << "Due to: \"" << strerror(errno) << "\"" << endl;
 
       throw FileSystemError( error );
     }
@@ -315,8 +306,13 @@ CondorMonitor::status_t CondorMonitor::process_next_event( void )
       stat = this->checkAndProcessTimers();
       break;
     case ULOG_RD_ERROR:
+      elog::cedglog << logger::setlevel( logger::null ) << "Read error while reading log file \""
+		    << logfile_name << "\"." << endl;
+
+      stat = event_error;
+      break;
     case ULOG_UNK_ERROR:
-      elog::cedglog << logger::setlevel( logger::null ) << "Error while reading log file \""
+      elog::cedglog << logger::setlevel( logger::null ) << "Unknown error while reading log file \""
 		    << logfile_name << "\"." << endl;
 
       stat = event_error;
@@ -336,6 +332,7 @@ CondorMonitor::status_t CondorMonitor::process_next_event( void )
       stat = event_error;
       break;
     }
+  fclose(fp);
   }
   else stat = this->checkAndProcessTimers();
 
@@ -362,6 +359,6 @@ const string &CondorMonitor::logfile_name( void ) const
   return this->cm_shared_data->md_logfile_name;
 }
 
-}; // Namespace logmonitor
+} // Namespace logmonitor
 
-} JOBCONTROL_NAMESPACE_END;
+} JOBCONTROL_NAMESPACE_END

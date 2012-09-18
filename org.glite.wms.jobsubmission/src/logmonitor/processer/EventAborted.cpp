@@ -1,15 +1,26 @@
+// Copyright (c) Members of the EGEE Collaboration. 2009. 
+// See http://www.eu-egee.org/partners/ for details on the copyright holders.  
+
+// Licensed under the Apache License, Version 2.0 (the "License"); 
+// you may not use this file except in compliance with the License. 
+// You may obtain a copy of the License at 
+//     http://www.apache.org/licenses/LICENSE-2.0 
+// Unless required by applicable law or agreed to in writing, software 
+// distributed under the License is distributed on an "AS IS" BASIS, 
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+// See the License for the specific language governing permissions and 
+// limitations under the License.
 #include <cstdio>
 #include <ctime>
-
 #include <memory>
 #include <string>
+#include <stdint.h>
 
-#include <user_log.c++.h>
+#include <condor/user_log.c++.h>
 
 #include "glite/wms/common/logger/logstream.h"
 #include "glite/wms/common/logger/manipulators.h"
-#include "glite/wmsutils/jobid/JobId.h"
-#include "common/IdContainer.h"
+#include "common/id_container.h"
 #include "common/EventLogger.h"
 #include "common/JobFilePurger.h"
 #include "common/ProxyUnregistrar.h"
@@ -24,6 +35,10 @@
 using namespace std;
 USING_COMMON_NAMESPACE;
 RenameLogStreamNS( elog );
+
+namespace {
+  char const * const periodic_remove_msg = "The job attribute PeriodicRemove expression";
+}
 
 JOBCONTROL_NAMESPACE_BEGIN {
 
@@ -47,40 +62,20 @@ void EventAborted::process_event( void )
 
   position = this->ei_data->md_container->position_by_condor_id( this->ei_condor );
   
-  if( position == this->ei_data->md_container->end() )
+  if( position == this->ei_data->md_container->end() ) {
     elog::cedglog << logger::setlevel( logger::warning ) << ei_s_notsub << endl;
-  else if( this->ei_data->md_isDagLog && (this->ei_data->md_dagId == position->edg_id()) ) { // Aborting of a DAG job
-    elog::cedglog << logger::setlevel( logger::info ) << ei_s_dagideq << position->edg_id() << endl;
-    
-    this->ei_data->md_sizefile->set_last( true );
-
-    this->ei_data->md_sizefile->decrement_pending();
-
-#ifdef GLITE_WMS_HAVE_LBPROXY
-    this->ei_data->md_logger->set_LBProxy_context( position->edg_id(), position->sequence_code(), position->proxy_file() );
-#else
-    this->ei_data->md_logger->reset_user_proxy( position->proxy_file() ).reset_context( position->edg_id(), position->sequence_code() );
-#endif
-    this->ei_data->md_logger->aborted_by_user_event();
-
-    if( this->ei_data->md_aborted->search(this->ei_condor) )
-      this->ei_data->md_aborted->remove( this->ei_condor );
-  }
-  else { // Common jobs and DAG nodes...
+  } else {
     elog::cedglog << logger::setlevel( logger::info ) << ei_s_edgideq << position->edg_id() << endl;
-
-    if( this->ei_data->md_isDagLog )
-      elog::cedglog << ei_s_subnodeof << this->ei_data->md_dagId << endl;
 
     if( this->ea_removeTimer )
       this->ei_data->md_timer->remove_all_timeouts( this->ea_event->cluster ); // Remove any installed timeout for the job
 
     this->ei_data->md_sizefile->decrement_pending();
-#ifdef GLITE_WMS_HAVE_LBPROXY
-    this->ei_data->md_logger->set_LBProxy_context( position->edg_id(), position->sequence_code(), position->proxy_file() );
-#else
-    this->ei_data->md_logger->reset_user_proxy( position->proxy_file() ).reset_context( position->edg_id(), position->sequence_code() );
-#endif
+    if (this->ei_data->md_logger->have_lbproxy()) {
+      this->ei_data->md_logger->set_LBProxy_context( position->edg_id(), position->sequence_code(), position->proxy_file() );
+    } else {
+      this->ei_data->md_logger->reset_user_proxy( position->proxy_file() ).reset_context( position->edg_id(), position->sequence_code() );
+    }
 
     if( this->ei_data->md_aborted->search(this->ei_condor) ) { // Job got an error
       elog::cedglog << logger::setlevel( logger::debug )
@@ -89,44 +84,39 @@ void EventAborted::process_event( void )
 
       this->ei_data->md_logger->aborted_by_system_event( ei_s_joberror );
 
-      if( this->ei_data->md_isDagLog )
-	jccommon::JobFilePurger( this->ei_data->md_dagId, position->edg_id() ).do_purge();
-      else {
-	jccommon::JobFilePurger( position->edg_id() ).do_purge();
+	jccommon::JobFilePurger( position->edg_id(), this->ei_data->md_logger->have_lbproxy()).do_purge();
 	// Only resubmit common jobs...
 	this->ei_data->md_resubmitter->resubmit( position->last_status(), position->edg_id(), position->sequence_code(), this->ei_data->md_container );
-      }
     }
     else { // Job had a "normal" life cycle...
       elog::cedglog << logger::setlevel( logger::debug )
                     << "Job has been aborted by the user." << endl;
+
+      if (0 == strncmp(ea_event->getReason(), periodic_remove_msg, strlen(periodic_remove_msg)))
+        {
+          elog::cedglog << logger::setlevel( logger::info ) << " reason: " << ea_event->getReason() << "; periodic remove triggered a resubmit" << endl;
+
+          this->ei_data->md_aborted->remove( this->ei_condor );
+          this->ei_data->md_logger->aborted_by_system_event( ei_s_joberror );
+
+	        jccommon::JobFilePurger( position->edg_id(), this->ei_data->md_logger->have_lbproxy()).do_purge();
+          this->ei_data->md_resubmitter->resubmit(
+            position->last_status(), position->edg_id(), position->sequence_code(), this->ei_data->md_container
+          );
+
+          this->ei_data->md_container->remove(position);
+          return;
+      }
+
       this->ei_data->md_logger->aborted_by_user_event();
 
-      if( this->ei_data->md_isDagLog )
-	jccommon::JobFilePurger( this->ei_data->md_dagId, position->edg_id() ).do_purge( true ); // Remove also Sandbox
-      else {
 	jccommon::ProxyUnregistrar( position->edg_id() ).unregister();
-	jccommon::JobFilePurger( position->edg_id() ).do_purge( true ); // Remove also Sandbox
-      }
-    }
-
-    if( this->ei_data->md_isDagLog && this->ei_data->md_sizefile->completed() ) {
-      elog::cedglog << logger::setlevel( logger::info )
-		    << "Seems we are sending the last event during a removal of this DAG." << endl
-		    << logger::setlevel( logger::debug )
-		    << ei_s_dagideq << this->ei_data->md_dagId << endl
-		    << logger::setlevel( logger::info ) << "Removing DAG proxy and files." << endl;
-
-      jccommon::ProxyUnregistrar( this->ei_data->md_dagId ).unregister();
-      jccommon::JobFilePurger( this->ei_data->md_dagId, true ).do_purge( true );
+	jccommon::JobFilePurger( position->edg_id(), this->ei_data->md_logger->have_lbproxy()).do_purge( true ); // Remove also Sandbox
     }
 
     if( this->ei_data->md_container->remove(position) ) {
       elog::cedglog << logger::setlevel( logger::fatal ) << ei_s_errremcorr << endl
 		    << "For job: " << position->edg_id() << endl;
-
-      if( this->ei_data->md_isDagLog )
-	elog::cedglog << ei_s_subnodeof << this->ei_data->md_dagId << endl;
 
       elog::cedglog << "Running in cluster: " << this->ei_condor << endl;
 
@@ -139,4 +129,4 @@ void EventAborted::process_event( void )
 
 }} // namespace processer, logmonitor
 
-} JOBCONTROL_NAMESPACE_END;
+} JOBCONTROL_NAMESPACE_END

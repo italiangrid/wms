@@ -1,8 +1,23 @@
+/* Copyright (c) Members of the EGEE Collaboration. 2004.
+See http://www.eu-egee.org/partners/ for details on the copyright
+holders.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License. */
 #include <iostream>
 
 #include "glite/wms/common/logger/logstream.h"
 #include "glite/wms/common/logger/manipulators.h"
-#include "glite/wms/common/utilities/FileList.h"
+#include "common/filelist.h"
 
 #include "jobcontrol_namespace.h"
 #include "AbortedContainer.h"
@@ -12,7 +27,6 @@ USING_COMMON_NAMESPACE;
 RenameLogStreamNS( elog );
 
 JOBCONTROL_NAMESPACE_BEGIN {
-
 namespace logmonitor {
 
 void AbortedContainer::onConstruct( void )
@@ -54,8 +68,7 @@ bool AbortedContainer::insert( const string &condorId )
       end = this->ac_filelist.end();
       this->ac_pointers.insert( Map::value_type(condorId, --end) );
       this->ac_inserted += 1;
-    }
-    catch( utilities::FileContainerError &err ) {
+    } catch(glite::wms::jobsubmission::jccommon::FileContainerError const& err) {
       logger::StatePusher    pusher( elog::cedglog, "AbortedContainer::insert()" );
 
       elog::cedglog << logger::setlevel( logger::null )
@@ -80,8 +93,7 @@ bool AbortedContainer::remove( const string &condorId )
     try {
       this->ac_filelist.erase( mIt->second );
       this->ac_pointers.erase( mIt );
-    }
-    catch( utilities::FileContainerError &err ) {
+    } catch(glite::wms::jobsubmission::jccommon::FileContainerError const& err) {
       logger::StatePusher     pusher( elog::cedglog, "AbortedContainer::insert()" );
 
       elog::cedglog << logger::setlevel( logger::null )
@@ -105,6 +117,5 @@ void AbortedContainer::compact( void )
   return;
 }
 
-}; // Namespace logmonitor
-
-} JOBCONTROL_NAMESPACE_END;
+} // namespace logmonitor
+} JOBCONTROL_NAMESPACE_END

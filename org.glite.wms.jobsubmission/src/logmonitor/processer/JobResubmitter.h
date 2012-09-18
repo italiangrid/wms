@@ -1,11 +1,25 @@
+/* Copyright (c) Members of the EGEE Collaboration. 2004.
+See http://www.eu-egee.org/partners/ for details on the copyright
+holders.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License. */
 #ifndef EDG_WORKLOAD_JOBCONTROL_LOGMONITOR_PROCESSER_JOBRESUBMITTER_H
 #define EDG_WORKLOAD_JOBCONTROL_LOGMONITOR_PROCESSER_JOBRESUBMITTER_H
 
 #include <classad_distribution.h>
 
-#include "glite/wms/common/utilities/FileList.h"
 #include "glite/wms/common/utilities/jobdir.h"
-#include "common/IdContainer.h"
+#include "common/id_container.h"
 
 JOBCONTROL_NAMESPACE_BEGIN {
 
@@ -13,33 +27,25 @@ namespace jccommon {
   class EventLogger;
 }
 
-namespace logmonitor {
-namespace processer {
+namespace logmonitor { namespace processer {
 
 class JobResubmitter {
-  typedef  glite::wms::common::utilities::FileList<classad::ClassAd>   FileList;
   typedef  glite::wms::common::utilities::JobDir                       JD;
 
 public:
-  JobResubmitter(boost::shared_ptr<jccommon::EventLogger> logger);
-  ~JobResubmitter();
+  JobResubmitter( jccommon::EventLogger *logger );
+  ~JobResubmitter( void );
 
-  void resubmit(
-    int laststatus,
-    const std::string &edgid,
-    const std::string &sequence_code,
-    boost::shared_ptr<jccommon::IdContainer> container
-  );
+  void resubmit( int laststatus, const std::string &edgid, const std::string &sequence_code, jccommon::IdContainer *container = NULL );
 
 private:
-  FileList                 jr_list;
   JD                      *jr_jobdir;
-  boost::shared_ptr<jccommon::EventLogger> jr_logger;
+  jccommon::EventLogger   *jr_logger;
 };
 
-}}; // Namespace processer, logmonitor
+}} // Namespace processer, logmonitor
 
-} JOBCONTROL_NAMESPACE_END;
+} JOBCONTROL_NAMESPACE_END
 
 #endif /* EDG_WORKLOAD_JOBCONTROL_LOGMONITOR_PROCESSER_JOBRESUBMITTER_H */
 

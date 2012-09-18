@@ -1,19 +1,43 @@
+/* Copyright (c) Members of the EGEE Collaboration. 2004.
+See http://www.eu-egee.org/partners/ for details on the copyright
+holders.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License. */
 #ifndef EDG_WORKLOAD_JOBCONTROL_CONTROLLER_JOBCONTROLLERIMPL_H
 #define EDG_WORKLOAD_JOBCONTROL_CONTROLLER_JOBCONTROLLERIMPL_H
 
 // File: JobControllerImpl.h
 // Author: Francesco Giacomini <Francesco.Giacomini@cnaf.infn.it>
 //         Rosario Peluso <Rosario.Peluso@pd.infn.it>
-// Copyright (c) 2001 EU DataGrid.
-// For license conditions see http://www.eu-datagrid.org/license.html
 
-// $Id$
+// Copyright (c) Members of the EGEE Collaboration. 2009. 
+// See http://www.eu-egee.org/partners/ for details on the copyright holders.  
 
-#include <vector>
+// Licensed under the Apache License, Version 2.0 (the "License"); 
+// you may not use this file except in compliance with the License. 
+// You may obtain a copy of the License at 
+//     http://www.apache.org/licenses/LICENSE-2.0 
+// Unless required by applicable law or agreed to in writing, software 
+// distributed under the License is distributed on an "AS IS" BASIS, 
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+// See the License for the specific language governing permissions and 
+// limitations under the License.
 
-#include <glite/wmsutils/jobid/JobId.h>
+// $Id: JobControllerImpl.h,v 1.4.28.1.6.4 2010/02/17 10:12:40 mcecchi Exp $
 
-COMMON_SUBNAMESPACE_CLASS_J(jobid, JobId);
+#include <glite/jobid/JobId.h>
+
+COMMON_SUBNAMESPACE_CLASS_J(jobid, JobId );
 
 namespace classad { class ClassAd; }
 
@@ -34,10 +58,14 @@ namespace controller {
  */
 class JobControllerImpl {
 public:
-  JobControllerImpl() { }
-  virtual ~JobControllerImpl() { }
-
-  virtual int msubmit(std::vector<classad::ClassAd *>&) = 0;
+  /**
+   *  Empty constructor.
+   */
+  JobControllerImpl( void ) {}
+  /**
+   *  Empty virtual destructor.
+   */
+  virtual ~JobControllerImpl( void ) {}
 
   /**
    *  Submit a job.
@@ -46,7 +74,7 @@ public:
    *  \param ad The ClassAd containing all the informations about the job.
    *  \return Implementation dependent integer. Don't cope on it.
    */
-  virtual int submit(classad::ClassAd *ad) = 0;
+  virtual int submit( const classad::ClassAd *ad ) = 0;
   /**
    *  Remove a job.
    *  Remove a job from the queue using its JOB ID.
@@ -54,7 +82,7 @@ public:
    *  \param logfile The file where condor is logging for such job.
    *  \return \a true if everything went well, \a false otherwise
    */
-  virtual bool cancel( const glite::wmsutils::jobid::JobId &id, const char *logfile ) = 0;
+  virtual bool cancel( const glite::jobid::JobId &id, const char *logfile ) = 0;
   /**
    *  Remove a job.
    *  Remove a job from the queue using its condor ID.
@@ -63,15 +91,21 @@ public:
    *  \return Implementation dependent integer. Don't cope on it.
    */
   virtual bool cancel( int condorid, const char *logfile ) = 0;
+  virtual bool release(int condorid, char const* logfile ) = 0;
+  /**
+   *  Ask for the queue size.
+   *  \return The number of request still in the queue.
+   */
+  virtual size_t queue_size( void ) = 0;
 
 private:
   JobControllerImpl( const JobControllerImpl &rhs ); // Not implemented
   JobControllerImpl &operator=( const JobControllerImpl &rhs ); // Not implemented
 };
 
-}; // namespace controller
+} // namespace controller
 
-} JOBCONTROL_NAMESPACE_END;
+} JOBCONTROL_NAMESPACE_END
 
 #endif /* EDG_WORKLOAD_JOBCONTROL_CONTROLLER_JOBCONTROLLERIMPL_H */
 

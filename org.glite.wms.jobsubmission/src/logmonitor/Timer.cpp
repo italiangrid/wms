@@ -1,3 +1,18 @@
+/* Copyright (c) Members of the EGEE Collaboration. 2004.
+See http://www.eu-egee.org/partners/ for details on the copyright
+holders.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License. */
 #include <cstdio>
 #include <ctime>
 #include <cstring>
@@ -10,7 +25,7 @@
 
 #include <boost/lexical_cast.hpp>
 
-#include <user_log.c++.h>
+#include <condor/user_log.c++.h>
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -55,12 +70,12 @@ char *myStrdup( const string &s )
   return pc;
 }
 
-}; // Anonymous namespace
+} // Anonymous namespace
 
 const char   *TimeoutEvent::te_s_Timeout = "Timeout", *TimeoutEvent::te_s_EventNumber = "EventNumber";
 const char   *TimeoutEvent::te_s_EventTime = "EventTime", *TimeoutEvent::te_s_Cluster = "Cluster";
 const char   *TimeoutEvent::te_s_Proc = "Proc", *TimeoutEvent::te_s_SubProc = "SubProc";
-const char   *TimeoutEvent::te_s_SubmitHost = "SubmitHost", *TimeoutEvent::te_s_LogNotes = "LogNotes";
+const char   *TimeoutEvent::te_s_LogNotes = "LogNotes";
 const char   *TimeoutEvent::te_s_ExecuteHost = "ExecuteHost", *TimeoutEvent::te_s_Node = "Node";
 const char   *TimeoutEvent::te_s_ExecErrorType = "ExecErrorType";
 const char   *TimeoutEvent::te_s_RunLocalRusage = "RunLocalRusage", *TimeoutEvent::te_s_RunRemoteRusage = "RunRemoteRusage";
@@ -74,21 +89,14 @@ const char   *TimeoutEvent::te_s_Size = "Size", *TimeoutEvent::te_s_NumPids = "N
 const char   *TimeoutEvent::te_s_Message = "Message", *TimeoutEvent::te_s_Info = "Info";
 const char   *TimeoutEvent::te_s_RmContact = "RmContact", *TimeoutEvent::te_s_JmContact = "JmContact";
 const char   *TimeoutEvent::te_s_RestartableJM = "RestartableJM", *TimeoutEvent::te_s_CheckPointed = "CheckPointed";
-#if CONDORG_AT_LEAST(6,5,3)
   const char   *TimeoutEvent::te_s_DaemonName = "DaemonName", *TimeoutEvent::te_s_ErrorStr = "ErrorText"; 
   const char   *TimeoutEvent::te_s_CriticalError = "CriticalError";
   const char   *TimeoutEvent::te_s_ReasonCode = "ReasonCode", *TimeoutEvent::te_s_ReasonSubCode = "ReasonSubCode";
   const char   *TimeoutEvent::te_s_UserNotes = "UserNotes";
-#endif
-#if CONDORG_AT_LEAST(6,7,0)
   const char   *TimeoutEvent::te_s_StartdAddr = "StartdAddr", *TimeoutEvent::te_s_StartdName = "StartdName";
   const char   *TimeoutEvent::te_s_StarterAddr = "StartesAddr", *TimeoutEvent::te_s_DisconnReason = "DisconnReason";
   const char   *TimeoutEvent::te_s_NoReconnReason = "NoReconnReason", *TimeoutEvent::te_s_CanReconn = "CanReconn";
-#endif
-#if CONDORG_AT_LEAST(6,7,14)
   const char   *TimeoutEvent::te_s_ResourceName= "GridResource", *TimeoutEvent::te_s_JobId = "GridJobId";
-#endif
-
 
 namespace {
 
@@ -143,7 +151,7 @@ Rusage toRusage( const classad::ClassAd *ad )
   return ru;
 }
 
-}; // Anonymous namespace
+} // Anonymous namespace
 
 TimeoutEvent::TimeoutEvent( time_t epoch, ULogEvent *event ) : te_epoch( epoch ), te_event( event ), te_classad(), te_pointer()
 {}
@@ -181,29 +189,20 @@ classad::ClassAd *TimeoutEvent::to_classad( void )
     switch( this->te_event->eventNumber ) {
     case ULOG_SUBMIT: {
       SubmitEvent    *sev = dynamic_cast<SubmitEvent *>( this->te_event.get() );
-      NullString      host( sev->submitHost );
 
-      this->te_classad->InsertAttr( te_s_SubmitHost, host );
       if( sev->submitEventLogNotes ) {
 	NullString    lnotes( sev->submitEventLogNotes );
 
 	this->te_classad->InsertAttr( te_s_LogNotes, lnotes );
       }
-#if CONDORG_AT_LEAST(6,5,3)
       if( sev->submitEventUserNotes ) {
 	NullString    unotes( sev->submitEventUserNotes );
 	
 	this->te_classad->InsertAttr( te_s_UserNotes, unotes );
       }
-#endif
       break;
     }
     case ULOG_EXECUTE: {
-      ExecuteEvent   *eev = dynamic_cast<ExecuteEvent *>( this->te_event.get() );
-      NullString      host( eev->executeHost );
-
-      this->te_classad->InsertAttr( te_s_ExecuteHost, host );
-
       break;
     }
     case ULOG_EXECUTABLE_ERROR: {
@@ -260,8 +259,8 @@ classad::ClassAd *TimeoutEvent::to_classad( void )
     }
     case ULOG_IMAGE_SIZE: {
       JobImageSizeEvent   *jisev = dynamic_cast<JobImageSizeEvent *>( this->te_event.get() );
-
-      this->te_classad->InsertAttr( te_s_Size, jisev->size );
+      int size = jisev->image_size_kb;
+      this->te_classad->InsertAttr(te_s_Size, size);
 
       break;
     }
@@ -304,11 +303,8 @@ classad::ClassAd *TimeoutEvent::to_classad( void )
       NullString      reason( jhev->getReason() );
 
       this->te_classad->InsertAttr( te_s_Reason, reason );
-#if CONDORG_AT_LEAST(6,5,3)
       this->te_classad->InsertAttr( te_s_ReasonCode, jhev->getReasonCode() );
       this->te_classad->InsertAttr( te_s_ReasonSubCode, jhev->getReasonSubCode() );
-#endif
-
 
       break;
     }
@@ -322,9 +318,6 @@ classad::ClassAd *TimeoutEvent::to_classad( void )
     }
     case ULOG_NODE_EXECUTE: {
       NodeExecuteEvent    *neev = dynamic_cast<NodeExecuteEvent *>( this->te_event.get() );
-      NullString           host( neev->executeHost );
-
-      this->te_classad->InsertAttr( te_s_ExecuteHost, host );
       this->te_classad->InsertAttr( te_s_Node, neev->node );
 
       break;
@@ -392,7 +385,6 @@ classad::ClassAd *TimeoutEvent::to_classad( void )
 
       break;
     }
-#if CONDORG_AT_LEAST(6,5,3)
     case ULOG_REMOTE_ERROR: {
       RemoteErrorEvent          *reev = dynamic_cast<RemoteErrorEvent *>( this->te_event.get() );
       NullString                 exeHost( reev->getExecuteHost() );
@@ -406,8 +398,6 @@ classad::ClassAd *TimeoutEvent::to_classad( void )
 
       break;
     }
-#endif
-#if CONDORG_AT_LEAST(6,7,0) 
     case ULOG_JOB_DISCONNECTED: {
       JobDisconnectedEvent     *jdcev = dynamic_cast<JobDisconnectedEvent *>( this->te_event.get() );
       NullString                startdAddr( jdcev->getStartdAddr() );
@@ -445,8 +435,6 @@ classad::ClassAd *TimeoutEvent::to_classad( void )
 
       break;
     }
-#endif
-#if CONDORG_AT_LEAST(6,7,14)
     case ULOG_GRID_SUBMIT: {
       GridSubmitEvent     *gsev = dynamic_cast<GridSubmitEvent *>( this->te_event.get() );
       NullString           resourceName( gsev->resourceName ), jobId( gsev->jobId );
@@ -472,7 +460,6 @@ classad::ClassAd *TimeoutEvent::to_classad( void )
 
       break;
     }
-#endif // 6.7.14 and beyond
     } 
   }
   return this->te_classad.get();
@@ -504,16 +491,10 @@ ULogEvent *TimeoutEvent::to_event( void )
     case ULOG_SUBMIT: {
       SubmitEvent   *sev = dynamic_cast<SubmitEvent *>( this->te_event.get() );
 
-      this->te_classad->EvaluateAttrString( te_s_SubmitHost, sval );
-      strncpy( sev->submitHost, sval.c_str(), 128 );
-
       if( this->te_classad->EvaluateAttrString(te_s_LogNotes, sval) )
 	sev->submitEventLogNotes = myStrdup( sval );
-#if CONDORG_AT_LEAST(6,5,3)
       if( this->te_classad->EvaluateAttrString(te_s_UserNotes, sval) )
 	sev->submitEventUserNotes = myStrdup( sval );
-#endif
-
 
       break;
     }
@@ -521,7 +502,7 @@ ULogEvent *TimeoutEvent::to_event( void )
       ExecuteEvent   *eev = dynamic_cast<ExecuteEvent *>( this->te_event.get() );
 
       this->te_classad->EvaluateAttrString( te_s_ExecuteHost, sval );
-      strncpy( eev->executeHost, sval.c_str(), 128 );
+      eev->setExecuteHost(myStrdup(sval.substr(0, 128)));
 
       break;
     }
@@ -597,7 +578,8 @@ ULogEvent *TimeoutEvent::to_event( void )
     case ULOG_IMAGE_SIZE: {
       JobImageSizeEvent   *jisev = dynamic_cast<JobImageSizeEvent *>( this->te_event.get() );
 
-      this->te_classad->EvaluateAttrNumber( te_s_Size, jisev->size );
+      int size = jisev->image_size_kb;
+      this->te_classad->EvaluateAttrNumber(te_s_Size, size);
 
       break;
     }
@@ -641,12 +623,10 @@ ULogEvent *TimeoutEvent::to_event( void )
 
       this->te_classad->EvaluateAttrString( te_s_Reason, sval );
       jhev->setReason( myStrdup(sval) );
-#if CONDORG_AT_LEAST(6,5,3)
       this->te_classad->EvaluateAttrNumber( te_s_ReasonCode, ival );
       jhev->setReasonCode( ival );
       this->te_classad->EvaluateAttrNumber( te_s_ReasonSubCode, ival );
       jhev->setReasonSubCode( ival );
-#endif
 
       break;
     }
@@ -664,7 +644,7 @@ ULogEvent *TimeoutEvent::to_event( void )
       this->te_classad->EvaluateAttrNumber( te_s_Node, neev->node );
 
       this->te_classad->EvaluateAttrString( te_s_ExecuteHost, sval );
-      strncpy( neev->executeHost, sval.c_str(), 128 );
+      neev->setExecuteHost(myStrdup(sval.substr(0, 128)));
 
       break;
     }
@@ -742,7 +722,6 @@ ULogEvent *TimeoutEvent::to_event( void )
 
       break;
     }
-#if CONDORG_AT_LEAST(6,5,3)
     case ULOG_REMOTE_ERROR: {
       bool                     bval;
       RemoteErrorEvent        *reev = dynamic_cast<RemoteErrorEvent *>( this->te_event.get() );
@@ -758,8 +737,6 @@ ULogEvent *TimeoutEvent::to_event( void )
      
       break;
     }
-#endif
-#if CONDORG_AT_LEAST(6,7,0) 
     case ULOG_JOB_DISCONNECTED: {
       JobDisconnectedEvent     *jdcev = dynamic_cast<JobDisconnectedEvent *>( this->te_event.get() );
                                                                                                                        
@@ -796,8 +773,6 @@ ULogEvent *TimeoutEvent::to_event( void )
 
       break;
     }
-#endif
-#if CONDORG_AT_LEAST(6,7,14)
     case ULOG_GRID_SUBMIT: {
       GridSubmitEvent    *gsev = dynamic_cast<GridSubmitEvent *>( this->te_event.get() );
 
@@ -825,7 +800,6 @@ ULogEvent *TimeoutEvent::to_event( void )
 
       break;
     }
-#endif // 6.7.14 and beyond
     }
   }
 
@@ -925,6 +899,6 @@ Timer &Timer::remove_all_timeouts( int condorid )
   return *this;
 }
 
-}; // Namespace logmonitor
+} // Namespace logmonitor
 
-} JOBCONTROL_NAMESPACE_END;
+} JOBCONTROL_NAMESPACE_END
