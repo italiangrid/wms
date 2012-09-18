@@ -17,7 +17,7 @@
 #include <config.h>
 #endif
 
-#include <globus_gram_protocol_constants.h>
+#include <globus/globus_gram_protocol_constants.h>
 
 #include "glite/wms/common/configuration/Configuration.h"
 #include "glite/wms/common/configuration/WMConfiguration.h"
