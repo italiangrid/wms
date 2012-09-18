@@ -1,3 +1,4 @@
+#
 #       Copyright (c) 2004 on behalf of the EU EGEE Project:
 #       The European Organization for Nuclear Research (CERN),
 #       Istituto Nazionale di Fisica Nucleare (INFN), Italy
@@ -101,3 +102,4 @@ AC_CONFIG_FILES([src/programs/Makefile])
 AC_CONFIG_FILES([test/Makefile])
 
 AC_OUTPUT
+

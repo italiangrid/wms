@@ -17,7 +17,7 @@
 // See the License for the specific language governing permissions and 
 // limitations under the License.
 
-// $Id: jobdir.cpp,v 1.3.2.5.2.2 2009/02/13 12:43:33 mcecchi Exp $
+// $Id$
  
 #include "glite/wms/common/utilities/jobdir.h"
 #include <cerrno>
@@ -250,3 +250,4 @@ bool JobDir::create(fs::path const& base_dir) try
 }
 
 }}}} // glite::wms::common::utilities
+

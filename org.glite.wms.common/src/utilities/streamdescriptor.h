@@ -93,7 +93,3 @@ inline bool create_file( const char *name ) { return false; }
 } // glite namespace
 
 #endif /* GLITE_WMS_COMMON_UTILITIES_STREAMDESCRIPTOR_H */
-
-// Local Variables:
-// mode: c++
-// End:

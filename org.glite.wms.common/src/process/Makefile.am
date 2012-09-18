@@ -13,6 +13,8 @@ libglite_wms_process_la_SOURCES = \
 	subprocess.cpp \
 	user.cpp
 
+libglite_wms_process_la_LIBADD = $(BOOST_LIBS)
+
 processincludedir = $(includedir)/glite/wms/common/process
 processinclude_HEADERS = \
 	process.h \

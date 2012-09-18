@@ -16,15 +16,24 @@ libglite_wms_conf_la_SOURCES = \
 	LMConfiguration.cpp \
 	ICEConfiguration.cpp \
 	WMConfiguration.cpp \
+	WMCConfiguration.cpp \
         WMPConfiguration.cpp \
 	CommonConfiguration.cpp \
 	confbase.cpp \
 	exceptions.cpp \
 	ModuleType.cpp
 
+libglite_wms_conf_la_LIBADD = $(GLITE_WMSUTILS_CLASSADS_LIBS) \
+			        $(BOOST_LIBS) \
+			        $(CLASSAD_LIBS)
+
 libglite_wms_conf_wrapper_la_SOURCES = \
 	initializer.cpp \
 	cwrapper.cpp
+
+libglite_wms_conf_wrapper_la_LIBADD = $(GLITE_WMSUTILS_CLASSADS_LIBS) \
+                                $(BOOST_LIBS) \
+                                $(CLASSAD_LIBS)
 
 configurationincludedir = $(includedir)/glite/wms/common/configuration
 configurationinclude_HEADERS = \
@@ -35,6 +44,7 @@ configurationinclude_HEADERS = \
 	ICEConfiguration.h \
 	NSConfiguration.h \
 	WMConfiguration.h \
+	WMCConfiguration.h \
         WMPConfiguration.h
 
 EXTRA_DIST = JCConfiguration.h.G \
@@ -42,6 +52,7 @@ EXTRA_DIST = JCConfiguration.h.G \
 	ICEConfiguration.h.G \
 	NSConfiguration.h.G \
 	WMConfiguration.h.G \
+	WMCConfiguration.h.G \
         WMPConfiguration.h.G \
 	CommonConfiguration.h.G \
 	cwrapper.h.G \
@@ -50,7 +61,7 @@ EXTRA_DIST = JCConfiguration.h.G \
 
 AM_CPPFLAGS = -I$(top_srcdir)/interface \
 	-I$(top_srcdir)/src \
-	$(GLITE_CFLAGS) \
+	$(GLITE_WMSUTILS_CLASSADS_CFLAGS) \
 	$(BOOST_CFLAGS) \
 	$(CLASSAD_CFLAGS)
 
@@ -59,6 +70,7 @@ CLEANFILES = $(srcdir)/JCConfiguration.h \
 	$(srcdir)/ICEConfiguration.h \
         $(srcdir)/NSConfiguration.h \
         $(srcdir)/WMConfiguration.h \
+        $(srcdir)/WMCConfiguration.h \
         $(srcdir)/WMPConfiguration.h \
         $(srcdir)/CommonConfiguration.h \
         $(srcdir)/cwrapper.{cpp,h}
@@ -69,7 +81,7 @@ MAINTAINERCLEANFILES = \
 
 GENERATOR_DEFINITION_FILE = $(srcdir)/Configuration.def
 
-Configuration.cpp:	JCConfiguration.h LMConfiguration.h ICEConfiguration.h NSConfiguration.h WMConfiguration.h WMPConfiguration.h CommonConfiguration.h
-initializer.cpp:	cwrapper.h cwrapper.cpp
+$(top_srcdir)/src/configuration/Configuration.cpp:	JCConfiguration.h LMConfiguration.h ICEConfiguration.h NSConfiguration.h WMConfiguration.h WMCConfiguration.h WMPConfiguration.h CommonConfiguration.h
+$(top_srcdir)/src/configuration/initializer.cpp:	cwrapper.h cwrapper.cpp
 
 include $(top_srcdir)/src/scripts/Makefile.gen

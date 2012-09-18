@@ -9,6 +9,7 @@
 #include "LMConfiguration.h"
 #include "NSConfiguration.h"
 #include "WMConfiguration.h"
+#include "WMCConfiguration.h"
 #include "WMPConfiguration.h"
 #include "ICEConfiguration.h"
 
@@ -20,6 +21,7 @@ using namespace glite::wms::common;
 /* Tmpl: wrap class LMConfiguration */
 /* Tmpl: wrap class NSConfiguration */
 /* Tmpl: wrap class WMConfiguration */
+/* Tmpl: wrap class WMCConfiguration */
 /* Tmpl: wrap class WMPConfiguration */
 /* Tmpl: wrap class ICEConfiguration */
 

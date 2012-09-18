@@ -11,52 +11,14 @@
 #       University of Bergen (UiB), Norway
 #       Council for the Central Laboratory of the Research Councils (CCLRC), United Kingdom
 #
-#       Authors: Elisabetta Ronchieri <elisabetta.ronchieri@cnaf.infn.it>
-#       Version info: $Id$
-#       Release: $Name$
-#
-#       Revision history:
-#       $Log$
-#       Revision 1.13  2012/09/07 11:50:28  mcecchi
-#       moved from configuration
-#
-#       Revision 1.12  2007/11/22 22:40:03  giaco
-#       - general cleanup of the build system
-#       - now a single library libglite_wms_common instead of N, as it was before.
-#         The single lib contains only utilities, configuration and logger. All
-#         the other functionality will be embedded in the component that makes
-#         direct use of it
-#
-#       Revision 1.11  2005/06/10 15:07:21  giaco
-#       - exclude test from SUBDIRS, it doesn't build
-#
-#       Revision 1.10  2004/10/11 15:12:36  eronchie
-#       Added LICENSE handling
-#
-#       Revision 1.9  2004/07/23 07:47:55  eronchie
-#       Removed test in SUBDIRS
-#
-#       Revision 1.8  2004/06/18 12:12:42  eronchie
-#       Start handling interface
-#
-#       Revision 1.7  2004/06/16 15:51:36  eronchie
-#       Added configure options
-#       WARNING: work in progress
-#
-#       Revision 1.6  2004/06/15 23:07:26  dimeglio
-#       Added licence boilerplate
-#
-#
-
-## Process this file with automake to produce Makefile.in
 
 EXTRA_DIST = LICENSE
 
-docdir = $(datadir)/doc/@PACKAGE@-@VERSION@
+docdir = $(datadir)/doc/@PACKAGE@-@PVER@
 doc_DATA = LICENSE
 
 ## Subdirectories list
-SUBDIRS = src interface config
+SUBDIRS = interface src
 
 ## Default flags to run aclocal
 ACLOCAL_AMFLAGS = -I project

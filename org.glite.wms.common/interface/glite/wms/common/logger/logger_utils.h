@@ -18,7 +18,7 @@ limitations under the License.
 // File: logger_utils.h
 // Author: Francesco Giacomini <Francesco.Giacomini@cnaf.infn.it>
 
-// $Id: logger_utils.h,v 1.3.36.1 2010/04/08 12:49:01 mcecchi Exp $
+// $Id$
 
 #ifndef GLITE_WMS_COMMON_LOGGER_LOGGER_UTILS_H
 #define GLITE_WMS_COMMON_LOGGER_LOGGER_UTILS_H

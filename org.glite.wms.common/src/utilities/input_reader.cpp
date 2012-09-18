@@ -18,7 +18,7 @@ limitations under the License.
 // File: input_reader.cpp
 // Author: Francesco Giacomini
 
-// $Id: input_reader.cpp,v 1.1.2.3.4.1 2010/04/08 12:49:02 mcecchi Exp $
+// $Id$
 
 #include "glite/wms/common/utilities/input_reader.h"
 
@@ -36,4 +36,3 @@ InputReader::~InputReader()
 }
 
 }}}}
-

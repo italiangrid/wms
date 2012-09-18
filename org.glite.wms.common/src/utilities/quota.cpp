@@ -26,6 +26,7 @@ limitations under the License.
 #include <iostream>
 #include <mntent.h>
 #include <cstring>
+#include <cstdio>
 #include <string>
 
 #ifdef B_THREAD_SAFE
@@ -97,11 +98,11 @@ bool file2device(const std::string &filename, std::string &device )
     if (stat(mnt->mnt_fsname, &st2) == -1) continue;
     if (st.st_dev == st2.st_rdev) {
       device = std::string(mnt->mnt_fsname);
-      fclose(fp);
+      ::fclose(fp);
       return true;
     }
   }
-  fclose(fp);
+  ::fclose(fp);
   return false;
 }
 

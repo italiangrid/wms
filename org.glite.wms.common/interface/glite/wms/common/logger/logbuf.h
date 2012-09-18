@@ -71,12 +71,13 @@ private:
 
   static const char  *lb_s_letterLevels;
 
-  bool                lb_remove, lb_rotate, lb_bad_file;
+  bool                lb_remove, lb_rotate;
   unsigned int        lb_maxfiles;
   std::streamsize     lb_current, lb_maxsize;
   std::streambuf     *lb_buffer;
   std::string         lb_basename;
   data_c              lb_data;
+  bool lb_bad_file;
 };
 
 } // logger namespace

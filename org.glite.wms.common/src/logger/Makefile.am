@@ -15,17 +15,13 @@ libglite_wms_logger_la_SOURCES = \
 	manipulators.cpp \
 	logstream_ts.cpp \
 	container_ts.cpp \
-	manipulators_ts.cpp \
-	key_value.cpp \
-	logging.cpp
-libglite_wms_logger_la_LIBADD = \
-	-llog4cpp \
-	$(BOOST_REGEX_LIBS) \
-	$(BOOST_THREAD_LIBS) \
-	$(BOOST_FS_LIBS)
+	manipulators_ts.cpp
+
+libglite_wms_logger_la_LIBADD = $(BOOST_LIBS)
 
 AM_CPPFLAGS = -I$(top_srcdir)/interface \
 	-I$(top_srcdir)/src \
 	$(BOOST_CFLAGS)
 
 MAINTAINERCLEANFILES = Makefile.in *~
+

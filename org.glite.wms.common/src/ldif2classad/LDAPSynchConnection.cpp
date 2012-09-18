@@ -1,4 +1,5 @@
-/* Copyright (c) Members of the EGEE Collaboration. 2004.
+/*
+Copyright (c) Members of the EGEE Collaboration. 2004.
 See http://www.eu-egee.org/partners for details on the
 copyright holders.
 
@@ -29,7 +30,7 @@ limitations under the License.
  * @author Salvatore Monforte salvatore.monforte@ct.infn.it
  * @author comments by Marco Pappalardo marco.pappalardo@ct.infn.it and Salvatore Monforte
  */
-// $Id: LDAPSynchConnection.cpp,v 1.6.20.1.4.3.4.1 2012/02/15 09:26:35 mcecchi Exp $
+// $Id$
 
 /** Includes header definitions. */
 #include "glite/wms/common/ldif2classad/LDAPQuery.h"
@@ -199,4 +200,3 @@ bool LDAPSynchConnection::is_established() const
 } // namespace common
 } // namespace wms
 } // namespace glite 
-

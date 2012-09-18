@@ -37,15 +37,8 @@ extern "C" {
 #include <pwd.h>
 #include <mntent.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <sys/vfs.h>
-//#ifdef linux
-//#include <linux/types.h>
-//#include <linux/quota.h>
-//extern int quotactl (int __cmd, const char *__special, int __id,
-//                     caddr_t __addr) __THROW;
-//#else
-//#include <sys/quota.h>
-//#endif
 
 #ifdef QUOTACTL_INCLUDE_LINUX
 #include <linux/types.h>
@@ -154,7 +147,7 @@ int main(int argc, char* argv[])
      if (stat(st_path.c_str(), &st_st) < 0)
       {
        std::cerr << ex_name << ": Error getting information about " <<
-         st_path << " - " << std::string(sys_errlist[errno]) << ". Exiting" <<
+         st_path << " - " << strerror(errno) << ". Exiting" <<
          std::endl;
        exit(9);
       }
@@ -228,7 +221,7 @@ int main(int argc, char* argv[])
      else
       {
        std::cerr << ex_name << ": Warning cannot obtain quota of UID " 
-         << cur_entry->pw_uid << ":" << std::string(sys_errlist[errno]) 
+         << cur_entry->pw_uid << ":" << strerror(errno) 
          << "." << std::endl;
       }
     }
@@ -245,14 +238,14 @@ int main(int argc, char* argv[])
  if (!found_target)
   { 
    std::cerr << ex_name << ": Cannot obtain quota of UID " << target_uid 
-     << ":" << std::string(sys_errlist[errno]) << ". Exiting." << std::endl;
+     << ": " << strerror(errno) << ". Exiting." << std::endl;
    exit(4);
   }
  
 // A few sanity checks.
  if (quota_adjustment < 0)
   {
-   if (target_quota_entry.dqb_bhardlimit < abs(quota_adjustment))
+   if (target_quota_entry.dqb_bhardlimit < (unsigned)abs(quota_adjustment))
     {
      std::cerr << ex_name << ": UID " << target_uid << "'s quota is just " <<
        target_quota_entry.dqb_bhardlimit <<
@@ -285,7 +278,7 @@ int main(int argc, char* argv[])
     {
      std::cerr << ex_name << ": Cannot obtain FS stats of " << 
        std::string(target_mount->mnt_dir)
-       << ":" << std::string(sys_errlist[errno]) << ". Exiting." << std::endl;
+       << ": " << strerror(errno) << ". Exiting." << std::endl;
      exit(6);
     }
 
@@ -313,7 +306,7 @@ int main(int argc, char* argv[])
                (caddr_t)&target_quota_entry) < 0)
   {
    std::cerr << ex_name << ": Cannot adjust quota of UID " << target_uid 
-     << ":" << std::string(sys_errlist[errno]) << ". Exiting." << std::endl;
+     << ": " << strerror(errno) << ". Exiting." << std::endl;
    exit(8);
   }
 

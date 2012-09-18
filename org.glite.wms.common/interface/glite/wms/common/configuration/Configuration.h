@@ -37,6 +37,7 @@ class JCConfiguration;
 class LMConfiguration;
 class NSConfiguration;
 class WMConfiguration;
+class WMCConfiguration;
 class WMPConfiguration;
 class ICEConfiguration;
 class CommonConfiguration;
@@ -54,6 +55,7 @@ public:
   inline const LMConfiguration  *lm( void ) const { return this->c_lm.get(); }
   inline const NSConfiguration  *ns( void ) const { return this->c_ns.get(); }
   inline const WMConfiguration  *wm( void ) const { return this->c_wm.get(); }
+  inline const WMCConfiguration *wc( void ) const { return this->c_wc.get(); }
   inline const WMPConfiguration *wp( void ) const { return this->c_wp.get(); }
   inline const ICEConfiguration *ice( void ) const { return this->c_ice.get(); }
   inline const CommonConfiguration *common( void ) const { return this->c_common.get(); }
@@ -70,6 +72,7 @@ private:
   std::auto_ptr<LMConfiguration>       c_lm;
   std::auto_ptr<NSConfiguration>       c_ns;
   std::auto_ptr<WMConfiguration>       c_wm;
+  std::auto_ptr<WMCConfiguration>      c_wc;
   std::auto_ptr<WMPConfiguration>      c_wp;
   std::auto_ptr<ICEConfiguration>      c_ice;
   std::auto_ptr<CommonConfiguration>   c_common;
