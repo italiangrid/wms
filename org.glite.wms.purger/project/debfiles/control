@@ -1,0 +1,20 @@
+Source:  glite-wms-purger
+Section:  net
+Priority:  optional
+Maintainer:  WMS group <wms-support@lists.infn.it>
+Build-Depends: debhelper (>= 8.0.0~)
+Standards-Version:  3.9.1
+Homepage: http://glite.cern.ch/
+
+Package: glite-wms-purger
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Cleanup module for the Workload Management System
+ Cleanup module for the Workload Management System
+
+Package: glite-wms-purger-dev
+Section: libdevel
+Depends: glite-wms-purger (= ${binary:Version})
+Description: Development files for the WMS purger module
+ Development files for the WMS purger module
+

@@ -17,14 +17,28 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-/*
- *  Define when to remove the stringstream use
- *  from the boost library.
- */
-#undef BOOST_NO_STRINGSTREAM
-                                                                                
-/*
- *  Define when we are sure to have the
- *  right strstream header.
- */
-#undef HAVE_STRINGSTREAM
+// File: ssl_utils.h
+// Author: Salvatore Monforte
+
+// $Id$
+
+#include <string>
+
+namespace sslutils
+{
+
+bool
+proxy_expires_within(
+  std::string const& x509_proxy, 
+  time_t seconds
+);
+
+bool
+proxy_init(
+  std::string const& certfile,
+  std::string const& keyfile,
+  std::string const& outfile,
+  time_t seconds
+);
+
+} // namespace sslutils closure
