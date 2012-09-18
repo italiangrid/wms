@@ -1,10 +1,23 @@
+/* Copyright (c) Members of the EGEE Collaboration. 2004.
+See http://www.eu-egee.org/partners/ for details on the copyright
+holders.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License. */
 #include <string>
 
 #include "glite/wms/common/logger/manipulators.h"
 #include "glite/wms/common/logger/edglog.h"
-#ifdef GLITE_WMS_HAVE_RENEWAL
 #include "glite/security/proxyrenewal/renewal.h"
-#endif
 #include "jobcontrol_namespace.h"
 
 #include "ProxyUnregistrar.h"
@@ -24,15 +37,12 @@ ProxyUnregistrar::~ProxyUnregistrar( void ) {}
 
 void ProxyUnregistrar::unregister( void )
 {
-#ifdef GLITE_WMS_HAVE_RENEWAL
   int      err = 0;
-#endif
   logger::StatePusher      pusher( ts::edglog, "ProxyUnregistrar::unregister()" );
 
   ts::edglog << logger::setlevel( logger::verylow )
 	     << "Unregistering user proxy..." << endl;
 
-#ifdef GLITE_WMS_HAVE_RENEWAL
   err = glite_renewal_UnregisterProxy( this->pu_id.c_str(), NULL );
 
   if( err && (err != EDG_WLPR_PROXY_NOT_REGISTERED) )
@@ -40,13 +50,10 @@ void ProxyUnregistrar::unregister( void )
 	       << "Reason: \"" << edg_wlpr_GetErrorText(err) << "\"." << endl;
   else if( err == EDG_WLPR_PROXY_NOT_REGISTERED )
     ts::edglog << logger::setlevel( logger::null ) << "Job proxy not registered. Going ahead." << endl;
-#else
-  ts::edglog << logger::setlevel( logger::null ) << "Proxy unregistration support not compiled." << endl;
-#endif
 
   return;
 }
 
-}; // Namespace jccommon
+} // Namespace jccommon
 
-} JOBCONTROL_NAMESPACE_END;
+} JOBCONTROL_NAMESPACE_END

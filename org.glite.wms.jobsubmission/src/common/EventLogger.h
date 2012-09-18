@@ -1,11 +1,28 @@
+/* LICENSE:
+Copyright (c) Members of the EGEE Collaboration. 2010. 
+See http://www.eu-egee.org/partners/ for details on the copyright
+holders.  
+
+Licensed under the Apache License, Version 2.0 (the "License"); 
+you may not use this file except in compliance with the License. 
+You may obtain a copy of the License at 
+
+   http://www.apache.org/licenses/LICENSE-2.0 
+
+Unless required by applicable law or agreed to in writing, software 
+distributed under the License is distributed on an "AS IS" BASIS, 
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+implied. 
+See the License for the specific language governing permissions and 
+limitations under the License.
+
+END LICENSE */
 #ifndef EDG_WORKLOAD_JOBCONTROL_COMMON_EVENTLOGGER_H
 #define EDG_WORKLOAD_JOBCONTROL_COMMON_EVENTLOGGER_H
 
 #include <exception>
 
-#ifdef GLITE_WMS_HAVE_LOGGING
 #include "glite/lb/context.h"
-#endif
 
 #include "jobcontrol_namespace.h"
 
@@ -36,11 +53,7 @@ private:
 class EventLogger {
 public:
   EventLogger( void );
-#ifdef GLITE_WMS_HAVE_LOGGING
   EventLogger( edg_wll_Context *cont, int flag = EDG_WLL_SEQ_NORMAL );
-#else
-  EventLogger( edg_wll_Context *cont, int flag = 0 );
-#endif
   ~EventLogger( void );
 
   EventLogger &initialize_jobcontroller_context( ProxySet *ps = NULL );
@@ -51,9 +64,7 @@ public:
 
   EventLogger &reset_user_proxy( const std::string &proxyfile );
 
-#ifdef GLITE_WMS_HAVE_LBPROXY
   EventLogger &set_LBProxy_context( const std::string &jobid, const std::string &sequence, const std::string &proxyfile);
-#endif
 
   /*
     LogMonitor events
@@ -63,7 +74,7 @@ public:
   void globus_submit_event( const std::string &ce, const std::string &rsl, const std::string &logfile );
   void grid_submit_event( const std::string &ce, const std::string &logfile );
   void execute_event( const char *host );
-  void terminated_event( int retcode );
+  void terminated_event( int retcode);
   void failed_on_error_event( const std::string &cause );
   void abort_on_error_event( const std::string &cause );
   void aborted_by_system_event( const std::string &cause );
@@ -107,23 +118,24 @@ public:
   /*
     Queries LB
   */
-  std::string EventLogger::query_condorid( const std::string &jobid );
+  std::string query_condorid( const std::string &jobid );
 
   /*
     Extractors
   */
-  std::string sequence_code();
+  std::string sequence_code( void );
   std::string seq_code_lbproxy( const std::string &jobid );
 
   inline operator edg_wll_Context *( void ) { return this->el_context; }
 
   inline static void set_lb_retries( unsigned int r ) { el_s_retries = r; return; }
   inline static void set_lb_interval( unsigned int sec ) { el_s_sleep = sec; return; }
+  bool have_lbproxy() { return this->el_have_lbproxy; }
 
 private:
   inline void startLogging( void ) { this->el_count = 0; this->el_hostProxy = false; }
 
-  void testCode( int &code, bool retry = false );
+  void test_lb_exitcode( int &code, bool retry = false );
   std::string getLoggingError( const char *preamble );
 
   bool               el_remove, el_hostProxy;
@@ -131,14 +143,15 @@ private:
   unsigned int       el_count;
   edg_wll_Context   *el_context;
   std::string        el_proxy;
+  bool el_have_lbproxy;
 
   static unsigned int         el_s_retries, el_s_sleep;
   static const char          *el_s_notLogged, *el_s_unavailable, *el_s_OK, *el_s_failed;
 };
 
-}; // Namespace common
+} // Namespace common
 
-} JOBCONTROL_NAMESPACE_END;
+} JOBCONTROL_NAMESPACE_END
 
 #endif /* EDG_WORKLOAD_JOBCONTROL_COMMON_EVENTLOGGER_H */
 

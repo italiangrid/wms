@@ -1,3 +1,16 @@
+// Copyright (c) Members of the EGEE Collaboration. 2009. 
+// See http://www.eu-egee.org/partners/ for details on the copyright holders.  
+
+// Licensed under the Apache License, Version 2.0 (the "License"); 
+// you may not use this file except in compliance with the License. 
+// You may obtain a copy of the License at 
+//     http://www.apache.org/licenses/LICENSE-2.0 
+// Unless required by applicable law or agreed to in writing, software 
+// distributed under the License is distributed on an "AS IS" BASIS, 
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+// See the License for the specific language governing permissions and 
+// limitations under the License.
+
 #include <fstream>
 
 #include <classad_distribution.h>
@@ -9,8 +22,8 @@
 #include "glite/wms/common/configuration/LMConfiguration.h"
 #include "glite/wms/common/configuration/NSConfiguration.h"
 
-#include "glite/wmsutils/jobid/JobId.h"
-#include "glite/wmsutils/jobid/manipulation.h"
+#include "glite/jobid/JobId.h"
+#include "glite/wms/common/utilities/manipulation.h"
 
 #include "glite/jdl/PrivateAdManipulation.h"
 #include "glite/wms/common/utilities/boost_fs_add.h"
@@ -29,62 +42,20 @@ namespace jccommon {
 
 const string  Files::f_s_submitPrefix( "Condor." ), Files::f_s_submitSuffix( ".submit" );
 const string  Files::f_s_wrapperPrefix( "JobWrapper." ), Files::f_s_scriptSuffix( ".sh" );
-const string  Files::f_s_classadPrefix( "ClassAd." ), Files::f_s_dagPrefix( "dag." );
+const string  Files::f_s_classadPrefix( "ClassAd." );
 const string  Files::f_s_stdout( "StandardOutput" ), Files::f_s_stderr( "StandardError" );
 const string  Files::f_s_maradona( "Maradona.output" );
-const string  Files::f_s_logPrefix( "CondorG." ), Files::f_s_dagLogPrefix( "dag." ), Files::f_s_logSuffix( ".log" );
+const string  Files::f_s_logPrefix( "CondorG." ), Files::f_s_logSuffix( ".log" );
 const string  Files::f_s_Output( "output" ), Files::f_s_Input( "input" );
 
-Files::path *Files::createDagLogFileName( const string &jobid )
-{
-  const configuration::LMConfiguration    *lmconfig = configuration::Configuration::instance()->lm();
-  string               logdir( fs::normalize_path(lmconfig->condor_log_dir()) ), logname( f_s_dagLogPrefix );
-  std::auto_ptr<path>  logfile;
-
-  logname.append( jobid ); logname.append( f_s_logSuffix );
-  logfile.reset( new path(logdir, fs::native) );
-  *logfile /= logname;
-
-  return logfile.release();
-}
-
-Files::Files( const glite::wmsutils::jobid::JobId &id ) : f_epoch( 0 ), f_submit(), f_classad(), f_outdir(), f_logfile(), f_maradona(),
-					 f_sandbox(), f_insbx(), f_outsbx(), f_dagsubdir(),
-					 f_jobid( glite::wmsutils::jobid::to_filename(id) ), f_dagid(),
-					 f_jobReduced( glite::wmsutils::jobid::get_reduced_part(id), fs::native ),
-					 f_dagReduced()
+Files::Files( const glite::jobid::JobId &id ) : f_epoch( 0 ), f_submit(), f_classad(), f_outdir(), f_logfile(), f_maradona(),
+					 f_sandbox(), f_insbx(), f_outsbx(),
+					 f_jobid( utilities::to_filename(id) ),
+					 f_jobReduced( utilities::get_reduced_part(id), fs::native )
 
 {}
 				
-Files::Files( const glite::wmsutils::jobid::JobId &dagid, const glite::wmsutils::jobid::JobId &id ) : f_epoch( 0 ), f_submit(), f_classad(), f_outdir(), f_logfile(),
-								    f_maradona(), f_insbx(), f_outsbx(), f_dagsubdir(),
-								    f_jobid( glite::wmsutils::jobid::to_filename(id) ),
-								    f_dagid( glite::wmsutils::jobid::to_filename(dagid) ),
-								    f_jobReduced( glite::wmsutils::jobid::get_reduced_part(id), fs::native ),
-								    f_dagReduced( glite::wmsutils::jobid::get_reduced_part(dagid), fs::native )
-{}
-
 Files::~Files( void ) {}
-
-const fs::path &Files::dag_submit_directory( void )
-{
-  const configuration::JCConfiguration    *jcconfig = configuration::Configuration::instance()->jc();
-
-  if( this->f_dagsubdir.get() == NULL ) {
-    string   subdir( fs::normalize_path(jcconfig->submit_file_dir()) );
-    string   dagname( f_s_dagPrefix );
-
-    if( this->f_dagid.size() == 0 ) dagname.append( this->f_jobid );
-    else dagname.append( this->f_dagid );
-
-    this->f_dagsubdir.reset( new path(subdir, fs::native) );
-
-	if( this->f_dagid.size() == 0 )  *this->f_dagsubdir /= this->f_jobReduced / dagname;
-    else *this->f_dagsubdir /= this->f_dagReduced / dagname;  
-}
-
-  return *this->f_dagsubdir;
-}
 
 const fs::path &Files::submit_file( void )
 {
@@ -95,13 +66,10 @@ const fs::path &Files::submit_file( void )
 
     filename.append( this->f_jobid ); filename.append( f_s_submitSuffix );
 
-    if( this->f_dagid.size() == 0 ) {
-      string    subdir( fs::normalize_path(jcconfig->submit_file_dir()) );
+      string    subdir( utilities::normalize_path(jcconfig->submit_file_dir()) );
       this->f_submit.reset( new path(subdir, fs::native) );
 
       *this->f_submit /= this->f_jobReduced;
-    }
-    else this->f_submit.reset( new path(this->dag_submit_directory()) );
 
     *this->f_submit /= filename;
   }
@@ -118,13 +86,10 @@ const fs::path &Files::jobwrapper_file( void )
 
     name.append( this->f_jobid ); name.append( f_s_scriptSuffix );
 
-    if( this->f_dagid.size() == 0 ) {
-      string     subdir( fs::normalize_path(jcconfig->submit_file_dir()) );
+      string     subdir( utilities::normalize_path(jcconfig->submit_file_dir()) );
       this->f_wrapper.reset( new path(subdir, fs::native) );
 
       *this->f_wrapper /= this->f_jobReduced;
-    }
-    else this->f_wrapper.reset( new path(this->dag_submit_directory()) );
 
     *this->f_wrapper /= name;
   }
@@ -141,13 +106,10 @@ const fs::path &Files::classad_file( void )
 
     cname.append( this->f_jobid );
 
-    if( this->f_dagid.size() == 0 ) {
-      string     subdir( fs::normalize_path(jcconfig->submit_file_dir()) );
+      string     subdir( utilities::normalize_path(jcconfig->submit_file_dir()) );
       this->f_classad.reset( new path(subdir, fs::native) );
 
       *this->f_classad /= this->f_jobReduced;
-    }
-    else this->f_classad.reset( new path(this->dag_submit_directory()) );
 
     *this->f_classad /= cname;
   }
@@ -160,14 +122,11 @@ const fs::path &Files::output_directory( void )
   const configuration::JCConfiguration    *jcconfig = configuration::Configuration::instance()->jc();
  
   if( this->f_classad.get() == NULL ) {
-    string   dirname( fs::normalize_path(jcconfig->output_file_dir()) );
+    string   dirname( utilities::normalize_path(jcconfig->output_file_dir()) );
 
     this->f_outdir.reset( new path(dirname, fs::native) );
 
-    if( this->f_dagid.size() != 0 )
-      *this->f_outdir /= this->f_dagReduced / fs::path(this->f_dagid, fs::native);
-    else
-      *this->f_outdir /= this->f_jobReduced;
+    *this->f_outdir /= this->f_jobReduced;
 
     *this->f_outdir /= fs::path(this->f_jobid, fs::native);
   }
@@ -208,21 +167,12 @@ const fs::path &Files::maradona_file( void )
   return *this->f_maradona;
 }
 
-const fs::path &Files::dag_log_file( void )
-{
-  if( this->f_logfile.get() == NULL )
-    this->f_logfile.reset( this->createDagLogFileName(this->f_jobid) );
-
-  return *this->f_logfile;
-}
-
 const fs::path &Files::log_file( time_t epoch )
 {
   const configuration::LMConfiguration    *lmconfig = configuration::Configuration::instance()->lm();
 
   if( (epoch != this->f_epoch) || (this->f_logfile.get() == NULL) ) {
-    if( this->f_dagid.size() == 0 ) {
-      string    logdir( fs::normalize_path(lmconfig->condor_log_dir()) ), logname( f_s_logPrefix );
+      string    logdir( utilities::normalize_path(lmconfig->condor_log_dir()) ), logname( f_s_logPrefix );
 
       logname.append( boost::lexical_cast<string>(epoch) );
 
@@ -230,8 +180,6 @@ const fs::path &Files::log_file( time_t epoch )
 
       this->f_logfile.reset( new path(logdir, fs::native) );
       *this->f_logfile /= logname; this->f_epoch = epoch;
-    }
-    else this->f_logfile.reset( this->createDagLogFileName(this->f_dagid) );
   }
 
   return *this->f_logfile;
@@ -240,7 +188,6 @@ const fs::path &Files::log_file( time_t epoch )
 const fs::path &Files::log_file( void )
 {
   if( this->f_logfile.get() == NULL ) {
-    if( this->f_dagid.size() == 0 ) {
       classad::ClassAd        *ad;
       const path              &adfile = this->classad_file();
       ifstream                 ifs( adfile.native_file_string().c_str() );
@@ -253,13 +200,11 @@ const fs::path &Files::log_file( void )
 	string   logfile( glite::jdl::get_log(*ad, good) );
 
 	if( good )
-	  this->f_logfile.reset( new path(fs::normalize_path(logfile), fs::native) );
+	  this->f_logfile.reset( new path(utilities::normalize_path(logfile), fs::native) );
 	else
 	  this->f_logfile.reset( new path );
       }
       else this->f_logfile.reset( new path );
-    }
-    else this->dag_log_file();
   }
 
   return *this->f_logfile;
@@ -270,7 +215,7 @@ const fs::path &Files::sandbox_root( void )
   const configuration::NSConfiguration    *nsconfig = configuration::Configuration::instance()->ns();
 
   if( this->f_sandbox.get() == NULL ) {
-    string    sbx( fs::normalize_path(nsconfig->sandbox_staging_path()) );
+    string    sbx( utilities::normalize_path(nsconfig->sandbox_staging_path()) );
 
     this->f_sandbox.reset( new path(sbx, fs::native) );
     *this->f_sandbox /= this->f_jobReduced / fs::path(this->f_jobid, fs::native);
@@ -301,6 +246,6 @@ const fs::path &Files::output_sandbox( void )
   return *this->f_outsbx;
 }
 
-}; // Namespace jccommon
+} // Namespace jccommon
 
-} JOBCONTROL_NAMESPACE_END;
+} JOBCONTROL_NAMESPACE_END

@@ -1,3 +1,18 @@
+/* Copyright (c) Members of the EGEE Collaboration. 2004.
+ * See http://www.eu-egee.org/partners/ for details on the copyright
+ * holders.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *     Unless required by applicable law or agreed to in writing, software
+ *     distributed under the License is distributed on an "AS IS" BASIS,
+ *     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *     See the License for the specific language governing permissions and
+ *     limitations under the License. */
 #include <iostream>
 #include <memory>
 #include <string>
@@ -5,11 +20,10 @@
 
 #include <classad_distribution.h>
 
-#include "IdContainer.h"
+#include "id_container.h"
 #include "IdCompare.h"
 
 using namespace std;
-USING_COMMON_NAMESPACE;
 
 JOBCONTROL_NAMESPACE_BEGIN {
 
@@ -17,8 +31,8 @@ namespace jccommon {
 
 void IdContainer::onConstruct( void )
 {
-  utilities::FileList<classad::ClassAd>::iterator     position, end = this->ic_container.end();
-  list<PointerId>::iterator                           pushed;
+  glite::wms::jobsubmission::jccommon::FileList<classad::ClassAd>::iterator position, end = this->ic_container.end();
+  list<PointerId>::iterator pushed;
 
   for( position = this->ic_container.begin(); position != end; ++position ) {
     this->ic_pointers.push_back( position );
@@ -50,8 +64,7 @@ bool IdContainer::removePointers( vector<EdgId>::iterator &edgPos, vector<Condor
     this->ic_container.erase( list_position );
     this->ic_pointers.erase( position );
     this->ic_edgs.erase( edgPos ); this->ic_condors.erase( condorPos );
-  }
-  catch( utilities::FileContainerError & ) {
+  } catch(glite::wms::jobsubmission::jccommon::FileContainerError const&) {
     error = true;
   }
 
@@ -290,6 +303,5 @@ void IdContainer::clear( void )
   return;
 }
 
-}; // Namespace jccommon
-
-} JOBCONTROL_NAMESPACE_END;
+} // namespace jccommon
+} JOBCONTROL_NAMESPACE_END

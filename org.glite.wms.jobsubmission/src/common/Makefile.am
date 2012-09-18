@@ -12,22 +12,47 @@
 #       Council for the Central Laboratory of the Research Councils (CCLRC), United Kingdom
 #
 #       Authors: Paolo Andreetto <paolo.andreetto@pd.infn.it>
-#       Version info: $Id$
-#       Release: $Name$
+#       Version info: $Id: Makefile.am,v 1.11.2.1.4.3.2.3.2.4 2012/06/18 11:58:06 mcecchi Exp $
+#       Release: $Name: glite-wms-jobsubmission_branch_3_5 $
 #
 #       Revision history:
-#       $Log$
-#       Revision 1.15  2009/02/05 16:07:23  mcecchi
-#       enabling bunch submission to condor (work in progress)
+#       $Log: Makefile.am,v $
+#       Revision 1.11.2.1.4.3.2.3.2.4  2012/06/18 11:58:06  mcecchi
+#       reintroduced id repository in JC. cleanup
 #
-#       Revision 1.14  2008/10/01 13:13:06  mcecchi
-#       enabling multiple job submission for a single user
+#       Revision 1.11.2.1.4.3.2.3.2.3  2012/02/15 14:07:48  pandreet
+#       Removed header file
 #
-#       Revision 1.13  2007/07/09 15:51:50  gianelle
-#       Added globus lib
+#       Revision 1.11.2.1.4.3.2.3.2.2  2012/02/10 16:17:05  mcecchi
+#       filelist in isolated JC/LM locations. possible future redesign
 #
-#       Revision 1.12  2007/07/05 10:20:20  gianelle
-#       Add the "process" utility; it can now be removed from the org.glite.wms.common component
+#       Revision 1.11.2.1.4.3.2.3.2.1  2012/02/07 14:36:29  mcecchi
+#       removed support for filelist - work in progress
+#
+#       Revision 1.11.2.1.4.3.2.3  2011/03/11 15:00:04  pandreet
+#       Removed with-glite-location
+#
+#       Revision 1.11.2.1.4.3.2.2  2011/01/05 08:50:58  pandreet
+#       New build definitions for jobsubmission
+#
+#       Revision 1.11.2.1.4.3.2.1  2010/02/08 08:58:07  mcecchi
+#       fixing some nightly builds
+#
+#       Revision 1.11.2.1.4.3  2009/03/19 15:45:45  mcecchi
+#       LB type run-time selection for purger
+#
+#       Revision 1.11.2.1.4.2  2009/02/17 15:35:47  mcecchi
+#       LB type run-time selection
+#
+#       Revision 1.11.2.1.4.1  2009/02/13 13:09:26  mcecchi
+#       some cleanup
+#
+#       Revision 1.11.2.1  2007/02/13 12:30:27  gianelle
+#       - Fix for bug #23401
+#       - Add support for jobdir to LM
+#       - Log a cancel refused event when the cancel failed (it was a rare circumstance
+#       which is not considered before)
+#       - Some cleanup in the "include" instructions
 #
 #       Revision 1.11  2006/03/16 17:28:39  gianelle
 #       Migration to "new" jdl library
@@ -72,24 +97,36 @@ lib_LTLIBRARIES = libglite_wms_jss_common.la
 
 noinst_HEADERS = \
 	constants.h \
+	fstreamlock.h \
 	files.h \
-	EventLogger.h \
-	PointerId.h \
+	file_container.h \
+	file_locker.h \
+	filelist.h \
+	filelist_lock.h \
+	filelist_reader.h \
+	filelist_iterator.h \
+	filelist_extractor.h \
+	pointer_id.h \
 	IdCompare.h \
-	IdContainer.h \
-	RamContainer.h \
+	id_container.h \
+	ram_container.h \
+	EventLogger.h \
 	JobFilePurger.h \
 	ProxyUnregistrar.h \
 	LockFile.h \
 	SignalChecker.h \
-	handler.h \
-  process.h \
-  subprocess.h \
-  user.h
+	handler.h
 
-libglite_wms_jss_common_la_SOURCES = IdContainer.cpp \
-	RamContainer.cpp \
-	PointerId.cpp \
+libglite_wms_jss_common_la_SOURCES = \
+	fstreamlock.cpp \
+	id_container.cpp \
+	file_container.cpp \
+	ram_container.cpp \
+	pointer_id.cpp \
+	filelist.cpp \
+	filelist_iterator.cpp \
+	filelist_lock.cpp \
+	file_locker.cpp \
 	EventLogger.cpp \
 	JobFilePurger.cpp \
 	ProxyUnregistrar.cpp \
@@ -97,17 +134,12 @@ libglite_wms_jss_common_la_SOURCES = IdContainer.cpp \
 	files.cpp \
 	LockFile.cpp \
 	SignalChecker.cpp \
-	handler.c \
-  process.cpp \
-  subprocess.cpp \
-  user.cpp
+	handler.c
 
 AM_CPPFLAGS = -I$(top_srcdir)/src \
-	$(GLITE_CFLAGS) \
+	$(GLITE_WMS_COMMON_UT_UTIL_CFLAGS) \
+	-I/usr/include \
 	$(CLASSAD_CFLAGS) \
-	$(BOOST_CFLAGS) \
-  $(GLOBUS_NOTHR_CFLAGS) \
-	-DGLITE_WMS_HAVE_LOGGING -DGLITE_WMS_HAVE_PURGER \
-        -DGLITE_WMS_HAVE_RENEWAL #-DGLITE_WMS_HAVE_LBPROXY
+	$(BOOST_CFLAGS)
 
 MAINTAINERCLEANFILES = Makefile.in *~
