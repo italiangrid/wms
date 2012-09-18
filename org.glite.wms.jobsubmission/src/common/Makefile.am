@@ -120,8 +120,8 @@ noinst_HEADERS = \
 libglite_wms_jss_common_la_SOURCES = \
 	fstreamlock.cpp \
 	id_container.cpp \
-	file_container.cpp \
 	ram_container.cpp \
+	file_container.cpp \
 	pointer_id.cpp \
 	filelist.cpp \
 	filelist_iterator.cpp \

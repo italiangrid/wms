@@ -21,7 +21,7 @@
 #include <classad_distribution.h>
 
 #include "id_container.h"
-#include "IdCompare.h"
+#include "id_compare.h"
 
 using namespace std;
 
