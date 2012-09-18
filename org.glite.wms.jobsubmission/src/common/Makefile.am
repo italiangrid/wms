@@ -107,7 +107,7 @@ noinst_HEADERS = \
 	filelist_iterator.h \
 	filelist_extractor.h \
 	pointer_id.h \
-	IdCompare.h \
+	id_compare.h \
 	id_container.h \
 	ram_container.h \
 	EventLogger.h \
