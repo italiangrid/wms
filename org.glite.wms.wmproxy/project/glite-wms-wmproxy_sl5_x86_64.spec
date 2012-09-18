@@ -107,8 +107,11 @@ fi
 %{_libdir}/libglite_wms_wmproxy_*.so.0
 %{_libdir}/libglite_wms_wmproxy_*.so
 %attr(4755, root, root) /usr/libexec/glite_wms_wmproxy_dirmanager
-
-
+%config(noreplace)    /usr/share/wsdl/wms/WMProxy-gridsite-delegation-1.0.0.wsdl
+%config(noreplace)    /usr/share/wsdl/wms/WMProxy-gridsite-delegation-2.0.0.wsdl
+%config(noreplace)    /usr/share/wsdl/wms/catalogs_typemap.dat
+%config(noreplace)    /usr/share/wsdl/wms/jsdl-posix.xsd-6.xsd
+%config(noreplace)    /usr/share/wsdl/wms/jsdl.xsd-18.xsd
 
 %changelog
 * %{extcdate} WMS group <wms-support@lists.infn.it> - %{extversion}-%{extage}.%{extdist}

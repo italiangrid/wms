@@ -1,3 +1,4 @@
+#
 #       Copyright (c) 2004 on behalf of the EU EGEE Project:
 #       The European Organization for Nuclear Research (CERN),
 #       Istituto Nazionale di Fisica Nucleare (INFN), Italy
@@ -18,13 +19,13 @@ WMPROXY_SECURITY= $(top_builddir)/src/security/libglite_wms_wmproxy_security.la
 WMPROXY_COMMANDS = $(top_builddir)/src/commands/libglite_wms_wmproxy_commands.la \
 $(top_builddir)/src/commands/libglite_wms_wmproxy_pipe.la
 
-wm.h : $(top_srcdir)/src/server/interface/WMProxy.wsdl
+wm.h : $(top_srcdir)/src/server/WMProxy.wsdl
 	@#Create the files
 	@echo "wsdl2h parsing .wsdl"
 	$(GSOAP_LOCATION)/bin/wsdl2h -o wm.h \
 	-I$(GSOAP_LOCATION)/include \
-	-t $(top_srcdir)/src/server/interface/wmptypemap.dat \
-	$(top_srcdir)/src/server/interface/WMProxy.wsdl
+	-t $(top_srcdir)/src/server/wmptypemap.dat \
+	$(top_srcdir)/src/server/WMProxy.wsdl
 
 soapC.cpp soapServer.cpp soapH.h soapStub.h: $(top_builddir)/src/server/wm.h
 	@#Create the files

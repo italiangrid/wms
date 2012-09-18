@@ -493,7 +493,7 @@ int main(int argc, char *argv[])
             //fprintf(stderr,"User after set: %d\n", getuid());
             //summary_status |= uncompressFile(argv[i], starting_path);
             #define BUF 1024
-            char cmdline[BUF], arg1[BUF], arg2[BUF];
+            char arg1[BUF], arg2[BUF];
             snprintf(arg1, sizeof(arg1),"%s", starting_path);
             snprintf(arg2, sizeof(arg2),"%s", argv[i]);
             if (fileExists(argv[i])) {

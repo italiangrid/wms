@@ -17,7 +17,7 @@ limitations under the License.
 */
 
 //
-// File: wmplbselector.h
+// File: lbselector.h
 // Author: Giuseppe Avellino <egee@datamat.it>
 //
 
