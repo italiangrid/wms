@@ -27,7 +27,7 @@ public:
   void adapt_for_submission(std::string const& seqcode = "");
   bool good() { return sa_good; }
   classad::ClassAd* classad() { return sa_sad->classad_ptr(); }
-  void SubmitAdapter::createFromAd(classad::ClassAd* pad);
+  void createFromAd(classad::ClassAd* pad);
 private:
   void adapt();
 
