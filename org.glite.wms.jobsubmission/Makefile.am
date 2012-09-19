@@ -1,46 +1,50 @@
-#
 #       Copyright (c) 2004 on behalf of the EU EGEE Project:
-#       The European Organization for Nuclear Research (CERN),
+#       #       The European Organization for Nuclear Research (CERN),
 #       Istituto Nazionale di Fisica Nucleare (INFN), Italy
-#       Datamat Spa, Italy
+#       #       Datamat Spa, Italy
 #       Centre National de la Recherche Scientifique (CNRS), France
-#       CS Systeme d'Information (CSSI), France
+#       #       CS Systeme d'Information (CSSI), France
 #       Royal Institute of Technology, Center for Parallel Computers (KTH-PDC), Sweden
-#       Universiteit van Amsterdam (UvA), Netherlands
+#       #       Universiteit van Amsterdam (UvA), Netherlands
 #       University of Helsinki (UH.HIP), Finland
-#       University of Bergen (UiB), Norway
+#       #       University of Bergen (UiB), Norway
 #       Council for the Central Laboratory of the Research Councils (CCLRC), United Kingdom
-#
+#       #
 #       Authors: Paolo Andreetto <paolo.andreetto@pd.infn.it>
-#       Version info: $Id$
-#       Release: $Name$
-#
+#       #       Version info: $Id: Makefile.am,v 1.3.28.1.2.2 2011/12/09 15:22:11 pandreet Exp $
+#       Release: $Name:  $
+#       #
 #       Revision history:
-#       $Log$
-#       Revision 1.4  2007/01/22 15:47:18  gianelle
-#       Sincronize HEAD repository with the 3.1 branch
-#       Add the JobDir support
+#       #       $Log: Makefile.am,v $
+#       Revision 1.3.28.1.2.2  2011/12/09 15:22:11  pandreet
+#       #       man pages for jc+lm
 #
-#       Revision 1.3  2004/10/08 09:38:23  pandreet
+##       Revision 1.3.28.1.2.1  2011/06/24 14:16:20  pandreet
+#       New packaging style for jobsubmission
+#       #
+#       Revision 1.3.28.1  2006/10/10 11:33:13  gianelle
+#       #       Install SubmitAdapter.h because it is used by the planner
+#
+##       Revision 1.3  2004/10/08 09:38:23  pandreet
 #       LICENSE in rpm; defined summary and description
-#
+#       #
 #       Revision 1.2  2004/08/27 13:19:40  eronchie
-#       Added handling of config directory
+#       #       Added handling of config directory
 #       Added start up script files
-#
+#       #
 #       Revision 1.1  2004/07/06 10:05:38  pandreet
-#       Basic build files for jobsubmission
+#       #       Basic build files for jobsubmission
 #
-
-## Process this file with automake to produce Makefile.in
+#
+### Process this file with automake to produce Makefile.in
 
 EXTRA_DIST = LICENSE
 
-docdir = $(datadir)/doc/@PACKAGE@-@VERSION@
+docdir = $(datadir)/doc/@PACKAGE@-@PVER@
 doc_DATA = LICENSE
 
 ## Subdirectories list
-SUBDIRS = config src test interface 
+SUBDIRS = config src test interface doc
 
 ## Default flags to run aclocal
 ACLOCAL_AMFLAGS = -I project
