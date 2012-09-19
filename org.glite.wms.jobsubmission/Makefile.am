@@ -1,42 +1,18 @@
-#       Copyright (c) 2004 on behalf of the EU EGEE Project:
-#       #       The European Organization for Nuclear Research (CERN),
-#       Istituto Nazionale di Fisica Nucleare (INFN), Italy
-#       #       Datamat Spa, Italy
-#       Centre National de la Recherche Scientifique (CNRS), France
-#       #       CS Systeme d'Information (CSSI), France
-#       Royal Institute of Technology, Center for Parallel Computers (KTH-PDC), Sweden
-#       #       Universiteit van Amsterdam (UvA), Netherlands
-#       University of Helsinki (UH.HIP), Finland
-#       #       University of Bergen (UiB), Norway
-#       Council for the Central Laboratory of the Research Councils (CCLRC), United Kingdom
-#       #
-#       Authors: Paolo Andreetto <paolo.andreetto@pd.infn.it>
-#       #       Version info: $Id: Makefile.am,v 1.3.28.1.2.2 2011/12/09 15:22:11 pandreet Exp $
-#       Release: $Name:  $
-#       #
-#       Revision history:
-#       #       $Log: Makefile.am,v $
-#       Revision 1.3.28.1.2.2  2011/12/09 15:22:11  pandreet
-#       #       man pages for jc+lm
+# Copyright (c) Members of the EGEE Collaboration. 2004.
+# See http://www.eu-egee.org/partners/ for details on the copyright
+# holders.
 #
-##       Revision 1.3.28.1.2.1  2011/06/24 14:16:20  pandreet
-#       New packaging style for jobsubmission
-#       #
-#       Revision 1.3.28.1  2006/10/10 11:33:13  gianelle
-#       #       Install SubmitAdapter.h because it is used by the planner
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
 #
-##       Revision 1.3  2004/10/08 09:38:23  pandreet
-#       LICENSE in rpm; defined summary and description
-#       #
-#       Revision 1.2  2004/08/27 13:19:40  eronchie
-#       #       Added handling of config directory
-#       Added start up script files
-#       #
-#       Revision 1.1  2004/07/06 10:05:38  pandreet
-#       #       Basic build files for jobsubmission
+#    http://www.apache.org/licenses/LICENSE-2.0
 #
-#
-### Process this file with automake to produce Makefile.in
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 EXTRA_DIST = LICENSE
 

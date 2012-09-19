@@ -1,52 +1,18 @@
+# Copyright (c) Members of the EGEE Collaboration. 2004.
+# See http://www.eu-egee.org/partners/ for details on the copyright
+# holders.
 #
-#       Copyright (c) 2004 on behalf of the EU EGEE Project:
-#       The European Organization for Nuclear Research (CERN),
-#       Istituto Nazionale di Fisica Nucleare (INFN), Italy
-#       Datamat Spa, Italy
-#       Centre National de la Recherche Scientifique (CNRS), France
-#       CS Systeme d'Information (CSSI), France
-#       Royal Institute of Technology, Center for Parallel Computers (KTH-PDC), Sweden
-#       Universiteit van Amsterdam (UvA), Netherlands
-#       University of Helsinki (UH.HIP), Finland
-#       University of Bergen (UiB), Norway
-#       Council for the Central Laboratory of the Research Councils (CCLRC), United Kingdom
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
 #
-#       Authors: Paolo Andreetto <paolo.andreetto@pd.infn.it>
-#       Version info: $Id: Makefile.am,v 1.2.28.2.6.2.2.4 2012/06/20 13:44:33 pandreet Exp $
-#       Release: $Name: glite-wms-jobsubmission_branch_3_5 $
+#    http://www.apache.org/licenses/LICENSE-2.0
 #
-#       Revision history:
-#       $Log: Makefile.am,v $
-#       Revision 1.2.28.2.6.2.2.4  2012/06/20 13:44:33  pandreet
-#       Used pkgconfig macro for condorg
-#
-#       Revision 1.2.28.2.6.2.2.3  2012/06/18 11:58:06  mcecchi
-#       reintroduced id repository in JC. cleanup
-#
-#       Revision 1.2.28.2.6.2.2.2  2012/02/10 16:17:07  mcecchi
-#       filelist in isolated JC/LM locations. possible future redesign
-#
-#       Revision 1.2.28.2.6.2.2.1  2012/02/07 14:36:30  mcecchi
-#       removed support for filelist - work in progress
-#
-#       Revision 1.2.28.2.6.2  2011/03/11 15:00:04  pandreet
-#       Removed with-glite-location
-#
-#       Revision 1.2.28.2.6.1  2011/01/05 08:50:58  pandreet
-#       New build definitions for jobsubmission
-#
-#       Revision 1.2.28.2  2007/01/22 15:46:05  gianelle
-#       Add support for JobDir (for the moment only the read part)
-#
-#       Revision 1.2.28.1  2006/10/10 11:33:15  gianelle
-#       Install SubmitAdapter.h because it is used by the planner
-#
-#       Revision 1.2  2004/08/10 12:01:43  eronchie
-#       Updated
-#
-#       Revision 1.1  2004/07/06 10:05:38  pandreet
-#       Basic build files for jobsubmission
-#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 lib_LTLIBRARIES = libglite_wms_jss_controller.la \
 	libglite_wms_jss_controller_wrapper.la \
