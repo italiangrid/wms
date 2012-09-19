@@ -1,0 +1,3 @@
+usr/lib/pkgconfig/*.pc
+usr/lib/*.so
+usr/include/glite/wms/jobsubmission/*.h
