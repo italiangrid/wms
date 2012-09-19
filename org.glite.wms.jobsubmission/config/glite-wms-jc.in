@@ -13,44 +13,29 @@
 # config: /opt/glite/etc/glite_wms.conf
 # hide: false
 
-# Source function library
-. /etc/rc.d/init.d/functions
-
-GLITE_LOCATION=${GLITE_LOCATION:-@prefix@}
-
-. ${GLITE_LOCATION}/etc/glite-wms-vars.sh
-. ${GLITE_LOCATION}/etc/profile.d/glite-wms.sh
-. ${GLITE_LOCATION}/etc/profile.d/glite-wms-config.sh
+#########################################################
+. /opt/glite/yaim/etc/grid-env-funcs.sh
+. /etc/profile.d/grid-env.sh
+########################################
 
 INIT=/var/lock/subsys/`basename $0 | \
 sed -e 's/^[SK][0-9][0-9]//'`
 
-init_variables()
-{
-# All these things must go in some centralized place...
-    GLITE_WMS_BIN_DIR=${GLITE_LOCATION}/bin
-
-# All these things should stay there
-    CONFIGURATION_FILE=glite_wms.conf
-
-    CONTROLLERBASE=glite-wms-job_controller
-    MASTERBASE=condor_master
-
-    gliteuid=`id -u ${GLITE_WMS_USER} 2>&1` || do_failure $gliteuid
-    glitegid=`id -g ${GLITE_WMS_USER} 2>&1` || do_failure $glitegid
-    export CONDOR_IDS="$gliteuid.$glitegid"
-
-    CONDOR_MASTER=${CONDORG_INSTALL_PATH}/sbin/${MASTERBASE}
-    CONDOR_OFF=${CONDORG_INSTALL_PATH}/sbin/condor_off
-    CONDOR_SCHEDD=${CONDORG_INSTALL_PATH}/sbin/condor_schedd
-    JOBCONTROLLER=${GLITE_WMS_BIN_DIR}/${CONTROLLERBASE}
-
-    LOCKFILE=${GLITE_LOCATION_VAR}/jobcontroller.pid
-    SCRIPT_UID=`/usr/bin/id -u`
-
-    GLITEUSER_HOME=`eval echo ~${GLITE_WMS_USER}`
-    [ -d ${GLITEUSER_HOME} ] || do_failure "Missing user directory ${GLITEUSER_HOME}"
-}
+. /etc/rc.d/init.d/functions
+CONFIGURATION_FILE=glite_wms.conf
+CONTROLLERBASE=glite-wms-job_controller
+MASTERBASE=condor_master
+gliteuid=`id -u ${GLITE_WMS_USER} 2>&1` || do_failure $gliteuid
+glitegid=`id -g ${GLITE_WMS_USER} 2>&1` || do_failure $glitegid
+export CONDOR_IDS="$gliteuid.$glitegid"
+CONDOR_MASTER=${CONDORG_INSTALL_PATH}/sbin/${MASTERBASE}
+CONDOR_OFF=${CONDORG_INSTALL_PATH}/sbin/condor_off
+CONDOR_SCHEDD=${CONDORG_INSTALL_PATH}/sbin/condor_schedd
+JOBCONTROLLER=${WMS_LOCATION_BIN}/${CONTROLLERBASE}
+LOCKFILE=`${WMS_LOCATION_BIN}/glite-wms-get-configuration JobController.LockFile`
+SCRIPT_UID=`/usr/bin/id -u`
+GLITEUSER_HOME=`eval echo ~${GLITE_WMS_USER}`
+[ -d ${GLITEUSER_HOME} ] || do_failure "Missing user directory ${GLITEUSER_HOME}"
 
 do_failure()
 {
@@ -59,6 +44,45 @@ do_failure()
     echo ""
 
     exit 1
+}
+
+set_input()
+{
+  mkdir -p ${input}/{tmp,new,old} 2>/dev/null
+  mkdir_ret=$?
+  chown ${GLITE_WMS_USER}:${GLITE_WMS_USER} ${input} ${input}/{tmp,new,old}
+  if [ $? -ne 0 -o $mkdir_ret -ne 0 ]; then
+    false
+  else 
+    true
+  fi
+}
+
+check_input()
+{
+  if [ -d ${input} ]; then
+    set_input_ret=0
+    if [ ! -d ${input}/old -o ! -d ${input}/new -o ! -d ${input}/tmp ]; then
+      echo "input structure has changed, trying to (re)create it"
+      set_input
+      if [ $? != 0 ]; then
+        set_input_ret=1
+      fi
+    fi
+
+    if [ $set_input_ret -eq 0 ]; then
+      # mv of the whole dir would fail when too much populated
+      find ${input}/old/ -type f | xargs -I '{}' mv '{}' ${input}/new/ &>/dev/null
+      if [ $? != 0 ]; then
+        echo "error moving files from old to new dir, continuing"
+      fi
+      true
+    else
+      false
+    fi
+  else
+    set_input
+  fi
 }
 
 remove_lockfile()
@@ -71,37 +95,45 @@ remove_lockfile()
 
 start()
 {
-    if [ "x$1" = "xJobController" -o "x$1" = "x" ]; then
-	echo -ne "\tStarting JobController..."
-	daemon ${JOBCONTROLLER} -c ${CONFIGURATION_FILE} -k ${LOCKFILE}
-	local result=$?
-	echo ""
+  input=`${WMS_LOCATION_BIN}/glite-wms-get-configuration JobController.input`
+    if [ -z ${input} ]; then
+      do_failure "Please set Input parameter in ${CONFIGURATION_FILE} - JC section"
+    fi 
 
-	if [ ${result} -eq 1 ]; then # Startup of the daemon is failed, try to understand the cause
-	    local pid=`pidofproc ${JOBCONTROLLER}`
-
-	    if [ -z "${pid}" -a -f "${LOCKFILE}" ]; then
-		echo "JobController is not running, but a stale lock file exists."
-		echo "Check situation and try to start again."
-		echo "Lock file path is: ${LOCKFILE}"
-	    elif [ -n "${pid}" ]; then
-		echo "JobController yet running in pid ${pid}"
-	    fi
-	elif [ ${SCRIPT_UID} -eq 0 ]; then
-	    echo `pidofproc ${JOBCONTROLLER}` > /var/run/${CONTROLLERBASE}.pid
-	fi
+  if [ "x$1" = "xJobController" -o "x$1" = "x" ]; then
+    check_input
+    if [ $? != 0 ]; then
+      echo "error setting up input structure... failure"
+    else
+      echo -ne "\tStarting JobController..."
+      daemon ${JOBCONTROLLER} -c ${CONFIGURATION_FILE}
+      local result=$?
+      echo
+      if [ ${result} -eq 1 ]; then # Startup of the daemon is failed, try to understand the cause
+        local pid=`pidofproc ${JOBCONTROLLER}`
+        if [ -z "${pid}" -a -f "${LOCKFILE}" ]; then
+          echo "JobController is not running, but a stale lock file exists."
+          echo "Check situation and try to start again."
+          echo "Lock file path is: ${LOCKFILE}"
+        elif [ -n "${pid}" ]; then
+        echo "JobController already running with pid ${pid}"
+        fi
+      elif [ ${SCRIPT_UID} -eq 0 ]; then
+        echo `pidofproc ${JOBCONTROLLER}` > /var/run/${CONTROLLERBASE}.pid
+      fi
     fi
+  fi
 
-    if [ "x$1" = "xCondorG" -o "x$1" = "x" ]; then
-	echo -ne "\tStarting CondorG..."
-	ulimit -n 16384
-	daemon --user ${GLITE_WMS_USER} ${CONDOR_MASTER}
-	echo ""
+  if [ "x$1" = "xCondorG" -o "x$1" = "x" ]; then
+    echo -ne "\tStarting CondorG..."
+    ulimit -n 32768
+    daemon --user ${GLITE_WMS_USER} ${CONDOR_MASTER}
+    echo
 
-	if [ ${SCRIPT_UID} -eq 0 ]; then
-	    echo `pidofproc ${CONDOR_MASTER}` > /var/run/${MASTERBASE}.pid
-	fi
+    if [ ${SCRIPT_UID} -eq 0 ]; then
+      echo `pidofproc ${CONDOR_MASTER}` > /var/run/${MASTERBASE}.pid
     fi
+  fi
 }
 
 reload()
@@ -301,7 +333,6 @@ case $1 in
     start)
 	echo "Starting JobController daemon(s)"
 
-	init_variables
 	start $2
 	RETVAL=$?
         [ $RETVAL -eq 0 ] && touch $INIT
@@ -309,7 +340,6 @@ case $1 in
     stop)
 	echo "Stopping JobController daemon(s)"
 
-	init_variables
 	stop $2
 	RETVAL=$?
         [ $RETVAL -eq 0 ] && rm -f $INIT
@@ -317,26 +347,22 @@ case $1 in
     restart)
 	echo "Restarting JobController daemon(s)"
 
-	init_variables
 	stop $2
 	start $2
 	RETVAL=$?
         [ $RETVAL -eq 0 ] && touch $INIT
     ;;
     reload)
-	init_variables
 	reload
 	RETVAL=$?
     ;;
     status)
-	init_variables
 	status $2
 	RETVAL=$?
     ;;
     check)
 	echo -n "Checking installation..."
 
-	init_variables
 	check
 	RETVAL=$?
     ;;
@@ -346,5 +372,3 @@ case $1 in
     ;;
 esac
 exit $RETVAL
-
-

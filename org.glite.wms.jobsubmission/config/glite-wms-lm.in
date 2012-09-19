@@ -12,14 +12,12 @@
 # config: /opt/glite/etc/glite_wms.conf
 # hide: false
 
-# Source function library
+#########################################################
+. /opt/glite/yaim/etc/grid-env-funcs.sh
+. /etc/profile.d/grid-env.sh 
+
 . /etc/rc.d/init.d/functions
-
-GLITE_LOCATION=${GLITE_LOCATION:-@prefix@}
-
-. ${GLITE_LOCATION}/etc/glite-wms-vars.sh
-. ${GLITE_LOCATION}/etc/profile.d/glite-wms.sh
-. ${GLITE_LOCATION}/etc/profile.d/glite-wms-config.sh
+########################################
 
 INIT=/var/lock/subsys/`basename $0 | \
 sed -e 's/^[SK][0-9][0-9]//'`
@@ -27,19 +25,32 @@ sed -e 's/^[SK][0-9][0-9]//'`
 init_variables()
 {
     # All these things must go in some centralized place...
-    GLITE_WMS_BIN_DIR=${GLITE_LOCATION}/bin
+    GLITE_WMS_BIN_DIR=${WMS_LOCATION_BIN}
 
     # All these things should stay there
-    CONFIGURATION_FILE=glite_wms.conf
+    CONFIGURATION_FILE="glite_wms.conf"
 
     MONITORBASE=glite-wms-log_monitor
-    LOGMONITOR=${GLITE_WMS_BIN_DIR}/${MONITORBASE}
+    LOGMONITOR=${WMS_LOCATION_BIN}/${MONITORBASE}
 
-    LOCKFILE=${GLITE_LOCATION_VAR}/logmonitor.pid
+    LOCKFILE=`${WMS_LOCATION_BIN}/glite-wms-get-configuration LogMonitor.LockFile`
     SCRIPT_UID=`/usr/bin/id -u`
 
     GLITEUSER_HOME=`eval echo ~${GLITE_WMS_USER}`
     [ -d ${GLITEUSER_HOME} ] || do_failure "Missing user directory ${GLITEUSER_HOME}"
+
+}
+
+set_input() # first parameter is the input, second is the input type
+{
+  mkdir -p $1/{tmp,new,old} 2>/dev/null
+  mkdir_ret=$?
+  chown -R ${GLITE_WMS_USER}:${GLITE_WMS_USER} "$1"
+  if [ $? -ne 0 -o $mkdir_ret -ne 0 ]; then
+    false
+  else
+    true
+  fi
 }
 
 remove_lockfile()
@@ -52,7 +63,7 @@ remove_lockfile()
 
 do_failure()
 {
-    echo -n " $*"
+    echo "$*"
     failure $1
     echo ""
 
@@ -60,8 +71,17 @@ do_failure()
 }
 
 start()
-{
-    daemon ${LOGMONITOR} -c ${CONFIGURATION_FILE} -k ${LOCKFILE}
+{   
+    wm_input=`${WMS_LOCATION_BIN}/glite-wms-get-configuration WorkloadManager.input`
+    if [ -z ${wm_input} ]; then
+      do_failure "Please set Input parameter in ${CONFIGURATION_FILE} - WM section"
+    fi 
+    set_input ${wm_input}
+    if [ $? != 0 ]; then
+        echo "error setting up input structure... failure"
+    fi
+
+    daemon ${LOGMONITOR} -c ${CONFIGURATION_FILE}
     local result=$?
     echo ""
 
@@ -73,7 +93,7 @@ start()
 	    echo "Check situation and try to start again."
 	    echo "Lock file path is: ${LOCKFILE}"
 	elif [ -n "${pid}" ]; then
-	    echo "LogMonitor yet running in pid ${pid}"
+	    echo "LogMonitor already running with pid ${pid}"
 	fi
     elif [ ${SCRIPT_UID} -eq 0 ]; then
 	echo `pidofproc ${LOGMONITOR}` > /var/run/${MONITORBASE}.pid
@@ -244,7 +264,7 @@ case $1 in
 	RETVAL=$?
     ;;
     status)
-	init_variables
+        init_variables
 	status
 	RETVAL=$?
     ;;
@@ -261,3 +281,4 @@ case $1 in
     ;;
 esac
 exit $RETVAL
+
