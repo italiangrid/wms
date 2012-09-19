@@ -21,7 +21,7 @@ limitations under the License.
 // Author: Francesco Giacomini <Francesco.Giacomini@cnaf.infn.it>
 // Copyright (c) 2003 EU DataGrid.
 
-// $Id$
+// $Id: exceptions.h,v 1.1.40.2 2010/04/08 13:52:15 mcecchi Exp $
 
 #ifndef GLITE_WMS_HELPER_JOBADAPTER_EXCEPTIONS_H
 #define GLITE_WMS_HELPER_JOBADAPTER_EXCEPTIONS_H

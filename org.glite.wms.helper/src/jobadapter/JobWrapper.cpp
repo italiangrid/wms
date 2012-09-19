@@ -56,11 +56,7 @@ struct JobWrapper::pimpl {
   std::string               m_standard_output;
   std::string               m_standard_error;
   std::string               m_arguments;
-<<<<<<< HEAD
-  std::string               m_maradona;
-=======
   std::string               m_maradona_url;
->>>>>>> glite-wms-helper_branch_3_5
 
   boost::shared_ptr<URL>    m_input_base_url;
   std::vector<std::string>  m_input_files;
@@ -83,8 +79,8 @@ struct JobWrapper::pimpl {
   std::string               m_dsupload;
 
   bool	                    m_wmp_support;
+  std::vector<std::string>  m_wmp_input_files;
   std::vector<std::string>  m_wmp_input_base_files;
-  std::vector<std::string>  m_wmp_input_base_dest_files;
   std::vector<std::string>  m_wmp_output_files;
   std::vector<std::string>  m_wmp_output_dest_files;
   
@@ -103,31 +99,21 @@ struct JobWrapper::pimpl {
 
   int                       m_job_type;
   bool                      m_osb_wildcards_support;
-<<<<<<< HEAD
-=======
   bool                      m_sb_retry_different_protocols;
->>>>>>> glite-wms-helper_branch_3_5
 
   std::string               m_broker_hostname;
   std::string               m_ce_application_dir;
   int64_t                   m_max_osb_size;
-<<<<<<< HEAD
-=======
 
   boost::shared_ptr<std::string> m_jw_template;
->>>>>>> glite-wms-helper_branch_3_5
 };
 
 const std::string JobWrapper::s_brokerinfo_default = ".BrokerInfo";
 
-<<<<<<< HEAD
-JobWrapper::JobWrapper(const std::string& job)
-=======
 JobWrapper::JobWrapper(
   const std::string& job,
   boost::shared_ptr<std::string> jw_template
 )
->>>>>>> glite-wms-helper_branch_3_5
  : m_pimpl(new pimpl)
 {  
   m_pimpl->m_nodes = 0;
@@ -216,7 +202,7 @@ JobWrapper::brokerinfo(const std::string& file)
 }
 
 void
-JobWrapper::job_id(const std::string& jobid)
+JobWrapper::job_Id(const std::string& jobid)
 {
   m_pimpl->m_jobid = jobid;
 }
@@ -239,15 +225,9 @@ JobWrapper::arguments(const std::string& args){
 }
 
 void
-<<<<<<< HEAD
-JobWrapper::maradona(const std::string& scheme_host, const std::string& path)
-{
-  m_pimpl->m_maradona = scheme_host + path;
-=======
 JobWrapper::maradona_url(const std::string& protocol, const std::string& filename)
 {
   m_pimpl->m_maradona_url = protocol + filename;
->>>>>>> glite-wms-helper_branch_3_5
 }
 
 void
@@ -301,21 +281,6 @@ JobWrapper::wmp_support(void)
 
 void
 JobWrapper::wmp_input_sandbox_support(const URL& base_url,
-<<<<<<< HEAD
-				      const vector<std::string>& input_base_files,
-				      const vector<std::string>& input_base_dest_files)
-{
-  m_pimpl->m_input_base_url.reset(new URL(base_url));
-
-  copy(input_base_files.begin(),
-    input_base_files.end(),
-    back_inserter(m_pimpl->m_wmp_input_base_files)
-  );
-  copy(input_base_dest_files.begin(),
-    input_base_dest_files.end(),
-    back_inserter(m_pimpl->m_wmp_input_base_dest_files)
-  );
-=======
 				      const std::vector<std::string>& input_base_files)
 {
   m_pimpl->m_input_base_url.reset(new URL(base_url));
@@ -331,7 +296,6 @@ JobWrapper::wmp_input_sandbox_support(const URL& base_url,
       m_pimpl->m_wmp_input_files.push_back(filename);
     }
   }
->>>>>>> glite-wms-helper_branch_3_5
 }
 
 void 
@@ -349,7 +313,6 @@ void JobWrapper::set_osb_wildcards_support(bool value)
 
 void
 JobWrapper::broker_hostname(std::string const& _)
-<<<<<<< HEAD
 {
   m_pimpl->m_broker_hostname = _;
 }
@@ -357,15 +320,6 @@ JobWrapper::broker_hostname(std::string const& _)
 void
 JobWrapper::ce_application_dir(std::string const& _)
 {
-=======
-{
-  m_pimpl->m_broker_hostname = _;
-}
-
-void
-JobWrapper::ce_application_dir(std::string const& _)
-{
->>>>>>> glite-wms-helper_branch_3_5
   m_pimpl->m_ce_application_dir = _;
 }
 
@@ -379,12 +333,6 @@ void
 JobWrapper::perusal_support(void)
 {
   m_pimpl->m_perusal_support = true;
-}
-
-void
-JobWrapper::max_osb_size(int64_t const& m)
-{
-  m_pimpl->m_max_osb_size = m;
 }
 
 void
@@ -526,12 +474,8 @@ JobWrapper::dump_vars(std::ostream& os) const
     dump(os, "__standard_output", m_pimpl->m_standard_output) &&
     dump(os, "__standard_error", m_pimpl->m_standard_error) &&
     dump(os, "__arguments", m_pimpl->m_arguments) &&
-<<<<<<< HEAD
-    dump(os, "__maradona", m_pimpl->m_maradona) &&
-=======
     dump(os, "__gatekeeper_hostname", m_pimpl->m_gatekeeper_hostname) &&
     dump(os, "__maradona_url", m_pimpl->m_maradona_url) &&
->>>>>>> glite-wms-helper_branch_3_5
     dump(os, "__input_base_url", (m_pimpl->m_input_base_url == 0 ?
       "" : m_pimpl->m_input_base_url->as_string())) &&
     dump(os, "__input_file", m_pimpl->m_input_files) &&
@@ -547,8 +491,10 @@ JobWrapper::dump_vars(std::ostream& os) const
     dump(os, "__vo", m_pimpl->m_vo) &&
     dump(os, "__dsupload", m_pimpl->m_dsupload) &&
     dump(os, "__wmp_support", m_pimpl->m_wmp_support) &&
-    dump(os, "__wmp_input_base_file", m_pimpl->m_wmp_input_base_files) &&
-    dump(os, "__wmp_input_base_dest_file", m_pimpl->m_wmp_input_base_dest_files) &&
+    dump(os, "__wmp_input_file", m_pimpl->m_wmp_input_files) &&
+    dump(os, "__wmp_input_base_file", 
+      m_pimpl->m_wmp_input_base_files
+    ) &&
     dump(os, "__wmp_output_file", m_pimpl->m_wmp_output_files) &&
     dump(os, "__wmp_output_dest_file", 
       m_pimpl->m_wmp_output_dest_files
@@ -577,51 +523,25 @@ JobWrapper::dump_vars(std::ostream& os) const
     dump(os, "__output_lfn", logical_file_names) &&
     dump(os, "__output_se", storage_elements) &&
     dump(os, "__osb_wildcards_support", m_pimpl->m_osb_wildcards_support) &&
-<<<<<<< HEAD
-    dump(os, "__ce_application_dir", m_pimpl->m_ce_application_dir) &&
-    dump(os, "__broker_hostname", m_pimpl->m_broker_hostname) &&
-=======
     dump(os, "__broker_hostname", m_pimpl->m_broker_hostname) &&
     dump(os, "__ce_application_dir", m_pimpl->m_ce_application_dir) &&
->>>>>>> glite-wms-helper_branch_3_5
     dump(os, "__output_sandbox_base_dest_uri", 
       (m_pimpl->m_output_sandbox_base_dest_uri == 0 ? "" 
       : m_pimpl->m_output_sandbox_base_dest_uri->as_string())
     ) &&
     dump(os, "__job_type", m_pimpl->m_job_type) &&
-<<<<<<< HEAD
-=======
     dump(os, "__retry_different_transports", m_pimpl->m_sb_retry_different_protocols) &&
->>>>>>> glite-wms-helper_branch_3_5
     dump(os, "__max_outputsandbox_size", m_pimpl->m_max_osb_size);
 }
 
 bool 
 JobWrapper::fill_out_script(std::ostream& output_stream) const
 {
-<<<<<<< HEAD
-  std::ifstream fs(template_file.c_str());
-  if (!fs) {
-   output_stream << "echo \"Cannot open input file " << template_file << "\"\n";
-   return false;
-  }
-=======
   output_stream << "#!/bin/sh\n\n";
->>>>>>> glite-wms-helper_branch_3_5
 
   if (!dump_vars(output_stream)) {
     return false;
   }
-<<<<<<< HEAD
-  output_stream << '\n';
-
-  if ( !dump_vars(output_stream) )
-    return false;
-
-  output_stream << '\n';
-  output_stream << fs.rdbuf();
-=======
->>>>>>> glite-wms-helper_branch_3_5
 
   output_stream << '\n' << *m_pimpl->m_jw_template;
   return true;
@@ -630,19 +550,7 @@ JobWrapper::fill_out_script(std::ostream& output_stream) const
 std::ostream&
 JobWrapper::print(std::ostream& os) const
 {
-<<<<<<< HEAD
-  const configuration::WMConfiguration* const wm_config
-    = configuration::Configuration::instance()->wm();
-
-  if( !fill_out_script( 
-                       wm_config->job_wrapper_template_dir() 
-                       + 
-                       "/template.sh", os
-                      )
-  ) {
-=======
   if (!fill_out_script(os)) {
->>>>>>> glite-wms-helper_branch_3_5
     throw JobWrapperException("Cannot create jobwrapper script");
   }
 

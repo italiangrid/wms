@@ -25,7 +25,7 @@ limitations under the License.
  *  http://www.edg.org/license.html
  ***************************************************************************/
 
-// $Id$
+// $Id: JobAdapter.h,v 1.2.28.4.2.1.4.2 2010/04/08 13:52:15 mcecchi Exp $
 
 #ifndef GLITE_WMS_HELPER_JOBADAPTER_JOBADAPTER_H
 #define GLITE_WMS_HELPER_JOBADAPTER_JOBADAPTER_H
