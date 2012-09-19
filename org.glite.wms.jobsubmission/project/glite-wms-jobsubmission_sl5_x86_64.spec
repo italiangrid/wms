@@ -29,7 +29,6 @@ Source: %{name}-%{version}-%{release}.tar.gz
 Condor-G connector for the Workload Management System
 
 %prep
- 
 
 %setup -c -q
 
@@ -39,7 +38,6 @@ if test "x%{extbuilddir}" == "x--" ; then
   ./configure --prefix=%{buildroot}/usr --sysconfdir=%{buildroot}/etc --disable-static PVER=%{version}
   make
 fi
-
 
 %install
 rm -rf %{buildroot}
@@ -79,12 +77,11 @@ if [ $1 -eq 0 ] ; then
     /sbin/chkconfig --del glite-wms-jc
 fi
 
-
 %files
 %defattr(-,root,root)
-%dir /etc/rc.d/init.d/
-/etc/rc.d/init.d/glite-wms-lm
-/etc/rc.d/init.d/glite-wms-jc
+%dir /etc/init.d/
+/etc/init.d/glite-wms-lm
+/etc/init.d/glite-wms-jc
 /usr/bin/glite-wms-job_controller
 /usr/bin/glite-wms-log_monitor
 /usr/libexec/glite-wms-lm-job_status
@@ -111,7 +108,6 @@ Condor-G connector for the WMS (libraries)
 %{_libdir}/libglite_wms_jss_*.so.0
 %dir /usr/share/doc/glite-wms-jobsubmission-%{version}/
 %doc /usr/share/doc/glite-wms-jobsubmission-%{version}/LICENSE
-
 
 %package devel
 Summary: Condor-G connector for the WMS (Development files)
@@ -141,9 +137,6 @@ Condor-G connector for the WMS (Development files)
 %dir /usr/include/glite/wms/jobsubmission/
 /usr/include/glite/wms/jobsubmission/SubmitAdapter.h
 
-
-
 %changelog
 * %{extcdate} WMS group <wms-support@lists.infn.it> - %{extversion}-%{extage}.%{extdist}
 - %{extclog}
-
