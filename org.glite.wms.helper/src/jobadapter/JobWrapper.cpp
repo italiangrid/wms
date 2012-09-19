@@ -1,10 +1,11 @@
 //**************************************************************************
 //  Filename  : JobWrapper.cpp
-//  Authors   : Alessio Gianelle <alessio.gianelle@pd.infn.it>
+//  Authors   : 
+//              Marco Cecchi <marco.cecchi@cnaf.infn.it>
 //              Francesco Giacomini <francesco.giacomini@cnaf.infn.it>
+//              Alessio Gianelle <alessio.gianelle@pd.infn.it>
 //              Rosario Peluso <rosario.peluso@pd.infn.it>
 //              Elisabetta Ronchieri <elisabetta.ronchieri@cnaf.infn.it>
-//              Marco Cecchi <marco.cecchi@cnaf.infn.it>
 //**************************************************************************
 // Copyright (c) Members of the EGEE Collaboration. 2009. 
 // See http://www.eu-egee.org/partners/ for details on the copyright holders.  
