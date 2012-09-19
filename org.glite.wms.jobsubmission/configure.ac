@@ -121,7 +121,6 @@ AC_CONFIG_FILES([src/logmonitor/Makefile])
 AC_CONFIG_FILES([src/logmonitor/processer/Makefile])
 AC_CONFIG_FILES([src/daemons/Makefile])
 AC_CONFIG_FILES([interface/Makefile])
-AC_CONFIG_FILES([test/Makefile])
 AC_CONFIG_FILES([doc/Makefile])
 
 AC_OUTPUT
