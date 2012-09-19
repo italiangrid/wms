@@ -19,7 +19,7 @@ WMPROXY_SECURITY= $(top_builddir)/src/security/libglite_wms_wmproxy_security.la
 WMPROXY_COMMANDS = $(top_builddir)/src/commands/libglite_wms_wmproxy_commands.la \
 $(top_builddir)/src/commands/libglite_wms_wmproxy_pipe.la
 
-wm.h : $(top_srcdir)/src/server/WMProxy.wsdl
+$(top_builddir)/src/server/wm.h : $(top_srcdir)/src/server/WMProxy.wsdl
 	@#Create the files
 	@echo "wsdl2h parsing .wsdl"
 	$(GSOAP_LOCATION)/bin/wsdl2h -o wm.h \

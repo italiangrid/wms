@@ -17,7 +17,7 @@ BuildRequires: %{!?extbuilddir: glite-jobid-api-cpp-devel,} c-ares-devel
 BuildRequires: %{!?extbuilddir: glite-lb-client-devel,} libtool
 BuildRequires: %{!?extbuilddir: glite-jdl-api-cpp-devel,} classads-devel
 BuildRequires: %{!?extbuilddir: glite-wms-purger-devel,} boost-devel
-BuildRequires: %{!?extbuilddir: glite-build-common-cpp, } condor-emi
+BuildRequires: %{!?extbuilddir: glite-build-common-cpp,} condor-emi
 BuildRequires: docbook-style-xsl, libxslt
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 AutoReqProv: yes
