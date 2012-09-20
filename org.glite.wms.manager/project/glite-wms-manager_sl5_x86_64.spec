@@ -7,20 +7,12 @@ Vendor: EMI
 URL: http://glite.cern.ch/
 Group: Applications/Internet
 BuildArch: %{_arch}
-Requires: glite-wms-configuration
-Requires: glite-wms-helper
-Requires: glite-wms-ism
-Requires: glite-wms-purger
-Requires: glite-wms-common
-Requires: glite-lb-client
+Requires: glite-wms-configuration glite-wms-helper glite-wms-ism glite-wms-purger glite-wms-common glite-lb-client
 Requires(post): chkconfig
 Requires(preun): chkconfig
 Requires(preun): initscripts
-BuildRequires: %{!?extbuilddir: glite-wms-helper-devel, glite-wms-purger-devel,} chrpath, libtool
-BuildRequires: %{!?extbuilddir: glite-px-proxyrenewal-devel,} boost-devel, c-ares-devel
-BuildRequires: %{!?extbuilddir: glite-lb-client-devel, glite-jobid-api-cpp-devel,} classads-devel
-BuildRequires: globus-ftp-client-devel, globus-ftp-control-devel, docbook-style-xsl
-BuildRequires: %{!?extbuilddir: glite-build-common-cpp, glite-jobid-api-c-devel,} libxslt
+BuildRequires: chrpath, libtool, boost-devel, c-ares-devel, classads-devel, globus-ftp-client-devel, globus-ftp-control-devel, docbook-style-xsl
+BuildRequires: %{!?extbuilddir: glite-build-common-cpp, glite-jobid-api-c-devel, glite-wms-helper-devel, glite-wms-purger-devel, glite-px-proxyrenewal-devel, glite-lb-client-devel, glite-jobid-api-cpp-devel,} libxslt
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 AutoReqProv: yes
 Source: %{name}-%{version}-%{release}.tar.gz
@@ -50,7 +42,9 @@ if test "x%{extbuilddir}" == "x--" ; then
 else
   cp -R %{extbuilddir}/* %{buildroot}
 fi
+
 chrpath --delete %{buildroot}/usr/bin/glite-wms-workload_manager
+strip -s %{buildroot}/usr/bin/glite-wms-workload_manager
 chrpath --delete %{buildroot}/usr/bin/glite-wms-query-job-state-transitions
 strip -s %{buildroot}/usr/bin/glite-wms-query-job-state-transitions
 export QA_SKIP_BUILD_ROOT=yes
@@ -80,4 +74,3 @@ fi
 %changelog
 * %{extcdate} WMS group <wms-support@lists.infn.it> - %{extversion}-%{extage}.%{extdist}
 - %{extclog}
-
