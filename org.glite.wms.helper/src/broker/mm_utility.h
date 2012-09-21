@@ -22,7 +22,7 @@ limitations under the License.
  * Author: Monforte Salvatore <Salvatore.Monforte@ct.infn.it>
  */
 
-// $Id$
+// $Id: mm_utility.h,v 1.1.2.1 2012/09/12 10:02:13 mcecchi Exp $
 
 #ifndef _GLITE_WMS_MATCHMAKING_UTILITY_H_
 #define _GLITE_WMS_MATCHMAKING_UTILITY_H_

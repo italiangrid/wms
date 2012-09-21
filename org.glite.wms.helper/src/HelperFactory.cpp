@@ -21,7 +21,7 @@ limitations under the License.
 // Author: Francesco Giacomini <Francesco.Giacomini@cnaf.infn.it>
 // Copyright (c) 2002 EU DataGrid.
 
-// $Id$
+// $Id: HelperFactory.cpp,v 1.4.40.2 2010/04/08 13:52:15 mcecchi Exp $
 
 #include <fstream>
 #include <utility>

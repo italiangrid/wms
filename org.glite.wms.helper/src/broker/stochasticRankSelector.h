@@ -16,7 +16,7 @@
 // See the License for the specific language governing permissions and 
 // limitations under the License.
 
-// $Id$
+// $Id: stochasticRankSelector.h,v 1.1.2.2 2012/09/12 10:02:13 mcecchi Exp $
 
 #ifndef GLITE_WMS_BROKER_SELECTORS_STOCHASTICRANKSELECTOR_H_
 #define GLITE_WMS_BROKER_SELECTORS_STOCHASTICRANKSELECTOR_H_

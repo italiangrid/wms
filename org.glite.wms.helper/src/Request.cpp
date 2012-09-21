@@ -20,7 +20,7 @@ limitations under the License.
 // File: Request.cpp
 // Author: Francesco Giacomini <Francesco.Giacomini@cnaf.infn.it>
 
-// $Id$
+// $Id: Request.cpp,v 1.2.36.1.4.2 2010/04/08 13:52:15 mcecchi Exp $
 
 #include "Request.h"
 #include <stdexcept>

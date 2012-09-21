@@ -22,7 +22,7 @@ limitations under the License.
  * Author: Monforte Salvatore <Salvatore.Monforte@ct.infn.it>
  */
 
-// $Id$
+// $Id: classad_plugin_loader.h,v 1.1.2.1 2012/09/11 10:19:40 mcecchi Exp $
 
 #include <boost/utility.hpp>
 

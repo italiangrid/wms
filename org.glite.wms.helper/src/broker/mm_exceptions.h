@@ -21,7 +21,7 @@ limitations under the License.
 // Author: Salvatore Monforte <Salvatore.Monforte@ct.infn.it>
 // Copyright (c) 2003 EU DataGrid.
 
-// $Id$
+// $Id: mm_exceptions.h,v 1.1.2.2 2012/09/12 10:02:12 mcecchi Exp $
 
 #ifndef GLITE_WMS_MATCHMAKING_EXCEPTIONS_H
 #define GLITE_WMS_MATCHMAKING_EXCEPTIONS_H

@@ -11,7 +11,7 @@
 // University of Bergen (UiB), Norway
 // Council for the Central Laboratory of the Research Councils (CCLRC), United Kingdom
 
-// $Id$
+// $Id: successFraction.cpp,v 1.1.2.1 2012/09/11 10:19:43 mcecchi Exp $
 
 #include <classad_distribution.h>
 #include <fnCall.h>

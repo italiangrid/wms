@@ -21,7 +21,7 @@ limitations under the License.
 // Author: Francesco Giacomini <Francesco.Giacomini@cnaf.infn.it>
 // Copyright (c) 2002 EU DataGrid.
 
-// $Id$
+// $Id: RequestStateMachine.cpp,v 1.4.2.2.8.2.4.2 2010/04/08 13:52:15 mcecchi Exp $
 
 #include <dlfcn.h>
 #include <vector>

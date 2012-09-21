@@ -22,7 +22,7 @@ limitations under the License.
  * Author: Monforte Salvatore <Salvatore.Monforte@ct.infn.it>
  */
 
-// $Id$
+// $Id: RBSelectionSchema.h,v 1.1.2.2 2012/09/12 10:02:12 mcecchi Exp $
 
 # ifndef GLITE_WMS_BROKER_SELECTORS_RBSELECTIONSCHEMA_H_
 # define GLITE_WMS_BROKER_SELECTORS_RBSELECTIONSCHEMA_H_

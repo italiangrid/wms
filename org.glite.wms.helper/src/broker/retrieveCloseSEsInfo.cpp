@@ -18,7 +18,7 @@
  * For license conditions see http://www.eu-datagrid.org/license.html
  */
 
-// $Id$
+// $Id: retrieveCloseSEsInfo.cpp,v 1.1.2.1 2012/09/11 10:19:43 mcecchi Exp $
 
 #include <classad_distribution.h>
 #include <fnCall.h>
@@ -153,9 +153,25 @@ bool retrieveCloseSEsInfo(
             ism::get_ism(ism::se).find(name)
           );
           if (se_it != ism_end) {
-            boost::shared_ptr<classad::ClassAd> se_ad_ptr(
-              boost::tuples::get<2>(se_it->second)
-            );
+
+            boost::shared_ptr<classad::ClassAd> se_ad_ptr;
+            boost::shared_ptr<
+              boost::unordered_map<
+                boost::flyweight<std::string>,
+                boost::flyweight<std::string>,
+                ism::flyweight_hash
+              >
+            > ad_info(boost::tuples::get<ism::ad_info_entry>(se_it->second));
+            for (
+              boost::unordered_map<
+               boost::flyweight<std::string>,
+               boost::flyweight<std::string>,
+               ism::flyweight_hash>::iterator iter(ad_info->begin());
+              iter != ad_info->end();
+              ++iter
+            ) {
+              se_ad_ptr->InsertAttr(iter->first, iter->second);
+            }
 
             classad::ClassAd* sesa_ad_ptr =
               utils::parse_classad(sesa_ad_template_str);

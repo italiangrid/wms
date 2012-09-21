@@ -162,7 +162,7 @@ operator<<(std::ostream& os, ism_type::value_type const& value)
   return os << '[' << value.first << "]\n"
     << boost::tuples::get<update_time_entry>(value.second) << '\n'
     << boost::tuples::get<expiry_time_entry>(value.second) << '\n'
-//TODO    << *boost::tuples::get<ad_info_entry>(value.second) << '\n'
+//TODO II refactoring   << *boost::tuples::get<ad_info_entry>(value.second) << '\n'
     << "[END]";
 }
 
@@ -231,11 +231,6 @@ bool is_expired_ism_entry(const ism_entry_type& entry)
   return (diff > boost::tuples::get<expiry_time_entry>(entry));
 }
 
-bool is_void_ism_entry(const ism_entry_type& entry)
-{
-  return (boost::tuples::get<expiry_time_entry>(entry) <= 0);
-}
-
 std::string get_ism_dump(void)
 {
   configuration::Configuration const* const config = configuration::Configuration::instance();
@@ -270,7 +265,7 @@ void call_dump_ism_entries::_(
   std::iostream::ios_base::openmode open_mode,
   std::string const& filename)
 {
-/*
+/* TODO II refactoring
   std::ofstream outf(filename.c_str(), open_mode);
   for (
     ism_type::iterator pos = get_ism(the_ism_index).begin();

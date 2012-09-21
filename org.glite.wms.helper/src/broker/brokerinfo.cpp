@@ -235,9 +235,11 @@ void retrieveCloseSEsInfo(classad::ClassAd& ad, std::string const& vo)
     // no pending matching_threads must exist
     ism::ism_type const& the_ism = ism::get_ism(ism::se, ret.second /* side */);
 
-    for( ; it != e; ++it ) {
+    for ( ; it != e; ++it ) {
     
-      if (!classad_utils::is_classad(*it)) continue;
+      if (!classad_utils::is_classad(*it)) {
+        continue;
+      }
       
       classad::ClassAd& ad(
         *static_cast<classad::ClassAd*>(*it)
@@ -250,17 +252,40 @@ void retrieveCloseSEsInfo(classad::ClassAd& ad, std::string const& vo)
       std::string name;
       ad.EvaluateAttrString("name",name);
       
-      ism::ism_type::const_iterator se_it(
-        the_ism.find(name)
-      );
+      ism::ism_type::const_iterator se_it(the_ism.find(name));
       if (se_it != the_ism.end()) {
-        boost::shared_ptr<classad::ClassAd> se_ad_ptr(
-          boost::tuples::get<2>(se_it->second)
-        );
+        std::string se_ad_str("[");
+        boost::shared_ptr<
+          boost::unordered_map<
+            boost::flyweight<std::string>,
+            boost::flyweight<std::string>,
+            ism::flyweight_hash
+          >
+        > ad_info(boost::tuples::get<ism::ad_info_entry>(se_it->second));
+          boost::unordered_map<
+            boost::flyweight<std::string>,
+            boost::flyweight<std::string>,
+            ism::flyweight_hash
+          >::iterator const se_end = ad_info->end();
+        for (
+          boost::unordered_map<
+            boost::flyweight<std::string>,
+            boost::flyweight<std::string>,
+            ism::flyweight_hash
+          >::iterator se_it = ad_info->begin();
+          se_it != se_end;
+          ++se_it
+        ) {
+          se_ad_str +=  std::string(se_it->first) + '=' + std::string(se_it->second) + ';';
+        }
+        se_ad_str += "];";
 
-        for(int i=0; se_attributes[i]; ++i) {
+        boost::shared_ptr<classad::ClassAd> se_ad_ptr(
+          classad_utils::parse_classad(se_ad_str));
+
+        for (int i = 0; se_attributes[i]; ++i) {
           classad::ExprTree* e = se_ad_ptr->Lookup(se_attributes[i]);
-          if(e) { 
+          if(e) {
              ad.Insert(se_attributes[i], e->Copy());
           }
         }
@@ -272,7 +297,7 @@ void retrieveCloseSEsInfo(classad::ClassAd& ad, std::string const& vo)
              std::find_if(ads_sa.begin(), ads_sa.end(), gluesa_local_id_matches(vo))
            );
            if (it_sa != ads_sa.end()) {
-             for(int i=0; sa_attributes[i]; ++i) {
+             for (int i = 0; sa_attributes[i]; ++i) {
                classad::ExprTree* e = static_cast<classad::ClassAd*>(*it_sa)->Lookup(sa_attributes[i]);
                if (e) {
                  ad.Insert(sa_attributes[i], e->Copy());

@@ -19,12 +19,11 @@ limitations under the License.
 
 /***************************************************************************
  *  filename  : JobWrapper.h
- *  authors   : 
- *              Marco Cecchi <marco.cecchi@cnaf.infn.it>
+ *  authors   : Alessio Gianelle <alessio.gianelle@pd.infn.it>
  *              Francesco Giacomini <francesco.giacomini@cnaf.infn.it>
- *              Alessio Gianelle <alessio.gianelle@pd.infn.it>
  *              Rosario Peluso <rosario.peluso@pd.infn.it>
  *              Elisabetta Ronchieri <elisabetta.ronchieri@cnaf.infn.it>
+ *              Marco Cecchi <marco.cecchi@cnaf.infn.it>
  *  Copyright (c) 2002 CERN and INFN on behalf of the EU DataGrid.
  *  For license conditions see LICENSE file or
  *  http://www.edg.org/license.html

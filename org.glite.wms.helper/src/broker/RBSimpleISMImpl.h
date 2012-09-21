@@ -21,7 +21,7 @@ limitations under the License.
 // Author: Salvatore Monforte
 // Copyright (c) 2002 EU DataGrid.
 
-// $Id$
+// $Id: RBSimpleISMImpl.h,v 1.1.2.2 2012/09/12 10:02:12 mcecchi Exp $
 
 #ifndef GLITE_WMS_BROKER_RBSIMPLEISMIMPL_H
 #define GLITE_WMS_BROKER_RBSIMPLEISMIMPL_H

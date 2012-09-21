@@ -23,7 +23,7 @@ limitations under the License.
 // Author: Francesco Giacomini <Francesco.Giacomini@cnaf.infn.it>
 // Copyright (c) 2003 EU DataGrid.
 
-// $Id$
+// $Id: exceptions.cpp,v 1.2.22.2.6.1 2012/09/11 10:19:41 mcecchi Exp $
 
 #include "exceptions.h"
 #include <string>

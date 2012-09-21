@@ -21,7 +21,7 @@ limitations under the License.
 // Author: Francesco Giacomini <Francesco.Giacomini@cnaf.infn.it>
 // Copyright (c) 2002 EU DataGrid.
 
-// $Id$
+// $Id: CopyHelper.h,v 1.3.40.2 2010/04/08 13:52:14 mcecchi Exp $
 
 #ifndef GLITE_WMS_HELPER_COPYHELPER_H
 #define GLITE_WMS_HELPER_COPYHELPER_H

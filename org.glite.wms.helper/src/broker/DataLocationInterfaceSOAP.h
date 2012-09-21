@@ -21,7 +21,7 @@ limitations under the License.
 //  File :     DataLocationInterfaceSOAP.h
 //
 //
-//  Authors :   Enzo Martelli ($Author$)
+//  Authors :   Enzo Martelli ($Author: mcecchi $)
 //  e-mail :   "enzo.martelli@mi.infn.it"
 //              Marco Cecchi
 //

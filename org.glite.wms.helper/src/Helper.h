@@ -21,7 +21,7 @@ limitations under the License.
 // Author: Francesco Giacomini <Francesco.Giacomini@cnaf.infn.it>
 // Copyright (c) 2002 EU DataGrid.
 
-// $Id$
+// $Id: Helper.h,v 1.1.1.1.28.4.2.2.4.2 2010/04/08 13:52:15 mcecchi Exp $
 
 #ifndef GLITE_WMS_HELPER_HELPER_H
 #define GLITE_WMS_HELPER_HELPER_H

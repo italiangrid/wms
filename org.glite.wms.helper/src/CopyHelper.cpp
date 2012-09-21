@@ -21,7 +21,7 @@ limitations under the License.
 // Author: Francesco Giacomini <Francesco.Giacomini@cnaf.infn.it>
 // Copyright (c) 2002 EU DataGrid.
 
-// $Id$
+// $Id: CopyHelper.cpp,v 1.3.40.2 2010/04/08 13:52:14 mcecchi Exp $
 
 #include <fstream>
 #include <classad_distribution.h>

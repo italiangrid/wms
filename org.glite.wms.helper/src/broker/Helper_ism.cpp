@@ -1,3 +1,4 @@
+// File: Helper.cpp
 // Author: Francesco Giacomini <Francesco.Giacomini@cnaf.infn.it>
 
 // Copyright (c) Members of the EGEE Collaboration. 2009. 
@@ -180,6 +181,7 @@ std::string translate_to_CREAM(classad::ClassAd &ctx, classad::ExprTree* e)
      unparse_expression_value(ctx, "ad.name"),ba::is_any_of("\"")
     ) + "==" + unparse_expression_value(ctx, "ad.value");
 }
+
 std::auto_ptr<classad::ClassAd>
 f_resolve_simple(classad::ClassAd const& input_ad, std::string const& ce_id)
 {
@@ -203,30 +205,7 @@ f_resolve_simple(classad::ClassAd const& input_ad, std::string const& ce_id)
     }
    
     requestad::set_ce_id(*result, ce_id);
-    
-    ism::ism_mutex_type::scoped_lock l(ism::get_ism_mutex(ism::ce));
-    ism::ism_type::const_iterator const ism_end(
-      ism::get_ism(ism::ce).end()
-    );
-    ism::ism_type::const_iterator ce_it(
-      ism::get_ism(ism::ce).find(ce_id)
-    );
-    
-    if (ce_it != ism_end) {
-
-      classad::ClassAd* ce_ad(boost::tuples::get<2>(ce_it->second).get());
-
-      std::string ceinfohostname(host);
-      ce_ad->EvaluateAttrString(GlueCEInfoHostName, ceinfohostname);
-      requestad::set_ceinfo_host_name(*result, ceinfohostname);
-
-    } else {
-
-      requestad::set_ceinfo_host_name(*result, host);
-    }
-
-
-    // TODO catch requestad::CannotSetAttribute
+    requestad::set_ceinfo_host_name(*result, host);
   } else {
     throw helper::InvalidAttributeValue(requestad::JDL::SUBMIT_TO,
                                         ce_id,
@@ -606,3 +585,4 @@ Helper::resolve(
 }
 
 }}}} // glite::wms::helper::broker
+

@@ -22,7 +22,7 @@ limitations under the License.
  * Author: Monforte Salvatore <Salvatore.Monforte@ct.infn.it>
  */
 
-// $Id$
+// $Id: maxRankSelector.cpp,v 1.1.2.1 2012/09/11 10:19:42 mcecchi Exp $
 
 #include "maxRankSelector.h"
 #include <vector>

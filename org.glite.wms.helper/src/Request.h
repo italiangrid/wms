@@ -20,7 +20,7 @@ limitations under the License.
 // File: Request.h
 // Author: Francesco Giacomini <Francesco.Giacomini@cnaf.infn.it>
 
-// $Id$
+// $Id: Request.h,v 1.1.1.1.28.2.2.1.4.2 2010/04/08 13:52:15 mcecchi Exp $
 
 #ifndef GLITE_WMS_HELPER_REQUEST_H
 #define GLITE_WMS_HELPER_REQUEST_H

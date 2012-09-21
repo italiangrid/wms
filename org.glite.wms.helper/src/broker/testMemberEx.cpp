@@ -18,7 +18,7 @@
  * For license conditions see http://www.eu-datagrid.org/license.html
  */
 
-// $Id$ 
+// $Id: testMemberEx.cpp,v 1.1.2.1 2012/09/11 10:19:44 mcecchi Exp $ 
 
 #include <classad_distribution.h>
 #include <boost/algorithm/string/replace.hpp>

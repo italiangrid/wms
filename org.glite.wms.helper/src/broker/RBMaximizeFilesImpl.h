@@ -21,7 +21,7 @@ limitations under the License.
 // Author: Salvatore Monforte <Salvatore.Monforte@ct.infn.it>
 // Copyright (c) 2002 EU DataGrid.
 
-// $Id$
+// $Id: RBMaximizeFilesImpl.h,v 1.1.2.1 2012/09/11 10:19:36 mcecchi Exp $
 
 #ifndef _GLITE_WMS_BROKER_RBMAXIMIZEFILESIMPL_H_
 #define _GLITE_WMS_BROKER_RBMAXIMIZEFILESIMPL_H_

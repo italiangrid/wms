@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and 
 // limitations under the License.
 
-// $Id$
+// $Id: storage_utils.cpp,v 1.1.2.2 2012/09/12 10:02:13 mcecchi Exp $
 
 #include <numeric>
 #include <boost/shared_ptr.hpp>
@@ -23,8 +23,8 @@
 
 #include <classad_distribution.h>
 
-#include "glite/wms/common/logger/logger_utils.h"
 #include "glite/wms/ism/ism.h"
+#include "glite/wms/common/logger/logger_utils.h"
 #include "glite/wmsutils/classads/classad_utils.h"
 #include "brokerinfo.h"
 #include "storage_utils.h"
@@ -213,26 +213,61 @@ resolve_storagemapping_info(FileMapping const& fm)
     std::vector<std::string>::const_iterator const sfne = sfns.end();
 
     for( ; sfni != sfne; ++sfni ) {
-       std::string const name = resolve_storage_name(*sfni);
-       if (name.empty()) {
-         continue;
-       }
-       ism::ism_type::const_iterator it(
-         the_ism.find(name)
-       );
-       
-       if (it != the_ism.end()) {
+      std::string const name = resolve_storage_name(*sfni);
+      if (name.empty()) {
+        continue;
+      }
 
-         boost::shared_ptr<classad::ClassAd> se_ad( 
-            boost::tuples::get<ism::ad_ptr_entry>(it->second)
-         );
+      ism::ism_type::const_iterator const it(the_ism.find(name));
+      if (it != the_ism.end()) {
+      
+        std::string se_info_ad_str("[");
+        boost::shared_ptr<
+          boost::unordered_map<
+            boost::flyweight<std::string>,
+            boost::flyweight<std::string>,
+            ism::flyweight_hash
+          >
+        > ad_info(boost::tuples::get<ism::ad_info_entry>(it->second));
+        boost::unordered_map<
+          boost::flyweight<std::string>,
+          boost::flyweight<std::string>,
+          ism::flyweight_hash
+        >::iterator const se_info_end = ad_info->end();
+        for (
+          boost::unordered_map<
+            boost::flyweight<std::string>,
+            boost::flyweight<std::string>,
+            ism::flyweight_hash
+          >::iterator se_info_it = ad_info->begin();
+          se_info_it != se_info_end;
+          ++se_info_it
+        ) {
+          se_info_ad_str +=  std::string(se_info_it->first)
+            + '=' + std::string(se_info_it->second) + ';';
+        }
+        se_info_ad_str += "];";
 
-         StorageInfo& info = (*result)[name];
-         info.links.push_back(file_it);
-         insert_protocols(info.protocols, *se_ad);
-         insert_ce_mount_points(info.ce_mounts, *se_ad);
+        boost::shared_ptr<classad::ClassAd> se_info_ad_ptr(
+          classad_utils::parse_classad(se_info_ad_str));
 
-       }
+        for (
+          boost::unordered_map<
+            boost::flyweight<std::string>,
+            boost::flyweight<std::string>,
+            ism::flyweight_hash
+          >::iterator iter(ad_info->begin());
+          iter != ad_info->end();
+          ++iter
+        ) {
+          se_info_ad_ptr->InsertAttr(iter->first, iter->second);
+        }
+
+        StorageInfo& info = (*result)[name];
+        info.links.push_back(file_it);
+        insert_protocols(info.protocols, *se_info_ad_ptr);
+        insert_ce_mount_points(info.ce_mounts, *se_info_ad_ptr);
+      }
     }
   }
 

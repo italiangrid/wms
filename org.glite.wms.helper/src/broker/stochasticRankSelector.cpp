@@ -22,7 +22,7 @@ limitations under the License.
  * Author: Monforte Salvatore <Salvatore.Monforte@ct.infn.it>
  */
 
-// $Id$
+// $Id: stochasticRankSelector.cpp,v 1.1.2.1 2012/09/11 10:19:43 mcecchi Exp $
 
 #include <algorithm>
 #include <vector>

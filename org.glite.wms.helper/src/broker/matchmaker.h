@@ -20,7 +20,7 @@ limitations under the License.
 // File: MatchMaker.h
 // Author: Monforte Salvatore
 
-// $Id$
+// $Id: matchmaker.h,v 1.1.2.1 2012/09/11 10:19:41 mcecchi Exp $
 
 #ifndef GLITE_WMS_MATCHMAKING_MATCHMAKER_H
 #define GLITE_WMS_MATCHMAKING_MATCHMAKER_H

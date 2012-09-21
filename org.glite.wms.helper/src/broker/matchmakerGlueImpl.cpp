@@ -21,7 +21,7 @@ limitations under the License.
 // Author: Salvatore Monforte <Salvatore.Monforte@ct.infn.it>
 // Copyright (c) 2002 EU DataGrid.
 
-// $Id$
+// $Id: matchmakerGlueImpl.cpp,v 1.1.2.1 2012/09/11 10:19:42 mcecchi Exp $
 
 #include <boost/scoped_ptr.hpp>
 #include <boost/shared_ptr.hpp>

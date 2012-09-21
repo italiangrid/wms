@@ -21,7 +21,7 @@ limitations under the License.
 // Author: Salvatore Monforte <Salvatore.Monforte@ct.infn.it>
 // Copyright (c) 2002 EU DataGrid.
 
-// $Id$
+// $Id: glue_attributes.h,v 1.1.2.1 2012/09/11 10:19:41 mcecchi Exp $
 
 #ifndef _GLUE_SCHEMA_STRINGS_
 #define _GLUE_SCHEMA_STRINGS_

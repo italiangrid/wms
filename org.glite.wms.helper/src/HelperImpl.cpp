@@ -21,7 +21,7 @@ limitations under the License.
 // Author: Francesco Giacomini <Francesco.Giacomini@cnaf.infn.it>
 // Copyright (c) 2002 EU DataGrid.
 
-// $Id$
+// $Id: HelperImpl.cpp,v 1.4.14.2 2010/04/08 13:52:15 mcecchi Exp $
 
 #include "glite/wms/helper/HelperImpl.h"
 #include <fstream>

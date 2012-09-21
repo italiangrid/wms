@@ -21,7 +21,7 @@ limitations under the License.
 // Author: Salvatore Monforte
 // Author: Enzo Martelli
 
-// $Id$
+// $Id: dli_utils.cpp,v 1.1.2.2 2012/09/12 10:02:12 mcecchi Exp $
 
 #include <dlfcn.h>
 

@@ -21,7 +21,7 @@ limitations under the License.
 // Author: Salvatore Monforte
 // Author: Francesco Giacomini
 
-// $Id$
+// $Id: storage_utils.h,v 1.1.2.2 2012/09/12 10:02:13 mcecchi Exp $
 
 #ifndef GLITE_WMS_BROKERINFO_STORAGE_UTILS_H
 #define GLITE_WMS_BROKERINFO_STORAGE_UTILS_H

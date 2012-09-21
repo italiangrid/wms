@@ -106,6 +106,7 @@ double lb_statistics(std::string const& queue_id, stats_t mode, int seconds)
       return dispersions[0];
     }
   }
+  return 0.0;
 }
 
 bool measured_response_time(

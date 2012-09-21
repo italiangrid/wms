@@ -21,7 +21,7 @@ limitations under the License.
 // Author: Francesco Giacomini <Francesco.Giacomini@cnaf.infn.it>
 // Copyright (c) 2002 EU DataGrid.
 
-// $Id$
+// $Id: Helper_matcher_ism.h,v 1.1.2.2.2.2 2010/04/08 13:52:15 mcecchi Exp $
 
 #ifndef GLITE_WMS_HELPER_MATCHER_HELPER_H
 #define GLITE_WMS_HELPER_MATCHER_HELPER_H
@@ -49,3 +49,4 @@ public:
 }}}} // glite::wms::helper::matcher
 
 #endif
+
