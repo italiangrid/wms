@@ -21,7 +21,7 @@ limitations under the License.
 // Author: Salvatore Monforte <Salvatore.Monforte@ct.infn.it>
 // Copyright (c) 2004 EU DataGrid.
 
-// $Id$
+// $Id: ism-ii-purchaser.h,v 1.9.2.3.2.3.4.2.4.3 2012/07/12 10:02:54 mcecchi Exp $
 
 #ifndef GLITE_WMS_ISM_PURCHASER_ISM_II_PURCHASER_H
 #define GLITE_WMS_ISM_PURCHASER_ISM_II_PURCHASER_H
@@ -70,7 +70,16 @@ class ism_ii_purchaser_entry_update
 {
 public:
   ism_ii_purchaser_entry_update() {}
-  bool operator()(int a, boost::shared_ptr<classad::ClassAd>& ad);
+  bool operator()(
+    int a,
+    boost::shared_ptr<
+      boost::unordered_map<
+        boost::flyweight<std::string>,
+        boost::flyweight<std::string>,
+        flyweight_hash
+      >
+    >
+  );
 };
 
 namespace ii {

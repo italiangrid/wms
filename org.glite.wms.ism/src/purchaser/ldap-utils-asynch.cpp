@@ -21,7 +21,7 @@ limitations under the License.
 // Author: Salvatore Monforte
 // Copyright (c) 2002 EU DataGrid.
 
-// $Id$
+// $Id: ldap-utils-asynch.cpp,v 1.1.2.1.2.2.2.4.2.3.2.1 2012/05/30 07:20:40 mcecchi Exp $
 #include <sys/time.h>
 #include <ldap.h>
 #include <lber.h>
@@ -728,7 +728,7 @@ fetch_bdii_ce_info(
        "GlueCESEBindGroupSEUniqueID", cu::asExprList(sebind)
      );
      try {  
-       ism::purchaser::expand_glueceid_info((*ce_it)->second.ad);
+       ism::purchaser::expand_glueid_info((*ce_it)->second.ad);
        ism::purchaser::insert_gangmatch_storage_ad((*ce_it)->second.ad);
      }
      catch(cu::InvalidValue) {

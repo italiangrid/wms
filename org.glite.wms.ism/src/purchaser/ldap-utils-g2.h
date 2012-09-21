@@ -21,7 +21,7 @@ limitations under the License.
 // Author: Salvatore Monforte
 // Copyright (c) 2004 EU DataGrid.
 
-// $Id$
+// $Id: ldap-utils-g2.h,v 1.1.2.2 2012/06/19 13:53:37 mcecchi Exp $
 
 #ifndef GLITE_WMS_II_PURCHASER_LDAP_UTILS_G2_H
 #define GLITE_WMS_II_PURCHASER_LDAP_UTILS_G2_H

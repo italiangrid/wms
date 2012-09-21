@@ -14,9 +14,10 @@
 // See the License for the specific language governing permissions and 
 // limitations under the License.
 
-// $Id$
+// $Id: ism-ii-purchaser.cpp,v 1.19.2.8.2.11.2.3.2.2.2.3 2012/06/22 11:51:31 mcecchi Exp $
 
 #include <boost/progress.hpp>
+#include <boost/flyweight.hpp>
 #include <boost/timer.hpp>
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/condition.hpp>
@@ -31,7 +32,10 @@
 #include "glite/wms/common/configuration/WMConfiguration.h"
 #include "glite/wms/common/configuration/NSConfiguration.h"
 
+#include "glite/wmsutils/classads/classad_utils.h"
+
 using namespace std;
+namespace utils = glite::wmsutils::classads;
 
 namespace glite {
 namespace wms {
@@ -43,12 +47,156 @@ namespace {
 boost::condition f_purchasing_cycle_run_condition;
 boost::mutex     f_purchasing_cycle_run_mutex;
 
+boost::shared_ptr<classad::ClassAd> glue13_mapping_ad(
+   glite::wmsutils::classads::parse_classad(
+    "["
+   "GlueCECapability = GLUE2.Computing.Endpoint.Capability;"
+   "GlueCEImplementationName = GLUE2.Computing.Endpoint.ImplementationName;"
+   "GlueCEImplementationVersion = GLUE2.Computing.Endpoint.ImplementationVersion;"
+   "GlueCEInfoLRMSVersion = GLUE2.Manager.ProductVersion;"
+   "GlueCEPolicyMaxWallClockTime = GLUE2.Computing.Share.MaxWallTime;"
+   "GlueCEPolicyMaxCPUTime = GLUE2.Computing.Share.MaxCPUTime;"
+   "GlueCEPolicyMaxRunningJobs  = GLUE2.Computing.Share.MaxRunningJobs;"
+   "GlueCEStateStatus = GLUE2.Computing.Share.ServingState;"
+   "GlueCEStateWaitingJobs = GLUE2.Computing.Share.WaitingJobs;"
+   "GlueCEStateTotalJobs = GLUE2.Computing.Share.TotalJobs;"
+   "GlueCEStateFreeJobSlots  = GLUE2.Computing.Share.FreeSlots;"
+   "GlueCEStateRunningJobs = GLUE2.Computing.Share.RunningJobs;"
+   "GlueCEStateEstimatedResponseTime = GLUE2.Computing.Share.EstimatedAverageWaitingTime;"
+   "GlueCEStateWorstResponseTime = GLUE2.Computing.Share.EstimatedWorstWaitingTime;"
+   "GlueHostArchitecturePlatformType = GLUE2.ExecutionEnvironment.Platform;"
+   "GlueHostArchitectureSMPSize = GLUE2.ExecutionEnvironment.OtherInfo.SmpSize;"
+   "GlueHostProcessorModel = GLUE2.ExecutionEnvironment.CPUModel;"
+   "GlueHostProcessorVendor = GLUE2.ExecutionEnvironment.CPUVendor;"
+   "GlueHostProcessorClockSpeed = GLUE2.ExecutionEnvironment.CPUClockSpeed;"
+   "GlueHostOperatingSystemName = GLUE2.ExecutionEnvironment.OSName;"
+   "GlueHostMainMemoryRAMSize = GLUE2.ExecutionEnvironment.MainMemorySize;"
+   "GlueHostMainMemoryVirtualSize = GLUE2.ExecutionEnvironment.VirtualMemorySize;"
+   "GlueHostNetworkAdapterInboundIP = GLUE2.ExecutionEnvironment.ConnectivityIn;"
+   "GlueHostNetworkAdapterOutboundIP = GLUE2.ExecutionEnvironment.ConnectivityOut;"
+   "GlueSubClusterLogicalCPUs = GLUE2.ExecutionEnvironment.LogicalCPUs;"
+   "GlueSubClusterPhysicalCPUs = GLUE2.ExecutionEnvironment.PhysicalCPUs;"
+    "]")
+);
+
+void populate_ism(
+  vector<glue_info_iterator>& glue_info_container_updated_entries,
+  size_t the_ism_index,
+  update_function_type const& uf)
+{
+  static glite::wms::common::configuration::Configuration const& config(
+    *glite::wms::common::configuration::Configuration::instance()
+  );
+  static const time_t expiry_time(
+    config.wm()->ism_ii_purchasing_rate() + config.ns()->ii_timeout()
+  );
+
+  vector<glue_info_iterator>::const_iterator it(
+    glue_info_container_updated_entries.begin()
+  );
+  vector<glue_info_iterator>::const_iterator const e(
+    glue_info_container_updated_entries.end()
+  );
+
+  // no locking is needed here (before the switch)
+  int dark_side = ism::dark_side();
+  bool insert = false;
+  ism_type::iterator ism_entry;
+
+  for ( ; it != e; ++it ) {
+
+    boost::shared_ptr<
+      boost::unordered_map<
+        boost::flyweight<std::string>,
+        boost::flyweight<std::string>,
+        flyweight_hash
+      >
+    > indexed_ce_info(
+      new boost::unordered_map<
+        boost::flyweight<std::string>,
+        boost::flyweight<std::string>,
+        flyweight_hash>
+    );
+    for (
+      classad::ClassAd::iterator iter((*it)->second->begin());
+      iter != (*it)->second->end();
+      ++iter
+    ) {
+      classad::ClassAd* ad_value(static_cast<classad::ClassAd*>(iter->second));
+      (*indexed_ce_info)[boost::flyweight<std::string>(iter->first)] = boost::flyweight<std::string>(utils::unparse_classad(*ad_value));
+                                             // let's keep ldap-utils generating a classad for now,
+                                             // it will be easier to update the ce_ad
+                                             // upon MM, without storing the data type
+                                             // for each attribute
+    }
+    ism_type this_ism(get_ism(the_ism_index, dark_side));
+
+    boost::tie(ism_entry, insert) =
+      this_ism.insert(
+        make_ism_entry(
+          (*it)->first,
+          std::time(0),
+          indexed_ce_info,
+          expiry_time,
+          uf
+        )
+      );
+
+    if (!insert) { // existing entry (typically glue13), need to merge info
+      // re-create the classad to be merged with what fetched, that is (*it)->second
+      classad::ClassAd a;
+      boost::shared_ptr<
+        boost::unordered_map<
+          boost::flyweight<std::string>,
+          boost::flyweight<std::string>,
+          flyweight_hash
+        >
+      > ad_info(boost::tuples::get<ad_info_entry>(ism_entry->second));
+      for (
+        boost::unordered_map<
+          boost::flyweight<std::string>,
+          boost::flyweight<std::string>,
+          flyweight_hash>::iterator iter(ad_info->begin());
+        iter != ad_info->end();
+        ++iter
+      ) {
+        a.InsertAttr(iter->first, iter->second);
+      }
+
+      // merge GLUE1.3 with GLUE2.0 representation and only after that
+      // re-index the updated content
+      a.Update(*(*it)->second);
+      a.Update(*glue13_mapping_ad);
+
+      // keep on adding on the original index map
+      for (classad::ClassAd::iterator i(a.begin()); i!= a.end(); ++i) {
+        classad::ClassAd* tmp(static_cast<classad::ClassAd*>(i->second));
+        (*ad_info)[boost::flyweight<std::string>(i->first)] = boost::flyweight<std::string>(
+	  utils::unparse_classad(*tmp)
+        ); // For GLUE2, this is not a flat structure in classad sense. This introduces various 
+           // inefficiencies (both in time and space). As long as the GLUE2 data is 'little',
+           // we can live with this.
+      }
+
+      Debug((*it)->first << " updated existing entry");
+    } else {
+      Debug((*it)->first << " added to ISM ");
+    }
+  }
+}
+
 } // {anonymous}
 
 bool 
 ism_ii_purchaser_entry_update::operator()(
   int a,
-  boost::shared_ptr<classad::ClassAd>& ad
+  boost::shared_ptr<
+    boost::unordered_map<
+      boost::flyweight<std::string>,
+      boost::flyweight<std::string>,
+      flyweight_hash
+    >
+  >
 )
 {
   boost::mutex::scoped_lock l(f_purchasing_cycle_run_mutex);
@@ -122,10 +270,10 @@ void ism_ii_purchaser::operator()()
        config.wm()->enable_ism_ii_glue20_purchasing()
       );
       if (glue13_purchasing_is_enabled) {
-        gluece_info_container_type gluece_info_container;
-        vector<gluece_info_iterator> gluece_info_container_updated_entries;
-        gluese_info_container_type gluese_info_container;
-        vector<gluese_info_iterator> gluese_info_container_updated_entries;
+        glue_info_container_type gluece_info_container;
+        vector<glue_info_iterator> gluece_info_container_updated_entries;
+        glue_info_container_type gluese_info_container;
+        vector<glue_info_iterator> gluese_info_container_updated_entries;
 
         fetch_bdii_info(
           m_hostname,
@@ -158,11 +306,12 @@ void ism_ii_purchaser::operator()()
         populate_ism(gluece_info_container_updated_entries, ism::ce, ism_ii_purchaser_entry_update());
         populate_ism(gluese_info_container_updated_entries, ism::se, ism_ii_purchaser_entry_update());
       }
+
       if (glue20_purchasing_is_enabled) {
-        gluece_info_container_type gluece_info_container;
-        vector<gluece_info_iterator> gluece_info_container_updated_entries;
-        gluese_info_container_type gluese_info_container;
-        vector<gluese_info_iterator> gluese_info_container_updated_entries;
+        glue_info_container_type gluece_info_container;
+        vector<glue_info_iterator> gluece_info_container_updated_entries;
+        glue_info_container_type gluese_info_container;
+        vector<glue_info_iterator> gluese_info_container_updated_entries;
 
         fetch_bdii_info_g2(
          m_hostname,
@@ -175,6 +324,7 @@ void ism_ii_purchaser::operator()()
          gluese_info_container
        );
        Debug("BDII GLUE 2.0 fetching completed in " << std::time(0) - t0 << " seconds");
+
        apply_skip_predicate(
           gluece_info_container,
           gluece_info_container_updated_entries,
@@ -187,6 +337,7 @@ void ism_ii_purchaser::operator()()
           m_skip_predicate,
           "II_G2_purchaser"
         );
+
         populate_ism(gluece_info_container_updated_entries, ism::ce, ism_ii_purchaser_entry_update());
         populate_ism(gluese_info_container_updated_entries, ism::se, ism_ii_purchaser_entry_update());
       }
@@ -201,7 +352,6 @@ void ism_ii_purchaser::operator()()
       );
     } catch (...) {
 
-      // TODO: Check which exception may arrive here... and remove catch all
       Warning("Failed to purchase info from " << m_hostname << ":" << m_port);
     }
 
@@ -252,7 +402,15 @@ void destroy_ii_purchaser(ism_ii_purchaser* p) {
 
 // the entry update function factory
 extern "C" 
-boost::function<bool(int&, ad_ptr)> create_ii_entry_update_fn() 
+boost::function<bool(
+  int&,
+  boost::shared_ptr<
+    boost::unordered_map<
+      boost::flyweight<std::string>,
+      boost::flyweight<std::string>,
+      flyweight_hash
+    >
+  >)> create_ii_entry_update_fn() 
 {
   return ism_ii_purchaser_entry_update();
 }

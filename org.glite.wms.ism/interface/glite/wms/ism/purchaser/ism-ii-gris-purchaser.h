@@ -21,7 +21,7 @@ limitations under the License.
 // Author: Salvatore Monforte <Salvatore.Monforte@ct.infn.it>
 // Copyright (c) 2004 EU DataGrid.
 
-// $Id$
+// $Id: ism-ii-gris-purchaser.h,v 1.3.4.1.4.2 2010/04/08 13:54:43 mcecchi Exp $
 
 #ifndef GLITE_WMS_ISM_PURCHASER_ISM_II_GRIS_PURCHASER_H
 #define GLITE_WMS_ISM_PURCHASER_ISM_II_GRIS_PURCHASER_H

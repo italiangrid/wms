@@ -174,8 +174,9 @@ string get_site_name(ldif2classad::LDIFObject& ldif_CE)
 }
 
 void 
-fetch_bdii_se_info(boost::shared_ptr<ldif2classad::LDAPConnection> IIconnection, 
-  gluese_info_container_type& gluese_info_container) 
+fetch_bdii_se_info(
+  boost::shared_ptr<ldif2classad::LDAPConnection> IIconnection, 
+  glue_info_container_type& gluese_info_container) 
 {
   string filter("(|(objectclass=gluecesebind)(|(objectclass=gluese)(|(objectclass=gluesa)"
     "(|(objectclass=glueseaccessprotocol)(objectclass=gluesecontrolprotocol)))))");
@@ -275,7 +276,7 @@ fetch_bdii_se_info(boost::shared_ptr<ldif2classad::LDAPConnection> IIconnection,
             boost::tuples::get<3>(it->second).push_back(ad);
           }
         }
-  ldap_it.next();
+        ldap_it.next();
       } // while( ldap_it.current() )
 
       gluese_info_map_type::const_iterator se_it(
@@ -352,9 +353,10 @@ fetch_bdii_se_info(boost::shared_ptr<ldif2classad::LDAPConnection> IIconnection,
 }
      
 void 
-fetch_bdii_ce_info(boost::shared_ptr<ldif2classad::LDAPConnection> IIconnection, 
+fetch_bdii_ce_info(
+  boost::shared_ptr<ldif2classad::LDAPConnection> IIconnection, 
   std::string const& ldap_ce_filter_ext,
-  gluece_info_container_type& gluece_info_container) 
+  glue_info_container_type& gluece_info_container) 
 {
   std::string filter(
     "(|(objectclass=gluecesebind)(objectclass=gluecluster)(objectclass=gluesubcluster)"
@@ -585,7 +587,7 @@ fetch_bdii_ce_info(boost::shared_ptr<ldif2classad::LDAPConnection> IIconnection,
             classadutils::asExprList(sebind)
           );
           try {  
-            expand_glueceid_info((*ce_it)->second.first);
+            expand_glueid_info((*ce_it)->second.first);
             insert_gangmatch_storage_ad((*ce_it)->second.first);
           }
           catch(classadutils::InvalidValue) {
@@ -699,8 +701,8 @@ void fetch_bdii_info(
       std::string const& dn,
       time_t timeout,
       std::string const& ldap_ce_filter_ext,
-      gluece_info_container_type& gluece_info_container,
-      gluese_info_container_type& gluese_info_container)
+      glue_info_container_type& gluece_info_container,
+      glue_info_container_type& gluese_info_container)
 {
   boost::shared_ptr<ldif2classad::LDAPConnection> IIconnection(
     new ldif2classad::LDAPSynchConnection(dn, hostname, port, timeout)

@@ -21,7 +21,7 @@ limitations under the License.
 // Author: Salvatore Monforte <Salvatore.Monforte@ct.infn.it>
 // Copyright (c) 2002 EU DataGrid.
 
-// $Id$
+// $Id: common.cpp,v 1.8.2.4.6.2.4.3 2012/06/22 11:51:31 mcecchi Exp $
 
 #include <boost/tokenizer.hpp>
 #include <boost/algorithm/string/predicate.hpp>
@@ -43,108 +43,22 @@ namespace wms {
 namespace ism {
 namespace purchaser {
 
-namespace {
-
-boost::shared_ptr<classad::ClassAd> glue13_mapping_ad(
-   glite::wmsutils::classads::parse_classad(
-    "["
-   "GlueCECapability = GLUE2.Computing.Endpoint.Capability;"
-   "GlueCEImplementationName = GLUE2.Computing.Endpoint.ImplementationName;"
-   "GlueCEImplementationVersion = GLUE2.Computing.Endpoint.ImplementationVersion;"
-   "GlueCEInfoLRMSVersion = GLUE2.Manager.ProductVersion;"
-   "GlueCEPolicyMaxWallClockTime = GLUE2.Computing.Share.MaxWallTime;"
-   "GlueCEPolicyMaxCPUTime = GLUE2.Computing.Share.MaxCPUTime;"
-   "GlueCEPolicyMaxRunningJobs  = GLUE2.Computing.Share.MaxRunningJobs;"
-   "GlueCEStateStatus = GLUE2.Computing.Share.ServingState;"
-   "GlueCEStateWaitingJobs = GLUE2.Computing.Share.WaitingJobs;"
-   "GlueCEStateTotalJobs = GLUE2.Computing.Share.TotalJobs;"
-   "GlueCEStateFreeJobSlots  = GLUE2.Computing.Share.FreeSlots;"
-   "GlueCEStateRunningJobs = GLUE2.Computing.Share.RunningJobs;"
-   "GlueCEStateEstimatedResponseTime = GLUE2.Computing.Share.EstimatedAverageWaitingTime;"
-   "GlueCEStateWorstResponseTime = GLUE2.Computing.Share.EstimatedWorstWaitingTime;"
-   "GlueHostArchitecturePlatformType = GLUE2.ExecutionEnvironment.Platform;"
-   "GlueHostArchitectureSMPSize = GLUE2.ExecutionEnvironment.OtherInfo.SmpSize;"
-   "GlueHostProcessorModel = GLUE2.ExecutionEnvironment.CPUModel;"
-   "GlueHostProcessorVendor = GLUE2.ExecutionEnvironment.CPUVendor;"
-   "GlueHostProcessorClockSpeed = GLUE2.ExecutionEnvironment.CPUClockSpeed;"
-   "GlueHostOperatingSystemName = GLUE2.ExecutionEnvironment.OSName;"
-   "GlueHostMainMemoryRAMSize = GLUE2.ExecutionEnvironment.MainMemorySize;"
-   "GlueHostMainMemoryVirtualSize = GLUE2.ExecutionEnvironment.VirtualMemorySize;"
-   "GlueHostNetworkAdapterInboundIP = GLUE2.ExecutionEnvironment.ConnectivityIn;"
-   "GlueHostNetworkAdapterOutboundIP = GLUE2.ExecutionEnvironment.ConnectivityOut;"
-   "GlueSubClusterLogicalCPUs = GLUE2.ExecutionEnvironment.LogicalCPUs;"
-   "GlueSubClusterPhysicalCPUs = GLUE2.ExecutionEnvironment.PhysicalCPUs;"
-    "]")
-);
-
-} // {anonymous}
-
-
-void populate_ism(
-  vector<gluece_info_iterator>& gluece_info_container_updated_entries,
-  size_t the_ism_index, // typically ce or se
-  update_function_type const& uf
-  )
-{
-  static glite::wms::common::configuration::Configuration const& config(
-    *glite::wms::common::configuration::Configuration::instance()
-  );
-  static const time_t expiry_time(
-    config.wm()->ism_ii_purchasing_rate() + config.ns()->ii_timeout()
-  );
-
-  vector<gluece_info_iterator>::const_iterator it(
-    gluece_info_container_updated_entries.begin()
-  );
-  vector<gluece_info_iterator>::const_iterator const e(
-    gluece_info_container_updated_entries.end()
-  );
-
-  // no locking is needed here (before the switch)
-  int dark_side = ism::dark_side();
-
-  bool insert = false;
-  ism_type::iterator ism_entry;
-
-  for ( ; it != e; ++it ) {
-    boost::tie(ism_entry, insert) =
-      get_ism(the_ism_index, dark_side).insert(
-        make_ism_entry(
-          (*it)->first,
-          std::time(0),
-          (*it)->second,
-          uf,
-          expiry_time
-        )
-      );
-    if (!insert) { // existing entry (typically glue13), need to merge info
-      ism_entry->second.get<2>()->Update(*(*it)->second);
-      ism_entry->second.get<2>()->Update(*(glue13_mapping_ad));
-
-      Debug((*it)->first << " updated with GLUE2.0");
-    }
-    else {
-       Debug((*it)->first << " added to ISM ");
-    }
-  }
-}
-
 void apply_skip_predicate(
-  gluece_info_container_type& gluece_info_container,
-  vector<gluece_info_iterator>& gluece_info_container_updated_entries,
+  glue_info_container_type& glue_info_container,
+  vector<glue_info_iterator>& glue_info_container_updated_entries,
   skip_predicate_type skip,
   std::string const& purchasedby
 )
 {
-  gluece_info_iterator it = gluece_info_container.begin();
-  gluece_info_iterator const gluece_info_container_end(
-    gluece_info_container.end()
+  glue_info_iterator it = glue_info_container.begin();
+  glue_info_iterator const glue_info_container_end(
+    glue_info_container.end()
   );
 
-  for ( ; it != gluece_info_container_end; ++it) {
+  for ( ; it != glue_info_container_end; ++it) {
     if (!skip(it->first)) {
       it->second->InsertAttr("PurchasedBy", purchasedby);
-      gluece_info_container_updated_entries.push_back(it);
+      glue_info_container_updated_entries.push_back(it);
     } else {
       Debug("Skipping " << it->first << " due to skip predicate settings");
     }
@@ -187,14 +101,14 @@ namespace {
   boost::scoped_ptr<classad::ClassAd> gangmatch_storage_ad;
 }
 
-bool expand_information_service_info(gluece_info_type& gluece_info)
+bool expand_information_service_info(glue_info_type& glue_info)
 {
   string isURL;
   bool result = false;
   try {
 
     isURL = static_cast<std::string>(
-      utils::evaluate_attribute(*gluece_info, "GlueInformationServiceURL")
+      utils::evaluate_attribute(*glue_info, "GlueInformationServiceURL")
     );
     static boost::regex  expression_gisu("\\S.*://(.*):([0-9]+)/(.*)");
     boost::smatch        pieces_gisu;
@@ -205,10 +119,9 @@ bool expand_information_service_info(gluece_info_type& gluece_info)
       string isport(pieces_gisu[2].first, pieces_gisu[2].second);
       string isbasedn(pieces_gisu[3].first, pieces_gisu[3].second);
 
-      gluece_info->InsertAttr("InformationServiceDN", isbasedn);
-      gluece_info->InsertAttr("InformationServiceHost", ishost);
-      gluece_info->InsertAttr("InformationServicePort",
-                              boost::lexical_cast<int>(isport));
+      glue_info->InsertAttr("InformationServiceDN", isbasedn);
+      glue_info->InsertAttr("InformationServiceHost", ishost);
+      glue_info->InsertAttr("InformationServicePort", boost::lexical_cast<int>(isport));
       result = true;
     }
   } catch (utils::InvalidValue& e) {
@@ -218,7 +131,7 @@ bool expand_information_service_info(gluece_info_type& gluece_info)
   return result;
 }
 
-bool insert_gangmatch_storage_ad(gluece_info_type& gluece_info)
+bool insert_gangmatch_storage_ad(glue_info_type& glue_info)
 {
  try {
     if(!gangmatch_storage_ad) {
@@ -226,18 +139,17 @@ bool insert_gangmatch_storage_ad(gluece_info_type& gluece_info)
         utils::parse_classad(gangmatch_storage_ad_str)
       ); 
     }
-    gluece_info->Update( *gangmatch_storage_ad);
-  }
-  catch(...) {
+    glue_info->Update(*gangmatch_storage_ad);
+  } catch(...) {
     assert(false);
   }
   return true;
 }
 
-bool expand_glueceid_info(gluece_info_type& gluece_info)
+bool expand_glueid_info(glue_info_type& glue_info)
 {
   string ce_str;
-  ce_str.assign(utils::evaluate_attribute(*gluece_info, "GlueCEUniqueID"));
+  ce_str.assign(utils::evaluate_attribute(*glue_info, "GlueCEUniqueID"));
   static boost::regex  expression_ceid("(.+/[^\\-]+-([^\\-]+))-(.+)");
   boost::smatch  pieces_ceid;
   string gcrs, type, name;
@@ -246,7 +158,7 @@ bool expand_glueceid_info(gluece_info_type& gluece_info)
     
     gcrs.assign(pieces_ceid[1].first, pieces_ceid[1].second);
     try {
-      type.assign(utils::evaluate_attribute(*gluece_info, "GlueCEInfoLRMSType"));
+      type.assign(utils::evaluate_attribute(*glue_info, "GlueCEInfoLRMSType"));
     } 
     catch(utils::InvalidValue& e) {
       // Try to fall softly in case the attribute is missing...
@@ -256,15 +168,16 @@ bool expand_glueceid_info(gluece_info_type& gluece_info)
     // ... or in case the attribute is empty.
     if (type.length() == 0) type.assign(pieces_ceid[2].first, pieces_ceid[2].second);
     name.assign(pieces_ceid[3].first, pieces_ceid[3].second);
-  }
-  else { 
+  } else { 
     Warning("Cannot parse CEid=" << ce_str);
     return false;
   }
-  gluece_info -> InsertAttr("GlobusResourceContactString", gcrs);
-  gluece_info -> InsertAttr("LRMSType", type);
-  gluece_info -> InsertAttr("QueueName", name);
-  gluece_info -> InsertAttr("CEid", ce_str);
+
+  glue_info -> InsertAttr("GlobusResourceContactString", gcrs);
+  glue_info -> InsertAttr("LRMSType", type);
+  glue_info -> InsertAttr("QueueName", name);
+  glue_info -> InsertAttr("CEid", ce_str);
+
   return true;
 }
 

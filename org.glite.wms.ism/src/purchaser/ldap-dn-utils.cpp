@@ -21,7 +21,7 @@ limitations under the License.
 // Author: Salvatore Monforte
 // Copyright (c) 2002 EU DataGrid.
 
-// $Id$
+// $Id: ldap-dn-utils.cpp,v 1.1.8.1.2.2.4.1 2012/06/22 11:51:31 mcecchi Exp $
 
 #include <boost/tokenizer.hpp>
 #include <boost/algorithm/string/trim.hpp>

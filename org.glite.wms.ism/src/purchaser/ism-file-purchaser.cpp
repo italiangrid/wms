@@ -21,7 +21,7 @@ limitations under the License.
 // Author: Salvatore Monforte
 // Copyright (c) 2002 EU DataGrid.
 
-// $Id$
+// $Id: ism-file-purchaser.cpp,v 1.8.2.4.2.1.2.1.2.2.4.1 2012/05/30 07:20:39 mcecchi Exp $
 
 #include <boost/regex.hpp>
 #include <fstream>

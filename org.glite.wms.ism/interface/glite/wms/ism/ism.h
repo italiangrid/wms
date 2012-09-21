@@ -17,11 +17,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-// File: ISM.h
-// Authors: Elisabetta Ronchieri <elisabetta.ronchieri@cnaf.infn.it>
+// Authors:
 //          Marco Cecchi <marco.cecchi@cnaf.infn.it>
-//
-// $Id$
+//          Salvatore Monforte <salvatore.monforte@ct.infn.it>
+//          Elisabetta Ronchieri <elisabetta.ronchieri@cnaf.infn.it>
 
 #ifndef GLITE_WMS_ISM_ISM_H
 #define GLITE_WMS_ISM_ISM_H
@@ -34,9 +33,11 @@ limitations under the License.
 #include <boost/thread/thread.hpp>
 #include <boost/thread/recursive_mutex.hpp>
 #include <boost/thread/xtime.hpp>
+#include <boost/flyweight.hpp>
+#include <boost/unordered_map.hpp>
 
 namespace classad {
-class ClassAd;
+   class ClassAd;
 }
 
 namespace glite {
@@ -46,8 +47,9 @@ namespace ism {
 enum {
   update_time_entry = 0,
   expiry_time_entry,
-  ad_ptr_entry,
-  update_function_entry
+  ad_info_entry,
+  update_function_entry,
+  mutex_entry
 };
 
 enum {
@@ -55,32 +57,53 @@ enum {
   se
 };
 
-// resource identifier
-typedef std::string id_type;
-
 // resource description
 typedef boost::shared_ptr<classad::ClassAd> ad_ptr;
+
+struct flyweight_hash
+{
+   std::size_t operator()(boost::flyweight<std::string> const& e) const
+   {
+      boost::hash<std::string> hasher;
+      std::string const& str = e.get();
+      return hasher(str);
+   }
+};
+
 // update function
-typedef boost::function<bool(int&, ad_ptr)> update_function_type;
+typedef boost::function<bool(
+  int&,
+    boost::shared_ptr<
+      boost::unordered_map<
+        boost::flyweight<std::string>,
+        boost::flyweight<std::string>,
+        flyweight_hash
+      >
+    >
+)> update_function_type;
 
 typedef boost::tuple<
   int, // update time
-  int, // expiry "
-  ad_ptr, // resource description
+  int, // expiry  "
+  boost::shared_ptr<
+    boost::unordered_map<
+      boost::flyweight<std::string>,
+      boost::flyweight<std::string>,
+      flyweight_hash
+    >
+  >, // ad description in terms of key/value pairs. this is ready to be used
+     // in a flyweight pattern or any distributed cache
   update_function_type, // update function
   boost::shared_ptr<boost::mutex::mutex> // one different mutex for each entry  
 > ism_entry_type;
 
 // 1. resource identifier
 // 2. ism entry type
-typedef std::map<
-  id_type,
-  ism_entry_type,
-  std::less<id_type>
-  //,__gnu_cxx::malloc_allocator<ism_entry_type>
+typedef boost::unordered_map<
+  std::string,
+  ism_entry_type
+  //, , __gnu_cxx::malloc_allocator<ism_entry_type>
 > ism_type;
-typedef std::map<id_type, ism_entry_type> ism_type;
-//typedef std::multimap<double, ism_entry_type> ism_type;
 
 // type specification for the mutex in ism
 typedef boost::recursive_mutex ism_mutex_type;
@@ -101,11 +124,17 @@ std::pair<boost::shared_ptr<void>, int> match_on_active_side();
 int matching_threads(int side);
 
 ism_type::value_type make_ism_entry(
-  std::string const& id, // resource identifier
-  int update_time,	 // update time
-  ad_ptr const& ad,	 // resource descritpion
-  update_function_type const& uf = update_function_type(), // update function
-  int expiry_time = 300
+  std::string const& id,
+  int update_time,
+  boost::shared_ptr<
+    boost::unordered_map<
+      boost::flyweight<std::string>,
+      boost::flyweight<std::string>,
+      flyweight_hash  
+    >
+  > ad_info,
+  int expiry_time = 300,
+  update_function_type const& uf = update_function_type()
 );
 
 std::ostream& operator<<(std::ostream& os, ism_type::value_type const& value);

@@ -21,7 +21,7 @@ limitations under the License.
 // Author: Salvatore Monforte
 // Copyright (c) 2004 EU DataGrid.
 
-// $Id$
+// $Id: ldap-utils-asynch.h,v 1.1.2.1.2.2.2.1.2.2 2010/04/08 13:54:43 mcecchi Exp $
 
 #ifndef GLITE_WMS_II_PURCHASER_LDAP_UTILS_H
 #define GLITE_WMS_II_PURCHASER_LDAP_UTILS_H

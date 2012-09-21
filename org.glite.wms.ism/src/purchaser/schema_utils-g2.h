@@ -19,7 +19,7 @@ limitations under the License.
 
 // File: schema_utils.h
 // Author: Salvatore Monforte
-// $Id$
+// $Id: schema_utils-g2.h,v 1.1.2.1 2011/11/15 16:04:56 monforte Exp $
 
 #ifndef GLITE_WMS_II_PURCHASER_SCHEMA_UTILS_G2_H
 #define GLITE_WMS_II_PURCHASER_SCHEMA_UTILS_G2_H

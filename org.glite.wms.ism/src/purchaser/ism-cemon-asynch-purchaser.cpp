@@ -21,7 +21,7 @@ limitations under the License.
 // Author: Salvatore Monforte <Salvatore.Monforte@ct.infn.it>
 // Copyright (c) 2002 EU DataGrid.
 
-// $Id$
+// $Id: ism-cemon-asynch-purchaser.cpp,v 1.10.2.5.2.1.4.2.4.1 2012/05/30 07:20:39 mcecchi Exp $
 
 #include <boost/tokenizer.hpp>
 #include <boost/regex.hpp>

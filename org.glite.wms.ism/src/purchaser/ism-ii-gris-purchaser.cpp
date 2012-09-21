@@ -21,7 +21,7 @@ limitations under the License.
 // Author: Salvatore Monforte <Salvatore.Monforte@ct.infn.it>
 // Copyright (c) 2002 EU DataGrid.
 
-// $Id$
+// $Id: ism-ii-gris-purchaser.cpp,v 1.5.4.1.4.2 2010/04/08 13:54:43 mcecchi Exp $
 #include <boost/mem_fn.hpp>
 #include "glite/wms/ism/purchaser/ism-ii-gris-purchaser.h"
 

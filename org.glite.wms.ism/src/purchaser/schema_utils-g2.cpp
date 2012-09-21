@@ -19,7 +19,7 @@ limitations under the License.
 
 // File: schema_utils.cpp
 // Author: Salvatore Monforte
-// $Id$
+// $Id: schema_utils-g2.cpp,v 1.1.2.1 2011/11/15 16:04:56 monforte Exp $
 #include <sys/time.h>
 #include <ldap.h>
 #include <lber.h>
