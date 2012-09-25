@@ -80,7 +80,7 @@ boost::shared_ptr<classad::ClassAd> glue13_mapping_ad(
 );
 
 void populate_ism(
-  vector<glue_info_iterator>& glue_info_container_updated_entries,
+  glue_info_container_type& glue_info_container,
   size_t the_ism_index,
   update_function_type const& uf)
 {
@@ -91,11 +91,9 @@ void populate_ism(
     config.wm()->ism_ii_purchasing_rate() + config.ns()->ii_timeout()
   );
 
-  vector<glue_info_iterator>::const_iterator it(
-    glue_info_container_updated_entries.begin()
-  );
-  vector<glue_info_iterator>::const_iterator const e(
-    glue_info_container_updated_entries.end()
+  glue_info_container_type::iterator it(glue_info_container.begin());
+  glue_info_container_type::const_iterator const e(
+    glue_info_container.end()
   );
 
   // no locking is needed here (before the switch)
@@ -103,7 +101,7 @@ void populate_ism(
   bool insert = false;
   ism_type::iterator ism_entry;
 
-  for ( ; it != e; ++it ) {
+  for ( ; it != e; ++it) {
 
     boost::shared_ptr<
       boost::unordered_map<
@@ -118,23 +116,20 @@ void populate_ism(
         flyweight_hash>
     );
     for (
-      classad::ClassAd::iterator iter((*it)->second->begin());
-      iter != (*it)->second->end();
+      classad::ClassAd::iterator iter(it->second->begin());
+      iter != it->second->end();
       ++iter
     ) {
       classad::ClassAd* ad_value(static_cast<classad::ClassAd*>(iter->second));
-      (*indexed_ce_info)[boost::flyweight<std::string>(iter->first)] = boost::flyweight<std::string>(utils::unparse_classad(*ad_value));
-                                             // let's keep ldap-utils generating a classad for now,
-                                             // it will be easier to update the ce_ad
-                                             // upon MM, without storing the data type
-                                             // for each attribute
+      (*indexed_ce_info)[boost::flyweight<std::string>(iter->first)]
+        = boost::flyweight<std::string>(utils::unparse_classad(*ad_value));
     }
     ism_type this_ism(get_ism(the_ism_index, dark_side));
 
     boost::tie(ism_entry, insert) =
       this_ism.insert(
         make_ism_entry(
-          (*it)->first,
+          it->first,
           std::time(0),
           indexed_ce_info,
           expiry_time,
@@ -165,22 +160,22 @@ void populate_ism(
 
       // merge GLUE1.3 with GLUE2.0 representation and only after that
       // re-index the updated content
-      a.Update(*(*it)->second);
+      a.Update(*it->second);
       a.Update(*glue13_mapping_ad);
 
       // keep on adding on the original index map
       for (classad::ClassAd::iterator i(a.begin()); i!= a.end(); ++i) {
         classad::ClassAd* tmp(static_cast<classad::ClassAd*>(i->second));
-        (*ad_info)[boost::flyweight<std::string>(i->first)] = boost::flyweight<std::string>(
-	  utils::unparse_classad(*tmp)
+        (*ad_info)[boost::flyweight<std::string>(i->first)]
+          = boost::flyweight<std::string>(utils::unparse_classad(*tmp)
         ); // For GLUE2, this is not a flat structure in classad sense. This introduces various 
            // inefficiencies (both in time and space). As long as the GLUE2 data is 'little',
            // we can live with this.
       }
 
-      Debug((*it)->first << " updated existing entry");
+      Debug(it->first << " updated existing entry");
     } else {
-      Debug((*it)->first << " added to ISM ");
+      Debug(it->first << " added to ISM ");
     }
   }
 }
@@ -271,9 +266,7 @@ void ism_ii_purchaser::operator()()
       );
       if (glue13_purchasing_is_enabled) {
         glue_info_container_type gluece_info_container;
-        vector<glue_info_iterator> gluece_info_container_updated_entries;
         glue_info_container_type gluese_info_container;
-        vector<glue_info_iterator> gluese_info_container_updated_entries;
 
         fetch_bdii_info(
           m_hostname,
@@ -288,30 +281,26 @@ void ism_ii_purchaser::operator()()
         t0 = std::time(0);
         apply_skip_predicate(
           gluece_info_container,
-          gluece_info_container_updated_entries,
           m_skip_predicate,
           "II_G13_purchaser"
         );
         apply_skip_predicate(
           gluese_info_container,
-          gluese_info_container_updated_entries,
           m_skip_predicate,
           "II_G13_purchaser"
         );
         // incoming requests asking for MM will be assigned the current active
         // side so we can continue without locking here, now that older threads
         // against the current dark side have all flushed
-        // NOTA BENE: this is valid as long as other purchasers are not
-        // switching side under our nose
-        populate_ism(gluece_info_container_updated_entries, ism::ce, ism_ii_purchaser_entry_update());
-        populate_ism(gluese_info_container_updated_entries, ism::se, ism_ii_purchaser_entry_update());
+        // NOTICE: this is valid as long as other purchasers are not
+        // switching side in background
+        populate_ism(gluece_info_container, ism::ce, ism_ii_purchaser_entry_update());
+        populate_ism(gluese_info_container, ism::se, ism_ii_purchaser_entry_update());
       }
 
       if (glue20_purchasing_is_enabled) {
         glue_info_container_type gluece_info_container;
-        vector<glue_info_iterator> gluece_info_container_updated_entries;
         glue_info_container_type gluese_info_container;
-        vector<glue_info_iterator> gluese_info_container_updated_entries;
 
         fetch_bdii_info_g2(
          m_hostname,
@@ -327,19 +316,17 @@ void ism_ii_purchaser::operator()()
 
        apply_skip_predicate(
           gluece_info_container,
-          gluece_info_container_updated_entries,
           m_skip_predicate,
           "II_G2_purchaser"
         );
         apply_skip_predicate(
           gluese_info_container,
-          gluese_info_container_updated_entries,
           m_skip_predicate,
           "II_G2_purchaser"
         );
 
-        populate_ism(gluece_info_container_updated_entries, ism::ce, ism_ii_purchaser_entry_update());
-        populate_ism(gluese_info_container_updated_entries, ism::se, ism_ii_purchaser_entry_update());
+        populate_ism(gluece_info_container, ism::ce, ism_ii_purchaser_entry_update());
+        populate_ism(gluese_info_container, ism::se, ism_ii_purchaser_entry_update());
       }
 
       ism::switch_active_side();

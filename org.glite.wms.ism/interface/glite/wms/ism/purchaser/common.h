@@ -37,8 +37,8 @@ limitations under the License.
 #include <boost/regex.hpp>
 #include "glite/wms/ism/ism.h"
 
-//#include <boost/flyweight.hpp>
-//#include <boost/unordered_map.hpp>
+#include <boost/flyweight.hpp>
+#include <boost/unordered_map.hpp>
 
 namespace classad {
 class ClassAd;
@@ -68,14 +68,19 @@ typedef std::map<
   ad_ptr
 > PurchaserInfoContainer;
 
-typedef boost::shared_ptr<classad::ClassAd>        glue_info_type;
+/*
+  boost::shared_ptr<
+    boost::unordered_map<
+      boost::flyweight<std::string>,
+      boost::flyweight<std::string>,
+      flyweight_hash
+    >
+  >*/
+typedef boost::shared_ptr<classad::ClassAd>      glue_info_type;
 typedef std::map<std::string, glue_info_type>    glue_info_container_type;
-typedef glue_info_container_type::const_iterator glue_info_const_iterator;
-typedef glue_info_container_type::iterator       glue_info_iterator;
 
 void apply_skip_predicate(
   glue_info_container_type& glue_info_container,
-  std::vector<glue_info_iterator>& glue_info_container_updated_entries,
   skip_predicate_type skip,
   std::string const& purchased_by);
 

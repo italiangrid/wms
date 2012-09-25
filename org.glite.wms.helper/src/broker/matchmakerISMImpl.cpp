@@ -65,7 +65,7 @@ void add_referenced_attributes(
   std::string::const_iterator end = expr_str.end();
   boost::match_results<std::string::const_iterator> what;
   boost::match_flag_type flags = boost::match_default;
-  while(regex_search(start, end, what, pattern, flags)) {
+  while (regex_search(start, end, what, pattern, flags)) {
     attributes.insert(std::string(what[2].first, what[2].second));
     start = what[3].first;
     flags |= boost::match_prev_avail;
@@ -118,11 +118,12 @@ matchmakerISMImpl::checkRequirement(
 
   // for match-making, we'll only need to retrieve those attributes
   // referenced in the requirements and rank expressions, not the whole ce ad
-  // TODO II refactoring: actually this is a limitation that either is
-  // documented or changed so as to be able to include 'other' attrobitues
-  // that occur anywhere in the JDL
-  add_referenced_attributes(jdl.Lookup("requirements"), attributes);
-  add_referenced_attributes(jdl.Lookup("rank"), attributes);
+  for (classad::ClassAd::iterator it(jdl.begin()); it != jdl.end(); ++it) {
+    add_referenced_attributes(it->second, attributes);
+  }
+  // this would be faster but not totally correct
+  //add_referenced_attributes(jdl.Lookup("requirements"), attributes);
+  //add_referenced_attributes(jdl.Lookup("rank"), attributes);
 
   bool match;
   classad::ClassAdParser parser;
