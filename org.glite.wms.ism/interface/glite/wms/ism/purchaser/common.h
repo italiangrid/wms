@@ -63,31 +63,29 @@ typedef boost::function<bool(
     >
   >)> update_function_type;
 
-typedef std::map<
-  std::string,
-  ad_ptr
-> PurchaserInfoContainer;
+typedef boost::shared_ptr<
+  boost::unordered_map<
+    boost::flyweight<std::string>,
+    boost::flyweight<std::string>,
+    flyweight_hash
+  >
+> glue_info_type;
+typedef std::map<std::string, glue_info_type> glue_info_container_type;
 
-/*
-  boost::shared_ptr<
-    boost::unordered_map<
-      boost::flyweight<std::string>,
-      boost::flyweight<std::string>,
-      flyweight_hash
-    >
-  >*/
-typedef boost::shared_ptr<classad::ClassAd>      glue_info_type;
-typedef std::map<std::string, glue_info_type>    glue_info_container_type;
-
+boost::shared_ptr<
+  boost::unordered_map<
+    boost::flyweight<std::string>,
+    boost::flyweight<std::string>,
+    flyweight_hash
+  >   
+> classad2flyweight(boost::shared_ptr<classad::ClassAd> ad);
 void apply_skip_predicate(
   glue_info_container_type& glue_info_container,
   skip_predicate_type skip,
   std::string const& purchased_by);
-
 void tokenize_ldap_dn(std::string const& s, std::vector<std::string> &v);
-bool expand_information_service_info(glue_info_type& glue_info);
-bool insert_gangmatch_storage_ad(glue_info_type& glue_info);
-bool expand_glueid_info(glue_info_type& glue_info);
+void insert_gangmatch_storage_ad(ad_ptr glue_info);
+bool expand_glueid_info(ad_ptr glue_info);
 bool split_information_service_url(
   classad::ClassAd const&,
   boost::tuple<std::string, int, std::string>&

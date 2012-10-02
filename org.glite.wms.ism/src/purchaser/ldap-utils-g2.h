@@ -58,7 +58,7 @@ fetch_bdii_ce_info_g2(
   std::string const& basedn,
   time_t timeout,
   std::string const& ldap_ce_filter_ext,
-  PurchaserInfoContainer&
+  glue_info_container_type&
 );
 
 void
@@ -68,7 +68,7 @@ fetch_bdii_se_info_g2(
   std::string const& basedn,
   time_t timeout,
   std::string const& ldap_se_filter_ext,
-  PurchaserInfoContainer&
+  glue_info_container_type&
 );
 
 void 
@@ -79,8 +79,8 @@ fetch_bdii_info_g2(
   time_t timeout,
   std::string const& ldap_ce_filter_ext,
   std::string const& ldap_se_filter_ext,
-  PurchaserInfoContainer& ce_info,
-  PurchaserInfoContainer& se_info
+  glue_info_container_type& ce_info,
+  glue_info_container_type& se_info
 );
 
 }}}}

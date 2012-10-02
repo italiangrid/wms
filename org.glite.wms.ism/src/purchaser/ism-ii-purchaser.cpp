@@ -47,38 +47,6 @@ namespace {
 boost::condition f_purchasing_cycle_run_condition;
 boost::mutex     f_purchasing_cycle_run_mutex;
 
-boost::shared_ptr<classad::ClassAd> glue13_mapping_ad(
-   glite::wmsutils::classads::parse_classad(
-    "["
-   "GlueCECapability = GLUE2.Computing.Endpoint.Capability;"
-   "GlueCEImplementationName = GLUE2.Computing.Endpoint.ImplementationName;"
-   "GlueCEImplementationVersion = GLUE2.Computing.Endpoint.ImplementationVersion;"
-   "GlueCEInfoLRMSVersion = GLUE2.Manager.ProductVersion;"
-   "GlueCEPolicyMaxWallClockTime = GLUE2.Computing.Share.MaxWallTime;"
-   "GlueCEPolicyMaxCPUTime = GLUE2.Computing.Share.MaxCPUTime;"
-   "GlueCEPolicyMaxRunningJobs  = GLUE2.Computing.Share.MaxRunningJobs;"
-   "GlueCEStateStatus = GLUE2.Computing.Share.ServingState;"
-   "GlueCEStateWaitingJobs = GLUE2.Computing.Share.WaitingJobs;"
-   "GlueCEStateTotalJobs = GLUE2.Computing.Share.TotalJobs;"
-   "GlueCEStateFreeJobSlots  = GLUE2.Computing.Share.FreeSlots;"
-   "GlueCEStateRunningJobs = GLUE2.Computing.Share.RunningJobs;"
-   "GlueCEStateEstimatedResponseTime = GLUE2.Computing.Share.EstimatedAverageWaitingTime;"
-   "GlueCEStateWorstResponseTime = GLUE2.Computing.Share.EstimatedWorstWaitingTime;"
-   "GlueHostArchitecturePlatformType = GLUE2.ExecutionEnvironment.Platform;"
-   "GlueHostArchitectureSMPSize = GLUE2.ExecutionEnvironment.OtherInfo.SmpSize;"
-   "GlueHostProcessorModel = GLUE2.ExecutionEnvironment.CPUModel;"
-   "GlueHostProcessorVendor = GLUE2.ExecutionEnvironment.CPUVendor;"
-   "GlueHostProcessorClockSpeed = GLUE2.ExecutionEnvironment.CPUClockSpeed;"
-   "GlueHostOperatingSystemName = GLUE2.ExecutionEnvironment.OSName;"
-   "GlueHostMainMemoryRAMSize = GLUE2.ExecutionEnvironment.MainMemorySize;"
-   "GlueHostMainMemoryVirtualSize = GLUE2.ExecutionEnvironment.VirtualMemorySize;"
-   "GlueHostNetworkAdapterInboundIP = GLUE2.ExecutionEnvironment.ConnectivityIn;"
-   "GlueHostNetworkAdapterOutboundIP = GLUE2.ExecutionEnvironment.ConnectivityOut;"
-   "GlueSubClusterLogicalCPUs = GLUE2.ExecutionEnvironment.LogicalCPUs;"
-   "GlueSubClusterPhysicalCPUs = GLUE2.ExecutionEnvironment.PhysicalCPUs;"
-    "]")
-);
-
 void populate_ism(
   glue_info_container_type& glue_info_container,
   size_t the_ism_index,
@@ -103,27 +71,6 @@ void populate_ism(
 
   for ( ; it != e; ++it) {
 
-    boost::shared_ptr<
-      boost::unordered_map<
-        boost::flyweight<std::string>,
-        boost::flyweight<std::string>,
-        flyweight_hash
-      >
-    > indexed_ce_info(
-      new boost::unordered_map<
-        boost::flyweight<std::string>,
-        boost::flyweight<std::string>,
-        flyweight_hash>
-    );
-    for (
-      classad::ClassAd::iterator iter(it->second->begin());
-      iter != it->second->end();
-      ++iter
-    ) {
-      classad::ClassAd* ad_value(static_cast<classad::ClassAd*>(iter->second));
-      (*indexed_ce_info)[boost::flyweight<std::string>(iter->first)]
-        = boost::flyweight<std::string>(utils::unparse_classad(*ad_value));
-    }
     ism_type this_ism(get_ism(the_ism_index, dark_side));
 
     boost::tie(ism_entry, insert) =
@@ -131,47 +78,110 @@ void populate_ism(
         make_ism_entry(
           it->first,
           std::time(0),
-          indexed_ce_info,
+          it->second,
           expiry_time,
           uf
         )
       );
 
     if (!insert) { // existing entry (typically glue13), need to merge info
-      // re-create the classad to be merged with what fetched, that is (*it)->second
-      classad::ClassAd a;
       boost::shared_ptr<
         boost::unordered_map<
           boost::flyweight<std::string>,
           boost::flyweight<std::string>,
           flyweight_hash
         >
-      > ad_info(boost::tuples::get<ad_info_entry>(ism_entry->second));
+      > keyvalue_info(it->second);
       for (
         boost::unordered_map<
           boost::flyweight<std::string>,
           boost::flyweight<std::string>,
-          flyweight_hash>::iterator iter(ad_info->begin());
-        iter != ad_info->end();
+          flyweight_hash>::iterator iter(keyvalue_info->begin());
+        iter != keyvalue_info->end();
         ++iter
       ) {
-        a.InsertAttr(iter->first, iter->second);
+        // merge GLUE1.3 (ism_entry) with GLUE2.0 representation and only after that
+        (*boost::tuples::get<keyvalue_info_entry>(ism_entry->second))[iter->first] = iter->second;
       }
 
-      // merge GLUE1.3 with GLUE2.0 representation and only after that
-      // re-index the updated content
-      a.Update(*it->second);
-      a.Update(*glue13_mapping_ad);
-
-      // keep on adding on the original index map
-      for (classad::ClassAd::iterator i(a.begin()); i!= a.end(); ++i) {
-        classad::ClassAd* tmp(static_cast<classad::ClassAd*>(i->second));
-        (*ad_info)[boost::flyweight<std::string>(i->first)]
-          = boost::flyweight<std::string>(utils::unparse_classad(*tmp)
-        ); // For GLUE2, this is not a flat structure in classad sense. This introduces various 
-           // inefficiencies (both in time and space). As long as the GLUE2 data is 'little',
-           // we can live with this.
-      }
+      (*boost::tuples::get<keyvalue_info_entry>(ism_entry->second))[
+        boost::flyweight<std::string>("GlueCECapability")
+      ] = boost::flyweight<std::string>("GLUE2.Computing.Endpoint.Capability");
+      (*boost::tuples::get<keyvalue_info_entry>(ism_entry->second))[
+        boost::flyweight<std::string>("GlueCEImplementationName")
+      ] = boost::flyweight<std::string>("GLUE2.Computing.Endpoint.ImplementationName");
+      (*boost::tuples::get<keyvalue_info_entry>(ism_entry->second))[
+        boost::flyweight<std::string>("GlueCEImplementationVersion")
+      ] = boost::flyweight<std::string>("GLUE2.Computing.Endpoint.ImplementationVersion");
+      (*boost::tuples::get<keyvalue_info_entry>(ism_entry->second))[
+        boost::flyweight<std::string>("GlueCEInfoLRMSVersion")
+      ] = boost::flyweight<std::string>("GLUE2.Manager.ProductVersion");
+      (*boost::tuples::get<keyvalue_info_entry>(ism_entry->second))[
+        boost::flyweight<std::string>("GlueCEPolicyMaxWallClockTime")
+      ] = boost::flyweight<std::string>("GLUE2.Computing.Share.MaxWallTime");
+      (*boost::tuples::get<keyvalue_info_entry>(ism_entry->second))[
+        boost::flyweight<std::string>("GlueCEPolicyMaxCPUTime")
+      ] = boost::flyweight<std::string>("GLUE2.Computing.Share.MaxCPUTime");
+      (*boost::tuples::get<keyvalue_info_entry>(ism_entry->second))[
+        boost::flyweight<std::string>("GlueCEPolicyMaxRunningJobs")
+      ]  = boost::flyweight<std::string>("GLUE2.Computing.Share.MaxRunningJobs");
+      (*boost::tuples::get<keyvalue_info_entry>(ism_entry->second))[
+        boost::flyweight<std::string>("GlueCEStateStatus")
+      ] = boost::flyweight<std::string>("GLUE2.Computing.Share.ServingState");
+      (*boost::tuples::get<keyvalue_info_entry>(ism_entry->second))[
+        boost::flyweight<std::string>("GlueCEStateWaitingJobs")
+      ] = boost::flyweight<std::string>("GLUE2.Computing.Share.WaitingJobs");
+      (*boost::tuples::get<keyvalue_info_entry>(ism_entry->second))[
+        boost::flyweight<std::string>("GlueCEStateTotalJobs")
+      ] = boost::flyweight<std::string>("GLUE2.Computing.Share.TotalJobs");
+      (*boost::tuples::get<keyvalue_info_entry>(ism_entry->second))[
+        boost::flyweight<std::string>("GlueCEStateFreeJobSlots")
+      ] = boost::flyweight<std::string>("GLUE2.Computing.Share.FreeSlots");
+      (*boost::tuples::get<keyvalue_info_entry>(ism_entry->second))[
+        boost::flyweight<std::string>("GlueCEStateRunningJobs")
+      ] = boost::flyweight<std::string>("GLUE2.Computing.Share.RunningJobs");
+      (*boost::tuples::get<keyvalue_info_entry>(ism_entry->second))[
+        boost::flyweight<std::string>("GlueCEStateEstimatedResponseTime")
+      ] = boost::flyweight<std::string>("GLUE2.Computing.Share.EstimatedAverageWaitingTime");
+      (*boost::tuples::get<keyvalue_info_entry>(ism_entry->second))[
+        boost::flyweight<std::string>("GlueCEStateWorstResponseTime")
+      ] = boost::flyweight<std::string>("GLUE2.Computing.Share.EstimatedWorstWaitingTime");
+      (*boost::tuples::get<keyvalue_info_entry>(ism_entry->second))[
+        boost::flyweight<std::string>("GlueHostArchitecturePlatformType")
+      ] = boost::flyweight<std::string>("GLUE2.ExecutionEnvironment.Platform");
+      (*boost::tuples::get<keyvalue_info_entry>(ism_entry->second))[
+        boost::flyweight<std::string>("GlueHostArchitectureSMPSize")
+      ] = boost::flyweight<std::string>("GLUE2.ExecutionEnvironment.OtherInfo.SmpSize");
+      (*boost::tuples::get<keyvalue_info_entry>(ism_entry->second))[
+        boost::flyweight<std::string>("GlueHostProcessorModel")
+      ] = boost::flyweight<std::string>("GLUE2.ExecutionEnvironment.CPUModel");
+      (*boost::tuples::get<keyvalue_info_entry>(ism_entry->second))[
+        boost::flyweight<std::string>("GlueHostProcessorVendor")
+      ] = boost::flyweight<std::string>("GLUE2.ExecutionEnvironment.CPUVendor");
+      (*boost::tuples::get<keyvalue_info_entry>(ism_entry->second))[
+        boost::flyweight<std::string>("GlueHostProcessorClockSpeed")
+      ] = boost::flyweight<std::string>("GLUE2.ExecutionEnvironment.CPUClockSpeed");
+      (*boost::tuples::get<keyvalue_info_entry>(ism_entry->second))[
+        boost::flyweight<std::string>("GlueHostOperatingSystemName")
+      ] = boost::flyweight<std::string>("GLUE2.ExecutionEnvironment.OSName");
+      (*boost::tuples::get<keyvalue_info_entry>(ism_entry->second))[
+        boost::flyweight<std::string>("GlueHostMainMemoryRAMSize")
+      ] = boost::flyweight<std::string>("GLUE2.ExecutionEnvironment.MainMemorySize");
+      (*boost::tuples::get<keyvalue_info_entry>(ism_entry->second))[
+        boost::flyweight<std::string>("GlueHostMainMemoryVirtualSize")
+      ] = boost::flyweight<std::string>("GLUE2.ExecutionEnvironment.VirtualMemorySize");
+      (*boost::tuples::get<keyvalue_info_entry>(ism_entry->second))[
+        boost::flyweight<std::string>("GlueHostNetworkAdapterInboundIP")
+      ] = boost::flyweight<std::string>("GLUE2.ExecutionEnvironment.ConnectivityIn");
+      (*boost::tuples::get<keyvalue_info_entry>(ism_entry->second))[
+        boost::flyweight<std::string>("GlueHostNetworkAdapterOutboundIP")
+      ] = boost::flyweight<std::string>("GLUE2.ExecutionEnvironment.ConnectivityOut");
+      (*boost::tuples::get<keyvalue_info_entry>(ism_entry->second))[
+        boost::flyweight<std::string>("GlueSubClusterLogicalCPUs")
+      ] = boost::flyweight<std::string>("GLUE2.ExecutionEnvironment.LogicalCPUs");
+      (*boost::tuples::get<keyvalue_info_entry>(ism_entry->second))[
+        boost::flyweight<std::string>("GlueSubClusterPhysicalCPUs")
+      ] = boost::flyweight<std::string>("GLUE2.ExecutionEnvironment.PhysicalCPUs");
 
       Debug(it->first << " updated existing entry");
     } else {

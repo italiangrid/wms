@@ -20,7 +20,6 @@ nobase_commonut_HEADERS = \
 	glite/wms/common/ldif2classad/LDAPQuery.h \
 	glite/wms/common/ldif2classad/LDAPSynchConnection.h \
 	glite/wms/common/ldif2classad/LDIFObject.h \
-	glite/wms/common/ldif2classad/LDIF2ClassAd.h \
 	glite/wms/common/logger/common.h \
 	glite/wms/common/logger/container_ts.h \
 	glite/wms/common/logger/edglog.h \

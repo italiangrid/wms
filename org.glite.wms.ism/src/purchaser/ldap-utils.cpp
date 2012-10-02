@@ -329,7 +329,7 @@ fetch_bdii_se_info(
         );
 
         gluese_info_container[se_it->first] =
-          boost::tuples::get<0>(se_it->second);
+          classad2flyweight(boost::tuples::get<0>(se_it->second));
       }
     }
   } catch (ldif2classad::LDAPNoEntryEx&) {
@@ -642,7 +642,7 @@ fetch_bdii_ce_info(
                     vo_view_it->first,
                     boost::algorithm::is_any_of("/")
                   ),
-                  viewAd
+                  classad2flyweight(viewAd)
                 )
               );
             }
@@ -656,12 +656,18 @@ fetch_bdii_ce_info(
                 classadutils::asExprList(v)
               );
               gluece_info_container.insert(
-                std::make_pair((*ce_it)->first, (*ce_it)->second.first)
+                std::make_pair(
+                  (*ce_it)->first,
+                  classad2flyweight((*ce_it)->second.first)
+                )
               );  
             }
           } else {
             gluece_info_container.insert( 
-              std::make_pair((*ce_it)->first, (*ce_it)->second.first)
+              std::make_pair(
+                (*ce_it)->first,
+                classad2flyweight((*ce_it)->second.first)
+              )
             );
           }
         }

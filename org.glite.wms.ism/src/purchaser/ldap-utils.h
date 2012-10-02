@@ -41,7 +41,7 @@ fetch_bdii_ce_info(
   std::string const& basedn,
   time_t timeout,
   const std::string& ldap_ce_filter_ext,
-  glite::wms::ism::purchaser::PurchaserInfoContainer&
+  glue_info_container_type&
 );
 
 void
@@ -50,7 +50,7 @@ fetch_bdii_se_info(
   size_t port,
   std::string const& basedn,
   time_t timeout,
-  glite::wms::ism::purchaser::PurchaserInfoContainer&
+  glue_info_container_type&
 );
 
 void 
@@ -60,8 +60,8 @@ fetch_bdii_info(
   std::string const& basedn,
   time_t timeout,
   std::string const& ldap_ce_filter_ext,
-  glite::wms::ism::purchaser::PurchaserInfoContainer&,
-  glite::wms::ism::purchaser::PurchaserInfoContainer&
+  glue_info_container_type&,
+  glue_info_container_type&
 );
 
 }}}}

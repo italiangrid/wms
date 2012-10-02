@@ -43,24 +43,58 @@ namespace wms {
 namespace ism {
 namespace purchaser {
 
+boost::shared_ptr<
+  boost::unordered_map<
+    boost::flyweight<std::string>,
+    boost::flyweight<std::string>,
+    flyweight_hash
+  >
+> classad2flyweight(boost::shared_ptr<classad::ClassAd> ad)
+{
+    boost::shared_ptr<
+      boost::unordered_map<
+        boost::flyweight<std::string>,
+        boost::flyweight<std::string>,
+        flyweight_hash
+      >
+    > indexed_ce_info(
+      new boost::unordered_map<
+        boost::flyweight<std::string>,
+        boost::flyweight<std::string>,
+        flyweight_hash>
+    );
+    for (
+      classad::ClassAd::iterator iter(ad->begin());
+      iter != ad->end();
+      ++iter
+    ) {
+      classad::ClassAd* ad_value(static_cast<classad::ClassAd*>(iter->second));
+      (*indexed_ce_info)[boost::flyweight<std::string>(iter->first)] // key
+        = boost::flyweight<std::string>(utils::unparse_classad(*ad_value)); // value
+    }
+
+  return indexed_ce_info;
+}
+
 void apply_skip_predicate(
   glue_info_container_type& glue_info_container,
-  vector<glue_info_iterator>& glue_info_container_updated_entries,
   skip_predicate_type skip,
   std::string const& purchasedby
 )
 {
-  glue_info_iterator it = glue_info_container.begin();
-  glue_info_iterator const glue_info_container_end(
+  glue_info_container_type::iterator it(glue_info_container.begin());
+  glue_info_container_type::iterator const glue_info_container_end(
     glue_info_container.end()
   );
 
-  for ( ; it != glue_info_container_end; ++it) {
+  while (it != glue_info_container_end) {
     if (!skip(it->first)) {
-      it->second->InsertAttr("PurchasedBy", purchasedby);
-      glue_info_container_updated_entries.push_back(it);
+      (*it->second)[boost::flyweight<std::string>("Purchaser")] =
+        boost::flyweight<std::string>(purchasedby);
+      ++it;
     } else {
       Debug("Skipping " << it->first << " due to skip predicate settings");
+      glue_info_container.erase(it++);
     }
   }
 }
@@ -101,65 +135,30 @@ namespace {
   boost::scoped_ptr<classad::ClassAd> gangmatch_storage_ad;
 }
 
-bool expand_information_service_info(glue_info_type& glue_info)
+void insert_gangmatch_storage_ad(ad_ptr glue_info)
 {
-  string isURL;
-  bool result = false;
-  try {
-
-    isURL = static_cast<std::string>(
-      utils::evaluate_attribute(*glue_info, "GlueInformationServiceURL")
+  if(!gangmatch_storage_ad) {
+    gangmatch_storage_ad.reset(
+      utils::parse_classad(gangmatch_storage_ad_str)
     );
-    static boost::regex  expression_gisu("\\S.*://(.*):([0-9]+)/(.*)");
-    boost::smatch        pieces_gisu;
-
-    if (boost::regex_match(isURL, pieces_gisu, expression_gisu)) {
-
-      string ishost(pieces_gisu[1].first, pieces_gisu[1].second);
-      string isport(pieces_gisu[2].first, pieces_gisu[2].second);
-      string isbasedn(pieces_gisu[3].first, pieces_gisu[3].second);
-
-      glue_info->InsertAttr("InformationServiceDN", isbasedn);
-      glue_info->InsertAttr("InformationServiceHost", ishost);
-      glue_info->InsertAttr("InformationServicePort", boost::lexical_cast<int>(isport));
-      result = true;
-    }
-  } catch (utils::InvalidValue& e) {
-    Error("Cannot evaluate GlueInformationServiceURL...");
-    result = false;
   }
-  return result;
+  glue_info->Update(*gangmatch_storage_ad);
 }
 
-bool insert_gangmatch_storage_ad(glue_info_type& glue_info)
-{
- try {
-    if(!gangmatch_storage_ad) {
-      gangmatch_storage_ad.reset( 
-        utils::parse_classad(gangmatch_storage_ad_str)
-      ); 
-    }
-    glue_info->Update(*gangmatch_storage_ad);
-  } catch(...) {
-    assert(false);
-  }
-  return true;
-}
-
-bool expand_glueid_info(glue_info_type& glue_info)
+bool expand_glueid_info(ad_ptr glue_info)
 {
   string ce_str;
   ce_str.assign(utils::evaluate_attribute(*glue_info, "GlueCEUniqueID"));
   static boost::regex  expression_ceid("(.+/[^\\-]+-([^\\-]+))-(.+)");
   boost::smatch  pieces_ceid;
   string gcrs, type, name;
-  
+
   if (boost::regex_match(ce_str, pieces_ceid, expression_ceid)) {
-    
+
     gcrs.assign(pieces_ceid[1].first, pieces_ceid[1].second);
     try {
       type.assign(utils::evaluate_attribute(*glue_info, "GlueCEInfoLRMSType"));
-    } 
+    }
     catch(utils::InvalidValue& e) {
       // Try to fall softly in case the attribute is missing...
       type.assign(pieces_ceid[2].first, pieces_ceid[2].second);
@@ -168,7 +167,7 @@ bool expand_glueid_info(glue_info_type& glue_info)
     // ... or in case the attribute is empty.
     if (type.length() == 0) type.assign(pieces_ceid[2].first, pieces_ceid[2].second);
     name.assign(pieces_ceid[3].first, pieces_ceid[3].second);
-  } else { 
+  } else {
     Warning("Cannot parse CEid=" << ce_str);
     return false;
   }

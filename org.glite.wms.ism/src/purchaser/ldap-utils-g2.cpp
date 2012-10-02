@@ -92,6 +92,7 @@ struct ManagerInfo
 {
   ClassAdPtr ad;
 };
+
 typedef std::map<std::string, ManagerInfo> ManagerInfoMap;
 
 struct ServiceInfo;
@@ -1060,7 +1061,7 @@ fetch_bdii_se_info_g2(
   std::string const& dn, 
   time_t timeout,
   std::string const& ldap_se_filter_ext,
-  ism::purchaser::PurchaserInfoContainer& se_info_container) 
+  glue_info_container_type& se_info_container) 
 {
   LDAP* ld = 0;
   int result = ldap_initialize(
@@ -1256,7 +1257,9 @@ fetch_bdii_se_info_g2(
         Info("purchased entry missing GLUE2.Storage.Share.ID");
         continue;
       }
-      se_info_container.insert(std::make_pair(id, result));
+      se_info_container.insert(
+        std::make_pair(id, classad2flyweight(result))
+      );
       n_shares++;
     }
   }
@@ -1271,7 +1274,7 @@ fetch_bdii_ce_info_g2(
   std::string const& dn,
   time_t timeout,
   std::string const& ldap_ce_filter_ext,
-  ism::purchaser::PurchaserInfoContainer& ce_info_container) 
+  glue_info_container_type& ce_info_container) 
 {
   LDAP* ld = 0;
   int result = ldap_initialize(
@@ -1506,10 +1509,13 @@ fetch_bdii_ce_info_g2(
         parse_expression_and_insert(result)
       );
       result->InsertAttr("CEid", id); 
-      ce_info_container.insert(std::make_pair(glue13Id, result));
+      ce_info_container.insert(
+        std::make_pair(glue13Id, classad2flyweight(result))
+      );
       n_shares++;
     }   
   }
+
   Debug("#" << n_shares << " GLUE2ComputingShare's ClassAd(s) generated in " << std::time(0) - t1 << " seconds");
 }
 
@@ -1520,8 +1526,8 @@ void fetch_bdii_info_g2(
   time_t timeout,
   std::string const& ldap_ce_filter_ext,
   std::string const& ldap_se_filter_ext,
-  ism::purchaser::PurchaserInfoContainer& ce_info_container,
-  ism::purchaser::PurchaserInfoContainer& se_info_container)
+  glue_info_container_type& ce_info_container,
+  glue_info_container_type& se_info_container)
 {
   fetch_bdii_ce_info_g2(hostname, port, dn, timeout, ldap_ce_filter_ext, ce_info_container);
   fetch_bdii_se_info_g2(hostname, port, dn, timeout, ldap_se_filter_ext, se_info_container);

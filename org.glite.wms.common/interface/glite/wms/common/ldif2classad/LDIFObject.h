@@ -119,6 +119,10 @@ class LDIFObject
 
   classad::ClassAd* asClassAd( void ) const { return ExportClassAd(); }
   classad::ClassAd* asClassAd( std::vector< std::string >::const_iterator b, std::vector<std::string>::const_iterator e) const { return ExportClassAd( b,e ); }
+  classad::ClassAd asClassAdNonPtr(
+    std::vector< std::string >::const_iterator b,
+    std::vector<std::string>::const_iterator e
+  ) const { return ExportClassAdNonPtr(b,e); }
  private:
   void ParseValue( const std::string&, utilities::edgstrstream& ) const;
   void ParseMultiValue( const LDIFValue&, utilities::edgstrstream& ) const; 
@@ -126,6 +130,10 @@ class LDIFObject
   LDIFAttributes from_ad(classad::ClassAd *ad);
   classad::ClassAd* ExportClassAd ( void ) const;
   classad::ClassAd* ExportClassAd ( std::vector< std::string >::const_iterator, std::vector<std::string>::const_iterator ) const;
+  classad::ClassAd ExportClassAdNonPtr(
+    std::vector< std::string >::const_iterator,
+    std::vector<std::string>::const_iterator
+  ) const;
 /**
  * Writes the LDIFObject to a stream.
  * Serializes LDIF Object info into an output stream.

@@ -47,7 +47,7 @@ namespace ism {
 enum {
   update_time_entry = 0,
   expiry_time_entry,
-  ad_info_entry,
+  keyvalue_info_entry,
   update_function_entry,
   mutex_entry
 };

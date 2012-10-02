@@ -186,7 +186,7 @@ void call_update_ism_entries::_(size_t the_ism_index)
     boost::mutex::scoped_lock l(*boost::tuples::get<mutex_entry>(it->second));
     std::time_t const current_time(std::time(0));
     // Check the state of the ClassAd information
-    if (!boost::tuples::get<ad_info_entry>(it->second)->empty()) {
+    if (!boost::tuples::get<keyvalue_info_entry>(it->second)->empty()) {
       // If the ClassAd information is not NULL, go on with the updating
       int diff = current_time - boost::tuples::get<update_time_entry>(it->second);
       // Check if it is expired
@@ -218,7 +218,7 @@ bool update_ism_entry::operator()(ism_entry_type entry)
 {
   return boost::tuples::get<update_function_entry>(entry)(
     boost::tuples::get<expiry_time_entry>(entry), 
-    boost::tuples::get<ad_info_entry>(entry)
+    boost::tuples::get<keyvalue_info_entry>(entry)
   );
 }
 
