@@ -34,23 +34,6 @@ namespace wms {
 namespace ism {
 namespace purchaser {
 
-class LDAPException: public std::exception
-{
-  std::string m_error;
-public:
-  LDAPException(std::string const& error)
-    : m_error(error)
-  {
-  }
-  ~LDAPException() throw()
-  {
-  }
-  virtual char const* what() const throw()
-  {
-    return m_error.c_str();
-  }
-};
-
 void
 fetch_bdii_ce_info_g2(
   std::string const& hostname,

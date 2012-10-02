@@ -26,6 +26,8 @@ limitations under the License.
 #include <boost/tokenizer.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/trim.hpp>
+#include <boost/algorithm/string/erase.hpp>
+#include <boost/algorithm/string/regex.hpp>
 
 #include "glite/wms/ism/ism.h"
 #include "glite/wms/ism/purchaser/common.h"
@@ -35,13 +37,28 @@ limitations under the License.
 #include "glite/wms/common/configuration/WMConfiguration.h"
 #include "glite/wms/common/configuration/NSConfiguration.h"
 
+#include "schema_utils.h"
+
 using namespace std;
 namespace utils = glite::wmsutils::classads;
+namespace ba = boost::algorithm;
 
 namespace glite {
 namespace wms {
 namespace ism {
 namespace purchaser {
+
+bdii_schema_info_type& bdii_schema_info()
+{
+  static bdii_schema_info_type glue_schema("GLUE");
+  return glue_schema;
+}
+
+bdii_schema_info_type& bdii_schema_info_g2()
+{
+  static bdii_schema_info_type glue2_schema("GLUE2");
+  return glue2_schema;
+}
 
 boost::shared_ptr<
   boost::unordered_map<
@@ -49,7 +66,7 @@ boost::shared_ptr<
     boost::flyweight<std::string>,
     flyweight_hash
   >
-> classad2flyweight(boost::shared_ptr<classad::ClassAd> ad)
+> classad2flyweight(boost::shared_ptr<classad::ClassAd> ad_ptr)
 {
     boost::shared_ptr<
       boost::unordered_map<
@@ -64,8 +81,8 @@ boost::shared_ptr<
         flyweight_hash>
     );
     for (
-      classad::ClassAd::iterator iter(ad->begin());
-      iter != ad->end();
+      classad::ClassAd::iterator iter(ad_ptr->begin());
+      iter != ad_ptr->end();
       ++iter
     ) {
       classad::ClassAd* ad_value(static_cast<classad::ClassAd*>(iter->second));
@@ -74,6 +91,150 @@ boost::shared_ptr<
     }
 
   return indexed_ce_info;
+}
+
+boost::shared_ptr<
+  boost::unordered_map<
+    boost::flyweight<std::string>,
+    boost::flyweight<std::string>,
+    flyweight_hash
+  >
+> classad2flyweight(classad::ClassAd& ad)
+{
+    boost::shared_ptr<
+      boost::unordered_map<
+        boost::flyweight<std::string>,
+        boost::flyweight<std::string>,
+        flyweight_hash
+      >
+    > indexed_ce_info(
+      new boost::unordered_map<
+        boost::flyweight<std::string>,
+        boost::flyweight<std::string>,
+        flyweight_hash>
+    );
+    for (
+      classad::ClassAd::iterator iter(ad.begin());
+      iter != ad.end();
+      ++iter
+    ) {
+      classad::ClassAd* ad_value(static_cast<classad::ClassAd*>(iter->second));
+      (*indexed_ce_info)[boost::flyweight<std::string>(iter->first)] // key
+        = boost::flyweight<std::string>(utils::unparse_classad(*ad_value)); // value
+    }
+
+  return indexed_ce_info;
+}
+
+inline bool iequals(std::string const& a, std::string const& b)
+{
+ return ba::iequals(a,b);
+}
+
+inline bool istarts_with(std::string const& a, std::string const& b)
+{
+ return ba::istarts_with(a,b);
+}
+
+inline std::string strip_prefix(std::string const& prefix, std::string const& s)
+{
+  return boost::algorithm::istarts_with(s,prefix) ?
+    boost::algorithm::erase_head_copy(s, prefix.length()) : s;
+}
+
+void insert_values(
+  bool is_schema_version_20,
+  std::string const& name,
+  boost::shared_array<struct berval*> values,
+  std::list<std::string> const& prefix,
+  classad::ClassAd& ad
+) {
+  std::vector<std::string>::const_iterator list_b, number_b;
+  std::vector<std::string>::const_iterator list_e, number_e;
+
+  if (is_schema_version_20) {
+    boost::tie(list_b, list_e) = bdii_schema_info_g2().multi_valued();
+    boost::tie(number_b, number_e) = bdii_schema_info_g2().number_valued();
+  } else {
+    boost::tie(list_b, list_e) = bdii_schema_info().multi_valued();
+    boost::tie(number_b, number_e) = bdii_schema_info().number_valued();
+  }
+
+  bool is_list = ba::iequals(name,"objectclass") || std::find_if(
+    list_b, list_e, boost::bind(iequals,_1, name)
+  ) != list_e;
+
+  bool is_number = std::find_if(
+    number_b, number_e, boost::bind(iequals, _1, name)
+  ) != number_e;
+
+  std::string result;
+  for (size_t i = 0; values[i] != 0; ++i) {
+
+    if (i) {
+      result.append(",");
+    }
+    if (is_number || ba::iequals("undefined", values[i]->bv_val) ||
+      ba::iequals("false", values[i]->bv_val) || ba::iequals("true", values[i]->bv_val)) {
+
+      result.append(values[i]->bv_val);
+    }
+    else {
+      result.append("\"").append(values[i]->bv_val).append("\"");
+    }
+  }
+  if (is_list) {
+    std::string s("{");
+    s.append(result).append("}");
+    result.swap(s);
+  }
+  classad::ExprTree* e = 0;
+  classad::ClassAdParser parser;
+  parser.ParseExpression(result, e);
+
+  if (e) {
+    std::list<std::string>::const_iterator it =  std::find_if(
+      prefix.begin(), prefix.end(),
+      boost::bind(istarts_with, name, _1)
+    );
+    ad.Insert(
+      ( it != prefix.end() ) ? strip_prefix(*it, name) : name,
+      e
+    );
+  }
+}
+
+classad::ClassAd*
+create_classad_from_ldap_entry(
+  LDAP* ld,
+  LDAPMessage* lde,
+  std::list<std::string> prefix,
+  bool is_schema_version_20
+) {
+  classad::ClassAd* result = new classad::ClassAd;
+  BerElement* ber = 0;
+  for (char* attr = ldap_first_attribute(ld, lde, &ber);
+    attr;
+    attr = ldap_next_attribute(ld, lde, ber)
+  ) {
+    boost::shared_ptr<void> attr_guard(
+      attr, ber_memfree
+    );
+    boost::shared_array<struct berval*> values(
+      ldap_get_values_len(ld, lde, attr),
+      ldap_value_free_len
+    );
+
+    if (!values) continue;
+    insert_values(
+      is_schema_version_20, attr, values, prefix, *result
+    );
+  }
+  boost::shared_ptr<void> ber_guard(
+    static_cast<void*>(0),boost::bind(ber_free, ber, 0)
+  );
+
+  return result;
 }
 
 void apply_skip_predicate(
@@ -135,6 +296,16 @@ namespace {
   boost::scoped_ptr<classad::ClassAd> gangmatch_storage_ad;
 }
 
+void insert_gangmatch_storage_ad(classad::ClassAd& glue_info)
+{
+  if(!gangmatch_storage_ad) {
+    gangmatch_storage_ad.reset(
+      utils::parse_classad(gangmatch_storage_ad_str)
+    );
+  }
+  glue_info.Update(*gangmatch_storage_ad);
+}
+
 void insert_gangmatch_storage_ad(ad_ptr glue_info)
 {
   if(!gangmatch_storage_ad) {
@@ -143,6 +314,41 @@ void insert_gangmatch_storage_ad(ad_ptr glue_info)
     );
   }
   glue_info->Update(*gangmatch_storage_ad);
+}
+
+bool expand_glueid_info(classad::ClassAd& glue_info)
+{
+  string ce_str;
+  ce_str.assign(utils::evaluate_attribute(glue_info, "GlueCEUniqueID"));
+  static boost::regex  expression_ceid("(.+/[^\\-]+-([^\\-]+))-(.+)");
+  boost::smatch  pieces_ceid;
+  string gcrs, type, name;
+
+  if (boost::regex_match(ce_str, pieces_ceid, expression_ceid)) {
+
+    gcrs.assign(pieces_ceid[1].first, pieces_ceid[1].second);
+    try {
+      type.assign(utils::evaluate_attribute(glue_info, "GlueCEInfoLRMSType"));
+    }
+    catch(utils::InvalidValue& e) {
+      // Try to fall softly in case the attribute is missing...
+      type.assign(pieces_ceid[2].first, pieces_ceid[2].second);
+      Warning("Cannot evaluate GlueCEInfoLRMSType using value from contact string: " << type);
+    }
+    // ... or in case the attribute is empty.
+    if (type.length() == 0) type.assign(pieces_ceid[2].first, pieces_ceid[2].second);
+    name.assign(pieces_ceid[3].first, pieces_ceid[3].second);
+  } else {
+    Warning("Cannot parse CEid=" << ce_str);
+    return false;
+  }
+
+  glue_info.InsertAttr("GlobusResourceContactString", gcrs);
+  glue_info.InsertAttr("LRMSType", type);
+  glue_info.InsertAttr("QueueName", name);
+  glue_info.InsertAttr("CEid", ce_str);
+
+  return true;
 }
 
 bool expand_glueid_info(ad_ptr glue_info)
@@ -172,15 +378,17 @@ bool expand_glueid_info(ad_ptr glue_info)
     return false;
   }
 
-  glue_info -> InsertAttr("GlobusResourceContactString", gcrs);
-  glue_info -> InsertAttr("LRMSType", type);
-  glue_info -> InsertAttr("QueueName", name);
-  glue_info -> InsertAttr("CEid", ce_str);
+  glue_info->InsertAttr("GlobusResourceContactString", gcrs);
+  glue_info->InsertAttr("LRMSType", type);
+  glue_info->InsertAttr("QueueName", name);
+  glue_info->InsertAttr("CEid", ce_str);
 
   return true;
 }
 
-bool split_information_service_url(classad::ClassAd const& ad, boost::tuple<std::string, int, std::string>& i)
+bool split_information_service_url(
+  classad::ClassAd const& ad,
+  boost::tuple<std::string, int, std::string>& i)
 {
  try {
   std::string ldap_dn;

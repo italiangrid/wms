@@ -30,8 +30,11 @@ limitations under the License.
 #include <vector>
 #include <string>
 #include <map>
+#include <ldap.h>
+#include <lber.h>
 
 #include <boost/shared_ptr.hpp>
+#include <boost/shared_array.hpp>
 #include <boost/tuple/tuple.hpp>
 #include <boost/function.hpp>
 #include <boost/regex.hpp>
@@ -46,9 +49,21 @@ class ClassAd;
 
 namespace glite {
 namespace wms {
-
 namespace ism {
 namespace purchaser {
+
+class LDAPException: public std::exception
+{
+  std::string m_error;
+public:
+  LDAPException(std::string const& error)
+    : m_error(error) { }
+  ~LDAPException() throw() { }
+  virtual char const* what() const throw()
+  {
+    return m_error.c_str();
+  }
+};
 
 typedef boost::function<bool(void)> exit_predicate_type;
 typedef boost::function<bool(std::string const&)> skip_predicate_type;
@@ -79,11 +94,37 @@ boost::shared_ptr<
     flyweight_hash
   >   
 > classad2flyweight(boost::shared_ptr<classad::ClassAd> ad);
+boost::shared_ptr<
+  boost::unordered_map<
+    boost::flyweight<std::string>,
+    boost::flyweight<std::string>,
+    flyweight_hash
+  >   
+> classad2flyweight(classad::ClassAd& ad);
+
+inline bool iequals(std::string const& a, std::string const& b);
+inline bool istarts_with(std::string const& a, std::string const& b);
+inline std::string strip_prefix(std::string const& prefix, std::string const& s);
+void insert_values(
+  std::string const& name,
+  boost::shared_array<struct berval*> values,
+  std::list<std::string> const& prefix,
+  classad::ClassAd& ad
+);
+classad::ClassAd*
+create_classad_from_ldap_entry(
+  LDAP* ld,
+  LDAPMessage* lde,
+  std::list<std::string> prefix,
+  bool is_schema_version_20 = false
+);
 void apply_skip_predicate(
   glue_info_container_type& glue_info_container,
   skip_predicate_type skip,
   std::string const& purchased_by);
 void tokenize_ldap_dn(std::string const& s, std::vector<std::string> &v);
+void insert_gangmatch_storage_ad(classad::ClassAd& glue_info);
+bool expand_glueid_info(classad::ClassAd& glue_info);
 void insert_gangmatch_storage_ad(ad_ptr glue_info);
 bool expand_glueid_info(ad_ptr glue_info);
 bool split_information_service_url(

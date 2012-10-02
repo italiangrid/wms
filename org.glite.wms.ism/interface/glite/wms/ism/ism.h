@@ -139,10 +139,8 @@ ism_type::value_type make_ism_entry(
 
 std::ostream& operator<<(std::ostream& os, ism_type::value_type const& value);
 
-class call_update_ism_entries
+struct call_update_ism_entries
 {
-  void _(size_t);
-public:
   void operator()();
 };
 
@@ -155,10 +153,8 @@ bool is_expired_ism_entry(const ism_entry_type& entry);
 
 std::string get_ism_dump(void);
 
-class call_dump_ism_entries
+struct call_dump_ism_entries
 {
-  void _(size_t, std::ios_base::openmode, std::string const&);
-public:
   void operator()();
 };
 

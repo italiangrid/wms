@@ -100,7 +100,7 @@ void populate_ism(
         iter != keyvalue_info->end();
         ++iter
       ) {
-        // merge GLUE1.3 (ism_entry) with GLUE2.0 representation and only after that
+        // merge GLUE1.3 (ism_entry) with GLUE2.0 representation
         (*boost::tuples::get<keyvalue_info_entry>(ism_entry->second))[iter->first] = iter->second;
       }
 
@@ -347,9 +347,6 @@ void ism_ii_purchaser::operator()()
         "Failed to purchase info from "
         << m_hostname << ":" << m_port << " (" << e.what() << ")"
       );
-    } catch (...) {
-
-      Warning("Failed to purchase info from " << m_hostname << ":" << m_port);
     }
 
     if (m_mode) {

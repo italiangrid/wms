@@ -36,18 +36,95 @@ limitations under the License.
 
 namespace configuration = glite::wms::common::configuration;
 
-namespace {
-  int s_active_side = -1;
-  boost::shared_ptr<void> s_matching_threads[2];
-}
-
 namespace glite {
 namespace wms {
 namespace ism {
 
+namespace {
+
+int s_active_side = -1;
+boost::shared_ptr<void> s_matching_threads[2];
+
+void update(size_t the_ism_index)
+{
+  ism_mutex_type::scoped_lock l(get_ism_mutex(ce)); // must NOT be the_ism_index
+  ism_type& active_side(get_ism(the_ism_index));
+  ism_type::iterator it = active_side.begin();
+  ism_type::iterator const e = active_side.end();
+
+  for ( ; it != e; ++it) {
+
+    boost::mutex::scoped_lock l(*boost::tuples::get<mutex_entry>(it->second));
+    std::time_t const current_time(std::time(0));
+    // check the state of the ClassAd information
+    if (!boost::tuples::get<keyvalue_info_entry>(it->second)->empty()) {
+      // If the ClassAd information is not NULL, go on with the updating
+      int diff = current_time - boost::tuples::get<update_time_entry>(it->second);
+      // check if it is expired
+      if (diff > boost::tuples::get<expiry_time_entry>(it->second)) {
+        // check if function object wrapper is not empty
+        if (!boost::tuples::get<update_function_entry>(it->second).empty()) {
+          if (!update_ism_entry()(it->second)) {
+            // if the update function returns false we remove the entry
+            // only if it has been previously marked as invalid i.e. the entry's 
+            // update time is less than 0
+            boost::tuples::get<expiry_time_entry>(it->second) = -1;
+          } else { // the entry has been updated by the updated function
+            boost::tuples::get<update_time_entry>(it->second) = current_time;
+          }
+        } else { // the function object wrapper is empty
+          boost::tuples::get<expiry_time_entry>(it->second) = -1;
+        }
+      }
+    } else { // if the ClassAd information is NULL, remove the entry by ism
+      boost::tuples::get<update_time_entry>(it->second) = -1;
+    }
+  }
+}
+
+void dump(
+  size_t the_ism_index,
+  std::iostream::ios_base::openmode open_mode,
+  std::string const& filename)
+{
+  std::ofstream outf(filename.c_str(), open_mode);
+
+  ism_mutex_type::scoped_lock l(get_ism_mutex(the_ism_index));
+  ism_type& active_side(get_ism(the_ism_index));
+  ism_type::iterator it = active_side.begin();
+  ism_type::iterator const e = active_side.end();
+
+Info("id = aaaaaaaaaaaaaaa " << active_side.size() << '\n');
+  for ( ; it != e; ++it) {
+
+    outf << "id = " << it->first << '\n';
+    boost::shared_ptr<
+      boost::unordered_map<
+        boost::flyweight<std::string>,
+        boost::flyweight<std::string>,
+        flyweight_hash
+      >
+    > keyvalue_info(boost::tuples::get<keyvalue_info_entry>(it->second));
+    for (
+      boost::unordered_map<
+        boost::flyweight<std::string>,
+        boost::flyweight<std::string>,
+        flyweight_hash>::iterator iter(keyvalue_info->begin());
+      iter != keyvalue_info->end();
+      ++iter
+    ) {
+      outf << iter->first << " = " << (*boost::tuples::get<keyvalue_info_entry>(it->second))[iter->first] << '\n';
+    }
+    outf << "update_time = " << boost::tuples::get<update_time_entry>(it->second) << '\n';
+    outf << "expiry_time = " << boost::tuples::get<expiry_time_entry>(it->second) << "\n\n";
+  }
+}
+
+}
+
 void switch_active_side()
 {
-  ism_mutex_type::scoped_lock l(get_ism_mutex(ism::ce));
+  ism_mutex_type::scoped_lock l(get_ism_mutex(ce)); // must NOT be the_ism_index
   if (s_active_side == -1) { // first time
     s_active_side = 0;
   } else {
@@ -59,7 +136,7 @@ void switch_active_side()
 
 int dark_side()
 {
-  ism_mutex_type::scoped_lock l(get_ism_mutex(ism::ce));
+  ism_mutex_type::scoped_lock l(get_ism_mutex(ce)); // must NOT be the_ism_index
   if (s_active_side == -1) { // first time
     return 0;
   } else {
@@ -69,7 +146,7 @@ int dark_side()
 
 int active_side()
 {
-  ism_mutex_type::scoped_lock l(get_ism_mutex(ism::ce));
+  ism_mutex_type::scoped_lock l(get_ism_mutex(ce)); // must NOT be the_ism_index
   if (s_active_side == -1) { // first time
     return 1;
   } else {
@@ -79,7 +156,7 @@ int active_side()
 
 std::pair<boost::shared_ptr<void>, int> match_on_active_side()
 {
-  ism_mutex_type::scoped_lock l(get_ism_mutex(ism::ce));
+  ism_mutex_type::scoped_lock l(get_ism_mutex(ce)); // must NOT be the_ism_index
   if (!s_matching_threads[s_active_side]) {
     s_matching_threads[s_active_side].reset(static_cast<int*>(0));
   }
@@ -143,7 +220,7 @@ ism_type& get_ism(size_t the_ism_index, int face)
 
 ism_type& get_ism(size_t the_ism_index)
 {
-  ism_mutex_type::scoped_lock l(get_ism_mutex(ism::ce));
+  ism_mutex_type::scoped_lock l(get_ism_mutex(ce)); // must NOT be the_ism_index
   if (s_active_side == 0) {
     return *the_ism1[the_ism_index];
   } else {
@@ -162,56 +239,17 @@ operator<<(std::ostream& os, ism_type::value_type const& value)
   return os << '[' << value.first << "]\n"
     << boost::tuples::get<update_time_entry>(value.second) << '\n'
     << boost::tuples::get<expiry_time_entry>(value.second) << '\n'
-//TODO II refactoring   << *boost::tuples::get<ad_info_entry>(value.second) << '\n'
+#warning II refactoring missing code
+//   << *boost::tuples::get<ad_info_entry>(value.second) << '\n'
     << "[END]";
 }
 
 void call_update_ism_entries::operator()()
 {
   Debug("ISM updater start");
-  _(ce);
-  _(se);
+  update(ce);
+  update(se);
   Debug("ISM updater end");
-}
-
-void call_update_ism_entries::_(size_t the_ism_index)
-{
-  ism_mutex_type::scoped_lock l(get_ism_mutex(ism::ce));
-  ism_type::iterator it = get_ism(the_ism_index).begin();
-  ism_type::iterator const e = get_ism(the_ism_index).end();
-  l.unlock();
-
-  for ( ; it != e; ++it) {
-
-    boost::mutex::scoped_lock l(*boost::tuples::get<mutex_entry>(it->second));
-    std::time_t const current_time(std::time(0));
-    // Check the state of the ClassAd information
-    if (!boost::tuples::get<keyvalue_info_entry>(it->second)->empty()) {
-      // If the ClassAd information is not NULL, go on with the updating
-      int diff = current_time - boost::tuples::get<update_time_entry>(it->second);
-      // Check if it is expired
-      if (diff > boost::tuples::get<expiry_time_entry>(it->second)) {
-        // Check if function object wrapper is not empty
-        if (!boost::tuples::get<update_function_entry>(it->second).empty()) {
-          if (!update_ism_entry()(it->second)) {
-            // if the update function returns false we remove the entry
-            // only if it has been previously marked as invalid i.e. the entry's 
-            // update time is less than 0
-            boost::tuples::get<expiry_time_entry>(it->second) = -1;
-          } else {
-            // the entry has been updated by the updated function
-            boost::tuples::get<update_time_entry>(it->second) = current_time;
-          }
-        } else {
-          // the function object wrapper is empty
-          boost::tuples::get<expiry_time_entry>(it->second) = -1;
-        }
-      }
-    } else {
-      // If the ClassAd information is NULL, remove the entry by ism
-      boost::tuples::get<update_time_entry>(it->second) = -1;
-    }
-  }
 }
 
 bool update_ism_entry::operator()(ism_entry_type entry) 
@@ -222,7 +260,7 @@ bool update_ism_entry::operator()(ism_entry_type entry)
   );
 }
 
-// Returns whether the entry has expired, or not
+// returns whether the entry has expired, or not
 bool is_expired_ism_entry(const ism_entry_type& entry)
 {
   boost::xtime ct;
@@ -245,55 +283,19 @@ std::string get_ism_dump(void)
 void call_dump_ism_entries::operator()()
 {
   Debug("ISM dump start");
-  std::string const dump(get_ism_dump());
-  std::string const tmp_dump(dump + ".tmp");
+  std::string const dump_file(get_ism_dump());
+  std::string const tmp_dump_file(dump_file + ".tmp");
 
-  _(ce, std::iostream::ios_base::trunc, tmp_dump);
-  _(se, std::iostream::ios_base::app, tmp_dump);
+  dump(ce, std::iostream::ios_base::trunc, tmp_dump_file);
+  dump(se, std::iostream::ios_base::app, tmp_dump_file);
 
-  int res = std::rename(tmp_dump.c_str(), dump.c_str());
+  int res = std::rename(tmp_dump_file.c_str(), dump_file.c_str());
   if (res) {
-    Warning("Cannot rename ISM dump file (error "
+    Warning("Cannot rename ISM dump file " + tmp_dump_file + " to " + dump_file + " (error "
       + boost::lexical_cast<std::string>(res) + ')'
     );
   }
   Debug("ISM dump end");
-}
-
-void call_dump_ism_entries::_(
-  size_t the_ism_index,
-  std::iostream::ios_base::openmode open_mode,
-  std::string const& filename)
-{
-/* TODO II refactoring
-  std::ofstream outf(filename.c_str(), open_mode);
-  for (
-    ism_type::iterator pos = get_ism(the_ism_index).begin();
-    pos!= get_ism(the_ism_index).end();
-    ++pos
-  ) {
-    boost::mutex::scoped_lock l(*boost::tuples::get<mutex_entry>(pos->second));
-    if (boost::tuples::get<mutex_entry>(pos->second)) {
-      classad::ClassAd ad_ism_dump;
-      ad_ism_dump.InsertAttr("id", pos->first);
-      ad_ism_dump.InsertAttr(
-        "update_time",
-        boost::tuples::get<update_time_entry>(pos->second)
-      );
-      ad_ism_dump.InsertAttr(
-        "expiry_time",
-        boost::tuples::get<expiry_time_entry>(pos->second)
-      );
-      ad_ism_dump.Insert(
-        "info",
-        boost::tuples::get<ad_info_entry>(pos->second).get()->Copy()
-      );
-      outf << ad_ism_dump;
-    }
-
-    l.unlock();
-  }
-*/
 }
 
 }}}
