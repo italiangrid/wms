@@ -161,13 +161,13 @@ bool retrieveCloseSEsInfo(
                 boost::flyweight<std::string>,
                 ism::flyweight_hash
               >
-            > ad_info(boost::tuples::get<ism::ad_info_entry>(se_it->second));
+            > keyvalue_info(boost::tuples::get<ism::keyvalue_info_entry>(se_it->second));
             for (
               boost::unordered_map<
                boost::flyweight<std::string>,
                boost::flyweight<std::string>,
-               ism::flyweight_hash>::iterator iter(ad_info->begin());
-              iter != ad_info->end();
+               ism::flyweight_hash>::iterator iter(keyvalue_info->begin());
+              iter != keyvalue_info->end();
               ++iter
             ) {
               se_ad_ptr->InsertAttr(iter->first, iter->second);

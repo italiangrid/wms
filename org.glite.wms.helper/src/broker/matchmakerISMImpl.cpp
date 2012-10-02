@@ -135,21 +135,21 @@ matchmakerISMImpl::checkRequirement(
         boost::flyweight<std::string>,
         ism::flyweight_hash
       >
-    > ce_ad_map(
-      boost::tuples::get<ism::ad_info_entry>(ism_it->second)
+    > ce_map(
+      boost::tuples::get<ism::keyvalue_info_entry>(ism_it->second)
     );
     std::string ce_ad_str("[");
     boost::unordered_map<
       boost::flyweight<std::string>,
       boost::flyweight<std::string>,
       ism::flyweight_hash
-    >::iterator const ce_end = ce_ad_map->end();
+    >::iterator const ce_end = ce_map->end();
     for (
       boost::unordered_map<
         boost::flyweight<std::string>,
         boost::flyweight<std::string>,
         ism::flyweight_hash
-      >::iterator ce_it = ce_ad_map->begin();
+      >::iterator ce_it = ce_map->begin();
       ce_it != ce_end;
       ++ce_it
     ) {
@@ -320,21 +320,21 @@ matchmakerISMImpl::checkRequirement(
           boost::flyweight<std::string>,
           ism::flyweight_hash
         >
-      > ce_ad_map(
-        boost::tuples::get<ism::ad_info_entry>(ism_it->second)
+      > ce_map(
+        boost::tuples::get<ism::keyvalue_info_entry>(ism_it->second)
       );
       std::string ce_ad_str("[");
       boost::unordered_map<
         boost::flyweight<std::string>,
         boost::flyweight<std::string>,
         ism::flyweight_hash
-      >::iterator const ce_end = ce_ad_map->end();
+      >::iterator const ce_end = ce_map->end();
       for (
         boost::unordered_map<
           boost::flyweight<std::string>,
           boost::flyweight<std::string>,
           ism::flyweight_hash
-        >::iterator ce_it = ce_ad_map->begin();
+        >::iterator ce_it = ce_map->begin();
         ce_it != ce_end;
         ++ce_it
       ) {
