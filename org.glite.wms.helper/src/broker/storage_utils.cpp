@@ -228,18 +228,18 @@ resolve_storagemapping_info(FileMapping const& fm)
             boost::flyweight<std::string>,
             ism::flyweight_hash
           >
-        > ad_info(boost::tuples::get<ism::ad_info_entry>(it->second));
+        > keyvalue_info(boost::tuples::get<ism::keyvalue_info_entry>(it->second));
         boost::unordered_map<
           boost::flyweight<std::string>,
           boost::flyweight<std::string>,
           ism::flyweight_hash
-        >::iterator const se_info_end = ad_info->end();
+        >::iterator const se_info_end = keyvalue_info->end();
         for (
           boost::unordered_map<
             boost::flyweight<std::string>,
             boost::flyweight<std::string>,
             ism::flyweight_hash
-          >::iterator se_info_it = ad_info->begin();
+          >::iterator se_info_it = keyvalue_info->begin();
           se_info_it != se_info_end;
           ++se_info_it
         ) {
@@ -256,8 +256,8 @@ resolve_storagemapping_info(FileMapping const& fm)
             boost::flyweight<std::string>,
             boost::flyweight<std::string>,
             ism::flyweight_hash
-          >::iterator iter(ad_info->begin());
-          iter != ad_info->end();
+          >::iterator iter(keyvalue_info->begin());
+          iter != keyvalue_info->end();
           ++iter
         ) {
           se_info_ad_ptr->InsertAttr(iter->first, iter->second);
