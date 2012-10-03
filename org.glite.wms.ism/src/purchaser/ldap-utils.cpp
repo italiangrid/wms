@@ -28,7 +28,9 @@ limitations under the License. */
 
 #include "glite/wms/common/utilities/ii_attr_utils.h"
 #include "glite/wms/common/logger/logger_utils.h"
-
+#include "glite/wms/common/configuration/Configuration.h"
+#include "glite/wms/common/configuration/WMConfiguration.h"
+#include "glite/wms/common/configuration/NSConfiguration.h"
 #include "glite/wmsutils/classads/classad_utils.h"
 
 using namespace std;
@@ -44,17 +46,16 @@ namespace ism {
 namespace purchaser {
 
 typedef std::vector<boost::shared_ptr<classad::ClassAd> > vector_ad_ptr;
-typedef std::vector<classad::ClassAd> vector_ad;
 typedef std::pair<std::string, classad::ClassAd> pair_string_ad;
 
 typedef std::map<
   std::string, // ce id
-  std::pair<classad::ClassAd, vector_ad> // cead, closes bind ad
+  std::pair<ad_ptr, vector_ad_ptr> // cead, closes bind ad
 > gluece_info_map_type;
 
 typedef std::map<
   std::string, // subcluster id
-  classad::ClassAd       // subcluster ad
+  ad_ptr       // subcluster ad
 > gluesubcluster_info_map_type;
 
 typedef std::map<
@@ -82,13 +83,13 @@ typedef std::map<
   >
 > gluese_info_map_type;
 
-bool is_access_control_vo_rule(const string& r)
-{
- return boost::algorithm::istarts_with(r, "VO:");
-}
+namespace {
 
 string get_cluster_name(boost::shared_ptr<classad::ClassAd> ce_ad)
 {
+  if (!ce_ad) {
+    return std::string();
+  }
   std::string cluster;
   ce_ad->EvaluateAttrString("GlueCEInfoHostName", cluster);
   try {
@@ -129,6 +130,9 @@ string get_cluster_name(boost::shared_ptr<classad::ClassAd> ce_ad)
 
 string get_site_name(boost::shared_ptr<classad::ClassAd> cluster_ad)
 {
+  if (!cluster_ad) {
+    return std::string();
+  }
   std::string site;
   try {
     std::vector<std::string> foreignKeys;
@@ -164,14 +168,24 @@ string get_site_name(boost::shared_ptr<classad::ClassAd> cluster_ad)
   return site;
 }
 
+}
+
 void 
 fetch_bdii_se_info(
   std::string const& hostname,
   size_t port,
   std::string const& dn,
   time_t timeout,
-  glue_info_container_type& gluese_info_container) 
+  ism_type& gluese_info_container,
+  update_function_type const& uf)
 {
+  static glite::wms::common::configuration::Configuration const& config(
+    *glite::wms::common::configuration::Configuration::instance()
+  );
+  static const time_t expiry_time(
+    config.wm()->ism_ii_purchasing_rate() + config.ns()->ii_timeout()
+  );
+
   string filter("(|(objectclass=gluecesebind)(|(objectclass=gluese)"
     "(|(objectclass=gluesa)(|(objectclass=glueseaccessprotocol)"
     "(objectclass=gluesecontrolprotocol)))))");
@@ -365,20 +379,46 @@ fetch_bdii_se_info(
     boost::tuples::get<0>(se_it->second)->Insert(
       "CloseComputingElements", classad::ExprList::MakeExprList(exprs)
     );
-    gluese_info_container[se_it->first] =
-      classad2flyweight(boost::tuples::get<0>(se_it->second));
+    ism_type::iterator semap_it;
+    bool gluese_info_map_insert = false;
+    boost::unordered_map<
+      boost::flyweight<std::string>,
+      boost::flyweight<std::string>,
+      flyweight_hash
+    > keyvalue_se_info(classad2flyweight(boost::tuples::get<0>(se_it->second)));
+    boost::tie(semap_it, gluese_info_map_insert) =
+    gluese_info_container.insert(
+      make_ism_entry(
+        boost::flyweight<std::string>(se_it->first),
+        std::time(0),
+        keyvalue_se_info,
+        expiry_time,
+        uf
+      )
+    );
+    if (!gluese_info_map_insert) {
+      merge_ism(keyvalue_se_info, semap_it);
+    }
   }
 }
      
 void 
 fetch_bdii_ce_info(
-      std::string const& hostname,
-      size_t port,
-      std::string const& dn,
-      time_t timeout,
+  std::string const& hostname,
+  size_t port,
+  std::string const& dn,
+  time_t timeout,
   std::string const& ldap_ce_filter_ext,
-  glue_info_container_type& gluece_info_container) 
+  ism_type& gluece_info_container,
+  update_function_type const& uf)
 {
+  static glite::wms::common::configuration::Configuration const& config(
+    *glite::wms::common::configuration::Configuration::instance()
+  );
+  static const time_t expiry_time(
+    config.wm()->ism_ii_purchasing_rate() + config.ns()->ii_timeout()
+  );
+
   std::string filter(
     "(|(objectclass=gluecesebind)(objectclass=gluecluster)(objectclass=gluesubcluster)"
   );
@@ -469,7 +509,7 @@ fetch_bdii_ce_info(
       );
       boost::shared_ptr<classad::ClassAd> cluster_ad(
         create_classad_from_ldap_entry(
-            ld, lde, std::list<std::string>()
+          ld, lde, std::list<std::string>()
         )
       );
       string glue_site_unique_id(get_site_name(cluster_ad));
@@ -503,11 +543,11 @@ fetch_bdii_ce_info(
       boost::tie(it, gluece_info_map_insert) =
         gluece_info_map.insert(
           std::make_pair(gluece_unique_id, 
-            std::make_pair(*ceAd, vector_ad())
+            std::make_pair(ceAd, vector_ad_ptr())
           )
         );
       if (!gluece_info_map_insert) {
-        it->second.first = *ceAd; // overwrite existing key
+        it->second.first = ceAd; // overwrite existing key
       }
       boost::tuples::get<1>(
         gluecluster_info_map[glue_cluster_unique_id]
@@ -528,7 +568,7 @@ fetch_bdii_ce_info(
       bool gluesubcluster_info_map_insert;
       boost::tie(it, gluesubcluster_info_map_insert) =
         gluesubcluster_info_map.insert(
-          std::make_pair(gluesubcluster_unique_id, *scAd)
+          std::make_pair(gluesubcluster_unique_id, scAd)
         );
       if (gluesubcluster_info_map_insert) 
         boost::tuples::get<2>(
@@ -543,7 +583,7 @@ fetch_bdii_ce_info(
       string glueceuniqueid(
         ldap_dn_tokens[1].substr(ldap_dn_tokens[1].find('=') + 1)
       );
-      gluece_info_map[glueceuniqueid].second.push_back(*bnAd);
+      gluece_info_map[glueceuniqueid].second.push_back(bnAd);
     } else if (is_gluevoview_info_dn(ldap_dn_tokens)) {
       boost::shared_ptr<classad::ClassAd> voAd(
         create_classad_from_ldap_entry(
@@ -593,7 +633,7 @@ fetch_bdii_ce_info(
       boost::tuples::get<2>(cl_it->second).begin()
     );
 
-    classad::ClassAd sc_ad = (*sc_it)->second;
+    ad_ptr sc_ad((*sc_it)->second);
 
     string cluster_id(cl_it->first);
     vector<gluece_info_map_type::iterator>::const_iterator ce_it(
@@ -605,25 +645,25 @@ fetch_bdii_ce_info(
 
     for ( ; ce_it != ce_e; ++ce_it) {
 
-      (*ce_it)->second.first.Update(sc_ad);
-      (*ce_it)->second.first.InsertAttr(
+      (*ce_it)->second.first->Update(*sc_ad.get());
+      (*ce_it)->second.first->InsertAttr(
         "GlueSiteUniqueID",
         boost::tuples::get<0>(cl_it->second)
       );
       std::vector<std::string> sebind;
       std::vector<classad::ExprTree*>  exprs;
-      vector<classad::ClassAd>::const_iterator se_it(
+      vector<ad_ptr>::const_iterator se_it(
         (*ce_it)->second.second.begin()
       );
-      vector<classad::ClassAd>::const_iterator const se_e(
+      vector<ad_ptr>::const_iterator const se_e(
         (*ce_it)->second.second.end()
       );
       
       for ( ; se_it != se_e; ++se_it) {
         exprs.push_back(new classad::ClassAd);
         static_cast<classad::ClassAd*>(
-          exprs.back())->Update(*se_it);
-
+          exprs.back()
+        )->Update(*se_it->get());
         std::string gluecesebindseuniqueid;
         static_cast<classad::ClassAd*>(exprs.back())->
           EvaluateAttrString(
@@ -644,11 +684,11 @@ fetch_bdii_ce_info(
           )
         );
       }
-      (*ce_it)->second.first.Insert(
+      (*ce_it)->second.first->Insert(
         "CloseStorageElements", 
         classad::ExprList::MakeExprList(exprs)
       );
-      (*ce_it)->second.first.Insert(
+      (*ce_it)->second.first->Insert(
         "GlueCESEBindGroupSEUniqueID",
         classadutils::asExprList(sebind)
       );
@@ -670,7 +710,7 @@ fetch_bdii_ce_info(
         set<string> left_access_control_base_rules;
 
         classadutils::EvaluateAttrList(
-          (*ce_it)->second.first,
+          *((*ce_it)->second.first),
           "GlueCEAccessControlBaseRule",
           left_access_control_base_rules
         );
@@ -707,72 +747,119 @@ fetch_bdii_ce_info(
 
           ad_ptr viewAd(
             dynamic_cast<classad::ClassAd*>(
-              (*ce_it)->second.first.Copy()
+              (*ce_it)->second.first->Copy()
             )
           );
           viewAd->Update(vo_view_it->second);
+          ism_type::iterator ism_it;
+          bool gluece_info_map_insert = false;
+          boost::unordered_map<
+            boost::flyweight<std::string>,
+            boost::flyweight<std::string>,
+            flyweight_hash
+          > keyvalue_view_info(classad2flyweight(viewAd));
+          boost::tie(ism_it, gluece_info_map_insert) =
           gluece_info_container.insert(
-            std::make_pair(
-              (*ce_it)->first + 
-              "/" + 
-              boost::algorithm::trim_left_copy_if(
-                vo_view_it->first,
-                boost::algorithm::is_any_of("/")
-              ),
-              classad2flyweight(viewAd)
+            make_ism_entry(
+              boost::flyweight<std::string>((*ce_it)->first + 
+                "/" + 
+                boost::algorithm::trim_left_copy_if(
+                  vo_view_it->first,
+                  boost::algorithm::is_any_of("/")
+                )),
+              std::time(0),
+              keyvalue_view_info,
+              expiry_time,
+              uf
             )
           );
+          if (!gluece_info_map_insert) {
+            merge_ism(keyvalue_view_info, ism_it);
+          }
         }
         if (!left_access_control_base_rules.empty()) {
           std::vector<std::string> v(
             left_access_control_base_rules.begin(),
             left_access_control_base_rules.end()
           );
-          (*ce_it)->second.first.Insert(
+          (*ce_it)->second.first->Insert(
             "GlueCEAccessControlBaseRule",
             classadutils::asExprList(v)
           );
+          ism_type::iterator ism_it;
+          bool gluece_info_map_insert = false;
+          boost::unordered_map<
+            boost::flyweight<std::string>,
+            boost::flyweight<std::string>,
+            flyweight_hash
+          > keyvalue_ce_info(classad2flyweight((*ce_it)->second.first));
+          boost::tie(ism_it, gluece_info_map_insert) =
           gluece_info_container.insert(
-            std::make_pair(
-              (*ce_it)->first,
-              classad2flyweight((*ce_it)->second.first)
+            make_ism_entry(
+              boost::flyweight<std::string>((*ce_it)->first),
+              std::time(0),
+              keyvalue_ce_info,
+              expiry_time,
+              uf
             )
-          );  
+          ); 
+          if (!gluece_info_map_insert) {
+            merge_ism(keyvalue_ce_info, ism_it);
+          }
         }
       } else {
+        ism_type::iterator ism_it;
+        bool gluece_info_map_insert = false;
+        boost::unordered_map<
+          boost::flyweight<std::string>,
+          boost::flyweight<std::string>,
+          flyweight_hash
+        > keyvalue_ce_info(classad2flyweight((*ce_it)->second.first));
+        boost::tie(ism_it, gluece_info_map_insert) =
         gluece_info_container.insert( 
-          std::make_pair(
-            (*ce_it)->first,
-            classad2flyweight((*ce_it)->second.first)
+          make_ism_entry(
+            boost::flyweight<std::string>((*ce_it)->first),
+            std::time(0),
+            keyvalue_ce_info,
+            expiry_time,
+            uf
           )
         );
+        if (!gluece_info_map_insert) {
+          merge_ism(keyvalue_ce_info, ism_it);
+        }
       }
     }
   }
 }
 
 void fetch_bdii_info(
-      std::string const& hostname,
-      size_t port,
-      std::string const& dn,
-      time_t timeout,
-      std::string const& ldap_ce_filter_ext,
-      glue_info_container_type& gluece_info_container,
-      glue_info_container_type& gluese_info_container)
+  std::string const& hostname,
+  size_t port,
+  std::string const& dn,
+  time_t timeout,
+  std::string const& ldap_ce_filter_ext,
+  ism_type& gluece_info_container,
+  ism_type& gluese_info_container,
+  update_function_type const& uf)
 {
   fetch_bdii_ce_info(
-      hostname,
-      port,
-      dn,
-      timeout,
-      ldap_ce_filter_ext,
-      gluece_info_container);
+    hostname,
+    port,
+    dn,
+    timeout,
+    ldap_ce_filter_ext,
+    gluece_info_container,
+    uf
+  );
   fetch_bdii_se_info(
-      hostname,
-      port,
-      dn,
-      timeout,
-      gluese_info_container);
+    hostname,
+    port,
+    dn,
+    timeout,
+    gluese_info_container,
+    uf
+  );
 }
 
 }}}}

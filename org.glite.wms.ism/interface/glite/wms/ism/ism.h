@@ -73,35 +73,33 @@ struct flyweight_hash
 // update function
 typedef boost::function<bool(
   int&,
-    boost::shared_ptr<
-      boost::unordered_map<
-        boost::flyweight<std::string>,
-        boost::flyweight<std::string>,
-        flyweight_hash
-      >
-    >
+  boost::unordered_map<
+    boost::flyweight<std::string>,
+    boost::flyweight<std::string>,
+    flyweight_hash
+  >
 )> update_function_type;
 
 typedef boost::tuple<
   int, // update time
   int, // expiry  "
-  boost::shared_ptr<
-    boost::unordered_map<
-      boost::flyweight<std::string>,
-      boost::flyweight<std::string>,
-      flyweight_hash
-    >
+  boost::unordered_map<
+    boost::flyweight<std::string>,
+    boost::flyweight<std::string>,
+    flyweight_hash
   >, // ad description in terms of key/value pairs. this is ready to be used
      // in a flyweight pattern or any distributed cache
   update_function_type, // update function
-  boost::shared_ptr<boost::mutex::mutex> // one different mutex for each entry  
+  boost::shared_ptr<boost::mutex::mutex> // one different mutex for each entry
+                                         // mutex is non-copyable
 > ism_entry_type;
 
 // 1. resource identifier
 // 2. ism entry type
 typedef boost::unordered_map<
-  std::string,
-  ism_entry_type
+  boost::flyweight<std::string>,
+  ism_entry_type,
+  flyweight_hash
   //, , __gnu_cxx::malloc_allocator<ism_entry_type>
 > ism_type;
 
@@ -126,13 +124,11 @@ int matching_threads(int side);
 ism_type::value_type make_ism_entry(
   std::string const& id,
   int update_time,
-  boost::shared_ptr<
-    boost::unordered_map<
-      boost::flyweight<std::string>,
-      boost::flyweight<std::string>,
-      flyweight_hash  
-    >
-  > ad_info,
+  boost::unordered_map<
+    boost::flyweight<std::string>,
+    boost::flyweight<std::string>,
+    flyweight_hash  
+  > const& ad_info,
   int expiry_time = 300,
   update_function_type const& uf = update_function_type()
 );

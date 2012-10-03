@@ -17,13 +17,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-// File: common.h
 // Author: Salvatore Monforte
 // Author: Francesco Giacomini
-// Copyright (c) 2002 EU DataGrid.
-
-// $Id: common.h,v 1.8.2.1.6.2.4.2 2012/06/22 11:51:31 mcecchi Exp $
-
+// Author: Marco Cecchi
 #ifndef GLITE_WMS_ISM_PURCHASER_COMMON
 #define GLITE_WMS_ISM_PURCHASER_COMMON
 
@@ -70,38 +66,26 @@ typedef boost::function<bool(std::string const&)> skip_predicate_type;
 typedef boost::shared_ptr<classad::ClassAd> ad_ptr;
 typedef boost::function<bool(
   int&,
-  boost::shared_ptr<
-    boost::unordered_map<
-      boost::flyweight<std::string>,
-      boost::flyweight<std::string>,
-      flyweight_hash
-    >
+  boost::unordered_map<
+    boost::flyweight<std::string>,
+    boost::flyweight<std::string>,
+    flyweight_hash
   >)> update_function_type;
 
-typedef boost::shared_ptr<
-  boost::unordered_map<
-    boost::flyweight<std::string>,
-    boost::flyweight<std::string>,
-    flyweight_hash
-  >
-> glue_info_type;
-typedef std::map<std::string, glue_info_type> glue_info_container_type;
+boost::unordered_map<
+  boost::flyweight<std::string>,
+  boost::flyweight<std::string>,
+  flyweight_hash
+> classad2flyweight(ad_ptr ad);
 
-boost::shared_ptr<
+void merge_ism(
   boost::unordered_map<
     boost::flyweight<std::string>,
     boost::flyweight<std::string>,
     flyweight_hash
-  >   
-> classad2flyweight(boost::shared_ptr<classad::ClassAd> ad);
-boost::shared_ptr<
-  boost::unordered_map<
-    boost::flyweight<std::string>,
-    boost::flyweight<std::string>,
-    flyweight_hash
-  >   
-> classad2flyweight(classad::ClassAd& ad);
-
+  >& keyvalue_info,
+  ism_type::iterator const& it
+);
 inline bool iequals(std::string const& a, std::string const& b);
 inline bool istarts_with(std::string const& a, std::string const& b);
 inline std::string strip_prefix(std::string const& prefix, std::string const& s);
@@ -119,7 +103,7 @@ create_classad_from_ldap_entry(
   bool is_schema_version_20 = false
 );
 void apply_skip_predicate(
-  glue_info_container_type& glue_info_container,
+  ism_type& glue_info_container,
   skip_predicate_type skip,
   std::string const& purchased_by);
 void tokenize_ldap_dn(std::string const& s, std::vector<std::string> &v);

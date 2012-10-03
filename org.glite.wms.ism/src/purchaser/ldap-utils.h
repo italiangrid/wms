@@ -17,12 +17,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-// File: ldap-utils.h
 // Author: Salvatore Monforte
-// Copyright (c) 2004 EU DataGrid.
-
-// $Id: ldap-utils.h,v 1.4.2.3.2.1.2.2.2.2 2010/04/08 13:54:43 mcecchi Exp $
-
 #ifndef GLITE_WMS_ISM_PURCHASER_LDAP_UTILS_H
 #define GLITE_WMS_ISM_PURCHASER_LDAP_UTILS_H
 
@@ -41,7 +36,8 @@ fetch_bdii_ce_info(
   std::string const& basedn,
   time_t timeout,
   const std::string& ldap_ce_filter_ext,
-  glue_info_container_type&
+  ism_type&,
+  update_function_type const& uf
 );
 
 void
@@ -50,7 +46,8 @@ fetch_bdii_se_info(
   size_t port,
   std::string const& basedn,
   time_t timeout,
-  glue_info_container_type&
+  ism_type&,
+  update_function_type const& uf
 );
 
 void 
@@ -60,8 +57,9 @@ fetch_bdii_info(
   std::string const& basedn,
   time_t timeout,
   std::string const& ldap_ce_filter_ext,
-  glue_info_container_type&,
-  glue_info_container_type&
+  ism_type& gluece_info_container,
+  ism_type& gluese_info_container,
+  update_function_type const& uf
 );
 
 }}}}

@@ -60,70 +60,127 @@ bdii_schema_info_type& bdii_schema_info_g2()
   return glue2_schema;
 }
 
-boost::shared_ptr<
-  boost::unordered_map<
-    boost::flyweight<std::string>,
-    boost::flyweight<std::string>,
-    flyweight_hash
-  >
-> classad2flyweight(boost::shared_ptr<classad::ClassAd> ad_ptr)
+boost::unordered_map<
+  boost::flyweight<std::string>,
+  boost::flyweight<std::string>,
+  flyweight_hash
+> classad2flyweight(ad_ptr ad)
 {
-    boost::shared_ptr<
-      boost::unordered_map<
-        boost::flyweight<std::string>,
-        boost::flyweight<std::string>,
-        flyweight_hash
-      >
-    > indexed_ce_info(
-      new boost::unordered_map<
-        boost::flyweight<std::string>,
-        boost::flyweight<std::string>,
-        flyweight_hash>
-    );
+    boost::unordered_map<
+      boost::flyweight<std::string>,
+      boost::flyweight<std::string>,
+      flyweight_hash
+    > indexed_ce_info;
     for (
-      classad::ClassAd::iterator iter(ad_ptr->begin());
-      iter != ad_ptr->end();
+      classad::ClassAd::iterator iter(ad->begin());
+      iter != ad->end();
       ++iter
     ) {
       classad::ClassAd* ad_value(static_cast<classad::ClassAd*>(iter->second));
-      (*indexed_ce_info)[boost::flyweight<std::string>(iter->first)] // key
+      indexed_ce_info[boost::flyweight<std::string>(iter->first)] // key
         = boost::flyweight<std::string>(utils::unparse_classad(*ad_value)); // value
     }
 
   return indexed_ce_info;
 }
 
-boost::shared_ptr<
+void merge_ism(
   boost::unordered_map<
     boost::flyweight<std::string>,
     boost::flyweight<std::string>,
     flyweight_hash
-  >
-> classad2flyweight(classad::ClassAd& ad)
+  >& keyvalue_info,
+  ism_type::iterator const& it)
 {
-    boost::shared_ptr<
-      boost::unordered_map<
-        boost::flyweight<std::string>,
-        boost::flyweight<std::string>,
-        flyweight_hash
-      >
-    > indexed_ce_info(
-      new boost::unordered_map<
-        boost::flyweight<std::string>,
-        boost::flyweight<std::string>,
-        flyweight_hash>
-    );
-    for (
-      classad::ClassAd::iterator iter(ad.begin());
-      iter != ad.end();
-      ++iter
-    ) {
-      classad::ClassAd* ad_value(static_cast<classad::ClassAd*>(iter->second));
-      (*indexed_ce_info)[boost::flyweight<std::string>(iter->first)] // key
-        = boost::flyweight<std::string>(utils::unparse_classad(*ad_value)); // value
-    }
-
-  return indexed_ce_info;
+  for (
+    boost::unordered_map<
+      boost::flyweight<std::string>,
+      boost::flyweight<std::string>,
+      flyweight_hash>::iterator iter(keyvalue_info.begin());
+    iter != keyvalue_info.end();
+    ++iter
+  ) {
+    // merge GLUE1.3 (ism_entry) with GLUE2.0 representation
+    boost::tuples::get<keyvalue_info_entry>(it->second)[iter->first] = iter->second;
+  }
+  boost::tuples::get<keyvalue_info_entry>(it->second)[
+    boost::flyweight<std::string>("GlueCECapability")
+  ] = boost::flyweight<std::string>("GLUE2.Computing.Endpoint.Capability");
+  boost::tuples::get<keyvalue_info_entry>(it->second)[
+    boost::flyweight<std::string>("GlueCEImplementationName")
+  ] = boost::flyweight<std::string>("GLUE2.Computing.Endpoint.ImplementationName");
+  boost::tuples::get<keyvalue_info_entry>(it->second)[
+    boost::flyweight<std::string>("GlueCEImplementationVersion")
+  ] = boost::flyweight<std::string>("GLUE2.Computing.Endpoint.ImplementationVersion");
+  boost::tuples::get<keyvalue_info_entry>(it->second)[
+    boost::flyweight<std::string>("GlueCEInfoLRMSVersion")
+  ] = boost::flyweight<std::string>("GLUE2.Manager.ProductVersion");
+  boost::tuples::get<keyvalue_info_entry>(it->second)[
+    boost::flyweight<std::string>("GlueCEPolicyMaxWallClockTime")
+  ] = boost::flyweight<std::string>("GLUE2.Computing.Share.MaxWallTime");
+  boost::tuples::get<keyvalue_info_entry>(it->second)[
+    boost::flyweight<std::string>("GlueCEPolicyMaxCPUTime")
+  ] = boost::flyweight<std::string>("GLUE2.Computing.Share.MaxCPUTime");
+  boost::tuples::get<keyvalue_info_entry>(it->second)[
+    boost::flyweight<std::string>("GlueCEPolicyMaxRunningJobs")
+  ]  = boost::flyweight<std::string>("GLUE2.Computing.Share.MaxRunningJobs");
+  boost::tuples::get<keyvalue_info_entry>(it->second)[
+    boost::flyweight<std::string>("GlueCEStateStatus")
+  ] = boost::flyweight<std::string>("GLUE2.Computing.Share.ServingState");
+  boost::tuples::get<keyvalue_info_entry>(it->second)[
+    boost::flyweight<std::string>("GlueCEStateWaitingJobs")
+  ] = boost::flyweight<std::string>("GLUE2.Computing.Share.WaitingJobs");
+  boost::tuples::get<keyvalue_info_entry>(it->second)[
+    boost::flyweight<std::string>("GlueCEStateTotalJobs")
+  ] = boost::flyweight<std::string>("GLUE2.Computing.Share.TotalJobs");
+  boost::tuples::get<keyvalue_info_entry>(it->second)[
+    boost::flyweight<std::string>("GlueCEStateFreeJobSlots")
+  ] = boost::flyweight<std::string>("GLUE2.Computing.Share.FreeSlots");
+  boost::tuples::get<keyvalue_info_entry>(it->second)[
+    boost::flyweight<std::string>("GlueCEStateRunningJobs")
+  ] = boost::flyweight<std::string>("GLUE2.Computing.Share.RunningJobs");
+  boost::tuples::get<keyvalue_info_entry>(it->second)[
+    boost::flyweight<std::string>("GlueCEStateEstimatedResponseTime")
+  ] = boost::flyweight<std::string>("GLUE2.Computing.Share.EstimatedAverageWaitingTime");
+  boost::tuples::get<keyvalue_info_entry>(it->second)[
+    boost::flyweight<std::string>("GlueCEStateWorstResponseTime")
+  ] = boost::flyweight<std::string>("GLUE2.Computing.Share.EstimatedWorstWaitingTime");
+  boost::tuples::get<keyvalue_info_entry>(it->second)[
+    boost::flyweight<std::string>("GlueHostArchitecturePlatformType")
+  ] = boost::flyweight<std::string>("GLUE2.ExecutionEnvironment.Platform");
+  boost::tuples::get<keyvalue_info_entry>(it->second)[
+    boost::flyweight<std::string>("GlueHostArchitectureSMPSize")
+  ] = boost::flyweight<std::string>("GLUE2.ExecutionEnvironment.OtherInfo.SmpSize");
+  boost::tuples::get<keyvalue_info_entry>(it->second)[
+    boost::flyweight<std::string>("GlueHostProcessorModel")
+  ] = boost::flyweight<std::string>("GLUE2.ExecutionEnvironment.CPUModel");
+  boost::tuples::get<keyvalue_info_entry>(it->second)[
+    boost::flyweight<std::string>("GlueHostProcessorVendor")
+  ] = boost::flyweight<std::string>("GLUE2.ExecutionEnvironment.CPUVendor");
+  boost::tuples::get<keyvalue_info_entry>(it->second)[
+    boost::flyweight<std::string>("GlueHostProcessorClockSpeed")
+  ] = boost::flyweight<std::string>("GLUE2.ExecutionEnvironment.CPUClockSpeed");
+  boost::tuples::get<keyvalue_info_entry>(it->second)[
+    boost::flyweight<std::string>("GlueHostOperatingSystemName")
+  ] = boost::flyweight<std::string>("GLUE2.ExecutionEnvironment.OSName");
+  boost::tuples::get<keyvalue_info_entry>(it->second)[
+    boost::flyweight<std::string>("GlueHostMainMemoryRAMSize")
+  ] = boost::flyweight<std::string>("GLUE2.ExecutionEnvironment.MainMemorySize");
+  boost::tuples::get<keyvalue_info_entry>(it->second)[
+    boost::flyweight<std::string>("GlueHostMainMemoryVirtualSize")
+  ] = boost::flyweight<std::string>("GLUE2.ExecutionEnvironment.VirtualMemorySize");
+  boost::tuples::get<keyvalue_info_entry>(it->second)[
+    boost::flyweight<std::string>("GlueHostNetworkAdapterInboundIP")
+  ] = boost::flyweight<std::string>("GLUE2.ExecutionEnvironment.ConnectivityIn");
+  boost::tuples::get<keyvalue_info_entry>(it->second)[
+    boost::flyweight<std::string>("GlueHostNetworkAdapterOutboundIP")
+  ] = boost::flyweight<std::string>("GLUE2.ExecutionEnvironment.ConnectivityOut");
+  boost::tuples::get<keyvalue_info_entry>(it->second)[
+    boost::flyweight<std::string>("GlueSubClusterLogicalCPUs")
+  ] = boost::flyweight<std::string>("GLUE2.ExecutionEnvironment.LogicalCPUs");
+  boost::tuples::get<keyvalue_info_entry>(it->second)[
+    boost::flyweight<std::string>("GlueSubClusterPhysicalCPUs")
+  ] = boost::flyweight<std::string>("GLUE2.ExecutionEnvironment.PhysicalCPUs");
 }
 
 inline bool iequals(std::string const& a, std::string const& b)
@@ -211,7 +268,7 @@ create_classad_from_ldap_entry(
   std::list<std::string> prefix,
   bool is_schema_version_20
 ) {
-  classad::ClassAd* result = new classad::ClassAd;
+  classad::ClassAd* result(new classad::ClassAd);
   BerElement* ber = 0;
   for (char* attr = ldap_first_attribute(ld, lde, &ber);
     attr;
@@ -233,25 +290,22 @@ create_classad_from_ldap_entry(
   boost::shared_ptr<void> ber_guard(
     static_cast<void*>(0),boost::bind(ber_free, ber, 0)
   );
-
   return result;
 }
 
 void apply_skip_predicate(
-  glue_info_container_type& glue_info_container,
+  ism_type& glue_info_container,
   skip_predicate_type skip,
   std::string const& purchasedby
 )
 {
-  glue_info_container_type::iterator it(glue_info_container.begin());
-  glue_info_container_type::iterator const glue_info_container_end(
+  ism_type::iterator it(glue_info_container.begin());
+  ism_type::iterator const glue_info_container_end(
     glue_info_container.end()
   );
 
   while (it != glue_info_container_end) {
     if (!skip(it->first)) {
-      (*it->second)[boost::flyweight<std::string>("Purchaser")] =
-        boost::flyweight<std::string>(purchasedby);
       ++it;
     } else {
       Debug("Skipping " << it->first << " due to skip predicate settings");
@@ -265,7 +319,6 @@ void tokenize_ldap_dn(std::string const& s, std::vector<std::string> &v)
   boost::escaped_list_separator<char> ldap_dn_sep("",",","");
   boost::tokenizer<boost::escaped_list_separator<char> >
     ldap_dn_tok(s,ldap_dn_sep);
-
   boost::tokenizer< boost::escaped_list_separator<char> >::iterator
     ldap_dn_tok_it(
       ldap_dn_tok.begin()
@@ -274,26 +327,25 @@ void tokenize_ldap_dn(std::string const& s, std::vector<std::string> &v)
     ldap_dn_tok_end(
        ldap_dn_tok.end()
     );
-
-  for( ; ldap_dn_tok_it != ldap_dn_tok_end; ++ldap_dn_tok_it)
+  for ( ; ldap_dn_tok_it != ldap_dn_tok_end; ++ldap_dn_tok_it) {
     v.push_back(
       boost::algorithm::trim_copy(*ldap_dn_tok_it)
     );
-
+  }
 }
 
 namespace {
 
-   std::string const gangmatch_storage_ad_str(
-    "["
-    "  storage =  ["
-    "     VO = parent.other.VirtualOrganisation;"
-    "     CloseSEs = retrieveCloseSEsInfo( VO );"
-    "  ];"
-    "]"
-  );
+std::string const gangmatch_storage_ad_str(
+  "["
+  "  storage =  ["
+  "     VO = parent.other.VirtualOrganisation;"
+  "     CloseSEs = retrieveCloseSEsInfo( VO );"
+  "  ];"
+  "]"
+);
+boost::shared_ptr<classad::ClassAd> gangmatch_storage_ad;
 
-  boost::scoped_ptr<classad::ClassAd> gangmatch_storage_ad;
 }
 
 void insert_gangmatch_storage_ad(classad::ClassAd& glue_info)
@@ -329,8 +381,7 @@ bool expand_glueid_info(classad::ClassAd& glue_info)
     gcrs.assign(pieces_ceid[1].first, pieces_ceid[1].second);
     try {
       type.assign(utils::evaluate_attribute(glue_info, "GlueCEInfoLRMSType"));
-    }
-    catch(utils::InvalidValue& e) {
+    } catch(utils::InvalidValue const& e) {
       // Try to fall softly in case the attribute is missing...
       type.assign(pieces_ceid[2].first, pieces_ceid[2].second);
       Warning("Cannot evaluate GlueCEInfoLRMSType using value from contact string: " << type);
@@ -364,8 +415,7 @@ bool expand_glueid_info(ad_ptr glue_info)
     gcrs.assign(pieces_ceid[1].first, pieces_ceid[1].second);
     try {
       type.assign(utils::evaluate_attribute(*glue_info, "GlueCEInfoLRMSType"));
-    }
-    catch(utils::InvalidValue& e) {
+    } catch(utils::InvalidValue& e) {
       // Try to fall softly in case the attribute is missing...
       type.assign(pieces_ceid[2].first, pieces_ceid[2].second);
       Warning("Cannot evaluate GlueCEInfoLRMSType using value from contact string: " << type);
@@ -409,10 +459,9 @@ bool split_information_service_url(
     i = boost::make_tuple(ldap_host, std::atoi(port.c_str()), ldap_dn);
   }
   else {
-  return false;
+    return false;
   }
- }
- catch (utils::InvalidValue& e) {
+ } catch (utils::InvalidValue const& e) {
    return false;
  }
  return true;

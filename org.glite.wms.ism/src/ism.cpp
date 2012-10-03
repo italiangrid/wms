@@ -57,7 +57,7 @@ void update(size_t the_ism_index)
     boost::mutex::scoped_lock l(*boost::tuples::get<mutex_entry>(it->second));
     std::time_t const current_time(std::time(0));
     // check the state of the ClassAd information
-    if (!boost::tuples::get<keyvalue_info_entry>(it->second)->empty()) {
+    if (!boost::tuples::get<keyvalue_info_entry>(it->second).empty()) {
       // If the ClassAd information is not NULL, go on with the updating
       int diff = current_time - boost::tuples::get<update_time_entry>(it->second);
       // check if it is expired
@@ -94,26 +94,23 @@ void dump(
   ism_type::iterator it = active_side.begin();
   ism_type::iterator const e = active_side.end();
 
-Info("id = aaaaaaaaaaaaaaa " << active_side.size() << '\n');
   for ( ; it != e; ++it) {
 
     outf << "id = " << it->first << '\n';
-    boost::shared_ptr<
-      boost::unordered_map<
-        boost::flyweight<std::string>,
-        boost::flyweight<std::string>,
-        flyweight_hash
-      >
+    boost::unordered_map<
+      boost::flyweight<std::string>,
+      boost::flyweight<std::string>,
+      flyweight_hash
     > keyvalue_info(boost::tuples::get<keyvalue_info_entry>(it->second));
     for (
       boost::unordered_map<
         boost::flyweight<std::string>,
         boost::flyweight<std::string>,
-        flyweight_hash>::iterator iter(keyvalue_info->begin());
-      iter != keyvalue_info->end();
+        flyweight_hash>::iterator iter(keyvalue_info.begin());
+      iter != keyvalue_info.end();
       ++iter
     ) {
-      outf << iter->first << " = " << (*boost::tuples::get<keyvalue_info_entry>(it->second))[iter->first] << '\n';
+      outf << iter->first << " = " << keyvalue_info[iter->first] << '\n';
     }
     outf << "update_time = " << boost::tuples::get<update_time_entry>(it->second) << '\n';
     outf << "expiry_time = " << boost::tuples::get<expiry_time_entry>(it->second) << "\n\n";
@@ -174,20 +171,18 @@ namespace {
 ism_type::value_type make_ism_entry(
   std::string const& id, // resource identifier
   int update_time, // update time
-  boost::shared_ptr<
-    boost::unordered_map<
-      boost::flyweight<std::string>,
-      boost::flyweight<std::string>,
-      flyweight_hash
-    >
-  > ad_info,
+  boost::unordered_map<
+    boost::flyweight<std::string>,
+    boost::flyweight<std::string>,
+    flyweight_hash
+  > const& ad_info,
   int expiry_time, // expiry time with default 5 * 60
   update_function_type const& uf // update function
 )
 {
   boost::shared_ptr<boost::mutex> mt(new boost::mutex);
   return std::make_pair(
-    id,
+    boost::flyweight<std::string>(id),
     boost::make_tuple(update_time, expiry_time, ad_info, uf, mt)
   );
 }
@@ -236,11 +231,28 @@ int matching_threads(int side)
 std::ostream&
 operator<<(std::ostream& os, ism_type::value_type const& value)
 {
+  std::string keyvalue_info_str;
+  boost::unordered_map<
+    boost::flyweight<std::string>,
+    boost::flyweight<std::string>,
+    flyweight_hash
+  > keyvalue_info(boost::tuples::get<keyvalue_info_entry>(value.second));
+  for (
+    boost::unordered_map<
+      boost::flyweight<std::string>,
+      boost::flyweight<std::string>,
+      flyweight_hash>::iterator iter(keyvalue_info.begin());
+    iter != keyvalue_info.end();
+    ++iter
+  ) {
+    keyvalue_info_str += std::string(value.first) + std::string(" = ") +
+      std::string(keyvalue_info[iter->first]) + '\n';
+  }
+
   return os << '[' << value.first << "]\n"
     << boost::tuples::get<update_time_entry>(value.second) << '\n'
     << boost::tuples::get<expiry_time_entry>(value.second) << '\n'
-#warning II refactoring missing code
-//   << *boost::tuples::get<ad_info_entry>(value.second) << '\n'
+    << keyvalue_info_str << '\n'
     << "[END]";
 }
 

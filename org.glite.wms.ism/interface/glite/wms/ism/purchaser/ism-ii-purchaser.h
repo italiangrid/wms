@@ -17,12 +17,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-// File: ism-ii-purchaser.h
 // Author: Salvatore Monforte <Salvatore.Monforte@ct.infn.it>
-// Copyright (c) 2004 EU DataGrid.
-
-// $Id: ism-ii-purchaser.h,v 1.9.2.3.2.3.4.2.4.3 2012/07/12 10:02:54 mcecchi Exp $
-
 #ifndef GLITE_WMS_ISM_PURCHASER_ISM_II_PURCHASER_H
 #define GLITE_WMS_ISM_PURCHASER_ISM_II_PURCHASER_H
 
@@ -72,17 +67,16 @@ public:
   ism_ii_purchaser_entry_update() {}
   bool operator()(
     int a,
-    boost::shared_ptr<
-      boost::unordered_map<
-        boost::flyweight<std::string>,
-        boost::flyweight<std::string>,
-        flyweight_hash
-      >
-    >
+    boost::unordered_map<
+      boost::flyweight<std::string>,
+      boost::flyweight<std::string>,
+      flyweight_hash
+  >
   );
 };
 
 namespace ii {
+
 // the types of the class factories
 typedef ism_ii_purchaser* create_t(std::string const& hostname,
     int port,
@@ -101,7 +95,15 @@ typedef ism_ii_purchaser* create_t(std::string const& hostname,
 typedef void destroy_t(ism_ii_purchaser*);
 
 // type of the entry update function factory
-typedef boost::function<bool(int&, boost::shared_ptr<classad::ClassAd>)> create_entry_update_fn_t();
+typedef boost::function<bool(
+  int&,
+  boost::unordered_map<
+    boost::flyweight<std::string>,
+    boost::flyweight<std::string>,
+    flyweight_hash
+  > 
+)> create_entry_update_fn_t();
+
 }
 
 }}}}
