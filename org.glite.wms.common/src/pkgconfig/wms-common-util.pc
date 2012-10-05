@@ -1,0 +1,12 @@
+prefix=
+exec_prefix=
+libdir=
+includedir=
+
+Name: wms common utilities api
+Description: WMS common utilities C/C++ APIs
+Version: 
+Requires: classad-utils, jobman-exception
+Libs: -L${libdir} -lglite_wms_util
+Cflags: -I${includedir}
+
