@@ -52,8 +52,6 @@ endif
 	mv $(INSTALLDIR)/usr/lib/pkgconfig/wms-common-conf.pc.new $(INSTALLDIR)/usr/lib/pkgconfig/wms-common-conf.pc
 	sed 's|^prefix=.*|prefix=/usr|g' $(INSTALLDIR)/usr/lib/pkgconfig/wms-common-quota.pc > $(INSTALLDIR)/usr/lib/pkgconfig/wms-common-quota.pc.new
 	mv $(INSTALLDIR)/usr/lib/pkgconfig/wms-common-quota.pc.new $(INSTALLDIR)/usr/lib/pkgconfig/wms-common-quota.pc
-	sed 's|^prefix=.*|prefix=/usr|g' $(INSTALLDIR)/usr/lib/pkgconfig/wms-common-ldif2classads.pc > $(INSTALLDIR)/usr/lib/pkgconfig/wms-common-ldif2classads.pc.new
-	mv $(INSTALLDIR)/usr/lib/pkgconfig/wms-common-ldif2classads.pc.new $(INSTALLDIR)/usr/lib/pkgconfig/wms-common-ldif2classads.pc
 	rm $(INSTALLDIR)/usr/lib/*.la
 
 binary-indep: build install
