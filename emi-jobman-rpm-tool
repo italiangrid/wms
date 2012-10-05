@@ -1,0 +1,180 @@
+#!/usr/bin/python
+
+import sys, os, os.path, stat
+import getopt, shlex, subprocess
+from datetime import date
+
+def usage():
+    print "Usage: emi-jobman-rpm-tools [--init|--pack|--help] [options]"
+    print "   --init initialize the rpm workarea"
+    print "   --pack build the package"
+    print "   --help print this message"
+
+def init(options, extras):
+    rpmbuildDir = os.path.join(os.getcwd(), 'rpmbuild')
+    if not os.path.exists(rpmbuildDir):
+        srcDir = os.path.join(rpmbuildDir, 'SOURCES')
+        os.makedirs(os.path.join(rpmbuildDir, 'BUILD'))
+        os.makedirs(os.path.join(rpmbuildDir, 'RPMS'))
+        os.makedirs(srcDir)
+        os.makedirs(os.path.join(rpmbuildDir, 'SPECS'))
+        os.makedirs(os.path.join(rpmbuildDir, 'SRPMS'))
+        
+        tmpTuple = (options['pkgname'], options['version'], options['distro'])
+        tarball = os.path.join(srcDir, "%s-%s.%s.tar.gz" % tmpTuple)
+        
+        exclString = "--exclude CVS"
+        exclString += " --exclude rpmbuild"
+        exclString += " --exclude build"
+        exclString += " --exclude *etics*"
+        exclString += " --exclude bin"
+        exclString += " --exclude tools"
+        
+        cmdString = "tar %s -zcf %s ." % (exclString, tarball)
+        tProcess = subprocess.Popen(shlex.split(cmdString))
+        if tProcess.wait() <> os.EX_OK:
+            print "Cannot create source tarball"
+            clean(options, extras)
+            sys.exit(2)
+        else:
+            os.chmod(tarball, stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IROTH )
+
+
+def pack(options, extras):
+    moduleDir = os.getcwd()
+    rpmbuildDir = os.path.join(moduleDir, 'rpmbuild')
+    srcDir = os.path.join(rpmbuildDir, 'SOURCES')
+    rpmDestDir = os.path.join(rpmbuildDir, 'RPMS')
+    srpmDestDir = os.path.join(rpmbuildDir, 'SRPMS')
+    specName = os.path.join(rpmbuildDir, 'SPECS', '%s.spec' % options['pkgname'])
+    
+    rpmVer,rpmAge = options['version'].split('-')
+    cDate = date.today().strftime('%a %b %d %Y')
+    
+    inSpecFile = open(os.path.abspath(options['specfile']))
+    outSpecFile = open(specName, 'w+')
+    for line in inSpecFile:
+        tmps = line.replace('%{extversion}', rpmVer)
+        tmps = tmps.replace('%{extage}', rpmAge)
+        tmps = tmps.replace('%{extdist}', options['distro'])
+        tmps = tmps.replace('%{extclog}', options.get('clog', 'Major bugs fixed'))
+        tmps = tmps.replace('%{extcdate}', cDate)
+        tmps = tmps.replace('%(date +"%%a %%b %%d %%Y")', cDate)
+        outSpecFile.write(tmps)
+    inSpecFile.close()
+    outSpecFile.close()
+    
+    os.chmod(specName, stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IROTH )
+    
+    rpmDefs = '--define "_topdir %s"' % rpmbuildDir
+    rpmDefs += ' --define "extbuilddir %s"' % os.path.abspath(options['localdir'])
+    #rpmDefs += ' --define "extversion %s"' % rpmVer
+    #rpmDefs += ' --define "extage %s"' % rpmAge
+    #rpmDefs += ' --define "extdist %s"' % options['distro']
+    #rpmDefs += ' --define "extclog %s"' % options.get('clog', 'Major bugs fixed');
+    
+    cmdString = 'rpmbuild -ba %s %s' % (rpmDefs, specName)
+    pProcess = subprocess.Popen(shlex.split(cmdString))
+    if pProcess.wait() <> os.EX_OK:
+        print "Cannot create packages"
+        sys.exit(2)
+        
+    rpmPubLink = os.path.join(moduleDir, 'RPMS')
+    if not os.path.exists(rpmPubLink):
+        os.makedirs(rpmPubLink)
+
+    for artifactsDir in [ rpmDestDir, srpmDestDir ]:
+        walkRes = os.walk(artifactsDir)
+        for (wDir, cDirs, cFiles) in walkRes:
+            for cFile in cFiles:
+                targetFile = os.path.join(rpmPubLink, cFile)
+                if os.path.exists(targetFile):
+                    os.remove(targetFile)
+                os.link(os.path.join(wDir, cFile), targetFile);
+
+    tgzPubLink = os.path.join(moduleDir, 'tgz')
+    if not os.path.exists(tgzPubLink):
+        os.makedirs(tgzPubLink)
+
+    #walkRes = os.walk(srcDir)
+    #for (wDir, cDirs, cFiles) in walkRes:
+    #    for cFile in cFiles:
+    #        targetFile = os.path.join(tgzPubLink, cFile)
+    #        if os.path.exists(targetFile):
+    #            os.remove(targetFile)
+    #        os.link(os.path.join(wDir, cFile), targetFile);
+    tmpTuple = (options['pkgname'], options['version'], options['distro'])
+    srctarball = os.path.join(srcDir, "%s-%s.%s.tar.gz" % tmpTuple)
+    tmpTuple2 = (options['pkgname'], options['version'])
+    trgtarball = os.path.join(tgzPubLink, "%s-%s.src.tar.gz" % tmpTuple2)
+    if os.path.exists(trgtarball):
+        os.remove(trgtarball)
+    os.link(srctarball, trgtarball)
+
+    bintarball = os.path.join(tgzPubLink, "%s-%s.%s.tar.gz" % tmpTuple)
+    os.chdir(os.path.abspath(options['localdir']))
+    cmdString = "tar -zcf %s ." % bintarball
+    tProcess = subprocess.Popen(shlex.split(cmdString))
+    if tProcess.wait() <> os.EX_OK:
+        print "Cannot create binary tarball"
+        clean(options, extras)
+        sys.exit(2)
+    else:
+        os.chdir(moduleDir)
+
+    reportsDir = os.path.join(moduleDir, "reports")
+    if os.path.exists(reportsDir):
+        reporttarball = os.path.join(tgzPubLink, "%s-%s-reports.tar.gz" % tmpTuple2)
+        cmdString = "tar -zcf %s %s" % (reporttarball, "reports")
+        tProcess = subprocess.Popen(shlex.split(cmdString))
+        if tProcess.wait() <> os.EX_OK:
+            print "Cannot create report tarball"
+            clean(options, extras)
+            sys.exit(2)
+    
+
+def clean(options, extras):
+    rpmbuildDir = os.path.join(os.getcwd(), 'rpmbuild')
+    rpmPubLink = os.path.join(os.getcwd(), 'RPMS')
+    tgzPubLink = os.path.join(os.getcwd(), 'tgz')
+    if os.path.exists(rpmbuildDir):
+        os.system('rm -rf %s' % rpmbuildDir)
+    if os.path.exists(rpmPubLink):
+        os.system('rm -rf %s' % rpmPubLink)
+    if os.path.exists(tgzPubLink):
+        os.system('rm -rf %s' % tgzPubLink)
+
+def main():
+    optlist = ['init', 'pack', 'clean', 'help',
+               'pkgname=', 'version=', 'distro=',
+               'specfile=', 'localdir=', 'clog=']
+    
+    try:
+        optPairs, extras = getopt.getopt(sys.argv[1:], '', optlist)
+    except getopt.GetoptError, err:
+        print str(err)
+        usage()
+        sys.exit(1)
+        
+    options = {}
+    for optitem in optPairs:
+        options[optitem[0][2:]] = optitem[1]
+
+    if options.has_key('help'):
+        usage()
+        sys.exit(0)
+    if options.has_key('init') and options.has_key('pack'):
+        usage()
+        sys.exit(1)
+        
+    if options.has_key('init'):
+        init(options, extras)
+    if options.has_key('pack'):
+        pack(options, extras)
+    if options.has_key('clean'):
+        clean(options, extras)
+
+
+if __name__ == "__main__":
+    main()
+
