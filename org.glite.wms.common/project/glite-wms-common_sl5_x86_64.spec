@@ -65,8 +65,6 @@ sed 's|^prefix=.*|prefix=/usr|g' %{buildroot}%{_libdir}/pkgconfig/wms-common-con
 mv %{buildroot}%{_libdir}/pkgconfig/wms-common-conf.pc.new %{buildroot}%{_libdir}/pkgconfig/wms-common-conf.pc
 sed 's|^prefix=.*|prefix=/usr|g' %{buildroot}%{_libdir}/pkgconfig/wms-common-quota.pc > %{buildroot}%{_libdir}/pkgconfig/wms-common-quota.pc.new
 mv %{buildroot}%{_libdir}/pkgconfig/wms-common-quota.pc.new %{buildroot}%{_libdir}/pkgconfig/wms-common-quota.pc
-sed 's|^prefix=.*|prefix=/usr|g' %{buildroot}%{_libdir}/pkgconfig/wms-common-ldif2classads.pc > %{buildroot}%{_libdir}/pkgconfig/wms-common-ldif2classads.pc.new
-mv %{buildroot}%{_libdir}/pkgconfig/wms-common-ldif2classads.pc.new %{buildroot}%{_libdir}/pkgconfig/wms-common-ldif2classads.pc
 rm %{buildroot}%{_libdir}/*.la
 chrpath --delete %{buildroot}%{_libdir}/libglite_wms_*.so.0.0.0
 chrpath --delete %{buildroot}/usr/sbin/glite-wms-quota-adjust
@@ -115,13 +113,11 @@ Development files for WMS common module
 %dir /usr/include/glite/wms/common/
 %dir /usr/include/glite/wms/common/logger/
 %dir /usr/include/glite/wms/common/configuration/
-%dir /usr/include/glite/wms/common/ldif2classad/
 %dir /usr/include/glite/wms/common/utilities/
 %dir /usr/include/glite/wms/common/process/
 
 /usr/include/glite/wms/common/logger/*.h
 /usr/include/glite/wms/common/configuration/*.h
-/usr/include/glite/wms/common/ldif2classad/*.h
 /usr/include/glite/wms/common/utilities/*.h
 /usr/include/glite/wms/common/process/*.h
 %{_libdir}/pkgconfig/wms-common*.pc
