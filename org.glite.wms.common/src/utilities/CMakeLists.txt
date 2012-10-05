@@ -31,5 +31,19 @@ target_link_libraries(glite_wms_util 	${BOOST_LIBS}
 
 #set_target_properties(glite_wms_iiattrutil PROPERTIES VERSION 0.0.0 SOVERSION 0)
 
+add_executable(glite-wms-quota-adjust glite_wms_quota_adjust.cpp)
+install(TARGETS glite-wms-quota-adjust
+        DESTINATION ${CMAKE_INSTALL_PREFIX}/${BINDIR})
+target_link_libraries(glite-wms-quota-adjust 
+                                                glite_wms_conf 
+                                                glite_wms_util 
+                                                glite_wmsutils_classads
+                                                glite_jobid
+                                                boost_regex 
+                                                boost_filesystem
+                                                boost_date_time
+                                                )
+
+
 install(TARGETS glite_wms_util #glite_wms_iiattrutil
         LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/${LIBDIR})
