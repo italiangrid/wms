@@ -1,0 +1,7 @@
+add_subdirectory(pkgconfig)
+add_subdirectory(logger)
+add_subdirectory(process)
+#add_subdirectory(scripts)
+add_subdirectory(utilities)
+add_subdirectory(configuration)
+add_subdirectory(programs)
