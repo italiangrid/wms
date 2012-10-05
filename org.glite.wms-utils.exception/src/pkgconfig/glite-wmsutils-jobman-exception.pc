@@ -1,0 +1,10 @@
+prefix=/usr
+exec_prefix=/usr
+libdir=/usr/lib64
+includedir=/usr/include
+
+Name: WMS JobMan Exception Utils
+Description: WMS JOBMAN EXCEPTION UTILS
+Version: 9.9.9
+Libs: -lglite_wmsutils_exception
+Cflags: -I${includedir} -I${includedir}/glite/wmsutils
