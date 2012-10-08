@@ -106,16 +106,17 @@ get_external_deps()
 }
 
 if [ -z $4 ]; then
-   echo "wms <build-dir-name> <emi-release> <os> <want_external_deps>"
+   echo "wms <build-dir-name> <emi-release> <os> <want_external_deps> <want_vcs_checkout>"
    exit
 fi
 
+#wget --no-check-certificate https://github.com/MarcoCecchi/org.glite.wms.git/build_wms.sh -o 
 BUILD_DIR=`pwd`/$1
 STAGE_DIR=$BUILD_DIR/org.glite.wms/stage
 if [ -d "$STAGE_DIR/usr/lib64/" ]; then
-   LOCAL_PKGCFG_LIB=usr/lib64/pkgconfig/
+   LOCAL_PKGCFG_LIB=usr/lib64/pkgconfig/:usr/include
 else
-   LOCAL_PKGCFG_LIB=usr/lib/pkgconfig/
+   LOCAL_PKGCFG_LIB=usr/lib/pkgconfig/:usr/include
 fi
 export PKG_CONFIG_PATH=$STAGE_DIR/$LOCAL_PKGCFG_LIB
 mkdir -p $STAGE_DIR
@@ -130,13 +131,19 @@ fi
 
 echo -e "\n*** build dir: $BUILD_DIR, platform: $PLATFORM, architecture: $ARCH ***\n"
 
-sudo rm -rf "$BUILD_DIR"
-mkdir -p "$BUILD_DIR"
+if [ $5 -ne 0 ]; then
+   sudo rm -rf "$BUILD_DIR"
+   mkdir -p "$BUILD_DIR"
+fi
 cd "$BUILD_DIR"
 
-echo -e "\n*** checking out the whole project ***\n"
-git clone --progress -v git@github.com:MarcoCecchi/org.glite.wms.git
-cd org.glite.wms
+if [ $5 -ne 0 ]; then
+   echo -e "\n*** checking out the WMS project ***\n"
+   git clone --progress -v git@github.com:MarcoCecchi/org.glite.wms.git
+   cd org.glite.wms
+else
+   echo -e "\n*** NOT checking out the WMS project ***\n"
+fi
 
 echo -e "\n*** starting build ***\n"
 
