@@ -31,12 +31,12 @@ libglite_wms_helper_la_SOURCES = \
 libglite_wms_helper_la_LIBADD = \
 	$(BOOST_LIBS) \
 	$(CLASSAD_LIBS) \
-	$(GLITE_JDL_LIBS) \
+	$(GLITE_JDL_LIBS) $(GLITE_WMS_COMMON_UT_UTIL_LIBS) \
 	$(GLITE_WMSUTILS_CLASSADS_LIBS) 
 
 AM_CPPFLAGS = -I$(top_srcdir)/interface \
 	-I$(top_srcdir)/src \
-	$(GLITE_JDL_CFLAGS) \
+	$(GLITE_JDL_CFLAGS) $(GLITE_WMS_COMMON_UT_UTIL_CFLAGS) \
 	$(GLITE_WMSUTILS_CLASSADS_CFLAGS) \
 	$(BOOST_CFLAGS) \
 	$(CLASSAD_CFLAGS)
