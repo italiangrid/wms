@@ -1,7 +1,7 @@
-prefix=@prefix@
-exec_prefix=@exec_prefix@
-libdir=@libdir@
-includedir=@includedir@
+prefix=@CMAKE_INSTALL_PREFIX@
+exec_prefix=@CMAKE_INSTALL_PREFIX@
+libdir=@CMAKE_INSTALL_PREFIX@/@LIBDIR@
+includedir=@CMAKE_INSTALL_PREFIX@/include
 
 Name: wms common quota api
 Description: WMS common quota C/C++ APIs

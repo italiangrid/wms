@@ -17,6 +17,8 @@ else( IS_DIRECTORY "/usr/lib" )
     set(LIBDIR "lib")
 endif( IS_DIRECTORY "/usr/lib64" )
 
+set(BINDIR "/bin")
+
 set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Wall")
 
 find_package(PkgConfig REQUIRED)
