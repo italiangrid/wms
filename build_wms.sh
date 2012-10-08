@@ -103,7 +103,7 @@ get_external_deps()
       glite-jobid-api-c-devel glite-jobid-api-cpp-devel openldap-devel \
       glite-wms-utils-exception glite-wms-utils-classad \
       glite-wms-utils-exception-devel glite-wms-utils-classad-devel \
-      chrpath cppunit-devel
+      chrpath cppunit-devel glite-jdl-api-cpp-devel glite-lb-client-devel
 }
 
 if [ -z $4 ]; then
