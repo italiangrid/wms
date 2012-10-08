@@ -6,10 +6,15 @@ if(NOT DEFINED PVER)
     set(PVER "9.9.9")
 endif(NOT DEFINED PVER)
 
+if(NOT DEFINED PREFIX)
+    message(WARNING " Undefined prefix, selected /usr/local")
+    set(PREFIX "/usr/local")
+endif(NOT DEFINED PREFIX)
+
 if( IS_DIRECTORY "/usr/lib64" )
-    set(LIBDIR "lib64")
+    set(LIBDIR "${PREFIX}/lib64")
 else( IS_DIRECTORY "/usr/lib" )
-    set(LIBDIR "lib")
+    set(LIBDIR "${PREFIX}/lib")
 endif( IS_DIRECTORY "/usr/lib64" )
 
 set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Wall")
@@ -30,7 +35,7 @@ pkg_check_modules(LOG4CPP log4cpp)
 
 
 
-set(CMAKE_INSTALL_PREFIX "/usr")
+set(CMAKE_INSTALL_PREFIX ${PREFIX})
 add_definitions( -pipe -DWANT_NAMESPACES -DWANT_CLASSAD_NAMESPACE )
 
 add_subdirectory(src)
