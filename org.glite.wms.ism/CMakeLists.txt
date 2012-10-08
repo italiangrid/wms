@@ -47,7 +47,8 @@ pkg_check_modules(WMS_COMMON_LOGGER wms-common-logger)
 pkg_check_modules(WMS_COMMON_CONF wms-common-conf)
 
 set(CMAKE_INSTALL_PREFIX ${PREFIX})
-add_definitions( -pipe -DWANT_NAMESPACES -DWANT_CLASSAD_NAMESPACE )
+add_definitions( -pipe -DWANT_NAMESPACES -DWANT_CLASSAD_NAMESPACE
+-DLDAP_DEPRECATED)
 
 add_subdirectory(src)
 add_subdirectory(interface)
