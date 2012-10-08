@@ -24,14 +24,14 @@ libglite_wms_ism_ii_purchaser_la_LIBADD = $(GLITE_WMSUTILS_CLASSADS_LIBS) \
                 $(CLASSAD_LIBS) \
                 $(LDAP_LIBS)
 
-libglite_wms_ism_file_purchaser_la_SOURCES = \
-        common.cpp \
-        ism-file-purchaser.cpp 
+#libglite_wms_ism_file_purchaser_la_SOURCES = \
+#        common.cpp \
+#        ism-file-purchaser.cpp 
 
-libglite_wms_ism_file_purchaser_la_LIBADD = $(GLITE_WMSUTILS_CLASSADS_LIBS) \
-                $(GLITE_WMS_COMMON_LOGGER_LIBS) \
-                $(BOOST_LIBS) \
-                $(CLASSAD_LIBS)
+#libglite_wms_ism_file_purchaser_la_LIBADD = $(GLITE_WMSUTILS_CLASSADS_LIBS) \
+#                $(GLITE_WMS_COMMON_LOGGER_LIBS) \
+#                $(BOOST_LIBS) \
+#                $(CLASSAD_LIBS)
 
 AM_CPPFLAGS = -I$(top_srcdir)/interface \
 		-I$(top_srcdir)/src \
