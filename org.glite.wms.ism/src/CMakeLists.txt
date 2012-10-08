@@ -1,4 +1,5 @@
 add_subdirectory(purchaser)
+add_subdirectory(pkgconfig)
 
 include_directories(${CLASSAD_INCLUDE_DIRS}
                     ${PROJECT_SOURCE_DIR}/interface
