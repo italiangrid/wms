@@ -44,6 +44,18 @@ target_link_libraries(glite-wms-quota-adjust
                                                 boost_date_time
                                                 )
 
+add_executable(glite-wms-eval_ad_expr glite-wms-eval_ad_expr.cpp)
+install(TARGETS glite-wms-eval_ad_expr
+        DESTINATION ${CMAKE_INSTALL_PREFIX}/${BINDIR})
+target_link_libraries(glite-wms-eval_ad_expr
+                                                glite_wms_conf 
+                                                glite_wms_util 
+                                                glite_wmsutils_classads
+                                                glite_jobid
+                                                boost_regex 
+                                                boost_filesystem
+                                                boost_date_time
+                                                )
 
 install(TARGETS glite_wms_util #glite_wms_iiattrutil
         LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/${LIBDIR})
