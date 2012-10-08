@@ -1,0 +1,12 @@
+prefix=@CMAKE_INSTALL_PREFIX@
+exec_prefix=@CMAKE_INSTALL_PREFIX@
+libdir=@CMAKE_INSTALL_PREFIX@/@LIBDIR@
+includedir=@CMAKE_INSTALL_PREFIX@/include
+
+Name: wms common configuration api
+Description: WMS common configuration C/C++ APIs
+Version: @VERSION@
+Requires: classad-utils, jobman-exception
+Libs: -L${libdir} -lglite_wms_conf
+Cflags: -I${includedir}
+
