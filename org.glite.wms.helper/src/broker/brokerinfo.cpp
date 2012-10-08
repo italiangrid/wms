@@ -252,27 +252,25 @@ void retrieveCloseSEsInfo(classad::ClassAd& ad, std::string const& vo)
       std::string name;
       ad.EvaluateAttrString("name",name);
       
-      ism::ism_type::const_iterator se_it(the_ism.find(name));
+      ism::ism_type::const_iterator se_it(the_ism.find(boost::flyweight<std::string>(name)));
       if (se_it != the_ism.end()) {
         std::string se_ad_str("[");
-        boost::shared_ptr<
-          boost::unordered_map<
-            boost::flyweight<std::string>,
-            boost::flyweight<std::string>,
-            ism::flyweight_hash
-          >
+        boost::unordered_map<
+          boost::flyweight<std::string>,
+          boost::flyweight<std::string>,
+          ism::flyweight_hash
         > keyvalue_info(boost::tuples::get<ism::keyvalue_info_entry>(se_it->second));
           boost::unordered_map<
             boost::flyweight<std::string>,
             boost::flyweight<std::string>,
             ism::flyweight_hash
-          >::iterator const se_end = keyvalue_info->end();
+          >::iterator const se_end = keyvalue_info.end();
         for (
           boost::unordered_map<
             boost::flyweight<std::string>,
             boost::flyweight<std::string>,
             ism::flyweight_hash
-          >::iterator se_it = keyvalue_info->begin();
+          >::iterator se_it = keyvalue_info.begin();
           se_it != se_end;
           ++se_it
         ) {
