@@ -8,21 +8,17 @@ AGE=$3
 PACKAGE_NAME=$4
 TMP_DIR=$5
 cd $COMPONENT
-make -C build clean 2>/dev/null
-echo `pwd`
-${BUILD_DIR}/org.glite.wms/emi-jobman-rpm-tool --clean 2>/dev/null
 mkdir -p src/autogen && aclocal -I ${M4_LOCATION} && 
 	libtoolize --force && autoheader && automake --foreign --add-missing --copy && \
 	autoconf && \
-	${BUILD_DIR}/org.glite.wms/emi-jobman-rpm-tool --init --pkgname ${PACKAGE_NAME} --version ${VERSION}-${AGE} --distro sl6
-echo `pwd`
+	${BUILD_DIR}/org.glite.wms/emi-jobman-rpm-tool --init \
+           --pkgname ${PACKAGE_NAME} --version ${VERSION}-${AGE} --distro sl6 # create source tarball (tar zcf)
 if [ $? -ne 0 ]; then
    echo ERROR
    exit
 fi
 mkdir build
 cd build
-
 ../configure --prefix=${TMP_DIR}/usr --disable-static PVER=${VERSION}
 if [ $? -ne 0 ]; then
    echo ERROR
@@ -48,6 +44,7 @@ if [ $? -ne 0 ]; then
    exit
 fi
 cd $BUILD_DIR/org.glite.wms
+export PKG_CONFIG_PATH=$STAGE_DIR/$LOCAL_PKGCFG_LIB
 }
 
 create_rpm()
@@ -58,7 +55,6 @@ AGE=$3
 PACKAGE_NAME=$4
 TMP_DIR=$5
 cd $COMPONENT
-${BUILD_DIR}/org.glite.wms/emi-jobman-rpm-tool --clean
 ${BUILD_DIR}/org.glite.wms/emi-jobman-rpm-tool --init --pkgname ${PACKAGE_NAME} --version ${VERSION}-${AGE} --distro $PLATFORM
 if [ $? -ne 0 ]; then
    echo ERROR
@@ -104,11 +100,11 @@ get_external_deps()
       glite-wms-utils-exception glite-wms-utils-classad \
       glite-wms-utils-exception-devel glite-wms-utils-classad-devel \
       chrpath cppunit-devel glite-jdl-api-cpp-devel glite-lb-client-devel \
-      glite-lbjp-common-gsoap-plugin-devel
+      glite-lbjp-common-gsoap-plugin-devel condor-emi
 }
 
-if [ -z $4 ]; then
-   echo "wms <build-dir-name> <emi-release> <os> <want_external_deps> <want_vcs_checkout>"
+if [ -z $6 ]; then
+   echo "wms <build-dir-name> <emi-release> <os> <want_external_deps> <want_vcs_checkout> <want_cleanup>"
    exit
 fi
 
@@ -120,7 +116,6 @@ if [ -d "$STAGE_DIR/usr/lib64/" ]; then
 else
    LOCAL_PKGCFG_LIB=usr/lib/pkgconfig/:usr/include
 fi
-export PKG_CONFIG_PATH=$STAGE_DIR/$LOCAL_PKGCFG_LIB
 EMI_RELEASE=$2
 PLATFORM=$3
 M4_LOCATION=/usr/share/emi/build/m4
@@ -134,25 +129,27 @@ echo -e "\n*** build dir: $BUILD_DIR, platform: $PLATFORM, architecture: $ARCH *
 if [ $5 -ne 0 ]; then
    sudo rm -rf "$BUILD_DIR"
    mkdir -p "$BUILD_DIR"
-   mkdir -p "$STAGE_DIR"
-fi
-cd "$BUILD_DIR"
-
-if [ $5 -ne 0 ]; then
+   cd "$BUILD_DIR"
    echo -e "\n*** checking out the WMS project ***\n"
    git clone --progress -v git@github.com:MarcoCecchi/org.glite.wms.git
+   cd org.glite.wms
+   mkdir "$STAGE_DIR"
+   if [ $? -ne 0 ]; then
+      echo "ERROR"
+      exit
+   fi
 else
+   cd "$BUILD_DIR"/org.glite.wms
    echo -e "\n*** NOT checking out the WMS project ***\n"
 fi
-cd org.glite.wms
 
 echo -e "\n*** starting build ***\n"
 
 COMPONENT[0]=org.glite.wms.common
 COMPONENT[1]=org.glite.wms.ism
 COMPONENT[2]=org.glite.wms.helper
-COMPONENT[3]=org.glite.wms.jobsubmission
-COMPONENT[4]=org.glite.wms.manager
+COMPONENT[3]=org.glite.wms.manager
+COMPONENT[4]=org.glite.wms.jobsubmission
 COMPONENT[5]=org.glite.wms.ice
 COMPONENT[6]=org.glite.wms.purger
 COMPONENT[7]=org.glite.wms.wmproxy
@@ -160,8 +157,8 @@ COMPONENT[7]=org.glite.wms.wmproxy
 PACKAGE_NAME[0]=glite-wms-common
 PACKAGE_NAME[1]=glite-wms-ism
 PACKAGE_NAME[2]=glite-wms-helper
-PACKAGE_NAME[3]=glite-wms-jobsubmission
-PACKAGE_NAME[4]=glite-wms-manager
+PACKAGE_NAME[3]=glite-wms-manager
+PACKAGE_NAME[4]=glite-wms-jobsubmission
 PACKAGE_NAME[5]=glite-wms-ice
 PACKAGE_NAME[6]=glite-wms-purger
 PACKAGE_NAME[7]=glite-wms-wmproxy
@@ -169,8 +166,8 @@ PACKAGE_NAME[7]=glite-wms-wmproxy
 VERSION[0]=3.5.0
 VERSION[1]=3.5.0
 VERSION[2]=3.5.0
-VERSION[3]=3.5.0 # jobsubmission
-VERSION[4]=3.5.0
+VERSION[3]=3.5.0 # manager
+VERSION[4]=3.5.0 # jobsubmission
 VERSION[5]=3.5.0
 VERSION[6]=3.5.0
 VERSION[7]=3.5.0
@@ -178,11 +175,21 @@ VERSION[7]=3.5.0
 AGE[0]=0
 AGE[1]=0
 AGE[2]=0
-AGE[3]=0 # jobsubmission
-AGE[4]=0
+AGE[3]=0 # manager
+AGE[4]=0 # jobsubmission
 AGE[5]=0
 AGE[6]=0
 AGE[7]=0
+
+if [ $6 -ne 0 ]; then
+   for i in `seq 0 7`; do
+      cd ${COMPONENT[$i]}
+      make -C build clean 2>/dev/null
+      rm -rf rpmbuild tgz RPMS 2>/dev/null
+      exit
+      cd ..
+   done
+fi
 
 for i in `seq 0 7`; do
    echo -e "\n*** building component ${COMPONENT[$i]} ***\n"
