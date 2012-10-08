@@ -11,15 +11,12 @@ globus_ftp_mkdir.cpp  jobdir.cpp         lb_utils.cpp              mixed.cpp
 filecontainer.cpp    FileLocker.cpp        glite_wms_quota_adjust.cpp
 globus_ftp_put.cpp    jobdir_reader.cpp  LineParser.cpp            quota.cpp
 FileList.cpp         fstreamlock.cpp       globus_ftp_exists.cpp
-#ii_attr_utils.cpp     
 lb_proxy.cpp       LineParserExceptions.cpp
 wm_commands.cpp)
 
 add_library(glite_wms_util SHARED LineParser.cpp LineParserExceptions.cpp
 mixed.cpp boost_fs_add.cpp wm_commands.cpp jobdir.cpp input_reader.cpp
 jobdir_reader.cpp manipulation.cpp)
-
-#add_library(glite_wms_iiattrutil SHARED  ii_attr_utils.cpp)
 
 set_target_properties(glite_wms_util PROPERTIES VERSION 0.0.0 SOVERSION 0)
 
@@ -29,11 +26,10 @@ target_link_libraries(glite_wms_util 	${BOOST_LIBS}
 				        ${GLITE_JOBID_LIBS}
 					${CLASSAD_LIBRARIES})
 
-#set_target_properties(glite_wms_iiattrutil PROPERTIES VERSION 0.0.0 SOVERSION 0)
-
 add_executable(glite-wms-quota-adjust glite_wms_quota_adjust.cpp)
 install(TARGETS glite-wms-quota-adjust
         DESTINATION ${CMAKE_INSTALL_PREFIX}/${BINDIR})
+
 target_link_libraries(glite-wms-quota-adjust 
                                                 glite_wms_conf 
                                                 glite_wms_util 
@@ -45,8 +41,11 @@ target_link_libraries(glite-wms-quota-adjust
                                                 )
 
 add_executable(glite-wms-eval_ad_expr glite-wms-eval_ad_expr.cpp)
+
 install(TARGETS glite-wms-eval_ad_expr
-        DESTINATION ${CMAKE_INSTALL_PREFIX}/${BINDIR})
+        DESTINATION ${CMAKE_INSTALL_PREFIX}/${LIBEXEC})
+
+
 target_link_libraries(glite-wms-eval_ad_expr
                                                 glite_wms_conf 
                                                 glite_wms_util 
@@ -57,5 +56,5 @@ target_link_libraries(glite-wms-eval_ad_expr
                                                 boost_date_time
                                                 )
 
-install(TARGETS glite_wms_util #glite_wms_iiattrutil
+install(TARGETS glite_wms_util
         LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/${LIBDIR})
