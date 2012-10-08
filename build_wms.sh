@@ -6,13 +6,17 @@ COMPONENT=$1
 VERSION=$2
 AGE=$3
 PACKAGE_NAME=$4
+set -x
+echo `pwd`
 cd $COMPONENT
 make -C build clean 2>/dev/null
+echo `pwd`
 ${BUILD_DIR}/org.glite.wms/emi-jobman-rpm-tool --clean 2>/dev/null
-mkdir -p src/autogen && aclocal -I ${M4_LOCATION=} && 
-	\libtoolize --force && autoheader && automake --foreign --add-missing --copy && \
+mkdir -p src/autogen && aclocal -I ${M4_LOCATION} && 
+	libtoolize --force && autoheader && automake --foreign --add-missing --copy && \
 	autoconf && \
 	${BUILD_DIR}/org.glite.wms/emi-jobman-rpm-tool --init --pkgname ${PACKAGE_NAME} --version ${VERSION}-${AGE} --distro sl6
+echo `pwd`
 if [ $? -ne 0 ]; then
    echo ERROR
    exit
@@ -108,6 +112,12 @@ fi
 
 BUILD_DIR=`pwd`/$1
 STAGE_DIR=$BUILD_DIR/org.glite.wms/stage
+if [ -d "$STAGE_DIR/usr/lib64/" ]; then
+   LOCAL_PKGCFG_LIB=usr/lib64/pkgconfig/
+else
+   LOCAL_PKGCFG_LIB=usr/lib/pkgconfig/
+fi
+export PKG_CONFIG_PATH=$STAGE_DIR/$LOCAL_PKGCFG_LIB
 mkdir -p $STAGE_DIR
 EMI_RELEASE=$2
 PLATFORM=$3
@@ -125,7 +135,7 @@ mkdir -p "$BUILD_DIR"
 cd "$BUILD_DIR"
 
 echo -e "\n*** checking out the whole project ***\n"
-git clone --progress -v https://github.com/MarcoCecchi/org.glite.wms.git
+git clone --progress -v git@github.com:MarcoCecchi/org.glite.wms.git
 cd org.glite.wms
 
 echo -e "\n*** starting build ***\n"
