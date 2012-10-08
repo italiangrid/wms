@@ -6,8 +6,7 @@ COMPONENT=$1
 VERSION=$2
 AGE=$3
 PACKAGE_NAME=$4
-set -x
-echo `pwd`
+TMP_DIR=$5
 cd $COMPONENT
 make -C build clean 2>/dev/null
 echo `pwd`
@@ -23,7 +22,8 @@ if [ $? -ne 0 ]; then
 fi
 mkdir build
 cd build
-../configure --prefix=${PREFIX}/usr --disable-static PVER=${VERSION}
+
+../configure --prefix=${TMP_DIR}/usr --disable-static PVER=${VERSION}
 if [ $? -ne 0 ]; then
    echo ERROR
    exit
@@ -33,6 +33,7 @@ if [ $? -ne 0 ]; then
    echo ERROR
    exit
 fi
+cp -r $TMP_DIR/* $STAGE_DIR
 make install
 if [ $? -ne 0 ]; then
    echo ERROR
@@ -40,7 +41,7 @@ if [ $? -ne 0 ]; then
 fi
 cd .. # from build to component root
 ${BUILD_DIR}/org.glite.wms/emi-jobman-rpm-tool --pack --pkgname ${PACKAGE_NAME} \
-	--version ${VERSION}-${AGE} --distro $PLATFORM --localdir ${PREFIX} \
+	--version ${VERSION}-${AGE} --distro $PLATFORM --localdir ${TMP_DIR} \
 	--specfile ${BUILD_DIR}/org.glite.wms/$COMPONENT/project/${PACKAGE_NAME}_sl5_$ARCH.spec
 if [ $? -ne 0 ]; then
    echo ERROR
@@ -55,6 +56,7 @@ COMPONENT=$1
 VERSION=$2
 AGE=$3
 PACKAGE_NAME=$4
+TMP_DIR=$5
 cd $COMPONENT
 ${BUILD_DIR}/org.glite.wms/emi-jobman-rpm-tool --clean
 ${BUILD_DIR}/org.glite.wms/emi-jobman-rpm-tool --init --pkgname ${PACKAGE_NAME} --version ${VERSION}-${AGE} --distro $PLATFORM
@@ -62,13 +64,13 @@ if [ $? -ne 0 ]; then
    echo ERROR
    exit
 fi
-./install.sh ${PREFIX} ${VERSION}
+./install.sh ${TMP_DIR} ${VERSION}
 if [ $? -ne 0 ]; then
    echo ERROR
    exit
 fi
 ${BUILD_DIR}/org.glite.wms/emi-jobman-rpm-tool --pack --pkgname ${PACKAGE_NAME} \
-	--version ${VERSION}-${AGE} --distro $PLATFORM --localdir ${PREFIX} \
+	--version ${VERSION}-${AGE} --distro $PLATFORM --localdir ${TMP_DIR} \
 	--specfile ./project/${PACKAGE_NAME}_noarch.spec
 if [ $? -ne 0 ]; then
    echo ERROR
@@ -80,7 +82,6 @@ cd $BUILD_DIR/org.glite.wms
 cmake_build()
 {
    echo TODO
-   #cmake . "-DPVER=$3-$4" # $$PACKAGE_NAME $STAGE_DIR PREFIX still missing
 }
 
 get_external_deps()
@@ -119,10 +120,8 @@ else
    LOCAL_PKGCFG_LIB=usr/lib/pkgconfig/:usr/include
 fi
 export PKG_CONFIG_PATH=$STAGE_DIR/$LOCAL_PKGCFG_LIB
-mkdir -p $STAGE_DIR
 EMI_RELEASE=$2
 PLATFORM=$3
-PREFIX=$STAGE_DIR
 M4_LOCATION=/usr/share/emi/build/m4
 ARCH=`uname -i`
 if [ $4 -eq 1 ]; then
@@ -134,16 +133,17 @@ echo -e "\n*** build dir: $BUILD_DIR, platform: $PLATFORM, architecture: $ARCH *
 if [ $5 -ne 0 ]; then
    sudo rm -rf "$BUILD_DIR"
    mkdir -p "$BUILD_DIR"
+   mkdir -p "$STAGE_DIR"
 fi
 cd "$BUILD_DIR"
 
 if [ $5 -ne 0 ]; then
    echo -e "\n*** checking out the WMS project ***\n"
    git clone --progress -v git@github.com:MarcoCecchi/org.glite.wms.git
-   cd org.glite.wms
 else
    echo -e "\n*** NOT checking out the WMS project ***\n"
 fi
+cd org.glite.wms
 
 echo -e "\n*** starting build ***\n"
 
@@ -185,7 +185,7 @@ AGE[7]=0
 
 for i in `seq 0 7`; do
    echo -e "\n*** building component ${COMPONENT[$i]} ***\n"
-   autotools_build ${COMPONENT[$i]} ${VERSION[$i]} ${AGE[$i]} ${PACKAGE_NAME[$i]}
+   autotools_build ${COMPONENT[$i]} ${VERSION[$i]} ${AGE[$i]} ${PACKAGE_NAME[$i]} "$BUILD_DIR/org.glite.wms/${COMPONENT[$i]}/tmp"
 done
 
 COMPONENT[0]=org.glite.wms.configuration
@@ -206,5 +206,5 @@ AGE[2]=0 # mp
 
 for i in `seq 0 2`; do
    echo -e "\n*** building component ${COMPONENT[$i]} ***\n"
-   create_rpm ${COMPONENT[$i]} ${VERSION[$i]} ${AGE[$i]} ${PACKAGE_NAME[$i]}
+   create_rpm ${COMPONENT[$i]} ${VERSION[$i]} ${AGE[$i]} ${PACKAGE_NAME[$i]} "$BUILD_DIR/org.glite.wms/${COMPONENT[$i]}/tmp"
 done
