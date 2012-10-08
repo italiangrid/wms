@@ -12,9 +12,9 @@ if(NOT DEFINED PREFIX)
 endif(NOT DEFINED PREFIX)
 
 if( IS_DIRECTORY "/usr/lib64" )
-    set(LIBDIR "${PREFIX}/lib64")
+    set(LIBDIR "lib64")
 else( IS_DIRECTORY "/usr/lib" )
-    set(LIBDIR "${PREFIX}/lib")
+    set(LIBDIR "lib")
 endif( IS_DIRECTORY "/usr/lib64" )
 
 set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Wall")
