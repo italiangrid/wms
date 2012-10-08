@@ -17,7 +17,7 @@ if [ $? -ne 0 ]; then
    echo ERROR
    exit
 fi
-mkdir build
+mkdir build 2>/dev/null
 cd build
 ../configure --prefix=${TMP_DIR}/usr --disable-static PVER=${VERSION}
 if [ $? -ne 0 ]; then
@@ -29,8 +29,8 @@ if [ $? -ne 0 ]; then
    echo ERROR
    exit
 fi
-cp -r $TMP_DIR/* $STAGE_DIR
 make install
+cp -r $TMP_DIR/* $STAGE_DIR
 if [ $? -ne 0 ]; then
    echo ERROR
    exit
@@ -44,7 +44,6 @@ if [ $? -ne 0 ]; then
    exit
 fi
 cd $BUILD_DIR/org.glite.wms
-export PKG_CONFIG_PATH=$STAGE_DIR/$LOCAL_PKGCFG_LIB
 }
 
 create_rpm()
@@ -111,11 +110,12 @@ fi
 #wget --no-check-certificate https://github.com/MarcoCecchi/org.glite.wms.git/build_wms.sh -o 
 BUILD_DIR=`pwd`/$1
 STAGE_DIR=$BUILD_DIR/org.glite.wms/stage
-if [ -d "$STAGE_DIR/usr/lib64/" ]; then
-   LOCAL_PKGCFG_LIB=usr/lib64/pkgconfig/:usr/include
+if [ -d "/usr/lib64/" ]; then
+   LOCAL_PKGCFG_LIB=usr/lib64/pkgconfig/
 else
-   LOCAL_PKGCFG_LIB=usr/lib/pkgconfig/:usr/include
+   LOCAL_PKGCFG_LIB=usr/lib/pkgconfig/
 fi
+export PKG_CONFIG_PATH=$STAGE_DIR/$LOCAL_PKGCFG_LIB
 EMI_RELEASE=$2
 PLATFORM=$3
 M4_LOCATION=/usr/share/emi/build/m4
