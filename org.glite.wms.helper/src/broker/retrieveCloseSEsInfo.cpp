@@ -150,24 +150,22 @@ bool retrieveCloseSEsInfo(
             "name",name
           );
           ism::ism_type::const_iterator se_it(
-            ism::get_ism(ism::se).find(name)
+            ism::get_ism(ism::se).find(boost::flyweight<std::string>(name))
           );
           if (se_it != ism_end) {
 
             boost::shared_ptr<classad::ClassAd> se_ad_ptr;
-            boost::shared_ptr<
-              boost::unordered_map<
-                boost::flyweight<std::string>,
-                boost::flyweight<std::string>,
-                ism::flyweight_hash
-              >
+            boost::unordered_map<
+              boost::flyweight<std::string>,
+              boost::flyweight<std::string>,
+              ism::flyweight_hash
             > keyvalue_info(boost::tuples::get<ism::keyvalue_info_entry>(se_it->second));
             for (
               boost::unordered_map<
                boost::flyweight<std::string>,
                boost::flyweight<std::string>,
-               ism::flyweight_hash>::iterator iter(keyvalue_info->begin());
-              iter != keyvalue_info->end();
+               ism::flyweight_hash>::iterator iter(keyvalue_info.begin());
+              iter != keyvalue_info.end();
               ++iter
             ) {
               se_ad_ptr->InsertAttr(iter->first, iter->second);
@@ -208,12 +206,10 @@ bool retrieveCloseSEsInfo(
             }
             sesa_ads.push_back(sesa_ad_ptr); 
           }
-
         }
         result.SetListValue(ExprList::MakeExprList(sesa_ads));
         eval_successful=true;
-      }
-      else {
+      } else {
         result.SetUndefinedValue();
       }
     }

@@ -129,12 +129,10 @@ matchmakerISMImpl::checkRequirement(
   classad::ClassAdParser parser;
   for ( ; ism_it != ism_end; ++ism_it) {
 
-    boost::shared_ptr<
-      boost::unordered_map<
-        boost::flyweight<std::string>,
-        boost::flyweight<std::string>,
-        ism::flyweight_hash
-      >
+    boost::unordered_map<
+      boost::flyweight<std::string>,
+      boost::flyweight<std::string>,
+      ism::flyweight_hash
     > ce_map(
       boost::tuples::get<ism::keyvalue_info_entry>(ism_it->second)
     );
@@ -143,19 +141,18 @@ matchmakerISMImpl::checkRequirement(
       boost::flyweight<std::string>,
       boost::flyweight<std::string>,
       ism::flyweight_hash
-    >::iterator const ce_end = ce_map->end();
+    >::iterator const ce_end = ce_map.end();
     for (
       boost::unordered_map<
         boost::flyweight<std::string>,
         boost::flyweight<std::string>,
         ism::flyweight_hash
-      >::iterator ce_it = ce_map->begin();
+      >::iterator ce_it = ce_map.begin();
       ce_it != ce_end;
       ++ce_it
     ) {
       if (attributes.find(ce_it->first) != attributes.end()) {
           ce_ad_str += std::string(ce_it->first) + '=' + std::string(ce_it->second) + ';';
-Debug("MM added in JDL, check strings and quotes: " << ce_ad_str);
       }
     }
     ce_ad_str += "];";
@@ -258,7 +255,7 @@ struct starts_with
  starts_with(const std::string& p) : m_pattern(p) {}
  bool operator()(ism::ism_type::value_type const& v)
  {
-   return boost::starts_with(v.first, m_pattern);
+   return boost::starts_with(std::string(v.first), m_pattern);
  }
 };
 }
@@ -314,12 +311,10 @@ matchmakerISMImpl::checkRequirement(
     }
  
     do {
-      boost::shared_ptr<
-        boost::unordered_map<
-          boost::flyweight<std::string>,
-          boost::flyweight<std::string>,
-          ism::flyweight_hash
-        >
+      boost::unordered_map<
+        boost::flyweight<std::string>,
+        boost::flyweight<std::string>,
+        ism::flyweight_hash
       > ce_map(
         boost::tuples::get<ism::keyvalue_info_entry>(ism_it->second)
       );
@@ -328,13 +323,13 @@ matchmakerISMImpl::checkRequirement(
         boost::flyweight<std::string>,
         boost::flyweight<std::string>,
         ism::flyweight_hash
-      >::iterator const ce_end = ce_map->end();
+      >::iterator const ce_end = ce_map.end();
       for (
         boost::unordered_map<
           boost::flyweight<std::string>,
           boost::flyweight<std::string>,
           ism::flyweight_hash
-        >::iterator ce_it = ce_map->begin();
+        >::iterator ce_it = ce_map.begin();
         ce_it != ce_end;
         ++ce_it
       ) {
