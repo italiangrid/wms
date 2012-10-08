@@ -59,6 +59,7 @@ libglite_wms_jss_common_la_SOURCES = \
 
 AM_CPPFLAGS = -I$(top_srcdir)/src \
 	$(GLITE_WMS_COMMON_UT_UTIL_CFLAGS) \
+	$(GLITE_WMS_PURGER_CFLAGS) \
 	-I/usr/include \
 	$(CLASSAD_CFLAGS) \
 	$(BOOST_CFLAGS)
