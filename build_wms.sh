@@ -184,11 +184,12 @@ AGE[7]=0
 if [ $6 -ne 0 ]; then
    for i in `seq 0 7`; do
       cd ${COMPONENT[$i]}
+      echo "\n*** cleaning up ${COMPONENT[$i]} ***\n"
       make -C build clean 2>/dev/null
       rm -rf rpmbuild tgz RPMS 2>/dev/null
-      exit
       cd ..
    done
+   exit
 fi
 
 for i in `seq 0 7`; do
