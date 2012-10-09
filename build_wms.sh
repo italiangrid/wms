@@ -17,6 +17,10 @@ autotools_build()
       echo ERROR
       exit
    fi
+   if [ $COMPONENT = "org.glite.wms.wmproxy" ]; then # this is only for wmproxy. TODO remove
+      ln -sf "$BUILD_DIR/org.glite.wms/org.glite.wms.wmproxy/src/server/stdsoap2-2_7_16.cpp" \
+         "$BUILD_DIR/org.glite.wms/org.glite.wms.wmproxy/src/server/stdsoap2.cpp" 2>/dev/null
+   fi
    # create the source tarball
    tar --exclude reports --exclude rpmbuild --exclude build --exclude bin --exclude tools -zcf \
       ./rpmbuild/SOURCES/${PACKAGE_NAME}-${VERSION}-${AGE}.${PLATFORM}.tar.gz .
@@ -293,7 +297,7 @@ AGE[13]=0
 AGE[14]=0
 AGE[15]=0
 
-START=0
+START=6
 END=15
 
 for i in `seq 0 $((START - 1))`; do
