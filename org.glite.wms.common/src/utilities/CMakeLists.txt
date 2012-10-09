@@ -58,3 +58,8 @@ target_link_libraries(glite-wms-eval_ad_expr
 
 install(TARGETS glite_wms_util
         LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/${LIBDIR})
+
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/manipulation.h
+${CMAKE_CURRENT_SOURCE_DIR}/boost_fs_add.h
+        DESTINATION
+${CMAKE_INSTALL_PREFIX}/include/glite/wms/common/utilities)
