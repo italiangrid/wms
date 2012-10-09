@@ -7,31 +7,28 @@ autotools_build()
    AGE=$3
    PACKAGE_NAME=$4
    TMP_DIR=$5
+
    cd $COMPONENT
-   if [ 1 -eq 0 ]; then # TODO --force option or skip the configuration is makefiles have been created already
-      echo -e "\n*** Makefile present, skipping configuration\n"
-      cd build
-   else
-      mkdir -p build src/autogen rpmbuild/SOURCES rpmbuild/SPECS rpmbuild/SRPMS rpmbuild/BUILD rpmbuild/RPMS 2>/dev/null
-      aclocal -I ${M4_LOCATION} && 
+   mkdir -p build src/autogen rpmbuild/SOURCES rpmbuild/SPECS rpmbuild/SRPMS rpmbuild/BUILD rpmbuild/RPMS 2>/dev/null
+   aclocal -I ${M4_LOCATION} && \
 	libtoolize --force && autoheader && automake --foreign --add-missing --copy && \
 	autoconf
-      if [ $? -ne 0 ]; then
-         echo ERROR
-         exit
-      fi
-      tar --exclude rpmbuild --exclude build --exclude bin --exclude tools -zcf \
-         ./rpmbuild/SOURCES/${PACKAGE_NAME}-${VERSION}-${AGE}.${PLATFORM}.tar.gz .
-      if [ $? -ne 0 ]; then
-        echo ERROR
-        exit
-      fi
-      cd build
-      ../configure --prefix=${TMP_DIR}/usr --sysconfdir=${TMP_DIR}/etc --disable-static PVER=${VERSION}
-      if [ $? -ne 0 ]; then
-         echo ERROR
-         exit
-      fi
+   if [ $? -ne 0 ]; then
+      echo ERROR
+      exit
+   fi
+   # create the source tarball
+   tar --exclude reports --exclude rpmbuild --exclude build --exclude bin --exclude tools -zcf \
+      ./rpmbuild/SOURCES/${PACKAGE_NAME}-${VERSION}-${AGE}.${PLATFORM}.tar.gz .
+   if [ $? -ne 0 ]; then
+     echo ERROR
+     exit
+   fi
+   cd build
+   ../configure --prefix=${TMP_DIR}/usr --sysconfdir=${TMP_DIR}/etc --disable-static PVER=${VERSION}
+   if [ $? -ne 0 ]; then
+      echo ERROR
+      exit
    fi
    make
    if [ $? -ne 0 ]; then
@@ -45,6 +42,7 @@ autotools_build()
       exit
    fi
    cd .. # from build to component root
+   # set the .spec vars and run rpmbuild
    ${BUILD_DIR}/org.glite.wms/emi-jobman-rpm-tool --pack --pkgname ${PACKAGE_NAME} \
 	--version ${VERSION}-${AGE} --distro $PLATFORM --localdir ${TMP_DIR} \
 	--specfile ${BUILD_DIR}/org.glite.wms/$COMPONENT/project/${PACKAGE_NAME}.spec
@@ -94,7 +92,6 @@ ant_build()
    fi
    cd $BUILD_DIR/org.glite.wms
 }
-
 
 python_build()
 {
@@ -208,7 +205,7 @@ mkdir -p $STAGE_DIR/$LOCAL_PKGCFG_LIB
 cp org.glite.wms/project/emi-condorg.pc $STAGE_DIR/$LOCAL_PKGCFG_LIB
 export PKG_CONFIG_PATH=$STAGE_DIR/$LOCAL_PKGCFG_LIB
 
-echo -e "\n*** starting build for WMS service ***\n"
+echo -e "\n*** starting build ***\n"
 
 COMPONENT[0]=org.glite.wms.common
 COMPONENT[1]=org.glite.wms.ism
@@ -296,7 +293,14 @@ AGE[13]=0
 AGE[14]=0
 AGE[15]=0
 
-for i in `seq 0 15`; do
+START=0
+END=15
+
+for i in `seq 0 $((START - 1))`; do
+   TEMP="$BUILD_DIR/org.glite.wms/${COMPONENT[$i]}/tmp"
+   export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$TEMP/$LOCAL_PKGCFG_LIB
+done
+for i in `seq $START $END`; do
    echo -e "\n*** building component ${COMPONENT[$i]} ***\n"
    
    if [ $6 -ne 0 ]; then
@@ -308,22 +312,23 @@ for i in `seq 0 15`; do
       exit
    fi
 
-   export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$TMP_DIR/$LOCAL_PKGCFG_LIB
+   TEMP="$BUILD_DIR/org.glite.wms/${COMPONENT[$i]}/tmp"
+   export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$TEMP/$LOCAL_PKGCFG_LIB
    case ${BUILD_TYPE[$i]} in
      "autotools" )
-         autotools_build ${COMPONENT[$i]} ${VERSION[$i]} ${AGE[$i]} ${PACKAGE_NAME[$i]} "$BUILD_DIR/org.glite.wms/${COMPONENT[$i]}/tmp"
+         autotools_build ${COMPONENT[$i]} ${VERSION[$i]} ${AGE[$i]} ${PACKAGE_NAME[$i]} $TEMP
          ;;
      "cmake" )
-         ant_build ${COMPONENT[$i]} ${VERSION[$i]} ${AGE[$i]} ${PACKAGE_NAME[$i]} "$BUILD_DIR/org.glite.wms/${COMPONENT[$i]}/tmp"
+         ant_build ${COMPONENT[$i]} ${VERSION[$i]} ${AGE[$i]} ${PACKAGE_NAME[$i]} $TEMP
          ;;
      "ant" )
-         ant_build ${COMPONENT[$i]} ${VERSION[$i]} ${AGE[$i]} ${PACKAGE_NAME[$i]} "$BUILD_DIR/org.glite.wms/${COMPONENT[$i]}/tmp"
+         ant_build ${COMPONENT[$i]} ${VERSION[$i]} ${AGE[$i]} ${PACKAGE_NAME[$i]} $TEMP
          ;;
      "python" )
-         python_build ${COMPONENT[$i]} ${VERSION[$i]} ${AGE[$i]} ${PACKAGE_NAME[$i]} "$BUILD_DIR/org.glite.wms/${COMPONENT[$i]}/tmp"
+         python_build ${COMPONENT[$i]} ${VERSION[$i]} ${AGE[$i]} ${PACKAGE_NAME[$i]} $TEMP
          ;;
      "pkg-only" )
-         rpmbuild ${COMPONENT[$i]} ${VERSION[$i]} ${AGE[$i]} ${PACKAGE_NAME[$i]} "$BUILD_DIR/org.glite.wms/${COMPONENT[$i]}/tmp"
+         rpmbuild ${COMPONENT[$i]} ${VERSION[$i]} ${AGE[$i]} ${PACKAGE_NAME[$i]} $TEMP
          ;;
      * )
          echo "Build type not found for ${COMPONENT[$i]}"
