@@ -8,3 +8,4 @@ mkdir -p build_tmp/usr
 cmake . -DPREFIX=${CURPATH}/build_tmp/usr -DOFFICIAL_INSTALL_PREFIX=/usr
 make
 make install
+dpkg -b build_tmp/ glite-wms-common.deb
