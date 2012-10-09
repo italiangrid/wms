@@ -8,7 +8,7 @@ autotools_build()
    PACKAGE_NAME=$4
    TMP_DIR=$5
    cd $COMPONENT
-   if [ false ]; then # TODO --force option or skip the configuration is makefiles have been created already
+   if [ 1 -eq 0 ]; then # TODO --force option or skip the configuration is makefiles have been created already
       echo -e "\n*** Makefile present, skipping configuration\n"
       cd build
    else
@@ -40,7 +40,6 @@ autotools_build()
    fi
    make doxygen-doc >/dev/null 2>&1
    make install
-   export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$TMP_DIR/$LOCAL_PKGCFG_LIB
    if [ $? -ne 0 ]; then
       echo ERROR
       exit
@@ -175,6 +174,12 @@ fi
 export PKG_CONFIG_PATH=$STAGE_DIR/$LOCAL_PKGCFG_LIB
 EMI_RELEASE=$2
 PLATFORM=$3
+# TODO
+#if [ $PLATFORM == "deb" ]; then
+#   PACKAGER=rpm
+#else
+#   PACKAGER=deb
+#fi
 M4_LOCATION=/usr/share/emi/build/m4
 ARCH=`uname -i`
 if [ $4 -eq 1 ]; then
@@ -210,9 +215,9 @@ COMPONENT[1]=org.glite.wms.ism
 COMPONENT[2]=org.glite.wms.helper
 COMPONENT[3]=org.glite.wms.purger
 COMPONENT[4]=org.glite.wms.jobsubmission
-COMPONENT[5]=org.glite.wms.ice
-COMPONENT[6]=org.glite.wms.manager
-COMPONENT[7]=org.glite.wms.wmproxy
+COMPONENT[5]=org.glite.wms.manager
+COMPONENT[6]=org.glite.wms.wmproxy
+COMPONENT[7]=org.glite.wms.ice
 COMPONENT[8]=org.glite.wms.nagios
 COMPONENT[9]=org.glite.wms.mp
 ### WMS UI
@@ -231,8 +236,8 @@ BUILD_TYPE[4]=autotools
 BUILD_TYPE[5]=autotools
 BUILD_TYPE[6]=autotools
 BUILD_TYPE[7]=autotools
-BUILD_TYPE[8]=rpmbuild
-BUILD_TYPE[9]=rpmbuild
+BUILD_TYPE[8]=pkg-only
+BUILD_TYPE[9]=pkg-only
 BUILD_TYPE[10]=autotools
 BUILD_TYPE[11]=autotools
 BUILD_TYPE[12]=ant
@@ -245,9 +250,9 @@ PACKAGE_NAME[1]=glite-wms-ism
 PACKAGE_NAME[2]=glite-wms-helper
 PACKAGE_NAME[3]=glite-wms-purger
 PACKAGE_NAME[4]=glite-wms-jobsubmission
-PACKAGE_NAME[5]=glite-wms-ice
-PACKAGE_NAME[6]=glite-wms-manager
-PACKAGE_NAME[7]=glite-wms-wmproxy
+PACKAGE_NAME[5]=glite-wms-manager
+PACKAGE_NAME[6]=glite-wms-wmproxy
+PACKAGE_NAME[7]=glite-wms-ice
 PACKAGE_NAME[8]=glite-wms-nagios
 PACKAGE_NAME[9]=glite-wms-mp
 PACKAGE_NAME[10]=glite-wms-brokerinfo-access
@@ -264,7 +269,7 @@ VERSION[3]=3.5.0 # purger
 VERSION[4]=3.5.0 # jobsubmission
 VERSION[5]=3.5.0
 VERSION[6]=3.5.0
-VERSION[7]=3.5.0
+VERSION[7]=3.5.0 # ice
 VERSION[8]=3.5.0
 VERSION[9]=3.5.0
 VERSION[10]=3.5.0
@@ -281,7 +286,7 @@ AGE[3]=0 # purger
 AGE[4]=0 # jobsubmission
 AGE[5]=0
 AGE[6]=0
-AGE[7]=0
+AGE[7]=0 # ice
 AGE[8]=0
 AGE[9]=0
 AGE[10]=0
@@ -291,7 +296,7 @@ AGE[13]=0
 AGE[14]=0
 AGE[15]=0
 
-for i in `seq 0 9`; do
+for i in `seq 0 15`; do
    echo -e "\n*** building component ${COMPONENT[$i]} ***\n"
    
    if [ $6 -ne 0 ]; then
@@ -303,6 +308,7 @@ for i in `seq 0 9`; do
       exit
    fi
 
+   export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$TMP_DIR/$LOCAL_PKGCFG_LIB
    case ${BUILD_TYPE[$i]} in
      "autotools" )
          autotools_build ${COMPONENT[$i]} ${VERSION[$i]} ${AGE[$i]} ${PACKAGE_NAME[$i]} "$BUILD_DIR/org.glite.wms/${COMPONENT[$i]}/tmp"
@@ -316,7 +322,7 @@ for i in `seq 0 9`; do
      "python" )
          python_build ${COMPONENT[$i]} ${VERSION[$i]} ${AGE[$i]} ${PACKAGE_NAME[$i]} "$BUILD_DIR/org.glite.wms/${COMPONENT[$i]}/tmp"
          ;;
-     "rpm" )
+     "pkg-only" )
          rpmbuild ${COMPONENT[$i]} ${VERSION[$i]} ${AGE[$i]} ${PACKAGE_NAME[$i]} "$BUILD_DIR/org.glite.wms/${COMPONENT[$i]}/tmp"
          ;;
      * )
