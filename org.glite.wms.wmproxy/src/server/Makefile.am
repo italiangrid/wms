@@ -101,6 +101,8 @@ glite_wms_wmproxy_server_LDADD = \
 AM_CPPFLAGS = -I$(top_srcdir)/src/server \
 	-I$(top_srcdir)/src \
 	-I$(top_srcdir)/build/src/server \
+	$(GLITE_WMS_COMMON_LOGGER_CFLAGS) \
+	$(GLITE_WMS_COMMON_CONF_CFLAGS) \
 	$(GSOAP_CFLAGS) -DWITH_FASTCGI \
 	$(VOMS_CFLAGS) \
 	$(EXPAT_CFLAGS) \

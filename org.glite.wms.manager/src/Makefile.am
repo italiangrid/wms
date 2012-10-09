@@ -34,7 +34,6 @@ glite_wms_workload_manager_LDADD   = \
         $(GLITE_WMS_COMMON_UT_UTIL_LIBS) \
         $(GLITE_WMS_COMMON_LOGGER_LIBS) \
         $(GLITE_WMS_COMMON_CONF_LIBS) \
-        $(GLITE_WMS_COMMON_UT_II_LIBS) \
         $(GLITE_WMS_COMMON_LDIF2CLASSADS_LIBS) \
         $(GLITE_WMSUTILS_EXCEPTION_LIBS) \
         $(GLITE_LB_CLIENT_LIBS) \
