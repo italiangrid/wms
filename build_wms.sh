@@ -85,7 +85,7 @@ get_external_deps()
       glite-wms-utils-exception glite-wms-utils-classad \
       glite-wms-utils-exception-devel glite-wms-utils-classad-devel \
       chrpath cppunit-devel glite-jdl-api-cpp-devel glite-lb-client-devel \
-      glite-lbjp-common-gsoap-plugin-devel condor-emi glite-ce-cream-client-api-c
+      glite-lbjp-common-gsoap-plugin-devel condor-emi glite-ce-cream-client-api-c glite-ce-cream-client-devel
 }
 
 if [ -z $6 ]; then
@@ -145,8 +145,8 @@ COMPONENT[7]=org.glite.wms.wmproxy
 
 PACKAGE_NAME[0]=glite-wms-common
 PACKAGE_NAME[1]=glite-wms-ism
-PACKAGE_NAME[3]=glite-wms-helper
-PACKAGE_NAME[2]=glite-wms-purger
+PACKAGE_NAME[2]=glite-wms-helper
+PACKAGE_NAME[3]=glite-wms-purger
 PACKAGE_NAME[4]=glite-wms-jobsubmission
 PACKAGE_NAME[5]=glite-wms-ice
 PACKAGE_NAME[6]=glite-wms-manager
