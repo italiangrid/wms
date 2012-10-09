@@ -146,7 +146,7 @@ get_external_deps()
    wget "http://emisoft.web.cern.ch/emisoft/dist/EMI/$EMI_RELEASE/sl6/x86_64/base/emi-release-${EMI_RELEASE}.0.0-1.$PLATFORM.noarch.rpm"
    sudo rpm -ivh "emi-release-${EMI_RELEASE}.0.0-1.$PLATFORM.noarch.rpm"
    sudo rpm -e --nodeps c-ares-1.7.0-6.el6.x86_64
-   sudo yum -y install mod_fcgid mod_ssl gridsite-apache httpd-devel zlib-devel \
+   sudo yum -y install rpmlint mod_fcgid mod_ssl gridsite-apache httpd-devel zlib-devel \
       boost-devel c-ares-devel glite-px-proxyrenewal-devel voms-devel voms-clients \
       argus-pep-api-c-devel lcmaps-without-gsi-devel lcmaps-devel classads-devel \
       glite-build-common-cpp gsoap-devel libtar-devel cmake globus-ftp-client \
