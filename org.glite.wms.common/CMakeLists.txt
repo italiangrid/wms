@@ -2,7 +2,8 @@ project(wms-common CXX)
 cmake_minimum_required(VERSION 2.6)
 
 if(NOT DEFINED PVER)
-    message(WARNING " Undefined version number, selected 9.9.9")
+    message(WARNING " Undefined version number, selected 9.9.9. Please use
+-DPVER=<version> to customize")
     set(PVER "9.9.9")
 endif(NOT DEFINED PVER)
 
@@ -10,6 +11,10 @@ if(NOT DEFINED PREFIX)
     message(WARNING " Undefined prefix, selected /usr/local")
     set(PREFIX "/usr/local")
 endif(NOT DEFINED PREFIX)
+
+if(NOT DEFINED OFFICIAL_INSTALL_PREFIX)
+    set(OFFICIAL_INSTALL_PREFIX ${PREFIX})
+endif(NOT DEFINED OFFICIAL_INSTALL_PREFIX)
 
 if( IS_DIRECTORY "/usr/lib64" )
     set(LIBDIR "lib64")
