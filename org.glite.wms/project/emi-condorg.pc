@@ -1,0 +1,6 @@
+Name: condorg
+Description: condor suite
+Version: 7.8.0
+Libs: -L/usr/lib64/condor -lcondorapi
+Cflags: -I/usr/include -I/usr/include/condor
+
