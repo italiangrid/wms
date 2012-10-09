@@ -8,18 +8,27 @@ AGE=$3
 PACKAGE_NAME=$4
 TMP_DIR=$5
 cd $COMPONENT
-mkdir -p src/autogen && aclocal -I ${M4_LOCATION} && 
+#if [ -r build/src/Makefile && *force* ]; then
+#   echo -e "\n*** Makefile present, skipping configuration\n"
+#   cd build
+#else
+   mkdir -p build src/autogen rpmbuild/SOURCES rpmbuild/SPECS rpmbuild/SRPMS rpmbuild/BUILD rpmbuild/RPMS 2>/dev/null
+   aclocal -I ${M4_LOCATION} && 
 	libtoolize --force && autoheader && automake --foreign --add-missing --copy && \
-	autoconf && \
-	${BUILD_DIR}/org.glite.wms/emi-jobman-rpm-tool --init \
-           --pkgname ${PACKAGE_NAME} --version ${VERSION}-${AGE} --distro sl6 # create source tarball (tar zcf)
-if [ $? -ne 0 ]; then
-   echo ERROR
-   exit
-fi
-mkdir build 2>/dev/null
-cd build
-../configure --prefix=${TMP_DIR}/usr --disable-static PVER=${VERSION}
+	autoconf
+   if [ $? -ne 0 ]; then
+      echo ERROR
+      exit
+   fi
+   tar --exclude rpmbuild --exclude build --exclude bin --exclude tools -zcf \
+      ./rpmbuild/SOURCES/${PACKAGE_NAME}-${VERSION}-${AGE}.${PLATFORM}.tar.gz .
+   if [ $? -ne 0 ]; then
+      echo ERROR
+      exit
+   fi
+   cd build
+   ../configure --prefix=${TMP_DIR}/usr --sysconfdir=${TMP_DIR}/etc --disable-static PVER=${VERSION}
+#fi
 if [ $? -ne 0 ]; then
    echo ERROR
    exit
@@ -30,7 +39,7 @@ if [ $? -ne 0 ]; then
    exit
 fi
 make install
-cp -r $TMP_DIR/* $STAGE_DIR
+export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$TMP_DIR/$LOCAL_PKGCFG_LIB
 if [ $? -ne 0 ]; then
    echo ERROR
    exit
@@ -48,30 +57,7 @@ cd $BUILD_DIR/org.glite.wms
 
 create_rpm()
 {
-COMPONENT=$1
-VERSION=$2
-AGE=$3
-PACKAGE_NAME=$4
-TMP_DIR=$5
-cd $COMPONENT
-${BUILD_DIR}/org.glite.wms/emi-jobman-rpm-tool --init --pkgname ${PACKAGE_NAME} --version ${VERSION}-${AGE} --distro $PLATFORM
-if [ $? -ne 0 ]; then
-   echo ERROR
-   exit
-fi
-./install.sh ${TMP_DIR} ${VERSION}
-if [ $? -ne 0 ]; then
-   echo ERROR
-   exit
-fi
-${BUILD_DIR}/org.glite.wms/emi-jobman-rpm-tool --pack --pkgname ${PACKAGE_NAME} \
-	--version ${VERSION}-${AGE} --distro $PLATFORM --localdir ${TMP_DIR} \
-	--specfile ./project/${PACKAGE_NAME}_noarch.spec
-if [ $? -ne 0 ]; then
-   echo ERROR
-   exit
-fi
-cd $BUILD_DIR/org.glite.wms
+   echo TODO
 }
 
 cmake_build()
@@ -99,7 +85,7 @@ get_external_deps()
       glite-wms-utils-exception glite-wms-utils-classad \
       glite-wms-utils-exception-devel glite-wms-utils-classad-devel \
       chrpath cppunit-devel glite-jdl-api-cpp-devel glite-lb-client-devel \
-      glite-lbjp-common-gsoap-plugin-devel condor-emi
+      glite-lbjp-common-gsoap-plugin-devel condor-emi glite-ce-cream-client-api-c
 }
 
 if [ -z $6 ]; then
@@ -142,31 +128,34 @@ else
    cd "$BUILD_DIR"/org.glite.wms
    echo -e "\n*** NOT checking out the WMS project ***\n"
 fi
+mkdir -p $STAGE_DIR/$LOCAL_PKGCFG_LIB
+cp org.glite.wms/project/emi-condorg.pc $STAGE_DIR/$LOCAL_PKGCFG_LIB
+export PKG_CONFIG_PATH=$STAGE_DIR/$LOCAL_PKGCFG_LIB
 
 echo -e "\n*** starting build ***\n"
 
 COMPONENT[0]=org.glite.wms.common
 COMPONENT[1]=org.glite.wms.ism
 COMPONENT[2]=org.glite.wms.helper
-COMPONENT[3]=org.glite.wms.manager
+COMPONENT[3]=org.glite.wms.purger
 COMPONENT[4]=org.glite.wms.jobsubmission
 COMPONENT[5]=org.glite.wms.ice
-COMPONENT[6]=org.glite.wms.purger
+COMPONENT[6]=org.glite.wms.manager
 COMPONENT[7]=org.glite.wms.wmproxy
 
 PACKAGE_NAME[0]=glite-wms-common
 PACKAGE_NAME[1]=glite-wms-ism
-PACKAGE_NAME[2]=glite-wms-helper
-PACKAGE_NAME[3]=glite-wms-manager
+PACKAGE_NAME[3]=glite-wms-helper
+PACKAGE_NAME[2]=glite-wms-purger
 PACKAGE_NAME[4]=glite-wms-jobsubmission
 PACKAGE_NAME[5]=glite-wms-ice
-PACKAGE_NAME[6]=glite-wms-purger
+PACKAGE_NAME[6]=glite-wms-manager
 PACKAGE_NAME[7]=glite-wms-wmproxy
 
 VERSION[0]=3.5.0
 VERSION[1]=3.5.0
 VERSION[2]=3.5.0
-VERSION[3]=3.5.0 # manager
+VERSION[3]=3.5.0 # purger
 VERSION[4]=3.5.0 # jobsubmission
 VERSION[5]=3.5.0
 VERSION[6]=3.5.0
@@ -175,7 +164,7 @@ VERSION[7]=3.5.0
 AGE[0]=0
 AGE[1]=0
 AGE[2]=0
-AGE[3]=0 # manager
+AGE[3]=0 # purger
 AGE[4]=0 # jobsubmission
 AGE[5]=0
 AGE[6]=0
