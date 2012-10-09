@@ -1,0 +1,22 @@
+Probes for (gLite) Grid services. To be used with Nagios.
+
+Grid services covered:
+- WMS
+
+The code is written in Python and uses 'gridmon' Python package, which is
+provided by python-GridMon > v1.1.1 RPM.
+
+For documentation on probes/metrics please see the following resources.
+
+How to
+ * invoke and configure for Nagios org.sam probes/metrics (old documentation)
+https://tomtools.cern.ch/confluence/display/SAM/Probes+org.sam
+
+ * wms probes/metric description and installation 
+http://wiki.italiangrid.org/twiki/bin/view/WMS/WmsProbe
+
+
+16 September 2011
+Alessio Gianelle - INFN
+<gianelle@pd.infn.it>
+

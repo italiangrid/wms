@@ -1,0 +1,11 @@
+[
+Type="Job";
+JobType="Normal";
+Executable = "<jdlExecutable>";
+StdError = "gridjob.out";
+StdOutput = "gridjob.out";
+OutputSandbox = {"gridjob.out"};
+RetryCount = <jdlRetryCount>;
+ShallowRetryCount = <jdlShallowRetryCount>;
+Requirements = <jdlReqCEInfoHostName>;
+]

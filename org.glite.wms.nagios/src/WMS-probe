@@ -1,0 +1,58 @@
+#!/usr/bin/env python
+##############################################################################
+#
+# NAME:        WMS-probe
+#
+# COPYRIGHT:
+#         Copyright (c) 2009-2011, Members of the EGEE Collaboration.
+#         http://www.eu-egee.org/partners/
+#         Licensed under the Apache License, Version 2.0.
+#         http://www.apache.org/licenses/LICENSE-2.0
+#         This software is provided "as is", without warranties
+#         or conditions of any kind, either express or implied.
+#
+# DESCRIPTION:
+#
+#         WMS probe.
+#
+# AUTHORS:     Konstantin Skaburskas, CERN
+#              Alessio Gianelle, INFN 
+#
+# CREATED:     01-Oct-2009
+#
+# NOTES:
+#
+# MODIFIED:
+#    2011-09-15 : Alessio Gianelle
+#         - porting to EMI
+#    2009-12-07 : Konstantin Skaburskas
+#         - using 'gridmon' and 'gridmetrics' packages after merging 
+#           'gridmonsam' with 'gridmon'
+##############################################################################
+
+"""
+WMS probe.
+
+WMS probe.
+
+Konstantin Skaburskas <konstantin.skaburskas@cern.ch>, CERN
+Alessio Gianelle <gianelle@pd.infn.it>, INFN
+"""
+
+import sys
+
+try:
+    from gridmon import probe
+    from wmsmetrics.WmsMetrics import WMSGenericMetrics as WMS
+except ImportError,e:
+    summary = "UNKNOWN: Error loading modules : %s" % (e)
+    sys.stdout.write(summary+'\n')
+    sys.stdout.write(summary+'\nsys.path: %s\n'% str(sys.path))
+    sys.exit(3)    
+
+class WMSMetrics(WMS):
+    def __init__(self, tuples):
+        WMS.__init__(self, tuples, 'WMS')
+
+runner = probe.Runner(WMSMetrics, probe.ProbeFormatRenderer())
+sys.exit(runner.run(sys.argv))
