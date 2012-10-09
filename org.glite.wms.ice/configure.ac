@@ -64,7 +64,7 @@ PKG_CHECK_MODULES(ARES, libcares, , AC_MSG_ERROR(["ARES not found"]))
 
 PKG_CHECK_MODULES(GLITE_JOBID, emi-jobid, ,AC_MSG_ERROR(["GLITE_JOBID not found"]))
 
-//PKG_CHECK_MODULES(GLITE_CREAM, cream-client-api-c, , AC_MSG_ERROR(["GLITE_CREAM not found"]))
+#PKG_CHECK_MODULES(GLITE_CREAM, cream-client-api-c, , AC_MSG_ERROR(["GLITE_CREAM not found"]))
 
 PKG_CHECK_MODULES(GSOAP, gsoapssl++, , AC_MSG_ERROR(["GSOAP not found"]))
 AC_GSOAP_EXTRAS

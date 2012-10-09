@@ -47,7 +47,7 @@ fi
 cd .. # from build to component root
 ${BUILD_DIR}/org.glite.wms/emi-jobman-rpm-tool --pack --pkgname ${PACKAGE_NAME} \
 	--version ${VERSION}-${AGE} --distro $PLATFORM --localdir ${TMP_DIR} \
-	--specfile ${BUILD_DIR}/org.glite.wms/$COMPONENT/project/${PACKAGE_NAME}_sl5_$ARCH.spec
+	--specfile ${BUILD_DIR}/org.glite.wms/$COMPONENT/project/${PACKAGE_NAME}.spec
 if [ $? -ne 0 ]; then
    echo ERROR
    exit
