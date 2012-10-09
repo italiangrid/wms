@@ -33,6 +33,7 @@ libglite_wms_iceCommands_la_SOURCES = \
 
 AM_CPPFLAGS = -I$(top_srcdir)/src \
 		$(VOMS_CFLAGS) \
+		$(GLITE_WMS_COMMON_CONF_CFLAGS) \
 		$(LOG4CPP_CFLAGS) \
 		$(CLASSAD_CFLAGS) \
 		$(GSOAP_CFLAGS) \
