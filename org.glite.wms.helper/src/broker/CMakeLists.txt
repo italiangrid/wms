@@ -1,6 +1,15 @@
-add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/src/broker/datalocationinterfaceClient.cpp ${PROJECT_SOURCE_DIR}/src/broker/datalocationinterfaceC.cpp DEPENDS ${PROJECT_SOURCE_DIR}/src/broker/datalocationinterface.h COMMAND soapcpp2 -I/usr/include -I/usr/include/gsoap -I/usr/share/gsoap/import -C -n -pdatalocationinterface ${PROJECT_SOURCE_DIR}/src/broker/datalocationinterface.h)
+add_custom_command(OUTPUT 
+  ${PROJECT_SOURCE_DIR}/src/broker/datalocationinterfaceClient.cpp 
+  ${PROJECT_SOURCE_DIR}/src/broker/datalocationinterfaceC.cpp 
+  DEPENDS 
+  ${PROJECT_SOURCE_DIR}/src/broker/datalocationinterface.h 
+  COMMAND soapcpp2 -I/usr/include -I/usr/include/gsoap -I/usr/share/gsoap/import -C -n -pdatalocationinterface ${PROJECT_SOURCE_DIR}/src/broker/datalocationinterface.h)
 
-add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/datalocationinterface.h DEPENDS ${PROJECT_SOURCE_DIR}/DataLocationInterface.wsdl COMMAND wsdl2h -t ${PROJECT_SOURCE_DIR}/catalogs_typemap.dat -o datalocationinterface.h ${PROJECT_SOURCE_DIR}/DataLocationInterface.wsdl)
+add_custom_command(OUTPUT 
+  ${PROJECT_SOURCE_DIR}/src/broker/datalocationinterface.h 
+  DEPENDS 
+  ${PROJECT_SOURCE_DIR}//src/broker/DataLocationInterface.wsdl 
+  COMMAND wsdl2h -t ${PROJECT_SOURCE_DIR}//src/broker/catalogs_typemap.dat -o datalocationinterface.h ${PROJECT_SOURCE_DIR}//src/broker/DataLocationInterface.wsdl)
 
 add_custom_target(GENSRC ALL DEPENDS ${PROJECT_SOURCE_DIR}/src/broker/datalocationinterfaceC.cpp ${PROJECT_SOURCE_DIR}/src/broker/datalocationinterfaceClient.cpp)
 
