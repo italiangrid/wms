@@ -6,5 +6,5 @@ includedir=@OFFICIAL_INSTALL_PREFIX@/include
 Name: WMS JobMan Exception Utils
 Description: WMS JOBMAN EXCEPTION UTILS
 Version: @PVER@
-Libs: -lglite_wmsutils_exception
+Libs: -L${libdir} -lglite_wmsutils_exception
 Cflags: -I${includedir} -I${includedir}/glite/wmsutils
