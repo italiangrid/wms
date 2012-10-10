@@ -1,0 +1,11 @@
+prefix=/usr
+exec_prefix=/usr
+libdir=/usr/lib64
+includedir=/usr/include
+
+Name: classad with namespaces
+Description: classad with namespaces support
+Version: 1.0
+Libs: -L/usr/lib64 -lclassad_ns
+Cflags: -I/usr/include -I/usr/include/classad -DWANT_NAMESPACES -DWANT_CLASSAD_NAMESPACE
+
