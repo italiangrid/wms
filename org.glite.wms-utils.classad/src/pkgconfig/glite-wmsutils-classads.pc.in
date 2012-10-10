@@ -6,5 +6,5 @@ includedir=@OFFICIAL_INSTALL_PREFIX@/include
 Name: WMS ClassADs Utils
 Description: WMS CLASSADS UTILS
 Version: @PVER@
-Libs: -lglite_wmsutils_classads
+Libs: -L@OFFICIAL_INSTALL_PREFIX@/@LIBDIR@ -lglite_wmsutils_classads
 Cflags: -I${includedir} -I${includedir}/glite/wmsutils
