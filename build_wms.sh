@@ -191,11 +191,6 @@ fi
 
 #wget --no-check-certificate https://github.com/MarcoCecchi/org.glite.wms.git/build_wms.sh -o build_wms.sh
 BUILD_DIR=`pwd`/$1
-if [ -d "/usr/lib64/" ]; then
-   LOCAL_PKGCFG_LIB=usr/lib64/pkgconfig/
-else
-   LOCAL_PKGCFG_LIB=usr/lib/pkgconfig/
-fi
 EMI_RELEASE=$2
 PLATFORM=$3
 # TODO
@@ -223,9 +218,6 @@ else
    cd "$BUILD_DIR"/org.glite.wms
    echo -e "\n*** NOT checking out the WMS project ***\n"
 fi
-mkdir -p $STAGE_DIR/$LOCAL_PKGCFG_LIB
-cp org.glite.wms/project/emi-condorg.pc $STAGE_DIR/$LOCAL_PKGCFG_LIB
-export PKG_CONFIG_PATH=$STAGE_DIR/$LOCAL_PKGCFG_LIB
 
 echo -e "\n*** starting build ***\n"
 
@@ -237,6 +229,12 @@ AGE=( 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 )
 START=0
 END=15
 
+export PKG_CONFIG_PATH=$BUILD_DIR/org.glite.wms/org.glite.wms/project/ # for condor-g.pc and maybe others
+if [ -d /usr/lib64 ]; then
+   LOCAL_PKGCFG_LIB=usr/lib64/pkgconfig/
+else
+   LOCAL_PKGCFG_LIB=usr/lib/pkgconfig/
+fi
 for i in `seq 0 $((START - 1))`; do
    STAGE="$BUILD_DIR/org.glite.wms/${COMPONENT[$i]}/stage"
    export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$STAGE/$LOCAL_PKGCFG_LIB
@@ -253,7 +251,6 @@ for i in `seq $START $END`; do
    fi
 
    STAGE="$BUILD_DIR/org.glite.wms/${COMPONENT[$i]}/stage"
-   export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$STAGE/$LOCAL_PKGCFG_LIB
    case ${BUILD_TYPE[$i]} in
      "autotools" )
          autotools_build ${COMPONENT[$i]} ${VERSION[$i]} ${AGE[$i]} ${PACKAGE_NAME[$i]} $STAGE
@@ -278,4 +275,5 @@ for i in `seq $START $END`; do
          exit
          ;;
    esac
+   export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$STAGE/$LOCAL_PKGCFG_LIB
 done
