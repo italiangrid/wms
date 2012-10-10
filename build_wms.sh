@@ -54,14 +54,8 @@ autotools_build()
    mkdir -p ${LOCAL_STAGE_DIR}/usr/share/doc/${PACKAGE_NAME}
    cp -r autodoc/html ${LOCAL_STAGE_DIR}/usr/share/doc/${PACKAGE_NAME} 2>/dev/null # needed by some UI component
    cd .. # from build to component root
-   # set the .spec vars and run rpmbuild
-   ${BUILD_DIR}/org.glite.wms/emi-jobman-rpm-tool --pack --pkgname ${PACKAGE_NAME} \
-	--version ${VERSION}-${AGE} --distro $PLATFORM --localdir ${LOCAL_STAGE_DIR} \
-	--specfile ${BUILD_DIR}/org.glite.wms/$COMPONENT/project/${PACKAGE_NAME}.spec
-   if [ $? -ne 0 ]; then
-      echo ERROR
-      exit
-   fi
+   # PACKAGING: set the .spec vars and run rpmbuild
+   rpm_package $VERSION $AGE $PLATFORM $PACKAGE_NAME $COMPONENT $LOCAL_STAGE_DIR
    cd $BUILD_DIR/org.glite.wms
 }
 
@@ -103,13 +97,7 @@ ant_build()
       echo ERROR
       exit
    fi
-   ${BUILD_DIR}/org.glite.wms/emi-jobman-rpm-tool --pack --pkgname ${PACKAGE_NAME} \
-	--version ${VERSION}-${AGE} --distro $PLATFORM --localdir ${LOCAL_STAGE_DIR} \
-	--specfile ${BUILD_DIR}/org.glite.wms/$COMPONENT/project/${PACKAGE_NAME}.spec
-   if [ $? -ne 0 ]; then
-      echo ERROR
-      exit
-   fi
+   rpm_package $VERSION $AGE $PLATFORM $PACKAGE_NAME $COMPONENT $LOCAL_STAGE_DIR
    cd $BUILD_DIR/org.glite.wms
 }
 
@@ -131,13 +119,7 @@ python_build()
    fi
    printf "[global] pkgversion=${version} " > setup.cfg 2>/dev/null
    python setup.py install -O1 --prefix ${LOCAL_STAGE_DIR}/usr --install-data ${LOCAL_STAGE_DIR}
-   ${BUILD_DIR}/org.glite.wms/emi-jobman-rpm-tool --pack --pkgname ${PACKAGE_NAME} \
-	--version ${VERSION}-${AGE} --distro $PLATFORM --localdir ${LOCAL_STAGE_DIR} \
-	--specfile ${BUILD_DIR}/org.glite.wms/$COMPONENT/project/${PACKAGE_NAME}.spec
-   if [ $? -ne 0 ]; then
-      echo ERROR
-      exit
-   fi
+   rpm_package $VERSION $AGE $PLATFORM $PACKAGE_NAME $COMPONENT $LOCAL_STAGE_DIR
    cd $BUILD_DIR/org.glite.wms
 }
 
@@ -167,9 +149,28 @@ no_build()
    cd $BUILD_DIR/org.glite.wms
 }
 
-rpmlint()
+rpm_package()
 {
-   /usr/bin/rpmlint --file=/usr/share/rpmlint/config -i $1
+   VERSION=$1
+   AGE=$2
+   PLATFORM=$3
+   PACKAGE_NAME=$4
+   COMPONENT=$5
+   LOCAL_STAGE_DIR=$6
+
+   eval "sed -e 's/%{extversion}/$VERSION/g' -e 's/%{extage}/$AGE/g' \
+      -e 's/%{extdist}/$PLATFORM/g' -e 's/%{extcdate}/`date +'%a %b %d %Y'`/g' \
+      -e 's/%{extclog}/Bug fixing/g' \
+      < project/$PACKAGE_NAME.spec > rpmbuild/SPECS/${PACKAGE_NAME}.spec"
+   rpmbuild -ba --define "_topdir ${BUILD_DIR}/org.glite.wms/$COMPONENT/rpmbuild" \
+      --define "extbuilddir $LOCAL_STAGE_DIR" \
+      rpmbuild/SPECS/${PACKAGE_NAME}.spec
+   if [ $? -ne 0 ]; then
+      echo ERROR
+      exit
+   fi
+   /usr/bin/rpmlint --file=/usr/share/rpmlint/config -i rpmbuild/RPMS/$ARCH/*
+   /usr/bin/rpmlint --file=/usr/share/rpmlint/config -i rpmbuild/SRPMS/*
 }
 
 get_external_deps()
@@ -238,8 +239,8 @@ BUILD_TYPE=( autotools autotools autotools autotools autotools autotools autotoo
 PACKAGE_NAME=( glite-wms-common glite-wms-ism glite-wms-helper glite-wms-purger glite-wms-jobsubmission glite-wms-manager glite-wms-wmproxy glite-wms-ice emi-wms-nagios emi-wms glite-wms-brokerinfo-access glite-wms-wmproxy-api-cpp glite-wms-wmproxy-api-java glite-wms-wmproxy-api-python glite-wms-ui-api-python glite-wms-ui-commands )
 VERSION=( 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 )
 AGE=( 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 )
-START=15
-END=15
+START=1
+END=1
 
 export PKG_CONFIG_PATH=$BUILD_DIR/org.glite.wms/org.glite.wms/project/ # for condor-g.pc and maybe others
 if [ -d /usr/lib64 ]; then
@@ -258,7 +259,7 @@ for i in `seq $START $END`; do
       cd "$BUILD_DIR/org.glite.wms/${COMPONENT[$i]}"
       echo -e "\n*** cleaning up ${COMPONENT[$i]} ***\n"
       make -C build clean 2>/dev/null
-      rm -rf rpmbuild tgz RPMS 2>/dev/null
+      rm -rf rpmbuild RPMS 2>/dev/null
       continue
    fi
 
@@ -287,6 +288,10 @@ for i in `seq $START $END`; do
          exit
          ;;
    esac
+
    # mock_build src.rpm TODO
+
+   # the rpm cannot be created from a common stage dir, so why
+   # should we have one at all? each 'tmp' dir can be that one
    export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$STAGE/$LOCAL_PKGCFG_LIB
 done
