@@ -52,7 +52,9 @@ def pack(options, extras):
     cDate = date.today().strftime('%a %b %d %Y')
     
     inSpecFile = open(os.path.abspath(options['specfile']))
+    print inSpecFile
     outSpecFile = open(specName, 'w+')
+    print outSpecFile
     for line in inSpecFile:
         tmps = line.replace('%{extversion}', rpmVer)
         tmps = tmps.replace('%{extage}', rpmAge)
@@ -74,6 +76,7 @@ def pack(options, extras):
     #rpmDefs += ' --define "extclog %s"' % options.get('clog', 'Major bugs fixed');
     
     cmdString = 'rpmbuild -ba %s %s' % (rpmDefs, specName)
+    print cmdString
     pProcess = subprocess.Popen(shlex.split(cmdString))
     if pProcess.wait() <> os.EX_OK:
         print "Cannot create packages"
@@ -83,6 +86,7 @@ def pack(options, extras):
     if not os.path.exists(rpmPubLink):
         os.makedirs(rpmPubLink)
 
+    print cFiles
     for artifactsDir in [ rpmDestDir, srpmDestDir ]:
         walkRes = os.walk(artifactsDir)
         for (wDir, cDirs, cFiles) in walkRes:
