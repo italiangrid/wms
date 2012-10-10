@@ -51,6 +51,8 @@ autotools_build()
       echo ERROR
       exit
    fi
+   mkdir -p ${LOCAL_STAGE_DIR}/usr/share/doc/${PACKAGE_NAME}
+   cp -r autodoc/html ${LOCAL_STAGE_DIR}/usr/share/doc/${PACKAGE_NAME} 2>/dev/null # needed by some UI component
    cd .. # from build to component root
    # set the .spec vars and run rpmbuild
    ${BUILD_DIR}/org.glite.wms/emi-jobman-rpm-tool --pack --pkgname ${PACKAGE_NAME} \
@@ -92,7 +94,15 @@ ant_build()
    fi
    printf "dist.location=${LOCAL_STAGE_DIR} stage.location=${STAGE_DIR} module.version=${VERSION}" > .configuration.properties
    ant
+   if [ $? -ne 0 ]; then
+      echo ERROR
+      exit
+   fi
    ant install
+   if [ $? -ne 0 ]; then
+      echo ERROR
+      exit
+   fi
    ${BUILD_DIR}/org.glite.wms/emi-jobman-rpm-tool --pack --pkgname ${PACKAGE_NAME} \
 	--version ${VERSION}-${AGE} --distro $PLATFORM --localdir ${LOCAL_STAGE_DIR} \
 	--specfile ${BUILD_DIR}/org.glite.wms/$COMPONENT/project/${PACKAGE_NAME}.spec
@@ -165,6 +175,7 @@ rpmlint()
 get_external_deps()
 {
    sudo chkconfig --level 0123456 yum-autoupdate off
+   # sudo usermod -a -G mock mcecchi && newgrp mock # mock user and group TODO get user from cmdline
    sudo /etc/init.d/yum-autoupdate stop
    echo installing external dependencies
    wget http://emisoft.web.cern.ch/emisoft/dist/EMI/$EMI_RELEASE/RPM-GPG-KEY-emi
@@ -172,16 +183,17 @@ get_external_deps()
    sudo yum -y install yum-priorities
    wget "http://emisoft.web.cern.ch/emisoft/dist/EMI/$EMI_RELEASE/sl6/x86_64/base/emi-release-${EMI_RELEASE}.0.0-1.$PLATFORM.noarch.rpm"
    sudo rpm -ivh "emi-release-${EMI_RELEASE}.0.0-1.$PLATFORM.noarch.rpm"
-   sudo yum -y install rpmlint mod_fcgid mod_ssl gridsite-apache httpd-devel zlib-devel \
-      boost-devel c-ares-devel glite-px-proxyrenewal-devel voms-devel voms-clients \
-      argus-pep-api-c-devel lcmaps-without-gsi-devel lcmaps-devel classads-devel \
-      glite-build-common-cpp gsoap-devel libtar-devel cmake globus-ftp-client \
-      globus-ftp-client-devel log4cpp-devel log4cpp glite-jobid-api-c \
+   sudo yum -y install mock rpmlint mod_fcgid mod_ssl axis2 gridsite-apache httpd-devel \
+      zlib-devel boost-devel c-ares-devel glite-px-proxyrenewal-devel voms-devel \
+      voms-clients argus-pep-api-c-devel lcmaps-without-gsi-devel lcmaps-devel \
+      classads-devel glite-build-common-cpp gsoap-devel libtar-devel cmake \
+      globus-ftp-client globus-ftp-client-devel log4cpp-devel log4cpp glite-jobid-api-c \
       glite-jobid-api-c-devel glite-jobid-api-cpp-devel openldap-devel python-ldap \
       glite-wms-utils-exception glite-wms-utils-classad \
       glite-wms-utils-exception-devel glite-wms-utils-classad-devel \
       chrpath cppunit-devel glite-jdl-api-cpp-devel glite-lb-client-devel \
-      glite-lbjp-common-gsoap-plugin-devel condor-emi glite-ce-cream-client-api-c glite-ce-cream-client-devel
+      glite-lbjp-common-gsoap-plugin-devel condor-emi glite-ce-cream-client-api-c \
+      glite-ce-cream-client-devel
 }
 
 if [ -z $6 ]; then
@@ -226,7 +238,7 @@ BUILD_TYPE=( autotools autotools autotools autotools autotools autotools autotoo
 PACKAGE_NAME=( glite-wms-common glite-wms-ism glite-wms-helper glite-wms-purger glite-wms-jobsubmission glite-wms-manager glite-wms-wmproxy glite-wms-ice emi-wms-nagios emi-wms glite-wms-brokerinfo-access glite-wms-wmproxy-api-cpp glite-wms-wmproxy-api-java glite-wms-wmproxy-api-python glite-wms-ui-api-python glite-wms-ui-commands )
 VERSION=( 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 )
 AGE=( 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 )
-START=0
+START=15
 END=15
 
 export PKG_CONFIG_PATH=$BUILD_DIR/org.glite.wms/org.glite.wms/project/ # for condor-g.pc and maybe others
@@ -256,7 +268,7 @@ for i in `seq $START $END`; do
          autotools_build ${COMPONENT[$i]} ${VERSION[$i]} ${AGE[$i]} ${PACKAGE_NAME[$i]} $STAGE
          ;;
      "cmake" )
-         ant_build ${COMPONENT[$i]} ${VERSION[$i]} ${AGE[$i]} ${PACKAGE_NAME[$i]} $STAGE
+         cmake_build ${COMPONENT[$i]} ${VERSION[$i]} ${AGE[$i]} ${PACKAGE_NAME[$i]} $STAGE
          ;;
      "ant" )
          ant_build ${COMPONENT[$i]} ${VERSION[$i]} ${AGE[$i]} ${PACKAGE_NAME[$i]} $STAGE
@@ -275,5 +287,6 @@ for i in `seq $START $END`; do
          exit
          ;;
    esac
+   # mock_build src.rpm TODO
    export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$STAGE/$LOCAL_PKGCFG_LIB
 done

@@ -86,11 +86,11 @@ def pack(options, extras):
     if not os.path.exists(rpmPubLink):
         os.makedirs(rpmPubLink)
 
-    print cFiles
     for artifactsDir in [ rpmDestDir, srpmDestDir ]:
         walkRes = os.walk(artifactsDir)
         for (wDir, cDirs, cFiles) in walkRes:
             for cFile in cFiles:
+                print cFile
                 targetFile = os.path.join(rpmPubLink, cFile)
                 if os.path.exists(targetFile):
                     os.remove(targetFile)
