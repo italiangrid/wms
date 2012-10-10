@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 autotools_build()
 {
@@ -10,6 +10,7 @@ autotools_build()
 
    cd $COMPONENT
    mkdir -p build src/autogen rpmbuild/SOURCES rpmbuild/SPECS rpmbuild/SRPMS rpmbuild/BUILD rpmbuild/RPMS 2>/dev/null
+   cp -R $BUILD_DIR/org.glite.wms/org.glite.wms-ui/doxygen project/doxygen 2>/dev/null # needed by some UI component
    aclocal -I ${M4_LOCATION} && \
 	libtoolize --force && autoheader && automake --foreign --add-missing --copy && \
 	autoconf
@@ -17,11 +18,16 @@ autotools_build()
       echo ERROR
       exit
    fi
-   if [ $COMPONENT = "org.glite.wms.wmproxy" ]; then # this is only for wmproxy. TODO remove
-      ln -sf "$BUILD_DIR/org.glite.wms/org.glite.wms.wmproxy/src/server/stdsoap2-2_7_16.cpp" \
-         "$BUILD_DIR/org.glite.wms/org.glite.wms.wmproxy/src/server/stdsoap2.cpp" 2>/dev/null
+   if [ $COMPONENT = "org.glite.wms.wmproxy" ]; then # TODO hack required to integrate not os provided gsoap
+      if [ $PLATFORM = "sl6" ]; then
+         ln -sf "$BUILD_DIR/org.glite.wms/org.glite.wms.wmproxy/src/server/stdsoap2-2_7_16.cpp" \
+            "$BUILD_DIR/org.glite.wms/org.glite.wms.wmproxy/src/server/stdsoap2.cpp"
+      elif [ $PLATFORM = "sl5" ]; then 
+         ln -sf "$BUILD_DIR/org.glite.wms/org.glite.wms.wmproxy/src/server/stdsoap2-2_7_13.cpp" \
+            "$BUILD_DIR/org.glite.wms/org.glite.wms.wmproxy/src/server/stdsoap2.cpp"
+      fi
    fi
-   # create the source tarball
+   # create the source tarball before configure
    tar --exclude reports --exclude rpmbuild --exclude build --exclude bin --exclude tools -zcf \
       ./rpmbuild/SOURCES/${PACKAGE_NAME}-${VERSION}-${AGE}.${PLATFORM}.tar.gz .
    if [ $? -ne 0 ]; then
@@ -39,7 +45,7 @@ autotools_build()
       echo ERROR
       exit
    fi
-   make doxygen-doc >/dev/null 2>&1
+   make doxygen-doc >/dev/null 2>&1 # only needed by some UI component
    make install
    if [ $? -ne 0 ]; then
       echo ERROR
@@ -113,7 +119,7 @@ python_build()
       echo ERROR
       exit
    fi
-   printf "[global] pkgversion=${version} " > setup.cfg
+   printf "[global] pkgversion=${version} " > setup.cfg 2>/dev/null
    python setup.py install -O1 --prefix ${TMP_DIR}/usr --install-data ${TMP_DIR}
    ${BUILD_DIR}/org.glite.wms/emi-jobman-rpm-tool --pack --pkgname ${PACKAGE_NAME} \
 	--version ${VERSION}-${AGE} --distro $PLATFORM --localdir ${TMP_DIR} \
@@ -125,15 +131,35 @@ python_build()
    cd $BUILD_DIR/org.glite.wms
 }
 
-rpmbuild()
+no_build()
 {
    COMPONENT=$1
    VERSION=$2
    AGE=$3
    PACKAGE_NAME=$4
-   TMP_DIR=$5
    cd $COMPONENT
-   echo TODO
+   mkdir -p rpmbuild/SOURCES rpmbuild/SPECS rpmbuild/SRPMS rpmbuild/BUILD rpmbuild/RPMS 2>/dev/null
+   # creating binary tarball
+   tar --exclude project --exclude rpmbuild \
+      -czf rpmbuild/SOURCES/${PACKAGE_NAME}-$VERSION-$AGE.tar.gz *
+   if [ $? -ne 0 ]; then
+     echo ERROR
+     exit
+   fi
+   eval "sed -e 's/__version__/$VERSION/g' -e 's/__release__/$AGE/g' \
+      < project/$PACKAGE_NAME.spec.in > project/$PACKAGE_NAME.spec"
+   rpmbuild -bb --target $ARCH --define "_topdir $BUILD_DIR/org.glite.wms/$COMPONENT/rpmbuild" \
+      project/$PACKAGE_NAME.spec
+   if [ $? -ne 0 ]; then
+     echo ERROR
+     exit
+   fi
+   cd $BUILD_DIR/org.glite.wms
+}
+
+rpmlint()
+{
+   /usr/bin/rpmlint --file=/usr/share/rpmlint/config -i $1
 }
 
 get_external_deps()
@@ -146,13 +172,12 @@ get_external_deps()
    sudo yum -y install yum-priorities
    wget "http://emisoft.web.cern.ch/emisoft/dist/EMI/$EMI_RELEASE/sl6/x86_64/base/emi-release-${EMI_RELEASE}.0.0-1.$PLATFORM.noarch.rpm"
    sudo rpm -ivh "emi-release-${EMI_RELEASE}.0.0-1.$PLATFORM.noarch.rpm"
-   sudo rpm -e --nodeps c-ares-1.7.0-6.el6.x86_64
    sudo yum -y install rpmlint mod_fcgid mod_ssl gridsite-apache httpd-devel zlib-devel \
       boost-devel c-ares-devel glite-px-proxyrenewal-devel voms-devel voms-clients \
       argus-pep-api-c-devel lcmaps-without-gsi-devel lcmaps-devel classads-devel \
       glite-build-common-cpp gsoap-devel libtar-devel cmake globus-ftp-client \
       globus-ftp-client-devel log4cpp-devel log4cpp glite-jobid-api-c \
-      glite-jobid-api-c-devel glite-jobid-api-cpp-devel openldap-devel \
+      glite-jobid-api-c-devel glite-jobid-api-cpp-devel openldap-devel python-ldap \
       glite-wms-utils-exception glite-wms-utils-classad \
       glite-wms-utils-exception-devel glite-wms-utils-classad-devel \
       chrpath cppunit-devel glite-jdl-api-cpp-devel glite-lb-client-devel \
@@ -160,7 +185,7 @@ get_external_deps()
 }
 
 if [ -z $6 ]; then
-   echo "wms <build-dir-name> <emi-release> <os> <want_external_deps> <want_vcs_checkout> <want_cleanup> (missing: <tag>)"
+   echo "wms <build-dir-name> <emi-release> <os> <want_external_deps> <want_vcs_checkout> <want_cleanup> (missing: <tag>)" # TODO tag
    exit
 fi
 
@@ -211,93 +236,12 @@ export PKG_CONFIG_PATH=$STAGE_DIR/$LOCAL_PKGCFG_LIB
 
 echo -e "\n*** starting build ***\n"
 
-COMPONENT[0]=org.glite.wms.common
-COMPONENT[1]=org.glite.wms.ism
-COMPONENT[2]=org.glite.wms.helper
-COMPONENT[3]=org.glite.wms.purger
-COMPONENT[4]=org.glite.wms.jobsubmission
-COMPONENT[5]=org.glite.wms.manager
-COMPONENT[6]=org.glite.wms.wmproxy
-COMPONENT[7]=org.glite.wms.ice
-COMPONENT[8]=org.glite.wms.nagios
-COMPONENT[9]=org.glite.wms.mp
-### WMS UI
-COMPONENT[10]=org.glite.wms.brokerinfo-access
-COMPONENT[11]=org.glite.wms.wmproxy-api-cpp
-COMPONENT[12]=org.glite.wms.wmproxy-api-java
-COMPONENT[13]=org.glite.wms.wmproxy-api-python
-COMPONENT[14]=org.glite.wms-ui.api-python
-COMPONENT[15]=org.glite.wms-ui.commands
-
-BUILD_TYPE[0]=autotools
-BUILD_TYPE[1]=autotools
-BUILD_TYPE[2]=autotools
-BUILD_TYPE[3]=autotools
-BUILD_TYPE[4]=autotools
-BUILD_TYPE[5]=autotools
-BUILD_TYPE[6]=autotools
-BUILD_TYPE[7]=autotools
-BUILD_TYPE[8]=pkg-only
-BUILD_TYPE[9]=pkg-only
-BUILD_TYPE[10]=autotools
-BUILD_TYPE[11]=autotools
-BUILD_TYPE[12]=ant
-BUILD_TYPE[13]=python
-BUILD_TYPE[14]=autotools # NOT python
-BUILD_TYPE[15]=autotools
-
-PACKAGE_NAME[0]=glite-wms-common
-PACKAGE_NAME[1]=glite-wms-ism
-PACKAGE_NAME[2]=glite-wms-helper
-PACKAGE_NAME[3]=glite-wms-purger
-PACKAGE_NAME[4]=glite-wms-jobsubmission
-PACKAGE_NAME[5]=glite-wms-manager
-PACKAGE_NAME[6]=glite-wms-wmproxy
-PACKAGE_NAME[7]=glite-wms-ice
-PACKAGE_NAME[8]=glite-wms-nagios
-PACKAGE_NAME[9]=glite-wms-mp
-PACKAGE_NAME[10]=glite-wms-brokerinfo-access
-PACKAGE_NAME[11]=glite-wms-wmproxy-api-cpp
-PACKAGE_NAME[12]=glite-wms-wmproxy-api-java
-PACKAGE_NAME[13]=glite-wms-wmproxy-api-python
-PACKAGE_NAME[14]=glite-wms-ui-api-python
-PACKAGE_NAME[15]=glite-wms-ui-commands
-
-VERSION[0]=3.5.0
-VERSION[1]=3.5.0
-VERSION[2]=3.5.0
-VERSION[3]=3.5.0 # purger
-VERSION[4]=3.5.0 # jobsubmission
-VERSION[5]=3.5.0
-VERSION[6]=3.5.0
-VERSION[7]=3.5.0 # ice
-VERSION[8]=3.5.0
-VERSION[9]=3.5.0
-VERSION[10]=3.5.0
-VERSION[11]=3.5.0
-VERSION[12]=3.5.0
-VERSION[13]=3.5.0
-VERSION[14]=3.5.0
-VERSION[15]=3.5.0
-
-AGE[0]=0
-AGE[1]=0
-AGE[2]=0
-AGE[3]=0 # purger
-AGE[4]=0 # jobsubmission
-AGE[5]=0
-AGE[6]=0
-AGE[7]=0 # ice
-AGE[8]=0
-AGE[9]=0
-AGE[10]=0
-AGE[11]=0
-AGE[12]=0
-AGE[13]=0
-AGE[14]=0
-AGE[15]=0
-
-START=6
+COMPONENT=( org.glite.wms.common org.glite.wms.ism org.glite.wms.helper org.glite.wms.purger org.glite.wms.jobsubmission org.glite.wms.manager org.glite.wms.wmproxy org.glite.wms.ice org.glite.wms.nagios org.glite.wms org.glite.wms.brokerinfo-access org.glite.wms.wmproxy-api-cpp org.glite.wms.wmproxy-api-java org.glite.wms.wmproxy-api-python org.glite.wms-ui.api-python org.glite.wms-ui.commands )
+BUILD_TYPE=( autotools autotools autotools autotools autotools autotools autotools autotools null pkg_only autotools autotools ant python autotools autotools )
+PACKAGE_NAME=( glite-wms-common glite-wms-ism glite-wms-helper glite-wms-purger glite-wms-jobsubmission glite-wms-manager glite-wms-wmproxy glite-wms-ice emi-wms-nagios emi-wms glite-wms-brokerinfo-access glite-wms-wmproxy-api-cpp glite-wms-wmproxy-api-java glite-wms-wmproxy-api-python glite-wms-ui-api-python glite-wms-ui-commands )
+VERSION=( 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 )
+AGE=( 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 )
+START=8
 END=15
 
 for i in `seq 0 $((START - 1))`; do
@@ -308,12 +252,11 @@ for i in `seq $START $END`; do
    echo -e "\n*** building component ${COMPONENT[$i]} ***\n"
    
    if [ $6 -ne 0 ]; then
-      cd ${COMPONENT[$i]}
-      echo "\n*** cleaning up ${COMPONENT[$i]} ***\n"
+      cd "$BUILD_DIR/org.glite.wms/${COMPONENT[$i]}"
+      echo -e "\n*** cleaning up ${COMPONENT[$i]} ***\n"
       make -C build clean 2>/dev/null
       rm -rf rpmbuild tgz RPMS 2>/dev/null
-      cd ..
-      exit
+      continue
    fi
 
    TEMP="$BUILD_DIR/org.glite.wms/${COMPONENT[$i]}/tmp"
@@ -331,8 +274,11 @@ for i in `seq $START $END`; do
      "python" )
          python_build ${COMPONENT[$i]} ${VERSION[$i]} ${AGE[$i]} ${PACKAGE_NAME[$i]} $TEMP
          ;;
-     "pkg-only" )
-         rpmbuild ${COMPONENT[$i]} ${VERSION[$i]} ${AGE[$i]} ${PACKAGE_NAME[$i]} $TEMP
+     "null" )
+         echo "Skipping  ${COMPONENT[$i]}"
+         ;;
+     "pkg_only" )
+         no_build ${COMPONENT[$i]} ${VERSION[$i]} ${AGE[$i]} ${PACKAGE_NAME[$i]}
          ;;
      * )
          echo "Build type not found for ${COMPONENT[$i]}"

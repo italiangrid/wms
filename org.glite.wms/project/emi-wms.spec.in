@@ -1,5 +1,5 @@
 Summary: Meta-package to install the WMS service
-Version: __version_
+Version: __version__
 Release: __release__
 Name: emi-wms
 License: Apache License 2.0
