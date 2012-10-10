@@ -1,12 +1,12 @@
-Summary: This is a dummy package used to install the WMS node
+Summary: Meta-package to install the WMS service
 Name: emi-wms
-Version: 1.0.2
-Release: 0.sl5
+Version: %{version}
+Release: %{release}
 License: Apache License 2.0
 Vendor: EMI
 Group: System Environment/Libraries
 Packager: ETICS
-BuildArch: x86_64
+BuildArch: noarch
 Requires: lcmaps-plugins-voms
 Requires: emi-version
 Requires: glite-wms-ice
@@ -31,27 +31,24 @@ Requires: glite-wms-jobsubmission
 Requires: glite-initscript-globus-gridftp
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 AutoReqProv: yes
-Source: emi-wms-1.0.2-0.tar.gz
+Source: emi-wms-%{version}-%{release}.tar.gz
 
 %description
-This is a dummy package used to install the WMS node
+Meta-package to install the WMS service
 
 %prep
- 
 
 %setup -c
 
 %install
  
- rm -rf %{buildroot}
- mkdir -p %{buildroot}
+rm -rf %{buildroot}
+mkdir -p %{buildroot}
 
 %clean
- 
 
 %files
 %defattr(-,root,root)
- 
 
 %changelog
  
