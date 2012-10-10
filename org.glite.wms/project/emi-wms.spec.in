@@ -1,7 +1,5 @@
 Summary: Meta-package to install the WMS service
 Name: emi-wms
-Version: %{version}
-Release: %{release}
 License: Apache License 2.0
 Vendor: EMI
 Group: System Environment/Libraries
