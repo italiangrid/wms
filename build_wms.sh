@@ -18,15 +18,7 @@ autotools_build()
       echo ERROR
       exit
    fi
-   if [ $COMPONENT = "org.glite.wms.wmproxy" ]; then # TODO hack required to integrate not os provided gsoap
-      if [ $PLATFORM = "sl6" ]; then
-         ln -sf "$BUILD_DIR/org.glite.wms/org.glite.wms.wmproxy/src/server/stdsoap2-2_7_16.cpp" \
-            "$BUILD_DIR/org.glite.wms/org.glite.wms.wmproxy/src/server/stdsoap2.cpp"
-      elif [ $PLATFORM = "sl5" ]; then 
-         ln -sf "$BUILD_DIR/org.glite.wms/org.glite.wms.wmproxy/src/server/stdsoap2-2_7_13.cpp" \
-            "$BUILD_DIR/org.glite.wms/org.glite.wms.wmproxy/src/server/stdsoap2.cpp"
-      fi
-   fi
+
    # create the source tarball before configure and make
    tar --exclude reports --exclude rpmbuild --exclude build --exclude bin --exclude tools -zcf \
       ./rpmbuild/SOURCES/${PACKAGE_NAME}-${VERSION}-${AGE}.${PLATFORM}.tar.gz .
@@ -67,6 +59,7 @@ cmake_build()
    LOCAL_STAGE_DIR=$5
    cd $COMPONENT
    echo TODO
+   cd $BUILD_DIR/org.glite.wms
 }
 
 ant_build()
@@ -238,8 +231,8 @@ BUILD_TYPE=( autotools autotools autotools autotools autotools autotools autotoo
 PACKAGE_NAME=( glite-wms-common glite-wms-ism glite-wms-helper glite-wms-purger glite-wms-jobsubmission glite-wms-manager glite-wms-wmproxy glite-wms-ice emi-wms-nagios emi-wms glite-wms-brokerinfo-access glite-wms-wmproxy-api-cpp glite-wms-wmproxy-api-java glite-wms-wmproxy-api-python glite-wms-ui-api-python glite-wms-ui-commands )
 VERSION=( 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 )
 AGE=( 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 )
-START=1
-END=1
+START=0
+END=3
 
 export PKG_CONFIG_PATH=$BUILD_DIR/org.glite.wms/org.glite.wms/project/ # for condor-g.pc and maybe others
 if [ -d /usr/lib64 ]; then
@@ -260,6 +253,17 @@ for i in `seq $START $END`; do
       make -C build clean 2>/dev/null
       rm -rf rpmbuild RPMS 2>/dev/null
       continue
+   fi
+
+   # TODO hack required to integrate not os provided gsoap
+   if [ ${COMPONENT[$i]} = "org.glite.wms.wmproxy" ]; then
+      if [ $PLATFORM = "sl6" ]; then
+         ln -sf "$BUILD_DIR/org.glite.wms/org.glite.wms.wmproxy/src/server/stdsoap2-2_7_16.cpp" \
+            "$BUILD_DIR/org.glite.wms/org.glite.wms.wmproxy/src/server/stdsoap2.cpp"
+      elif [ $PLATFORM = "sl5" ]; then 
+         ln -sf "$BUILD_DIR/org.glite.wms/org.glite.wms.wmproxy/src/server/stdsoap2-2_7_13.cpp" \
+            "$BUILD_DIR/org.glite.wms/org.glite.wms.wmproxy/src/server/stdsoap2.cpp"
+      fi
    fi
 
    STAGE="$BUILD_DIR/org.glite.wms/${COMPONENT[$i]}/stage"
