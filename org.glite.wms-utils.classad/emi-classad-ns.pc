@@ -1,11 +1,11 @@
-prefix=/usr
-exec_prefix=/usr
-libdir=/usr/lib64
-includedir=/usr/include
+prefix=@OFFICIAL_INSTALL_PREFIX@
+exec_prefix=@OFFICIAL_INSTALL_PREFIX@
+libdir=@OFFICIAL_INSTALL_PREFIX@/@LIBDIR@
+includedir=@OFFICIAL_INSTALL_PREFIX@/include
 
 Name: classad with namespaces
 Description: classad with namespaces support
 Version: 1.0
-Libs: -L/usr/lib64 -lclassad_ns
-Cflags: -I/usr/include -I/usr/include/classad -DWANT_NAMESPACES -DWANT_CLASSAD_NAMESPACE
+Libs: -L${libdir} -lclassad_ns
+Cflags: -I${includedir} -I${includedir}/classad -DWANT_NAMESPACES -DWANT_CLASSAD_NAMESPACE
 
