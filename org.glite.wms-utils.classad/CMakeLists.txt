@@ -20,14 +20,7 @@ set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Wall")
 set(ENV{PKG_CONFIG_PATH}
 "${PREFIX}/${LIBDIR}/pkgconfig/:$ENV{PKG_CONFIG_PATH}")
 
-install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/emi-classad-ns.pc
-        DESTINATION ${CMAKE_INSTALL_PREFIX}/${LIBDIR}/pkgconfig)
-
-
 set(CMAKE_INSTALL_PREFIX ${PREFIX})
-
-
-
 
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(CLASSAD emi-classad-ns)
