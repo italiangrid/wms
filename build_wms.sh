@@ -27,7 +27,7 @@ autotools_build()
             "$BUILD_DIR/org.glite.wms/org.glite.wms.wmproxy/src/server/stdsoap2.cpp"
       fi
    fi
-   # create the source tarball before configure
+   # create the source tarball before configure and make
    tar --exclude reports --exclude rpmbuild --exclude build --exclude bin --exclude tools -zcf \
       ./rpmbuild/SOURCES/${PACKAGE_NAME}-${VERSION}-${AGE}.${PLATFORM}.tar.gz .
    if [ $? -ne 0 ]; then
@@ -54,7 +54,6 @@ autotools_build()
    mkdir -p ${LOCAL_STAGE_DIR}/usr/share/doc/${PACKAGE_NAME}
    cp -r autodoc/html ${LOCAL_STAGE_DIR}/usr/share/doc/${PACKAGE_NAME} 2>/dev/null # needed by some UI component
    cd .. # from build to component root
-   # PACKAGING: set the .spec vars and run rpmbuild
    rpm_package $VERSION $AGE $PLATFORM $PACKAGE_NAME $COMPONENT $LOCAL_STAGE_DIR
    cd $BUILD_DIR/org.glite.wms
 }
