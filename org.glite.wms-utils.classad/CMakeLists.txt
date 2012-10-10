@@ -17,11 +17,14 @@ if(NOT DEFINED OFFICIAL_INSTALL_PREFIX)
 endif(NOT DEFINED OFFICIAL_INSTALL_PREFIX)
 
 set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Wall")
+set(ENV{PKG_CONFIG_PATH}
+"${PREFIX}/${LIBDIR}/pkgconfig/:$ENV{PKG_CONFIG_PATH}")
+
+set(CMAKE_INSTALL_PREFIX ${PREFIX})
 
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(CLASSAD emi-classad-ns)
 
-set(CMAKE_INSTALL_PREFIX ${PREFIX})
 add_definitions( -pipe -DWANT_NAMESPACES -DWANT_CLASSAD_NAMESPACE )
 
 add_subdirectory(src)
