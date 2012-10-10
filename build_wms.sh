@@ -6,11 +6,11 @@ autotools_build()
    VERSION=$2
    AGE=$3
    PACKAGE_NAME=$4
-   TMP_DIR=$5
+   LOCAL_STAGE_DIR=$5
 
    cd $COMPONENT
    mkdir -p build src/autogen rpmbuild/SOURCES rpmbuild/SPECS rpmbuild/SRPMS rpmbuild/BUILD rpmbuild/RPMS 2>/dev/null
-   cp -R $BUILD_DIR/org.glite.wms/org.glite.wms-ui/doxygen project/doxygen 2>/dev/null # needed by some UI component
+   cp -R $BUILD_DIR/org.glite.wms/org.glite.wms-ui/project/doxygen project/doxygen 2>/dev/null # needed by some UI component
    aclocal -I ${M4_LOCATION} && \
 	libtoolize --force && autoheader && automake --foreign --add-missing --copy && \
 	autoconf
@@ -35,7 +35,7 @@ autotools_build()
      exit
    fi
    cd build
-   ../configure --prefix=${TMP_DIR}/usr --sysconfdir=${TMP_DIR}/etc --disable-static PVER=${VERSION}
+   ../configure --prefix=${LOCAL_STAGE_DIR}/usr --sysconfdir=${LOCAL_STAGE_DIR}/etc --disable-static PVER=${VERSION}
    if [ $? -ne 0 ]; then
       echo ERROR
       exit
@@ -54,7 +54,7 @@ autotools_build()
    cd .. # from build to component root
    # set the .spec vars and run rpmbuild
    ${BUILD_DIR}/org.glite.wms/emi-jobman-rpm-tool --pack --pkgname ${PACKAGE_NAME} \
-	--version ${VERSION}-${AGE} --distro $PLATFORM --localdir ${TMP_DIR} \
+	--version ${VERSION}-${AGE} --distro $PLATFORM --localdir ${LOCAL_STAGE_DIR} \
 	--specfile ${BUILD_DIR}/org.glite.wms/$COMPONENT/project/${PACKAGE_NAME}.spec
    if [ $? -ne 0 ]; then
       echo ERROR
@@ -69,7 +69,7 @@ cmake_build()
    VERSION=$2
    AGE=$3
    PACKAGE_NAME=$4
-   TMP_DIR=$5
+   LOCAL_STAGE_DIR=$5
    cd $COMPONENT
    echo TODO
 }
@@ -80,7 +80,7 @@ ant_build()
    VERSION=$2
    AGE=$3
    PACKAGE_NAME=$4
-   TMP_DIR=$5
+   LOCAL_STAGE_DIR=$5
    cd $COMPONENT
    ant clean
    mkdir -p build src/autogen rpmbuild/SOURCES rpmbuild/SPECS rpmbuild/SRPMS rpmbuild/BUILD rpmbuild/RPMS 2>/dev/null
@@ -90,11 +90,11 @@ ant_build()
       echo ERROR
       exit
    fi
-   printf "dist.location=${TMP_DIR} stage.location=${STAGE_DIR} module.version=${VERSION}" > .configuration.properties
+   printf "dist.location=${LOCAL_STAGE_DIR} stage.location=${STAGE_DIR} module.version=${VERSION}" > .configuration.properties
    ant
    ant install
    ${BUILD_DIR}/org.glite.wms/emi-jobman-rpm-tool --pack --pkgname ${PACKAGE_NAME} \
-	--version ${VERSION}-${AGE} --distro $PLATFORM --localdir ${TMP_DIR} \
+	--version ${VERSION}-${AGE} --distro $PLATFORM --localdir ${LOCAL_STAGE_DIR} \
 	--specfile ${BUILD_DIR}/org.glite.wms/$COMPONENT/project/${PACKAGE_NAME}.spec
    if [ $? -ne 0 ]; then
       echo ERROR
@@ -109,7 +109,7 @@ python_build()
    VERSION=$2
    AGE=$3
    PACKAGE_NAME=$4
-   TMP_DIR=$5
+   LOCAL_STAGE_DIR=$5
    cd $COMPONENT
    python setup.py clean --all
    mkdir -p build src/autogen rpmbuild/SOURCES rpmbuild/SPECS rpmbuild/SRPMS rpmbuild/BUILD rpmbuild/RPMS 2>/dev/null
@@ -120,9 +120,9 @@ python_build()
       exit
    fi
    printf "[global] pkgversion=${version} " > setup.cfg 2>/dev/null
-   python setup.py install -O1 --prefix ${TMP_DIR}/usr --install-data ${TMP_DIR}
+   python setup.py install -O1 --prefix ${LOCAL_STAGE_DIR}/usr --install-data ${LOCAL_STAGE_DIR}
    ${BUILD_DIR}/org.glite.wms/emi-jobman-rpm-tool --pack --pkgname ${PACKAGE_NAME} \
-	--version ${VERSION}-${AGE} --distro $PLATFORM --localdir ${TMP_DIR} \
+	--version ${VERSION}-${AGE} --distro $PLATFORM --localdir ${LOCAL_STAGE_DIR} \
 	--specfile ${BUILD_DIR}/org.glite.wms/$COMPONENT/project/${PACKAGE_NAME}.spec
    if [ $? -ne 0 ]; then
       echo ERROR
@@ -191,13 +191,11 @@ fi
 
 #wget --no-check-certificate https://github.com/MarcoCecchi/org.glite.wms.git/build_wms.sh -o build_wms.sh
 BUILD_DIR=`pwd`/$1
-STAGE_DIR=$BUILD_DIR/org.glite.wms/stage
 if [ -d "/usr/lib64/" ]; then
    LOCAL_PKGCFG_LIB=usr/lib64/pkgconfig/
 else
    LOCAL_PKGCFG_LIB=usr/lib/pkgconfig/
 fi
-export PKG_CONFIG_PATH=$STAGE_DIR/$LOCAL_PKGCFG_LIB
 EMI_RELEASE=$2
 PLATFORM=$3
 # TODO
@@ -221,11 +219,6 @@ if [ $5 -ne 0 ]; then
    echo -e "\n*** checking out the WMS project ***\n"
    git clone --progress -v git@github.com:MarcoCecchi/org.glite.wms.git
    cd org.glite.wms
-   mkdir "$STAGE_DIR"
-   if [ $? -ne 0 ]; then
-      echo "ERROR"
-      exit
-   fi
 else
    cd "$BUILD_DIR"/org.glite.wms
    echo -e "\n*** NOT checking out the WMS project ***\n"
@@ -241,12 +234,12 @@ BUILD_TYPE=( autotools autotools autotools autotools autotools autotools autotoo
 PACKAGE_NAME=( glite-wms-common glite-wms-ism glite-wms-helper glite-wms-purger glite-wms-jobsubmission glite-wms-manager glite-wms-wmproxy glite-wms-ice emi-wms-nagios emi-wms glite-wms-brokerinfo-access glite-wms-wmproxy-api-cpp glite-wms-wmproxy-api-java glite-wms-wmproxy-api-python glite-wms-ui-api-python glite-wms-ui-commands )
 VERSION=( 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 )
 AGE=( 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 )
-START=8
+START=0
 END=15
 
 for i in `seq 0 $((START - 1))`; do
-   TEMP="$BUILD_DIR/org.glite.wms/${COMPONENT[$i]}/tmp"
-   export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$TEMP/$LOCAL_PKGCFG_LIB
+   STAGE="$BUILD_DIR/org.glite.wms/${COMPONENT[$i]}/stage"
+   export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$STAGE/$LOCAL_PKGCFG_LIB
 done
 for i in `seq $START $END`; do
    echo -e "\n*** building component ${COMPONENT[$i]} ***\n"
@@ -259,20 +252,20 @@ for i in `seq $START $END`; do
       continue
    fi
 
-   TEMP="$BUILD_DIR/org.glite.wms/${COMPONENT[$i]}/tmp"
-   export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$TEMP/$LOCAL_PKGCFG_LIB
+   STAGE="$BUILD_DIR/org.glite.wms/${COMPONENT[$i]}/stage"
+   export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$STAGE/$LOCAL_PKGCFG_LIB
    case ${BUILD_TYPE[$i]} in
      "autotools" )
-         autotools_build ${COMPONENT[$i]} ${VERSION[$i]} ${AGE[$i]} ${PACKAGE_NAME[$i]} $TEMP
+         autotools_build ${COMPONENT[$i]} ${VERSION[$i]} ${AGE[$i]} ${PACKAGE_NAME[$i]} $STAGE
          ;;
      "cmake" )
-         ant_build ${COMPONENT[$i]} ${VERSION[$i]} ${AGE[$i]} ${PACKAGE_NAME[$i]} $TEMP
+         ant_build ${COMPONENT[$i]} ${VERSION[$i]} ${AGE[$i]} ${PACKAGE_NAME[$i]} $STAGE
          ;;
      "ant" )
-         ant_build ${COMPONENT[$i]} ${VERSION[$i]} ${AGE[$i]} ${PACKAGE_NAME[$i]} $TEMP
+         ant_build ${COMPONENT[$i]} ${VERSION[$i]} ${AGE[$i]} ${PACKAGE_NAME[$i]} $STAGE
          ;;
      "python" )
-         python_build ${COMPONENT[$i]} ${VERSION[$i]} ${AGE[$i]} ${PACKAGE_NAME[$i]} $TEMP
+         python_build ${COMPONENT[$i]} ${VERSION[$i]} ${AGE[$i]} ${PACKAGE_NAME[$i]} $STAGE
          ;;
      "null" )
          echo "Skipping  ${COMPONENT[$i]}"
