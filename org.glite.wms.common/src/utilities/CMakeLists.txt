@@ -6,6 +6,8 @@ include_directories(${CLASSAD_INCLUDE_DIRS}
 		    ${WMSUTILS_CLASSADS_INCLUDE_DIRS}
 		    ${PROJECT_SOURCE_DIR}/src)
 
+link_directories(${CMAKE_INSTALL_PREFIX}/${LIBDIR})
+
 add_custom_target(UTILITIES DEPENDS boost_fs_add.cpp     FileListIterator.cpp
 glite-wms-eval_ad_expr.cpp  globus_ftp_get.cpp    input_reader.cpp
 lb_server.cpp             manipulation.cpp
@@ -23,20 +25,16 @@ jobdir_reader.cpp manipulation.cpp)
 
 set_target_properties(glite_wms_util PROPERTIES VERSION 0.0.0 SOVERSION 0)
 
-target_link_libraries(glite_wms_util 	${BOOST_LIBS}
-					${CLASSAD_LIBS}
-        				${GLITE_WMSUTILS_CLASSADS_LIBS}
-				        ${GLITE_JOBID_LIBS}
-					${CLASSAD_LIBRARIES})
 
 add_executable(glite-wms-quota-adjust glite_wms_quota_adjust.cpp)
 install(TARGETS glite-wms-quota-adjust
         DESTINATION ${CMAKE_INSTALL_PREFIX}/${BINDIR})
 
 target_link_libraries(glite-wms-quota-adjust 
+                                                ${WMSUTILS_CLASSADS_ALT_LIBRARIES}
+						${WMSUTILS_CLASSADS_LIBRARIES}
                                                 glite_wms_conf 
                                                 glite_wms_util 
-                                                glite_wmsutils_classads
                                                 glite_jobid
                                                 boost_regex 
                                                 boost_filesystem
@@ -50,9 +48,10 @@ install(TARGETS glite-wms-eval_ad_expr
 
 
 target_link_libraries(glite-wms-eval_ad_expr
+                                                ${WMSUTILS_CLASSADS_ALT_LIBRARIES}
+						${WMSUTILS_CLASSADS_LIBRARIES}
                                                 glite_wms_conf 
                                                 glite_wms_util 
-                                                glite_wmsutils_classads
                                                 glite_jobid
                                                 boost_regex 
                                                 boost_filesystem

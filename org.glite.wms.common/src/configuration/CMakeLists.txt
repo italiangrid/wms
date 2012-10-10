@@ -29,11 +29,15 @@ add_custom_target(GENCONF ALL DEPENDS ${PROJECT_SOURCE_DIR}/src/configuration/Co
 				      ${PROJECT_SOURCE_DIR}/src/configuration/WMConfiguration.h 
 				      ${PROJECT_SOURCE_DIR}/src/configuration/WMPConfiguration.h)
 
+link_directories(${CMAKE_INSTALL_PREFIX}/${LIBDIR})
 
 include_directories(${CLASSAD_INCLUDE_DIRS}
                     ${PROJECT_SOURCE_DIR}/interface
+                    ${CMAKE_INSTALL_PREFIX}/include
+                    ${WMSUTILS_CLASSADS_ALT_INCLUDE_DIRS}
+                    ${WMSUTILS_CLASSADS_INCLUDE_DIRS}
 		    ${PROJECT_SOURCE_DIR}/interface/glite/wms/common
-		    ${PROJECT_SOURCE_DIR}/src)
+                    ${PROJECT_SOURCE_DIR}/src)
 
 add_custom_target(CONF DEPENDS 
 			    	    CommonConfiguration.cpp
@@ -69,14 +73,7 @@ add_library(glite_wms_conf SHARED
 
 set_target_properties(glite_wms_conf PROPERTIES VERSION 0.0.0 SOVERSION 0)
 
-target_link_libraries(glite_wms_conf 	${BOOST_LIBS}
-					${CLASSAD_LIBS}
-					${GLITE_WMSUTILS_CLASSADS_LIBS}
-					${CLASSAD_LIBRARIES})
-
-#set_target_properties(glite_wms_iiattrutil PROPERTIES VERSION 0.0.0 SOVERSION 0)
-
-install(TARGETS glite_wms_conf #glite_wms_iiattrutil
+install(TARGETS glite_wms_conf 
         LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/${LIBDIR})
 
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/
