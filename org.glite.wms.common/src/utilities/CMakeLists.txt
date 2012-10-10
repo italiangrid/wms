@@ -1,6 +1,9 @@
 
 include_directories(${CLASSAD_INCLUDE_DIRS}
                     ${PROJECT_SOURCE_DIR}/interface
+		    ${CMAKE_INSTALL_PREFIX}/include
+		    ${WMSUTILS_CLASSADS_ALT_INCLUDE_DIRS}
+		    ${WMSUTILS_CLASSADS_INCLUDE_DIRS}
 		    ${PROJECT_SOURCE_DIR}/src)
 
 add_custom_target(UTILITIES DEPENDS boost_fs_add.cpp     FileListIterator.cpp
