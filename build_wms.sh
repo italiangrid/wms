@@ -9,7 +9,7 @@ autotools_build()
    LOCAL_STAGE_DIR=$5
 
    cd $COMPONENT
-   mkdir -p build src/autogen 2>/dev/null
+   mkdir -p build src/autogen rpmbuild/SOURCES 2>/dev/null
    cp -R $BUILD_DIR/org.glite.wms/org.glite.wms-ui/project/doxygen project/doxygen 2>/dev/null # needed by some UI component
    aclocal -I ${M4_LOCATION} && \
 	libtoolize --force && autoheader && automake --foreign --add-missing --copy && \
@@ -47,6 +47,7 @@ autotools_build()
    cp -r autodoc/html ${LOCAL_STAGE_DIR}/usr/share/doc/${PACKAGE_NAME} 2>/dev/null # needed by some UI component
    cd .. # from build to component root
    rpm_package $VERSION $AGE $PLATFORM $PACKAGE_NAME $COMPONENT $LOCAL_STAGE_DIR
+   mv ./rpmbuild/SOURCES/${PACKAGE_NAME}-${VERSION}-${AGE}.${PLATFORM}.tar.gz "$BUILD_DIR"/org.glite.wms/tgz
    cd $BUILD_DIR/org.glite.wms
 }
 
@@ -57,6 +58,7 @@ cmake_build()
    AGE=$3
    PACKAGE_NAME=$4
    LOCAL_STAGE_DIR=$5
+
    cd $COMPONENT
    echo TODO
    cd $BUILD_DIR/org.glite.wms
@@ -69,8 +71,9 @@ ant_build()
    AGE=$3
    PACKAGE_NAME=$4
    LOCAL_STAGE_DIR=$5
+
    cd $COMPONENT
-   mkdir -p lib bin autogen doc/autogen src/autogen ${LOCAL_STAGE_DIR}/usr/share/doc/
+   mkdir -p lib bin autogen doc/autogen src/autogen ${LOCAL_STAGE_DIR}/usr/share/doc/ rpmbuild/SOURCES
    tar --exclude rpmbuild --exclude ${LOCAL_STAGE_DIR} --exclude --exclude bin --exclude tools -zcf \
       ./rpmbuild/SOURCES/${PACKAGE_NAME}-${VERSION}-${AGE}.${PLATFORM}.tar.gz .
    if [ $? -ne 0 ]; then
@@ -91,6 +94,7 @@ ant_build()
       exit
    fi
    rpm_package $VERSION $AGE $PLATFORM $PACKAGE_NAME $COMPONENT $LOCAL_STAGE_DIR
+   mv ./rpmbuild/SOURCES/${PACKAGE_NAME}-${VERSION}-${AGE}.${PLATFORM}.tar.gz "$BUILD_DIR"/org.glite.wms/tgz
    cd $BUILD_DIR/org.glite.wms
 }
 
@@ -101,7 +105,9 @@ python_build()
    AGE=$3
    PACKAGE_NAME=$4
    LOCAL_STAGE_DIR=$5
+
    cd $COMPONENT
+   mkdir -p rpmbuild/SOURCES
    tar --exclude rpmbuild --exclude build --exclude bin --exclude tools -zcf \
       ./rpmbuild/SOURCES/${PACKAGE_NAME}-${VERSION}-${AGE}.${PLATFORM}.tar.gz .
    if [ $? -ne 0 ]; then
@@ -121,8 +127,9 @@ no_build()
    VERSION=$2
    AGE=$3
    PACKAGE_NAME=$4
+
    cd $COMPONENT
-   mkdir -p rpmbuild/SOURCES rpmbuild/SPECS rpmbuild/SRPMS rpmbuild/BUILD rpmbuild/RPMS 2>/dev/null
+   mkdir -p rpmbuild/SOURCES 2>/dev/null
    # creating binary tarball
    tar --exclude project --exclude rpmbuild \
       -czf rpmbuild/SOURCES/${PACKAGE_NAME}-$VERSION-$AGE.tar.gz *
@@ -150,13 +157,11 @@ rpm_package()
    COMPONENT=$5
    LOCAL_STAGE_DIR=$6
 
-set -x
-   mkdir rpmbuild/SOURCES rpmbuild/SPECS rpmbuild/SRPMS rpmbuild/BUILD rpmbuild/RPMS 2>/dev/null
+   mkdir rpmbuild/SPECS rpmbuild/SRPMS rpmbuild/BUILD rpmbuild/RPMS 2>/dev/null
    eval "sed -e 's/%{extversion}/$VERSION/g' -e 's/%{extage}/$AGE/g' \
       -e 's/%{extdist}/$PLATFORM/g' -e 's/%{extcdate}/`date +'%a %b %d %Y'`/g' \
       -e 's/%{extclog}/Bug fixing/g' \
       < project/$PACKAGE_NAME.spec > rpmbuild/SPECS/${PACKAGE_NAME}.spec"
-set +x
    rpmbuild -ba --define "_topdir ${BUILD_DIR}/org.glite.wms/$COMPONENT/rpmbuild" \
       --define "extbuilddir $LOCAL_STAGE_DIR" \
       rpmbuild/SPECS/${PACKAGE_NAME}.spec
@@ -164,20 +169,25 @@ set +x
       echo ERROR
       exit
    fi
+
    /usr/bin/rpmlint --file=/usr/share/rpmlint/config -i rpmbuild/RPMS/$ARCH/*
    /usr/bin/rpmlint --file=/usr/share/rpmlint/config -i rpmbuild/SRPMS/*
+
+   mv rpmbuild/RPMS/$ARCH/* "$BUILD_DIR"/org.glite.wms/RPMS
+   mv rpmbuild/SRPMS/* "$BUILD_DIR"/org.glite.wms/SRPMS
 }
 
 get_external_deps()
 {
-   sudo chkconfig --level 0123456 yum-autoupdate off
+   sudo chkconfig --level 0123456 yum-autoupdate off 2>/dev/null
    # sudo usermod -a -G mock mcecchi && newgrp mock # mock user and group TODO get user from cmdline
-   sudo /etc/init.d/yum-autoupdate stop
+   sudo /etc/init.d/yum-autoupdate stop 2>/dev/null
    echo installing external dependencies
-   wget http://emisoft.web.cern.ch/emisoft/dist/EMI/$EMI_RELEASE/RPM-GPG-KEY-emi
+   wget http://emisoft.web.cern.ch/emisoft/dist/EMI/$EMI_RELEASE/RPM-GPG-KEY-emi -o RPM-GPG-KEY-emi
    sudo rpm --import RPM-GPG-KEY-emi
    sudo yum -y install yum-priorities
-   wget "http://emisoft.web.cern.ch/emisoft/dist/EMI/$EMI_RELEASE/sl6/x86_64/base/emi-release-${EMI_RELEASE}.0.0-1.$PLATFORM.noarch.rpm"
+   wget "http://emisoft.web.cern.ch/emisoft/dist/EMI/$EMI_RELEASE/sl6/x86_64/base/emi-release-${EMI_RELEASE}.0.0-1.$PLATFORM.noarch.rpm" \
+      -o emi-release-${EMI_RELEASE}.0.0-1.$PLATFORM.noarch.rpm
    sudo rpm -ivh "emi-release-${EMI_RELEASE}.0.0-1.$PLATFORM.noarch.rpm"
    sudo yum -y install mock rpmlint mod_fcgid mod_ssl axis2 gridsite-apache httpd-devel \
       zlib-devel boost-devel c-ares-devel glite-px-proxyrenewal-devel voms-devel \
@@ -226,6 +236,7 @@ else
    cd "$BUILD_DIR"/org.glite.wms
    echo -e "\n*** NOT checking out the WMS project ***\n"
 fi
+mkdir tgz RPMS SRPMS 2>/dev/null
 
 echo -e "\n*** starting build ***\n"
 
@@ -234,7 +245,7 @@ BUILD_TYPE=( autotools autotools autotools autotools autotools autotools autotoo
 PACKAGE_NAME=( glite-wms-common glite-wms-ism glite-wms-helper glite-wms-purger glite-wms-jobsubmission glite-wms-manager glite-wms-wmproxy glite-wms-ice emi-wms-nagios emi-wms glite-wms-brokerinfo-access glite-wms-wmproxy-api-cpp glite-wms-wmproxy-api-java glite-wms-wmproxy-api-python glite-wms-ui-api-python glite-wms-ui-commands )
 VERSION=( 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 )
 AGE=( 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 )
-START=15
+START=0
 END=15
 
 export PKG_CONFIG_PATH=$BUILD_DIR/org.glite.wms/org.glite.wms/project/ # for condor-g.pc and maybe others
@@ -297,7 +308,7 @@ for i in `seq $START $END`; do
          ;;
    esac
 
-   # mock_build src.rpm TODO
+   # mock_build --rebuild src.rpm TODO
 
    # the rpm cannot be created from a common stage dir, so why
    # should we have one at all? each 'tmp' dir can be that one
