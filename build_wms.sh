@@ -118,6 +118,7 @@ python_build()
    echo "pkgversion=${VERSION}" >> setup.cfg 2>/dev/null
    python setup.py install -O1 --prefix ${LOCAL_STAGE_DIR}/usr --install-data ${LOCAL_STAGE_DIR}
    rpm_package $VERSION $AGE $PLATFORM $PACKAGE_NAME $COMPONENT $LOCAL_STAGE_DIR
+   mv ./rpmbuild/SOURCES/${PACKAGE_NAME}-${VERSION}-${AGE}.${PLATFORM}.tar.gz "$BUILD_DIR"/org.glite.wms/tgz
    cd $BUILD_DIR/org.glite.wms
 }
 
@@ -145,6 +146,7 @@ no_build()
      echo ERROR
      exit
    fi
+   mv ./rpmbuild/SOURCES/${PACKAGE_NAME}-${VERSION}-${AGE}.${PLATFORM}.tar.gz "$BUILD_DIR"/org.glite.wms/tgz
    cd $BUILD_DIR/org.glite.wms
 }
 
