@@ -30,7 +30,7 @@ else( ${CMAKE_VERSION} VERSION_LESS "2.8.2" )
     endif( IS_DIRECTORY "/usr/lib64" AND NOT IS_SYMLINK "/usr/lib64" )
 endif( ${CMAKE_VERSION} VERSION_LESS "2.8.2" )
 
-set(BINDIR "/bin")
+set(BINDIR "bin")
 
 set(LIBEXEC "libexec")
 
@@ -58,7 +58,7 @@ pkg_check_modules(LOG4CPP log4cpp)
 set(CMAKE_INSTALL_PREFIX ${PREFIX})
 add_definitions( -pipe -DWANT_NAMESPACES -DWANT_CLASSAD_NAMESPACE )
 
-message("\nPREFIX=${PREFIX}\nCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}\nLIBDIR=${LIBDIR}\nBINDIR=${BINDIR}\n")
+#message("\nPREFIX=${PREFIX}\nCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}\nLIBDIR=${LIBDIR}\nBINDIR=${BINDIR}\n")
 
 add_subdirectory(src)
 add_subdirectory(interface)
