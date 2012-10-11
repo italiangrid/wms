@@ -27,6 +27,7 @@ Requires: glite-wms-wmproxy
 Requires: glite-info-provider-service
 Requires: lcas-lcmaps-gt4-interface
 Requires: glue-schema
+Requires: kill-stale-ftp
 Requires: glite-wms-jobsubmission
 Requires: glite-initscript-globus-gridftp
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
