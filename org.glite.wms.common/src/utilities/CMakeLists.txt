@@ -61,7 +61,41 @@ target_link_libraries(glite-wms-eval_ad_expr
 install(TARGETS glite_wms_util
         LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/${LIBDIR})
 
+
+
+
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/manipulation.h
-${CMAKE_CURRENT_SOURCE_DIR}/boost_fs_add.h
-        DESTINATION
-${CMAKE_INSTALL_PREFIX}/include/glite/wms/common/utilities)
+  ${CMAKE_CURRENT_SOURCE_DIR}/boost_fs_add.h
+  DESTINATION
+  ${CMAKE_INSTALL_PREFIX}/include/glite/wms/common/utilities)
+
+
+
+
+if(DEFINED INSTALL_BUILD_DEV)
+  install(TARGETS glite_wms_util
+    LIBRARY DESTINATION ${INSTALL_BUILD_DEV}/${LIBDIR})
+  
+  install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/manipulation.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/boost_fs_add.h
+    DESTINATION
+    ${INSTALL_BUILD_DEV}/include/glite/wms/common/utilities)
+  
+  install(TARGETS glite-wms-quota-adjust
+    DESTINATION ${INSTALL_BUILD_DEV}/${BINDIR})
+  
+  install(TARGETS glite-wms-eval_ad_expr
+        DESTINATION ${INSTALL_BUILD_DEV}/${LIBEXEC})
+endif(DEFINED INSTALL_BUILD_DEV)
+
+
+
+
+if(DEFINED INSTALL_BUILD)
+  install(TARGETS glite_wms_util
+    LIBRARY DESTINATION ${INSTALL_BUILD}/${LIBDIR})
+  install(TARGETS glite-wms-quota-adjust
+    DESTINATION ${INSTALL_BUILD}/${BINDIR})
+  install(TARGETS glite-wms-eval_ad_expr
+    DESTINATION ${INSTALL_BUILD}/${LIBEXEC})
+endif(DEFINED INSTALL_BUILD)
