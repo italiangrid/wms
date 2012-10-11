@@ -82,12 +82,24 @@ install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/
         FILES_MATCHING PATTERN "*.h"
         PATTERN "CMakeFiles" EXCLUDE)
 
-if(DEFINED INSTALL_BUILD_DEV)
-install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/
-        DESTINATION
-        ${INSTALL_BUILD_DEV}/include/glite/wms/common/configuration
-        FILES_MATCHING PATTERN "*.h"
-        PATTERN "CMakeFiles" EXCLUDE)
 
+
+
+if(DEFINED INSTALL_BUILD_DEV)
+  install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/
+    DESTINATION
+    ${INSTALL_BUILD_DEV}/include/glite/wms/common/configuration
+    FILES_MATCHING PATTERN "*.h"
+    PATTERN "CMakeFiles" EXCLUDE)
+  install(TARGETS glite_wms_conf 
+    LIBRARY DESTINATION ${INSTALL_BUILD_DEV}/${LIBDIR})
 endif(DEFINED INSTALL_BUILD_DEV)
 
+
+
+
+
+if(DEFINED INSTALL_BUILD)
+  install(TARGETS glite_wms_conf 
+    LIBRARY DESTINATION ${INSTALL_BUILD}/${LIBDIR})
+endif(DEFINED INSTALL_BUILD)
