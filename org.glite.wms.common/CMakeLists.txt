@@ -30,7 +30,7 @@ set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Wall")
 
 
 set(ENV{PKG_CONFIG_PATH}
-"${PREFIX}/${LIBDIR}/pkgconfig/:$ENV{PKG_CONFIG_PATH}")
+"${PREFIX}/lib/pkgconfig/:${PREFIX}/lib64/pkgconfig/$ENV{PKG_CONFIG_PATH}")
 
 
 find_package(PkgConfig REQUIRED)
@@ -39,8 +39,6 @@ find_program(Make REQUIRED)
 pkg_check_modules(CLASSAD emi-classad-ns)
 pkg_check_modules(BOOST emi-boost-thread)
 pkg_check_modules(JOBID emi-jobid)
-pkg_check_modules(WMSUTILS_CLASSADS_ALT glite-wmsutils-classads)
-pkg_check_modules(WMSUTILS_JOBMAN_EXCEPTION_ALT glite-wmsutils-jobman-exception)
 pkg_check_modules(WMSUTILS_CLASSADS classad-utils)
 pkg_check_modules(WMSUTILS_JOBMAN_EXCEPTION jobman-exception)
 pkg_check_modules(GLOBUS_COMMON globus-common)
