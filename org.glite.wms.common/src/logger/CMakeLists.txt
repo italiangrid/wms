@@ -20,3 +20,16 @@ target_link_libraries(glite_wms_logger ${CLASSAD_LIBRARIES})
 
 install(TARGETS glite_wms_logger
         LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/${LIBDIR})
+
+
+if(DEFINED INSTALL_BUILD_DEV)
+install(TARGETS glite_wms_logger
+        LIBRARY DESTINATION ${INSTALL_BUILD_DEV}/${LIBDIR})
+endif(DEFINED INSTALL_BUILD_DEV)
+
+
+if(DEFINED INSTALL_BUILD)
+install(TARGETS glite_wms_logger
+        LIBRARY DESTINATION ${INSTALL_BUILD}/${LIBDIR})
+endif(DEFINED INSTALL_BUILD)
+
