@@ -9,7 +9,7 @@ autotools_build()
    LOCAL_STAGE_DIR=$5
 
    cd $COMPONENT
-   mkdir -p build src/autogen rpmbuild/SOURCES rpmbuild/SPECS rpmbuild/SRPMS rpmbuild/BUILD rpmbuild/RPMS 2>/dev/null
+   mkdir -p build src/autogen 2>/dev/null
    cp -R $BUILD_DIR/org.glite.wms/org.glite.wms-ui/project/doxygen project/doxygen 2>/dev/null # needed by some UI component
    aclocal -I ${M4_LOCATION} && \
 	libtoolize --force && autoheader && automake --foreign --add-missing --copy && \
@@ -70,15 +70,16 @@ ant_build()
    PACKAGE_NAME=$4
    LOCAL_STAGE_DIR=$5
    cd $COMPONENT
-   ant clean
-   mkdir -p build src/autogen rpmbuild/SOURCES rpmbuild/SPECS rpmbuild/SRPMS rpmbuild/BUILD rpmbuild/RPMS 2>/dev/null
-   tar --exclude rpmbuild --exclude build --exclude bin --exclude tools -zcf \
+   mkdir -p lib bin autogen doc/autogen src/autogen ${LOCAL_STAGE_DIR}/usr/share/doc/
+   tar --exclude rpmbuild --exclude ${LOCAL_STAGE_DIR} --exclude --exclude bin --exclude tools -zcf \
       ./rpmbuild/SOURCES/${PACKAGE_NAME}-${VERSION}-${AGE}.${PLATFORM}.tar.gz .
    if [ $? -ne 0 ]; then
       echo ERROR
       exit
    fi
-   printf "dist.location=${LOCAL_STAGE_DIR} stage.location=${STAGE_DIR} module.version=${VERSION}" > .configuration.properties
+   echo "dist.location=${LOCAL_STAGE_DIR}" > .configuration.properties
+   echo "org.glite.wms.wsdl.location=$BUILD_DIR/org.glite.wms/org.glite.wms.wmproxy/src/server" >> .configuration.properties
+   echo "module.version=${VERSION}" >> .configuration.properties
    ant
    if [ $? -ne 0 ]; then
       echo ERROR
@@ -101,15 +102,14 @@ python_build()
    PACKAGE_NAME=$4
    LOCAL_STAGE_DIR=$5
    cd $COMPONENT
-   python setup.py clean --all
-   mkdir -p build src/autogen rpmbuild/SOURCES rpmbuild/SPECS rpmbuild/SRPMS rpmbuild/BUILD rpmbuild/RPMS 2>/dev/null
    tar --exclude rpmbuild --exclude build --exclude bin --exclude tools -zcf \
       ./rpmbuild/SOURCES/${PACKAGE_NAME}-${VERSION}-${AGE}.${PLATFORM}.tar.gz .
    if [ $? -ne 0 ]; then
       echo ERROR
       exit
    fi
-   printf "[global] pkgversion=${version} " > setup.cfg 2>/dev/null
+   echo "[global]" > setup.cfg 2>/dev/null
+   echo "pkgversion=${VERSION}" >> setup.cfg 2>/dev/null
    python setup.py install -O1 --prefix ${LOCAL_STAGE_DIR}/usr --install-data ${LOCAL_STAGE_DIR}
    rpm_package $VERSION $AGE $PLATFORM $PACKAGE_NAME $COMPONENT $LOCAL_STAGE_DIR
    cd $BUILD_DIR/org.glite.wms
@@ -150,10 +150,13 @@ rpm_package()
    COMPONENT=$5
    LOCAL_STAGE_DIR=$6
 
+set -x
+   mkdir rpmbuild/SOURCES rpmbuild/SPECS rpmbuild/SRPMS rpmbuild/BUILD rpmbuild/RPMS 2>/dev/null
    eval "sed -e 's/%{extversion}/$VERSION/g' -e 's/%{extage}/$AGE/g' \
       -e 's/%{extdist}/$PLATFORM/g' -e 's/%{extcdate}/`date +'%a %b %d %Y'`/g' \
       -e 's/%{extclog}/Bug fixing/g' \
       < project/$PACKAGE_NAME.spec > rpmbuild/SPECS/${PACKAGE_NAME}.spec"
+set +x
    rpmbuild -ba --define "_topdir ${BUILD_DIR}/org.glite.wms/$COMPONENT/rpmbuild" \
       --define "extbuilddir $LOCAL_STAGE_DIR" \
       rpmbuild/SPECS/${PACKAGE_NAME}.spec
@@ -186,7 +189,7 @@ get_external_deps()
       glite-wms-utils-exception-devel glite-wms-utils-classad-devel \
       chrpath cppunit-devel glite-jdl-api-cpp-devel glite-lb-client-devel \
       glite-lbjp-common-gsoap-plugin-devel condor-emi glite-ce-cream-client-api-c \
-      glite-ce-cream-client-devel
+      glite-ce-cream-client-devel emi-trustmanager emi-trustmanager-axis
 }
 
 if [ -z $6 ]; then
@@ -231,8 +234,8 @@ BUILD_TYPE=( autotools autotools autotools autotools autotools autotools autotoo
 PACKAGE_NAME=( glite-wms-common glite-wms-ism glite-wms-helper glite-wms-purger glite-wms-jobsubmission glite-wms-manager glite-wms-wmproxy glite-wms-ice emi-wms-nagios emi-wms glite-wms-brokerinfo-access glite-wms-wmproxy-api-cpp glite-wms-wmproxy-api-java glite-wms-wmproxy-api-python glite-wms-ui-api-python glite-wms-ui-commands )
 VERSION=( 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 )
 AGE=( 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 )
-START=0
-END=3
+START=15
+END=15
 
 export PKG_CONFIG_PATH=$BUILD_DIR/org.glite.wms/org.glite.wms/project/ # for condor-g.pc and maybe others
 if [ -d /usr/lib64 ]; then
@@ -251,6 +254,8 @@ for i in `seq $START $END`; do
       cd "$BUILD_DIR/org.glite.wms/${COMPONENT[$i]}"
       echo -e "\n*** cleaning up ${COMPONENT[$i]} ***\n"
       make -C build clean 2>/dev/null
+      ant clean 2>/dev/null
+      python setup.py clean --all 2>/dev/null
       rm -rf rpmbuild RPMS 2>/dev/null
       continue
    fi
