@@ -81,11 +81,6 @@ if(DEFINED INSTALL_BUILD_DEV)
     DESTINATION
     ${INSTALL_BUILD_DEV}/include/glite/wms/common/utilities)
   
-  install(TARGETS glite-wms-quota-adjust
-    DESTINATION ${INSTALL_BUILD_DEV}/${BINDIR})
-  
-  install(TARGETS glite-wms-eval_ad_expr
-        DESTINATION ${INSTALL_BUILD_DEV}/${LIBEXEC})
 endif(DEFINED INSTALL_BUILD_DEV)
 
 
