@@ -26,11 +26,6 @@ target_link_libraries(glite-wms-get-configuration
 						${WMSUTILS_CLASSADS_LIBRARIES}
 						)
 
-if(DEFINED INSTALL_BUILD_DEV)
-  install(TARGETS glite-wms-get-configuration
-    DESTINATION ${INSTALL_BUILD_DEV}/${BINDIR})
-endif(DEFINED INSTALL_BUILD_DEV)
-
 if(DEFINED INSTALL_BUILD)
   install(TARGETS glite-wms-get-configuration
     DESTINATION ${INSTALL_BUILD}/${BINDIR})
