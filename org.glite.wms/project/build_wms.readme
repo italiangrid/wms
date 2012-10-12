@@ -1,0 +1,41 @@
+WMS build script.
+
+It is a bash script that manages to work out all the dependencies and build them through the more approriate system pertaining to each build module, be it ant, autotools, cmake or python. Tarballs, binary and source rpms are created for each component, the metapackage rpm is also created.
+
+Options.
+The options will be shortly reviewed using long options easier to understand. For now, just stick with this:
+
+./build_wms.sh  <build-dir-name> <emi-release> <os> <want_external_deps> <want_vcs_checkout> <want_cleanup>
+
+the ability to provide a tag, instead of checking out the master branch, will be provided soon.
+
+The option <emi-release> is useful only if the <want_external_deps> is set (1)
+want_* options are toggled by 0/1. The others require providing some text. E.g.:
+
+sh ./build_wms.sh wms35 3 sl5 1 1 0
+
+Will checkout the wms codebase into a dir called wms35, and build it against the EMI 2 release external dependencies. Before doing that all the external dependencies will be installed trough yum (this requires the user be a sudoer). Once this is done, subsequent build will be simply performed by a:
+
+sh ./build_wms.sh wms35 3 sl5 1 0 1 (will be ./build_wms.sh --clean)
+sh ./build_wms.sh wms35 3 sl5 1 0 0 (keep the repository, just build)
+
+At the end of the build, the corresponding artefacts will be stored in:
+
+org.glite.wms/tgz
+org.glite.wms/RPMS
+org.glite.wms/SRPMS
+
+The script is very trivial, it might be useful sometimes, especially when developing, to know how its basics work. The WMS components are sorted in the order specified by the array:
+
+COMPONENT=( org.glite.wms.common org.glite.wms.ism org.glite.wms.helper org.glite.wms.purger org.glite.wms.jobsubmission org.glite.wms.manager org.glite.wms.wmproxy org.glite.wms.ice org.glite.wms.nagios org.glite.wms org.glite.wms.brokerinfo-access org.glite.wms.wmproxy-api-cpp org.glite.wms.wmproxy-api-java org.glite.wms.wmproxy-api-python org.glite.wms-ui.api-python org.glite.wms-ui.commands )
+
+each entry index has a correspondance with these arrays:
+BUILD_TYPE=( autotools autotools autotools autotools autotools autotools autotools autotools null pkg_only autotools autotools ant python autotools autotools )
+PACKAGE_NAME=( glite-wms-common glite-wms-ism glite-wms-helper glite-wms-purger glite-wms-jobsubmission glite-wms-manager glite-wms-wmproxy glite-wms-ice emi-wms-nagios emi-wms glite-wms-brokerinfo-access glite-wms-wmproxy-api-cpp glite-wms-wmproxy-api-java glite-wms-wmproxy-api-python glite-wms-ui-api-python glite-wms-ui-commands )
+VERSION=( 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 )
+AGE=( 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 )
+START=0
+END=15
+
+BUILD_TYPE specifies with which method to build each component. These can be:
+autotools, ant, python, cmake (TODO), pkg_only, null (do not build)
