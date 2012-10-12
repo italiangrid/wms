@@ -191,11 +191,12 @@ get_external_deps()
    wget "http://emisoft.web.cern.ch/emisoft/dist/EMI/$EMI_RELEASE/sl6/x86_64/base/emi-release-${EMI_RELEASE}.0.0-1.$PLATFORM.noarch.rpm" \
       -o emi-release-${EMI_RELEASE}.0.0-1.$PLATFORM.noarch.rpm
    sudo rpm -ivh "emi-release-${EMI_RELEASE}.0.0-1.$PLATFORM.noarch.rpm"
-   sudo yum -y install mock rpmlint mod_fcgid mod_ssl axis2 gridsite-devel httpd-devel \
+   sudo yum -y install pckconfig mock rpmlint mod_fcgid mod_ssl axis2 gridsite-devel httpd-devel \
       zlib-devel boost-devel c-ares-devel glite-px-proxyrenewal-devel voms-devel \
       voms-clients argus-pep-api-c-devel lcmaps-without-gsi-devel lcmaps-devel \
       classads-devel glite-build-common-cpp gsoap-devel libtar-devel cmake \
-      globus-ftp-client globus-ftp-client-devel log4cpp-devel log4cpp glite-jobid-api-c \
+      globus-ftp-client globus-ftp-client-devela libglobus_gsi_credential libglobus_gssapi_gsi \
+      log4cpp-devel log4cpp glite-jobid-api-c \
       glite-jobid-api-c-devel glite-jobid-api-cpp-devel openldap-devel python-ldap \
       glite-wms-utils-exception glite-wms-utils-classad \
       glite-wms-utils-exception-devel glite-wms-utils-classad-devel \
