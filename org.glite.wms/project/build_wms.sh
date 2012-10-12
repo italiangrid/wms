@@ -247,6 +247,35 @@ AGE=( 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 )
 START=0
 END=15
 
+# mock build
+if [ $8 -eq 1 ]; then
+   echo -e "\n*** starting mock build for `ls -1 $BUILD_DIR/org.glite.wms/SRPMS/` ***\n"
+
+   # file /etc/mock/emi${EMI_RELEASE}-$PLATFORM-$ARCH.cfg must be created, with all the required repositories and stuff
+   if [ ! -r /etc/mock/emi${EMI_RELEASE}-$PLATFORM-$ARCH.cfg ]; then
+      echo "Do you also want me to prepare the mock configuration?!? What else?"
+      exit
+   fi
+
+   if [ $5 -eq 1 ]; then
+      echo -e "\n*** one time initialization of the mock environment ***\n"
+      mock -r emi${EMI_RELEASE}-$PLATFORM-$ARCH --init
+      
+      echo -e "\n*** installing external dependencies in mock - hang on, this may take very long ***\n"
+      mock -r emi${EMI_RELEASE}-$PLATFORM-$ARCH --install ${DEPS_LIST[@]}
+      # same as: yum --installroot /var/lib/mock/sl6-emi-2-x86_64/root install ${DEPS_LIST[@]}
+      # while rpm has a similar option --root
+   fi
+
+   for srcrpm in ${PACKAGE_NAME[@]}; do
+      mock -r emi${EMI_RELEASE}-$PLATFORM-$ARCH --rebuild \
+         "$BUILD_DIR/org.glite.wms/SRPMS/$srcrpm-${VERSION}-${AGE}.${PLATFORM}.src.rpm"
+   done
+
+   echo -e "\n*** mock build completed ***\n"
+   exit
+fi
+
 export PKG_CONFIG_PATH=$BUILD_DIR/org.glite.wms/org.glite.wms/project/ # for condor-g.pc and maybe others
 if [ -d /usr/lib64 ]; then
    LOCAL_PKGCFG_LIB=usr/lib64/pkgconfig/
@@ -261,8 +290,8 @@ for i in `seq $START $END`; do
    echo -e "\n*** building component ${COMPONENT[$i]} ***\n"
    
    if [ $7 -ne 0 ]; then
-      cd "$BUILD_DIR/org.glite.wms/${COMPONENT[$i]}"
       echo -e "\n*** cleaning up ${COMPONENT[$i]} ***\n"
+      cd "$BUILD_DIR/org.glite.wms/${COMPONENT[$i]}"
       make -C build clean 2>/dev/null
       ant clean 2>/dev/null
       python setup.py clean --all 2>/dev/null
@@ -306,23 +335,10 @@ for i in `seq $START $END`; do
          exit
          ;;
    esac
+
+   # the rpm cannot be created from a common stage dir, so why
+   # should we have one at all? each 'tmp' dir can be a stage
    export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$STAGE/$LOCAL_PKGCFG_LIB
 done
 
 echo -e "\n*** native build completed ***\n"
-
-# mock build
-if [ $8 -eq 1 ]; then
-   echo -e "\n*** starting mock build from `ls $BUILD_DIR/org.glite.wms/SRPMS/` ***\n"
-   # mock -r emi${EMI_RELEASE}-$PLATFORM-$ARCH --rebuild "$BUILD_DIR/org.glite.wms/SRPMS/*.src.rpm" # (/etc/mock/emi2-sl-6-x86_64.cfg)
-
-   mock -r emi2-sl6-x86_64 --init # file /etc/mock/emi2-sl6-x86_64.cfg must be enabled, with all the needed repositories
-
-   # mock -r emi2-sl6-x86_64 --install ${DEPS_LIST[@]}
-   # yum --installroot /var/lib/mock/sl6-emi-2-x86_64/root install <pkg>
-   # rpm --root /var/lib/mock/sl6-emi-2-x86_64/root -qa
-
-   # the rpm cannot be created from a common stage dir, so why
-   # should we have one at all? each 'tmp' dir can be that one
-   echo -e "\n*** mock build completed ***\n"
-fi
