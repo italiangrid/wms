@@ -17,14 +17,14 @@ Requires: lcmaps-plugins-basic
 Requires(post): chkconfig
 Requires(preun): chkconfig
 Requires(preun): initscripts
-BuildRequires: %{!?extbuilddir: glite-jobid-api-c-devel, glite-jobid-api-cpp-devel, voms-devel,} chrpath
-BuildRequires: %{!?extbuilddir: gridsite-devel,} libxml2-devel
-BuildRequires: %{!?extbuilddir: argus-pep-api-c-devel, glite-wms-purger-devel,} libtool
-BuildRequires: %{!?extbuilddir: lcmaps-without-gsi-devel, lcmaps-devel,} classads-devel
-BuildRequires: %{!?extbuilddir: glite-jdl-api-cpp-devel, glite-lb-client-devel,} fcgi-devel
-BuildRequires: %{!?extbuilddir: glite-px-proxyrenewal-devel,} libxslt-devel
-BuildRequires: %{!?extbuilddir: glite-wms-wmproxy-interface,} libtar-devel
-BuildRequires: %{!?extbuilddir: glite-build-common-cpp, } gsoap-devel
+BuildRequires: glite-jobid-api-c-devel, glite-jobid-api-cpp-devel, voms-devel, chrpath
+BuildRequires: gridsite-devel, libxml2-devel
+BuildRequires: argus-pep-api-c-devel, glite-wms-purger-devel, libtool
+BuildRequires: lcmaps-without-gsi-devel, lcmaps-devel, classads-devel
+BuildRequires: glite-jdl-api-cpp-devel, glite-lb-client-devel, fcgi-devel
+BuildRequires: glite-px-proxyrenewal-devel, libxslt-devel
+BuildRequires: glite-wms-wmproxy-interface, libtar-devel
+BuildRequires: glite-build-common-cpp, gsoap-devel
 BuildRequires: httpd-devel, zlib-devel, boost-devel, c-ares-devel
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 AutoReqProv: yes
@@ -37,7 +37,6 @@ Workload Management Proxy service
 
 %prep
  
-
 %setup -c -q
 
 %build

@@ -235,20 +235,19 @@ if [ $8 -eq 1 ]; then
 
    if [ $5 -eq 1 ]; then
       echo -e "\n*** wiping out the mock environment ***\n"
-      mock -r emi${EMI_RELEASE}-$PLATFORM-$ARCH --scrub=all
+      mock -r emi${EMI_RELEASE}-$PLATFORM-$ARCH --clean
       echo -e "\n*** one time initialization of the mock environment ***\n"
       mock -r emi${EMI_RELEASE}-$PLATFORM-$ARCH --init
-      echo -e "\n*** installing external dependencies in mock - hang on, this may take very long ***\n"
-      mock -r emi${EMI_RELEASE}-$PLATFORM-$ARCH --install ${DEPS_LIST[@]}
-      # same as: yum --installroot /var/lib/mock/sl6-emi-2-x86_64/root install ${DEPS_LIST[@]}, rpm has also a similar option, --root
    fi
 
-   for pkgname in ${PACKAGE_NAME[@]}; do
-      mock -r emi${EMI_RELEASE}-$PLATFORM-$ARCH --no-cleanup-after --no-clean --rebuild \
+   rm -f /var/lib/mock/emi${EMI_RELEASE}-$PLATFORM-$ARCH/result/build.log 
+   for pkgname in ${PACKAGE_NAME[@]}; do # --no-cleanup-after
+      mock -r emi${EMI_RELEASE}-$PLATFORM-$ARCH --no-clean --rebuild \
          "$BUILD_DIR/org.glite.wms/SRPMS/$pkgname-${VERSION}-${AGE}.${PLATFORM}.src.rpm"
       # installed produced dependency. --force is because this might not be the first time
-      mock -r emi${EMI_RELEASE}-$PLATFORM-$ARCH --install  
-         /var/lib/mock/emi${EMI_RELEASE}-$PLATFORM-$ARCH/result/$pkgname-*.rpm
+      mock -r emi${EMI_RELEASE}-$PLATFORM-$ARCH --install \
+         /var/lib/mock/emi${EMI_RELEASE}-$PLATFORM-$ARCH/result/$pkgname-$VERSION-$AGE.$PLATFORM.$ARCH.rpm \
+         /var/lib/mock/emi${EMI_RELEASE}-$PLATFORM-$ARCH/result/$pkgname-devel-$VERSION-$AGE.$PLATFORM.$ARCH.rpm
    done
 
    echo -e "\n*** mock build completed ***\n"

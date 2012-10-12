@@ -7,13 +7,13 @@ Vendor: EMI
 URL: http://glite.cern.ch/
 Group: System Environment/Libraries
 BuildArch: %{_arch}
-BuildRequires: %{!?extbuilddir: glite-jobid-api-c-devel, glite-jobid-api-cpp-devel,} libtool
-BuildRequires: %{!?extbuilddir: glite-build-common-cpp, } classads-devel
-BuildRequires: %{!?extbuilddir: glite-wms-common-devel, glite-build-common-cpp, }chrpath
-BuildRequires: %{!?extbuilddir: glite-wms-utils-classad-devel,} libtool
-BuildRequires: %{!?extbuilddir: glite-wms-ism-devel,} classads-devel
-BuildRequires: %{!?extbuilddir: glite-lb-client-devel,} boost-devel
-Obsoletes: glite-wms-ism, glite-wms-broker, glite-wms-brokerinfo
+BuildRequires: glite-jobid-api-c-devel, glite-jobid-api-cpp-devel, libtool
+BuildRequires: glite-build-common-cpp, classads-devel, glite-jdl-api-cpp-devel
+BuildRequires: glite-wms-common-devel, glite-build-common-cpp, chrpath
+BuildRequires: glite-wms-utils-classad-devel, libtool
+BuildRequires: glite-wms-ism-devel, classads-devel, gsoap-devel
+BuildRequires: glite-lb-client-devel, boost-devel, glite-lbjp-common-gsoap-plugin-devel
+Obsoletes: glite-wms-broker, glite-wms-brokerinfo
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 AutoReqProv: yes
