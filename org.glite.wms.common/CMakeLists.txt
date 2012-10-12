@@ -38,8 +38,12 @@ set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Wall")
 
 
 set(ENV{PKG_CONFIG_PATH}
-"${PREFIX}/lib/pkgconfig/:${PREFIX}/lib64/pkgconfig/$ENV{PKG_CONFIG_PATH}")
+"${PREFIX}/lib/pkgconfig/:${PREFIX}/lib64/pkgconfig/:$ENV{PKG_CONFIG_PATH}")
 
+if(DEFINED ADDITIONAL_PKG_CONFIG_PATH)
+  set(ENV{PKG_CONFIG_PATH}
+"${ADDITIONAL_PKG_CONFIG_PATH}:$ENV{PKG_CONFIG_PATH}")
+endif(DEFINED ADDITIONAL_PKG_CONFIG_PATH)
 
 find_package(PkgConfig REQUIRED)
 find_package(Perl REQUIRED)
