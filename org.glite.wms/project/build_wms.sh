@@ -216,6 +216,38 @@ M4_LOCATION=/usr/share/emi/build/m4
 ARCH=`uname -i`
 DEPS_LIST=( yum-priorities pkgconfig mock rpmlint mod_fcgid mod_ssl axis2 gridsite-devel httpd-devel zlib-devel boost-devel c-ares-devel glite-px-proxyrenewal-devel voms-devel voms-clients argus-pep-api-c-devel lcmaps-without-gsi-devel lcmaps-devel classads-devel glite-build-common-cpp gsoap-devel libtar-devel cmake globus-ftp-client globus-ftp-client-devel log4cpp-devel log4cpp glite-jobid-api-c glite-jobid-api-c-devel glite-jobid-api-cpp-devel openldap-devel python-ldap glite-wms-utils-exception glite-wms-utils-classad glite-wms-utils-exception-devel glite-wms-utils-classad-devel chrpath cppunit-devel glite-jdl-api-cpp-devel glite-lb-client-devel glite-lbjp-common-gsoap-plugin-devel condor-emi glite-ce-cream-client-api-c glite-ce-cream-client-devel emi-trustmanager emi-trustmanager-axis )
 
+# mock build
+if [ $8 -eq 1 ]; then
+   echo -e "\n*** starting mock build for `ls -1 $BUILD_DIR/org.glite.wms/SRPMS/` ***\n"
+
+   # file /etc/mock/emi${EMI_RELEASE}-$PLATFORM-$ARCH.cfg must be created, with all the required repositories and stuff
+   if [ ! -r /etc/mock/emi${EMI_RELEASE}-$PLATFORM-$ARCH.cfg ]; then
+      echo "Do you also want me to prepare the mock configuration?!? What else?"
+      exit
+   fi
+
+   if [ $5 -eq 1 ]; then
+      echo -e "\n*** wiping out the mock environment ***\n"
+      mock -r emi${EMI_RELEASE}-$PLATFORM-$ARCH --clean
+      echo -e "\n*** one time initialization of the mock environment ***\n"
+      mock -r emi${EMI_RELEASE}-$PLATFORM-$ARCH --init
+      echo -e "\n*** installing external dependencies in mock - hang on, this may take very long ***\n"
+      mock -r emi${EMI_RELEASE}-$PLATFORM-$ARCH --install ${DEPS_LIST[@]}
+      # same as: yum --installroot /var/lib/mock/sl6-emi-2-x86_64/root install ${DEPS_LIST[@]}
+      # while rpm has a similar option --root
+   fi
+
+   for pkgname in ${PACKAGE_NAME[@]}; do
+      mock -r emi${EMI_RELEASE}-$PLATFORM-$ARCH --rebuild \
+         "$BUILD_DIR/org.glite.wms/SRPMS/$pkgname-${VERSION}-${AGE}.${PLATFORM}.src.rpm"
+      rpm --root /var/lib/mock/emi${EMI_RELEASE}-$PLATFORM-$ARCH/root -ivh \
+         /var/lib/mock/emi${EMI_RELEASE}-$PLATFORM-$ARCH/result/$pkgname-*.rpm
+   done
+
+   echo -e "\n*** mock build completed ***\n"
+   exit
+fi
+
 if [ $5 -eq 1 ]; then
    echo -e "\n*** installing external dependencies ***\n"
    get_external_deps
@@ -246,38 +278,6 @@ VERSION=( 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.
 AGE=( 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 )
 START=0
 END=15
-
-# mock build
-if [ $8 -eq 1 ]; then
-   echo -e "\n*** starting mock build for `ls -1 $BUILD_DIR/org.glite.wms/SRPMS/` ***\n"
-
-   # file /etc/mock/emi${EMI_RELEASE}-$PLATFORM-$ARCH.cfg must be created, with all the required repositories and stuff
-   if [ ! -r /etc/mock/emi${EMI_RELEASE}-$PLATFORM-$ARCH.cfg ]; then
-      echo "Do you also want me to prepare the mock configuration?!? What else?"
-      exit
-   fi
-
-   if [ $5 -eq 1 ]; then
-      echo -e "\n*** wiping out the mock environment ***\n"
-      mock -r emi${EMI_RELEASE}-$PLATFORM-$ARCH --clean
-      echo -e "\n*** one time initialization of the mock environment ***\n"
-      mock -r emi${EMI_RELEASE}-$PLATFORM-$ARCH --init
-      echo -e "\n*** installing external dependencies in mock - hang on, this may take very long ***\n"
-      mock -r emi${EMI_RELEASE}-$PLATFORM-$ARCH --install ${DEPS_LIST[@]}
-      # same as: yum --installroot /var/lib/mock/sl6-emi-2-x86_64/root install ${DEPS_LIST[@]}
-      # while rpm has a similar option --root
-   fi
-
-   for pkgname in ${PACKAGE_NAME[@]}; do
-      mock -r emi${EMI_RELEASE}-$PLATFORM-$ARCH --rebuild \
-         "$BUILD_DIR/org.glite.wms/SRPMS/$pkgname-${VERSION}-${AGE}.${PLATFORM}.src.rpm"
-      rpm --root /var/lib/mock/emi${EMI_RELEASE}-$PLATFORM-$ARCH/root -ivh \
-         /var/lib/mock/emi${EMI_RELEASE}-$PLATFORM-$ARCH/result/$pkgname-${VERSION}-${AGE}.${PLATFORM}.rpm
-   done
-
-   echo -e "\n*** mock build completed ***\n"
-   exit
-fi
 
 export PKG_CONFIG_PATH=$BUILD_DIR/org.glite.wms/org.glite.wms/project/ # for condor-g.pc and maybe others
 if [ -d /usr/lib64 ]; then
