@@ -191,7 +191,7 @@ get_external_deps()
    wget "http://emisoft.web.cern.ch/emisoft/dist/EMI/$EMI_RELEASE/sl6/x86_64/base/emi-release-${EMI_RELEASE}.0.0-1.$PLATFORM.noarch.rpm" \
       -o emi-release-${EMI_RELEASE}.0.0-1.$PLATFORM.noarch.rpm
    sudo rpm -ivh "emi-release-${EMI_RELEASE}.0.0-1.$PLATFORM.noarch.rpm"
-   sudo yum -y install mock rpmlint mod_fcgid mod_ssl axis2 gridsite-apache httpd-devel \
+   sudo yum -y install mock rpmlint mod_fcgid mod_ssl axis2 gridsite-devel httpd-devel \
       zlib-devel boost-devel c-ares-devel glite-px-proxyrenewal-devel voms-devel \
       voms-clients argus-pep-api-c-devel lcmaps-without-gsi-devel lcmaps-devel \
       classads-devel glite-build-common-cpp gsoap-devel libtar-devel cmake \
@@ -311,6 +311,7 @@ for i in `seq $START $END`; do
    esac
 
    # mock_build --rebuild src.rpm TODO
+   # rpm --root /var/lib/mock/sl6-emi-2-x86_64/root -qa
 
    # the rpm cannot be created from a common stage dir, so why
    # should we have one at all? each 'tmp' dir can be that one
