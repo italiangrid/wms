@@ -181,36 +181,28 @@ rpm_package()
 
 get_external_deps()
 {
-   sudo chkconfig --level 0123456 yum-autoupdate off 2>/dev/null
-   # sudo usermod -a -G mock mcecchi && newgrp mock # mock user and group TODO get user from cmdline
-   sudo /etc/init.d/yum-autoupdate stop 2>/dev/null
-   echo installing external dependencies
-   wget http://emisoft.web.cern.ch/emisoft/dist/EMI/$EMI_RELEASE/RPM-GPG-KEY-emi -o RPM-GPG-KEY-emi
-   sudo rpm --import RPM-GPG-KEY-emi
-   sudo yum -y install yum-priorities
-   wget "http://emisoft.web.cern.ch/emisoft/dist/EMI/$EMI_RELEASE/sl6/x86_64/base/emi-release-${EMI_RELEASE}.0.0-1.$PLATFORM.noarch.rpm" \
-      -o emi-release-${EMI_RELEASE}.0.0-1.$PLATFORM.noarch.rpm
-   sudo rpm -ivh "emi-release-${EMI_RELEASE}.0.0-1.$PLATFORM.noarch.rpm"
-   sudo yum -y install pckconfig mock rpmlint mod_fcgid mod_ssl axis2 gridsite-devel httpd-devel \
-      zlib-devel boost-devel c-ares-devel glite-px-proxyrenewal-devel voms-devel \
-      voms-clients argus-pep-api-c-devel lcmaps-without-gsi-devel lcmaps-devel \
-      classads-devel glite-build-common-cpp gsoap-devel libtar-devel cmake \
-      globus-ftp-client globus-ftp-client-devela libglobus_gsi_credential libglobus_gssapi_gsi \
-      log4cpp-devel log4cpp glite-jobid-api-c \
-      glite-jobid-api-c-devel glite-jobid-api-cpp-devel openldap-devel python-ldap \
-      glite-wms-utils-exception glite-wms-utils-classad \
-      glite-wms-utils-exception-devel glite-wms-utils-classad-devel \
-      chrpath cppunit-devel glite-jdl-api-cpp-devel glite-lb-client-devel \
-      glite-lbjp-common-gsoap-plugin-devel condor-emi glite-ce-cream-client-api-c \
-      glite-ce-cream-client-devel emi-trustmanager emi-trustmanager-axis
+   # EPEL repositories
+   if [ $PLATFORM = "sl6" ]; then
+     sudo rpm -ivh http://ftp.tu-chemnitz.de/pub/linux/fedora-epel/6/i386/epel-release-6-7.noarch.rpm
+   elif [ $PLATFORM = "sl5" ]; then
+      sudo rpm -ivh http://fedora.uib.no/epel/5/i386/epel-release-5-4.noarch.rpm
+   fi
+   # EMI repositories
+   sudo rpm --import http://emisoft.web.cern.ch/emisoft/dist/EMI/$EMI_RELEASE/RPM-GPG-KEY-emi
+   sudo rpm -ivh "http://emisoft.web.cern.ch/emisoft/dist/EMI/$EMI_RELEASE/sl6/x86_64/base/emi-release-${EMI_RELEASE}.0.0-1.$PLATFORM.noarch.rpm"
+
+   sudo yum -y install ${DEPS_LIST[@]}
 }
 
-if [ -z $6 ]; then
-   echo "wms <build-dir-name> <emi-release> <os> <want_external_deps> <want_vcs_checkout> <want_cleanup> (missing: <tag>)" # TODO tag
+#
+# MAIN
+#
+
+if [ -z $7 ]; then
+   echo "wms <build-dir-name> <emi-release> <os> <want_external_deps:no> <want_vcs_checkout:no> <want_cleanup:no> <want_mock:no>" # TODO tag
    exit
 fi
 
-#wget --no-check-certificate https://github.com/MarcoCecchi/org.glite.wms.git/build_wms.sh -o build_wms.sh
 BUILD_DIR=`pwd`/$1
 EMI_RELEASE=$2
 PLATFORM=$3
@@ -222,7 +214,10 @@ PLATFORM=$3
 #fi
 M4_LOCATION=/usr/share/emi/build/m4
 ARCH=`uname -i`
+DEPS_LIST=( yum-priorities pkgconfig mock rpmlint mod_fcgid mod_ssl axis2 gridsite-devel httpd-devel zlib-devel boost-devel c-ares-devel glite-px-proxyrenewal-devel voms-devel voms-clients argus-pep-api-c-devel lcmaps-without-gsi-devel lcmaps-devel classads-devel glite-build-common-cpp gsoap-devel libtar-devel cmake globus-ftp-client globus-ftp-client-devel log4cpp-devel log4cpp glite-jobid-api-c glite-jobid-api-c-devel glite-jobid-api-cpp-devel openldap-devel python-ldap glite-wms-utils-exception glite-wms-utils-classad glite-wms-utils-exception-devel glite-wms-utils-classad-devel chrpath cppunit-devel glite-jdl-api-cpp-devel glite-lb-client-devel glite-lbjp-common-gsoap-plugin-devel condor-emi glite-ce-cream-client-api-c glite-ce-cream-client-devel emi-trustmanager emi-trustmanager-axis )
+
 if [ $4 -eq 1 ]; then
+   echo -e "\n*** installing external dependencies ***\n"
    get_external_deps
 fi
 
@@ -310,11 +305,24 @@ for i in `seq $START $END`; do
          exit
          ;;
    esac
+   export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$STAGE/$LOCAL_PKGCFG_LIB
+done
 
-   # mock_build --rebuild src.rpm TODO
+echo -e "\n*** native build completed ***\n"
+
+# mock build
+if [ $7 -eq 1 ]; then
+   echo -e "\n*** starting mock build from `ls $BUILD_DIR/org.glite.wms/SRPMS/` ***\n"
+   # sudo usermod -a -G mock mcecchi && newgrp mock # mock user and group TODO get user from cmdline
+   # mock -r emi${EMI_RELEASE}-$PLATFORM-$ARCH --rebuild "$BUILD_DIR/org.glite.wms/SRPMS/*.src.rpm" # (/etc/mock/emi2-sl-6-x86_64.cfg)
+
+   mock -r emi2-sl6-x86_64 --init # file /etc/mock/emi2-sl6-x86_64.cfg must be enabled, with all the needed repositories
+
+   # mock -r emi2-sl6-x86_64 --install ${DEPS_LIST[@]}
+   # yum --installroot /var/lib/mock/sl6-emi-2-x86_64/root install <pkg>
    # rpm --root /var/lib/mock/sl6-emi-2-x86_64/root -qa
 
    # the rpm cannot be created from a common stage dir, so why
    # should we have one at all? each 'tmp' dir can be that one
-   export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$STAGE/$LOCAL_PKGCFG_LIB
-done
+   echo -e "\n*** mock build completed ***\n"
+fi
