@@ -198,14 +198,14 @@ get_external_deps()
 # MAIN
 #
 
-if [ -z $7 ]; then
-   echo "wms <build-dir-name> <emi-release> <os> <want_external_deps:no> <want_vcs_checkout:no> <want_cleanup:no> <want_mock:no>" # TODO tag
+if [ -z $8 ]; then
+   echo "wms <tag:master/...> <build-dir-name> <emi-release:1/2/3> <os:sl5/sl6/deb6> <want_external_deps:0/1> <want_vcs_checkout:0/1> <want_cleanup:0/1> <want_mock:0/1>"
    exit
 fi
 
-BUILD_DIR=`pwd`/$1
-EMI_RELEASE=$2
-PLATFORM=$3
+BUILD_DIR=`pwd`/$2
+EMI_RELEASE=$3
+PLATFORM=$4
 # TODO
 #if [ $PLATFORM == "deb" ]; then
 #   PACKAGER=rpm
@@ -216,19 +216,20 @@ M4_LOCATION=/usr/share/emi/build/m4
 ARCH=`uname -i`
 DEPS_LIST=( yum-priorities pkgconfig mock rpmlint mod_fcgid mod_ssl axis2 gridsite-devel httpd-devel zlib-devel boost-devel c-ares-devel glite-px-proxyrenewal-devel voms-devel voms-clients argus-pep-api-c-devel lcmaps-without-gsi-devel lcmaps-devel classads-devel glite-build-common-cpp gsoap-devel libtar-devel cmake globus-ftp-client globus-ftp-client-devel log4cpp-devel log4cpp glite-jobid-api-c glite-jobid-api-c-devel glite-jobid-api-cpp-devel openldap-devel python-ldap glite-wms-utils-exception glite-wms-utils-classad glite-wms-utils-exception-devel glite-wms-utils-classad-devel chrpath cppunit-devel glite-jdl-api-cpp-devel glite-lb-client-devel glite-lbjp-common-gsoap-plugin-devel condor-emi glite-ce-cream-client-api-c glite-ce-cream-client-devel emi-trustmanager emi-trustmanager-axis )
 
-if [ $4 -eq 1 ]; then
+if [ $5 -eq 1 ]; then
    echo -e "\n*** installing external dependencies ***\n"
    get_external_deps
 fi
 
 echo -e "\n*** build dir: $BUILD_DIR, platform: $PLATFORM, architecture: $ARCH ***\n"
 
-if [ $5 -ne 0 ]; then
+if [ $6 -ne 0 ]; then
    sudo rm -rf "$BUILD_DIR"
    mkdir -p "$BUILD_DIR"
    cd "$BUILD_DIR"
    echo -e "\n*** checking out the WMS project ***\n"
    git clone --progress -v git@github.com:MarcoCecchi/org.glite.wms.git
+   git checkout $1
    cd org.glite.wms
 else
    cd "$BUILD_DIR"/org.glite.wms
@@ -259,7 +260,7 @@ done
 for i in `seq $START $END`; do
    echo -e "\n*** building component ${COMPONENT[$i]} ***\n"
    
-   if [ $6 -ne 0 ]; then
+   if [ $7 -ne 0 ]; then
       cd "$BUILD_DIR/org.glite.wms/${COMPONENT[$i]}"
       echo -e "\n*** cleaning up ${COMPONENT[$i]} ***\n"
       make -C build clean 2>/dev/null
@@ -269,7 +270,7 @@ for i in `seq $START $END`; do
       continue
    fi
 
-   # TODO hack required to integrate not os provided gsoap
+   # hack required to integrate not os provided gsoap
    if [ ${COMPONENT[$i]} = "org.glite.wms.wmproxy" ]; then
       if [ $PLATFORM = "sl6" ]; then
          ln -sf "$BUILD_DIR/org.glite.wms/org.glite.wms.wmproxy/src/server/stdsoap2-2_7_16.cpp" \
@@ -311,9 +312,8 @@ done
 echo -e "\n*** native build completed ***\n"
 
 # mock build
-if [ $7 -eq 1 ]; then
+if [ $8 -eq 1 ]; then
    echo -e "\n*** starting mock build from `ls $BUILD_DIR/org.glite.wms/SRPMS/` ***\n"
-   # sudo usermod -a -G mock mcecchi && newgrp mock # mock user and group TODO get user from cmdline
    # mock -r emi${EMI_RELEASE}-$PLATFORM-$ARCH --rebuild "$BUILD_DIR/org.glite.wms/SRPMS/*.src.rpm" # (/etc/mock/emi2-sl-6-x86_64.cfg)
 
    mock -r emi2-sl6-x86_64 --init # file /etc/mock/emi2-sl6-x86_64.cfg must be enabled, with all the needed repositories
