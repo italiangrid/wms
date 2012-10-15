@@ -17,3 +17,17 @@ set_target_properties(glite_wms_ism_ii_purchaser  PROPERTIES VERSION 0.0.0 SOVER
 install(TARGETS glite_wms_ism_ii_purchaser 
         LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/${LIBDIR})
 
+
+if(DEFINED INSTALL_BUILD_DEV)
+install(TARGETS glite_wms_ism_ii_purchaser
+        LIBRARY DESTINATION ${INSTALL_BUILD_DEV}/${LIBDIR})
+endif(DEFINED INSTALL_BUILD_DEV)
+
+
+
+
+if(DEFINED INSTALL_BUILD)
+install(TARGETS glite_wms_ism_ii_purchaser
+        LIBRARY DESTINATION ${INSTALL_BUILD}/${LIBDIR})
+endif(DEFINED INSTALL_BUILD)
+

@@ -1,0 +1,10 @@
+Source:  libglite-wms-ism
+Section:  libs
+Priority:  optional
+Maintainer:  WMS Support <wms-support@cnaf.infn.it>
+Depends: libglite-jobid2 (>=2.1.2-5), libclassad0 (>=1.0.8), liblog4cpp5 (>=1.0-4), libglobus-io3 (>=6.3-8), libglobus-gss-assist3 (>=5.9-1), libglobus-ftp-client2 (>=5.3-3), libglobus-ftp-control1 (>=2.11-2), libglobus-common0 (>=11.5-2), libboost-system1.42.0, libboost-serialization1.42.0, libboost-regex1.42.0, libboost-iostreams1.42.0, libboost-filesystem1.42.0, libboost-date-time1.42.0, libglite-wms-common (>=3.5.0)
+Version: 3.5.0-0
+Homepage: http://glite.cern.ch/
+Package: libglite-wms-ism
+Architecture: all
+Description: WMS Information Super Market
