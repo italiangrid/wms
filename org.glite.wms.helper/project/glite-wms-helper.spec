@@ -9,9 +9,9 @@ Group: System Environment/Libraries
 BuildArch: %{_arch}
 BuildRequires: glite-jobid-api-c-devel, glite-jobid-api-cpp-devel, libtool
 BuildRequires: glite-build-common-cpp, classads-devel, glite-jdl-api-cpp-devel
-BuildRequires: glite-wms-common-devel, glite-build-common-cpp, chrpath
+BuildRequires: %{!?extbuilddir: glite-wms-common-devel, } glite-build-common-cpp, chrpath
 BuildRequires: glite-wms-utils-classad-devel, libtool
-BuildRequires: glite-wms-ism-devel, classads-devel, gsoap-devel
+BuildRequires: %{!?extbuilddir: glite-wms-ism-devel, } classads-devel, gsoap-devel
 BuildRequires: glite-lb-client-devel, boost-devel, glite-lbjp-common-gsoap-plugin-devel
 Obsoletes: glite-wms-broker, glite-wms-brokerinfo
 

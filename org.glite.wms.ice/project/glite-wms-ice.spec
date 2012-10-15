@@ -12,10 +12,9 @@ Requires: glite-px-proxyrenewal
 Requires(post): chkconfig
 Requires(preun): chkconfig
 Requires(preun): initscripts
-BuildRequires: glite-wms-common-devel, chrpath
+BuildRequires: %{!?extbuilddir: glite-wms-common-devel, glite-wms-purger-devel, } chrpath
 BuildRequires: glite-ce-cream-client-devel, libtool, classads-devel
-BuildRequires: glite-wms-purger-devel, boost-devel
-BuildRequires: glite-px-proxyrenewal-devel, gsoap-devel
+BuildRequires: glite-px-proxyrenewal-devel, gsoap-devel, boost-devel
 BuildRequires: gridsite-devel, libxml2-devel, log4cpp-devel
 BuildRequires: glite-build-common-cpp, myproxy-devel, c-ares-devel
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)

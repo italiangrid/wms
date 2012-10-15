@@ -7,7 +7,7 @@ Vendor: EMI
 URL: http://glite.cern.ch/
 Group: System Environment/Libraries
 BuildArch: %{_arch}
-BuildRequires: glite-wms-common-devel, chrpath
+BuildRequires: %{!?extbuilddir: glite-wms-common-devel, } chrpath
 BuildRequires: glite-wms-utils-classad-devel, libtool
 BuildRequires: boost-devel, classads-devel
 BuildRequires: glite-build-common-cpp, openldap-devel
@@ -69,7 +69,7 @@ rm -rf %{buildroot}
 Summary: Development files for the WMS information superkmarket
 Group: System Environment/Libraries
 Requires: %{name}%{?_isa} = %{version}-%{release}
-Requires: glite-wms-utils-classad-devel, glite-wms-common-devel
+Requires: %{!?extbuilddir: glite-wms-common-devel, } glite-wms-utils-classad-devel
 Requires: boost-devel, classads-devel, openldap-devel
 Requires: glite-build-common-cpp
 

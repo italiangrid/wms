@@ -11,12 +11,11 @@ Requires: glite-wms-configuration
 Requires(post): chkconfig
 Requires(preun): chkconfig
 Requires(preun): initscripts
-BuildRequires: glite-wms-common-devel, chrpath
+BuildRequires: %{!?extbuilddir: glite-wms-common-devel, glite-wms-purger-devel, } chrpath
 BuildRequires: glite-jobid-api-c-devel, globus-gram-protocol-devel
 BuildRequires: glite-jobid-api-cpp-devel, c-ares-devel
 BuildRequires: glite-lb-client-devel, libtool
-BuildRequires: glite-jdl-api-cpp-devel, classads-devel
-BuildRequires: glite-wms-purger-devel, boost-devel
+BuildRequires: glite-jdl-api-cpp-devel, classads-devel, boost-devel
 BuildRequires: glite-build-common-cpp, condor-emi
 BuildRequires: docbook-style-xsl, libxslt
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -33,6 +32,7 @@ Condor-G connector for the Workload Management System
 %setup -c -q
 
 %build
+cp %{extbuilddir}/../project/emi-condorg.pc /usr/lib64/pkgconfig/
 %{!?extbuilddir:%define extbuilddir "--"}
 if test "x%{extbuilddir}" == "x--" ; then
   ./configure --prefix=%{buildroot}/usr --sysconfdir=%{buildroot}/etc --disable-static PVER=%{version}

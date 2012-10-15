@@ -12,7 +12,9 @@ Requires(post): chkconfig
 Requires(preun): chkconfig
 Requires(preun): initscripts
 BuildRequires: chrpath, libtool, boost-devel, c-ares-devel, classads-devel, globus-ftp-client-devel, globus-ftp-control-devel, docbook-style-xsl
-BuildRequires: glite-build-common-cpp, glite-jobid-api-c-devel, glite-wms-helper-devel, glite-wms-purger-devel, glite-px-proxyrenewal-devel, glite-lb-client-devel, glite-jobid-api-cpp-devel, libxslt
+BuildRequires: glite-build-common-cpp, glite-jobid-api-c-devel, 
+BuildRequires: %{!?extbuilddir: glite-wms-common-devel, glite-wms-ism-devel, glite-wms-helper-devel, glite-wms-purger-devel, } glite-px-proxyrenewal-devel
+BuildRequires: glite-lb-client-devel, glite-jobid-api-cpp-devel, libxslt
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 AutoReqProv: yes
 Source: %{name}-%{version}-%{release}.tar.gz
