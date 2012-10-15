@@ -1,0 +1,16 @@
+usr/lib/libglite_wms_conf.so
+usr/lib/libglite_wms_conf.so.0
+usr/lib/libglite_wms_conf.so.0.0.0
+usr/lib/libglite_wms_logger.so
+usr/lib/libglite_wms_logger.so.0
+usr/lib/libglite_wms_logger.so.0.0.0
+usr/lib/libglite_wms_process.so
+usr/lib/libglite_wms_process.so.0
+usr/lib/libglite_wms_process.so.0.0.0
+usr/lib/libglite_wms_util.so
+usr/lib/libglite_wms_util.so.0
+usr/lib/libglite_wms_util.so.0.0.0
+usr/libexec/glite-wms-eval_ad_expr
+usr/bin/glite-wms-get-configuration
+usr/bin/glite-wms-quota-adjust
+
