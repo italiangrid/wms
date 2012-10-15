@@ -1,5 +1,5 @@
 Format-Specification: http://svn.debian.org/wsvn/dep/web/deps/dep5.mdwn?op=file&rev=135
-Name: libglite-wms-common-src
+Name: libglite-wms-ism-src
 Maintainer: WMS Support <wms-support@cnaf.infn.it>
 Source: http://glite.cern.ch/
 
