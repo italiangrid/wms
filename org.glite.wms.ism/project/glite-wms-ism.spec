@@ -7,10 +7,10 @@ Vendor: EMI
 URL: http://glite.cern.ch/
 Group: System Environment/Libraries
 BuildArch: %{_arch}
-BuildRequires: %{!?extbuilddir: glite-wms-common-devel,} chrpath
-BuildRequires: %{!?extbuilddir: glite-wms-utils-classad-devel,} libtool
+BuildRequires: glite-wms-common-devel, chrpath
+BuildRequires: glite-wms-utils-classad-devel, libtool
 BuildRequires: boost-devel, classads-devel
-BuildRequires: %{!?extbuilddir: glite-build-common-cpp, } openldap-devel
+BuildRequires: glite-build-common-cpp, openldap-devel
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 AutoReqProv: yes
 Source: %{name}-%{version}-%{release}.tar.gz

@@ -1,5 +1,16 @@
 #!/bin/bash
 
+create_source_tarball()
+{
+   mkdir -p rpmbuild/SOURCES 2>/dev/null
+   tar --exclude reports --exclude rpmbuild --exclude build --exclude bin --exclude tools -zcf \
+      ./rpmbuild/SOURCES/$1-$2-$3.$4.tar.gz .
+   if [ $? -ne 0 ]; then
+     echo ERROR creating tarball
+     exit
+   fi
+}
+
 autotools_build()
 {
    COMPONENT=$1
@@ -9,7 +20,7 @@ autotools_build()
    LOCAL_STAGE_DIR=$5
 
    cd $COMPONENT
-   mkdir -p build src/autogen rpmbuild/SOURCES 2>/dev/null
+   mkdir -p build src/autogen 2>/dev/null
    cp -R $BUILD_DIR/org.glite.wms/org.glite.wms-ui/project/doxygen project/doxygen 2>/dev/null # needed by some UI component
    aclocal -I ${M4_LOCATION} && \
 	libtoolize --force && autoheader && automake --foreign --add-missing --copy && \
@@ -18,21 +29,14 @@ autotools_build()
       echo ERROR
       exit
    fi
-
-   # create the source tarball before configure and make
-   tar --exclude reports --exclude rpmbuild --exclude build --exclude bin --exclude tools -zcf \
-      ./rpmbuild/SOURCES/${PACKAGE_NAME}-${VERSION}-${AGE}.${PLATFORM}.tar.gz .
-   if [ $? -ne 0 ]; then
-     echo ERROR
-     exit
-   fi
+   create_source_tarball ${PACKAGE_NAME} ${VERSION} ${AGE} ${PLATFORM}
    cd build
    ../configure --prefix=${LOCAL_STAGE_DIR}/usr --sysconfdir=${LOCAL_STAGE_DIR}/etc --disable-static PVER=${VERSION}
    if [ $? -ne 0 ]; then
       echo ERROR
       exit
    fi
-   make
+   make -j$CORES
    if [ $? -ne 0 ]; then
       echo ERROR
       exit
@@ -60,7 +64,13 @@ cmake_build()
    LOCAL_STAGE_DIR=$5
 
    cd $COMPONENT
-   echo TODO
+   create_source_tarball ${PACKAGE_NAME} ${VERSION} ${AGE} ${PLATFORM}
+   cmake . -j$CORES -DCMAKE_INSTALL_PREFIX=$LOCAL_STAGE_DIR= \
+      -Dprefix=$LOCAL_STAGE_DIR/usr \
+      -Dexec_prefix=$LOCAL_STAGE_DIR/usr \
+      -Dlibdir=$LOCAL_STAGE_DIR/usr/lib \
+      -Dincludedir=$LOCAL_STAGE_DIR/usr/include -DPVER=$VERSION
+   make install
    cd $BUILD_DIR/org.glite.wms
 }
 
@@ -73,13 +83,8 @@ ant_build()
    LOCAL_STAGE_DIR=$5
 
    cd $COMPONENT
-   mkdir -p lib bin autogen doc/autogen src/autogen ${LOCAL_STAGE_DIR}/usr/share/doc/ rpmbuild/SOURCES
-   tar --exclude rpmbuild --exclude ${LOCAL_STAGE_DIR} --exclude --exclude bin --exclude tools -zcf \
-      ./rpmbuild/SOURCES/${PACKAGE_NAME}-${VERSION}-${AGE}.${PLATFORM}.tar.gz .
-   if [ $? -ne 0 ]; then
-      echo ERROR
-      exit
-   fi
+   mkdir -p lib bin autogen doc/autogen src/autogen ${LOCAL_STAGE_DIR}/usr/share/doc/
+   create_source_tarball ${PACKAGE_NAME} ${VERSION} ${AGE} ${PLATFORM}
    echo "dist.location=${LOCAL_STAGE_DIR}" > .configuration.properties
    echo "org.glite.wms.wsdl.location=$BUILD_DIR/org.glite.wms/org.glite.wms.wmproxy/src/server" >> .configuration.properties
    echo "module.version=${VERSION}" >> .configuration.properties
@@ -107,13 +112,7 @@ python_build()
    LOCAL_STAGE_DIR=$5
 
    cd $COMPONENT
-   mkdir -p rpmbuild/SOURCES
-   tar --exclude rpmbuild --exclude build --exclude bin --exclude tools -zcf \
-      ./rpmbuild/SOURCES/${PACKAGE_NAME}-${VERSION}-${AGE}.${PLATFORM}.tar.gz .
-   if [ $? -ne 0 ]; then
-      echo ERROR
-      exit
-   fi
+   create_source_tarball ${PACKAGE_NAME} ${VERSION} ${AGE} ${PLATFORM}
    echo "[global]" > setup.cfg 2>/dev/null
    echo "pkgversion=${VERSION}" >> setup.cfg 2>/dev/null
    python setup.py install -O1 --prefix ${LOCAL_STAGE_DIR}/usr --install-data ${LOCAL_STAGE_DIR}
@@ -130,14 +129,7 @@ no_build()
    PACKAGE_NAME=$4
 
    cd $COMPONENT
-   mkdir -p rpmbuild/SOURCES 2>/dev/null
-   # creating binary tarball
-   tar --exclude project --exclude rpmbuild \
-      -czf rpmbuild/SOURCES/${PACKAGE_NAME}-$VERSION-$AGE.tar.gz *
-   if [ $? -ne 0 ]; then
-     echo ERROR
-     exit
-   fi
+   create_source_tarball ${PACKAGE_NAME} ${VERSION} ${AGE} ${PLATFORM}
    eval "sed -e 's/__version__/$VERSION/g' -e 's/__release__/$AGE/g' \
       < project/$PACKAGE_NAME.spec.in > project/$PACKAGE_NAME.spec"
    rpmbuild -bb --target $ARCH --define "_topdir $BUILD_DIR/org.glite.wms/$COMPONENT/rpmbuild" \
@@ -175,8 +167,29 @@ rpm_package()
    /usr/bin/rpmlint --file=/usr/share/rpmlint/config -i rpmbuild/RPMS/$ARCH/*
    /usr/bin/rpmlint --file=/usr/share/rpmlint/config -i rpmbuild/SRPMS/*
 
+   sudo rpm -Uvh --force --nodeps rpmbuild/RPMS/$ARCH/*-devel.rpm 2>/dev/null # 'only' needed by the mock build
+
    mv rpmbuild/RPMS/$ARCH/* "$BUILD_DIR"/org.glite.wms/RPMS
    mv rpmbuild/SRPMS/* "$BUILD_DIR"/org.glite.wms/SRPMS
+}
+
+deb_package()
+{
+   VERSION=$1
+   AGE=$2
+   PLATFORM=$3
+   PACKAGE_NAME=$4
+   COMPONENT=$5
+   LOCAL_STAGE_DIR=$6
+
+   mkdir -p debian/nodev/ 2>/dev/null
+   cp debian/deb-control-file.txt debian/build_nodev/debian/control
+   cp debian/lib$PACKAGE_NAME.install debian/nodev/debian
+   mkdir -p $HOME/WORKAREA/debian/build_dev/org.glite.wms.common/debian
+   cp debian/deb-control-file-dev.txt debian/dev/debian/control
+   cp debian/libglite-wms-common-dev.install debian/de/debian
+   dpkg -b debian/nodev/ debian/nodev/$PACKAGE_NAME-$VERSION.deb
+   dpkg -b debian/dev/ debian/dev/$PACKAGE_NAME-dev-$VERSION.deb
 }
 
 get_external_deps()
@@ -214,6 +227,8 @@ PLATFORM=$4
 #fi
 M4_LOCATION=/usr/share/emi/build/m4
 ARCH=`uname -i`
+CORES=`cat /proc/cpuinfo|grep processor|wc -l`
+
 DEPS_LIST=( yum-priorities pkgconfig mock rpm-build rpmlint git mod_fcgid mod_ssl axis2 gridsite-devel httpd-devel zlib-devel boost-devel c-ares-devel glite-px-proxyrenewal-devel voms-devel voms-clients argus-pep-api-c-devel lcmaps-without-gsi-devel lcmaps-devel classads-devel glite-build-common-cpp gsoap-devel libtar-devel cmake globus-ftp-client globus-ftp-client-devel log4cpp-devel log4cpp glite-jobid-api-c glite-jobid-api-c-devel glite-jobid-api-cpp-devel openldap-devel python-ldap glite-wms-utils-exception glite-wms-utils-classad glite-wms-utils-exception-devel glite-wms-utils-classad-devel chrpath cppunit-devel glite-jdl-api-cpp-devel glite-lb-client-devel glite-lbjp-common-gsoap-plugin-devel condor-emi glite-ce-cream-client-api-c glite-ce-cream-client-devel emi-trustmanager emi-trustmanager-axis )
 COMPONENT=( org.glite.wms.common org.glite.wms.ism org.glite.wms.helper org.glite.wms.purger org.glite.wms.jobsubmission org.glite.wms.manager org.glite.wms.wmproxy org.glite.wms.ice org.glite.wms.nagios org.glite.wms org.glite.wms.brokerinfo-access org.glite.wms.wmproxy-api-cpp org.glite.wms.wmproxy-api-java org.glite.wms.wmproxy-api-python org.glite.wms-ui.api-python org.glite.wms-ui.commands )
 BUILD_TYPE=( autotools autotools autotools autotools autotools autotools autotools autotools null pkg_only autotools autotools ant python autotools autotools )
@@ -287,10 +302,14 @@ for i in `seq 0 $((START - 1))`; do
    STAGE="$BUILD_DIR/org.glite.wms/${COMPONENT[$i]}/stage"
    export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$STAGE/$LOCAL_PKGCFG_LIB
 done
+if [ $7 -eq 1 ]; then
+   rm -rf "$BUILD_DIR"/org.glite.wms/RPMS
+   rm -rf "$BUILD_DIR"/org.glite.wms/SRPMS
+fi
 for i in `seq $START $END`; do
    echo -e "\n*** building component ${COMPONENT[$i]} ***\n"
    
-   if [ $7 -ne 0 ]; then
+   if [ $7 -eq 1 ]; then
       echo -e "\n*** cleaning up ${COMPONENT[$i]} ***\n"
       cd "$BUILD_DIR/org.glite.wms/${COMPONENT[$i]}"
       make -C build clean 2>/dev/null

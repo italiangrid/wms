@@ -7,13 +7,13 @@ Vendor: EMI
 URL: http://glite.cern.ch/
 Group: System Environment/Libraries
 BuildArch: %{_arch}
-BuildRequires: %{!?extbuilddir: glite-jobid-api-c-devel,} chrpath
-BuildRequires: %{!?extbuilddir: glite-jobid-api-cpp-devel,} libtool
-BuildRequires: %{!?extbuilddir: glite-wms-utils-exception-devel,} boost-devel
-BuildRequires: %{!?extbuilddir: glite-wms-utils-classad-devel,} classads-devel
-BuildRequires: globus-common-devel, globus-ftp-client-devel
+BuildRequires: glite-jobid-api-c-devel, chrpath
+BuildRequires: glite-jobid-api-cpp-devel, libtool
+BuildRequires: glite-wms-utils-exception-devel, boost-devel
+BuildRequires: glite-wms-utils-classad-devel, classads-devel
+BuildRequires: globus-ftp-client-devel
 BuildRequires: globus-gss-assist-devel, globus-io-devel
-BuildRequires: %{!?extbuilddir: glite-build-common-cpp, } cppunit-devel, openldap-devel
+BuildRequires: glite-build-common-cpp, cppunit-devel, openldap-devel
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 AutoReqProv: yes
 Source: %{name}-%{version}-%{release}.tar.gz
@@ -90,9 +90,6 @@ rm -rf %{buildroot}
 /usr/bin/glite-wms-get-configuration
 /usr/libexec/glite-wms-eval_ad_expr
 
-
-
-
 %package devel
 Summary: Development files for WMS common module
 Group: System Environment/Libraries
@@ -100,7 +97,7 @@ Requires: %{name}%{?_isa} = %{version}-%{release}
 Requires: glite-jobid-api-c-devel, glite-jobid-api-cpp-devel
 Requires: glite-wms-utils-exception-devel
 Requires: glite-wms-utils-classad-devel, glite-build-common-cpp
-Requires: globus-common-devel, globus-ftp-client-devel
+Requires: globus-ftp-client-devel
 Requires: globus-gss-assist-devel, globus-io-devel
 
 %description devel
@@ -123,9 +120,6 @@ Development files for WMS common module
 %{_libdir}/pkgconfig/wms-common*.pc
 %{_libdir}/libglite_wms_*.so
 
-
-
 %changelog
 * %{extcdate} WMS group <wms-support@lists.infn.it> - %{extversion}-%{extage}.%{extdist}
 - %{extclog}
-
