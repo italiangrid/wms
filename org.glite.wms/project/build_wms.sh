@@ -50,7 +50,11 @@ autotools_build()
    mkdir -p ${LOCAL_STAGE_DIR}/usr/share/doc/${PACKAGE_NAME}
    cp -r autodoc/html ${LOCAL_STAGE_DIR}/usr/share/doc/${PACKAGE_NAME} 2>/dev/null # needed by some UI component
    cd .. # from build to component root
-   rpm_package $VERSION $AGE $PLATFORM $PACKAGE_NAME $COMPONENT $LOCAL_STAGE_DIR
+   if [ $PACKAGER = "rpm" ]; then
+      rpm_package $VERSION $AGE $PLATFORM $PACKAGE_NAME $COMPONENT $LOCAL_STAGE_DIR
+   elif [ $PACKAGER = "deb" ]; then
+      deb_package $VERSION $AGE $PLATFORM $PACKAGE_NAME $COMPONENT $LOCAL_STAGE_DIR
+   fi
    mv ./rpmbuild/SOURCES/${PACKAGE_NAME}-${VERSION}-${AGE}.${PLATFORM}.tar.gz "$BUILD_DIR"/org.glite.wms/tgz
    cd $BUILD_DIR/org.glite.wms
 }
@@ -65,12 +69,27 @@ cmake_build()
 
    cd $COMPONENT
    create_source_tarball ${PACKAGE_NAME} ${VERSION} ${AGE} ${PLATFORM}
-   cmake . -j$CORES -DCMAKE_INSTALL_PREFIX=$LOCAL_STAGE_DIR= \
-      -Dprefix=$LOCAL_STAGE_DIR/usr \
-      -Dexec_prefix=$LOCAL_STAGE_DIR/usr \
-      -Dlibdir=$LOCAL_STAGE_DIR/usr/lib \
-      -Dincludedir=$LOCAL_STAGE_DIR/usr/include -DPVER=$VERSION
+   cmake . -DCMAKE_INSTALL_PREFIX=$LOCAL_STAGE_DIR \
+      -DPREFIX=$LOCAL_STAGE_DIR/usr \
+      -DEXEC_PREFIX=$LOCAL_STAGE_DIR/usr \
+      -DLIBDIR=$LOCAL_STAGE_DIR/usr/lib64 \
+      -DINCLUDEDIR=$LOCAL_STAGE_DIR/usr/include \
+      -DPVER=$VERSION
+   if [ $? -ne 0 ]; then
+      echo ERROR
+      exit
+   fi
    make install
+   if [ $? -ne 0 ]; then
+      echo ERROR
+      exit
+   fi
+   if [ $PACKAGER = "rpm" ]; then
+      rpm_package $VERSION $AGE $PLATFORM $PACKAGE_NAME $COMPONENT $LOCAL_STAGE_DIR
+   elif [ $PACKAGER = "deb" ]; then
+      deb_package $VERSION $AGE $PLATFORM $PACKAGE_NAME $COMPONENT $LOCAL_STAGE_DIR
+   fi
+   mv ./rpmbuild/SOURCES/${PACKAGE_NAME}-${VERSION}-${AGE}.${PLATFORM}.tar.gz "$BUILD_DIR"/org.glite.wms/tgz
    cd $BUILD_DIR/org.glite.wms
 }
 
@@ -98,7 +117,11 @@ ant_build()
       echo ERROR
       exit
    fi
-   rpm_package $VERSION $AGE $PLATFORM $PACKAGE_NAME $COMPONENT $LOCAL_STAGE_DIR
+   if [ $PACKAGER = "rpm" ]; then
+      rpm_package $VERSION $AGE $PLATFORM $PACKAGE_NAME $COMPONENT $LOCAL_STAGE_DIR
+   elif [ $PACKAGER = "deb" ]; then
+      deb_package $VERSION $AGE $PLATFORM $PACKAGE_NAME $COMPONENT $LOCAL_STAGE_DIR
+   fi
    mv ./rpmbuild/SOURCES/${PACKAGE_NAME}-${VERSION}-${AGE}.${PLATFORM}.tar.gz "$BUILD_DIR"/org.glite.wms/tgz
    cd $BUILD_DIR/org.glite.wms
 }
@@ -116,7 +139,11 @@ python_build()
    echo "[global]" > setup.cfg 2>/dev/null
    echo "pkgversion=${VERSION}" >> setup.cfg 2>/dev/null
    python setup.py install -O1 --prefix ${LOCAL_STAGE_DIR}/usr --install-data ${LOCAL_STAGE_DIR}
-   rpm_package $VERSION $AGE $PLATFORM $PACKAGE_NAME $COMPONENT $LOCAL_STAGE_DIR
+   if [ $PACKAGER = "rpm" ]; then
+      rpm_package $VERSION $AGE $PLATFORM $PACKAGE_NAME $COMPONENT $LOCAL_STAGE_DIR
+   elif [ $PACKAGER = "deb" ]; then
+      deb_package $VERSION $AGE $PLATFORM $PACKAGE_NAME $COMPONENT $LOCAL_STAGE_DIR
+   fi
    mv ./rpmbuild/SOURCES/${PACKAGE_NAME}-${VERSION}-${AGE}.${PLATFORM}.tar.gz "$BUILD_DIR"/org.glite.wms/tgz
    cd $BUILD_DIR/org.glite.wms
 }
@@ -167,8 +194,6 @@ rpm_package()
    /usr/bin/rpmlint --file=/usr/share/rpmlint/config -i rpmbuild/RPMS/$ARCH/*
    /usr/bin/rpmlint --file=/usr/share/rpmlint/config -i rpmbuild/SRPMS/*
 
-   sudo rpm -Uvh --force --nodeps rpmbuild/RPMS/$ARCH/*-devel.rpm 2>/dev/null # 'only' needed by the mock build
-
    mv rpmbuild/RPMS/$ARCH/* "$BUILD_DIR"/org.glite.wms/RPMS
    mv rpmbuild/SRPMS/* "$BUILD_DIR"/org.glite.wms/SRPMS
 }
@@ -182,10 +207,12 @@ deb_package()
    COMPONENT=$5
    LOCAL_STAGE_DIR=$6
 
+   # TODO to be tested
+   # TODO generation of src-deb missing
    mkdir -p debian/nodev/ 2>/dev/null
    cp debian/deb-control-file.txt debian/build_nodev/debian/control
    cp debian/lib$PACKAGE_NAME.install debian/nodev/debian
-   mkdir -p $HOME/WORKAREA/debian/build_dev/org.glite.wms.common/debian
+   mkdir -p debian/build_dev/org.glite.wms.common/debian
    cp debian/deb-control-file-dev.txt debian/dev/debian/control
    cp debian/libglite-wms-common-dev.install debian/de/debian
    dpkg -b debian/nodev/ debian/nodev/$PACKAGE_NAME-$VERSION.deb
@@ -194,23 +221,22 @@ deb_package()
 
 get_external_deps()
 {
-   # EPEL repositories
+   # install EPEL repositories
    if [ $PLATFORM = "sl6" ]; then
      sudo rpm -ivh http://ftp.tu-chemnitz.de/pub/linux/fedora-epel/6/i386/epel-release-6-7.noarch.rpm
    elif [ $PLATFORM = "sl5" ]; then
       sudo rpm -ivh http://fedora.uib.no/epel/5/i386/epel-release-5-4.noarch.rpm
    fi
-   # EMI repositories
+   # install EMI repositories
    sudo rpm --import http://emisoft.web.cern.ch/emisoft/dist/EMI/$EMI_RELEASE/RPM-GPG-KEY-emi
    sudo rpm -ivh "http://emisoft.web.cern.ch/emisoft/dist/EMI/$EMI_RELEASE/sl6/x86_64/base/emi-release-${EMI_RELEASE}.0.0-1.$PLATFORM.noarch.rpm"
-
+   # WMS build dependencies and all that's needed to build and package
    sudo yum -y install ${DEPS_LIST[@]}
 }
 
 #
 # MAIN
 #
-
 if [ -z $8 ]; then
    echo "wms <tag:master/...> <build-dir-name> <emi-release:1/2/3> <os:sl5/sl6/deb6> <want_external_deps:0/1> <want_vcs_checkout:0/1> <want_cleanup:0/1> <want_mock:0/1>"
    exit
@@ -219,19 +245,18 @@ fi
 BUILD_DIR=`pwd`/$2
 EMI_RELEASE=$3
 PLATFORM=$4
-# TODO
-#if [ $PLATFORM == "deb" ]; then
-#   PACKAGER=rpm
-#else
-#   PACKAGER=deb
-#fi
+if [ ${PLATFORM:0:3} = "deb" ]; then
+   PACKAGER=deb
+elif [ ${PLATFORM:0:2} = "sl" ]; then
+   PACKAGER=rpm
+fi
 M4_LOCATION=/usr/share/emi/build/m4
 ARCH=`uname -i`
 CORES=`cat /proc/cpuinfo|grep processor|wc -l`
 
 DEPS_LIST=( yum-priorities pkgconfig mock rpm-build rpmlint git mod_fcgid mod_ssl axis2 gridsite-devel httpd-devel zlib-devel boost-devel c-ares-devel glite-px-proxyrenewal-devel voms-devel voms-clients argus-pep-api-c-devel lcmaps-without-gsi-devel lcmaps-devel classads-devel glite-build-common-cpp gsoap-devel libtar-devel cmake globus-ftp-client globus-ftp-client-devel log4cpp-devel log4cpp glite-jobid-api-c glite-jobid-api-c-devel glite-jobid-api-cpp-devel openldap-devel python-ldap glite-wms-utils-exception glite-wms-utils-classad glite-wms-utils-exception-devel glite-wms-utils-classad-devel chrpath cppunit-devel glite-jdl-api-cpp-devel glite-lb-client-devel glite-lbjp-common-gsoap-plugin-devel condor-emi glite-ce-cream-client-api-c glite-ce-cream-client-devel emi-trustmanager emi-trustmanager-axis )
 COMPONENT=( org.glite.wms.common org.glite.wms.ism org.glite.wms.helper org.glite.wms.purger org.glite.wms.jobsubmission org.glite.wms.manager org.glite.wms.wmproxy org.glite.wms.ice org.glite.wms.nagios org.glite.wms org.glite.wms.brokerinfo-access org.glite.wms.wmproxy-api-cpp org.glite.wms.wmproxy-api-java org.glite.wms.wmproxy-api-python org.glite.wms-ui.api-python org.glite.wms-ui.commands )
-BUILD_TYPE=( autotools autotools autotools autotools autotools autotools autotools autotools null pkg_only autotools autotools ant python autotools autotools )
+BUILD_TYPE=( cmake cmake cmake autotools autotools autotools autotools autotools null pkg_only autotools autotools ant python autotools autotools )
 PACKAGE_NAME=( glite-wms-common glite-wms-ism glite-wms-helper glite-wms-purger glite-wms-jobsubmission glite-wms-manager glite-wms-wmproxy glite-wms-ice emi-wms-nagios emi-wms glite-wms-brokerinfo-access glite-wms-wmproxy-api-cpp glite-wms-wmproxy-api-java glite-wms-wmproxy-api-python glite-wms-ui-api-python glite-wms-ui-commands )
 VERSION=( 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 )
 AGE=( 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 )
@@ -256,13 +281,17 @@ if [ $8 -eq 1 ]; then
    fi
 
    rm -f /var/lib/mock/emi${EMI_RELEASE}-$PLATFORM-$ARCH/result/build.log 
-   for pkgname in ${PACKAGE_NAME[@]}; do # --no-cleanup-after
+   for i in `seq $START $END`; do
       mock -r emi${EMI_RELEASE}-$PLATFORM-$ARCH --no-clean --rebuild \
-         "$BUILD_DIR/org.glite.wms/SRPMS/$pkgname-${VERSION}-${AGE}.${PLATFORM}.src.rpm"
-      # installed produced dependency. --force is because this might not be the first time
+         "$BUILD_DIR/org.glite.wms/SRPMS/${PACKAGE_NAME[$i]}-${VERSION}-${AGE}.${PLATFORM}.src.rpm"
+      if [ $? -ne 0 ]; then
+         echo ERROR
+         exit
+      fi
+      # install the generated package(s)
       mock -r emi${EMI_RELEASE}-$PLATFORM-$ARCH --install \
-         /var/lib/mock/emi${EMI_RELEASE}-$PLATFORM-$ARCH/result/$pkgname-$VERSION-$AGE.$PLATFORM.$ARCH.rpm \
-         /var/lib/mock/emi${EMI_RELEASE}-$PLATFORM-$ARCH/result/$pkgname-devel-$VERSION-$AGE.$PLATFORM.$ARCH.rpm
+         /var/lib/mock/emi${EMI_RELEASE}-$PLATFORM-$ARCH/result/${PACKAGE_NAME[$i]}-$VERSION-$AGE.$PLATFORM.$ARCH.rpm \
+         /var/lib/mock/emi${EMI_RELEASE}-$PLATFORM-$ARCH/result/${PACKAGE_NAME[$i]}-devel-$VERSION-$AGE.$PLATFORM.$ARCH.rpm
    done
 
    echo -e "\n*** mock build completed ***\n"
@@ -292,7 +321,7 @@ mkdir tgz RPMS SRPMS 2>/dev/null
 
 echo -e "\n*** starting build ***\n"
 
-export PKG_CONFIG_PATH=$BUILD_DIR/org.glite.wms/org.glite.wms/project/ # for condor-g.pc and maybe others
+export PKG_CONFIG_PATH=$BUILD_DIR/org.glite.wms/org.glite.wms.jobsubmission/project/ # for emi-condorg.pc
 if [ -d /usr/lib64 ]; then
    LOCAL_PKGCFG_LIB=usr/lib64/pkgconfig/
 else
