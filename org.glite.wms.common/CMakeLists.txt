@@ -32,6 +32,8 @@ endif( ${CMAKE_VERSION} VERSION_LESS "2.8.2" )
 
 set(BINDIR "bin")
 
+set(SBINDIR "sbin")
+
 set(LIBEXEC "libexec")
 
 set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Wall")

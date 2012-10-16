@@ -28,7 +28,7 @@ set_target_properties(glite_wms_util PROPERTIES VERSION 0.0.0 SOVERSION 0)
 
 add_executable(glite-wms-quota-adjust glite_wms_quota_adjust.cpp)
 install(TARGETS glite-wms-quota-adjust
-        DESTINATION ${CMAKE_INSTALL_PREFIX}/${BINDIR})
+        DESTINATION ${CMAKE_INSTALL_PREFIX}/${SBINDIR})
 
 target_link_libraries(glite-wms-quota-adjust 
                                                 ${WMSUTILS_CLASSADS_ALT_LIBRARIES}
@@ -90,7 +90,7 @@ if(DEFINED INSTALL_BUILD)
   install(TARGETS glite_wms_util
     LIBRARY DESTINATION ${INSTALL_BUILD}/${LIBDIR})
   install(TARGETS glite-wms-quota-adjust
-    DESTINATION ${INSTALL_BUILD}/${BINDIR})
+    DESTINATION ${INSTALL_BUILD}/${SBINDIR})
   install(TARGETS glite-wms-eval_ad_expr
     DESTINATION ${INSTALL_BUILD}/${LIBEXEC})
 endif(DEFINED INSTALL_BUILD)
