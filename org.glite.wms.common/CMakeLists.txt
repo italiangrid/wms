@@ -66,5 +66,9 @@ add_definitions( -pipe -DWANT_NAMESPACES -DWANT_CLASSAD_NAMESPACE )
 
 #message("\nPREFIX=${PREFIX}\nCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}\nLIBDIR=${LIBDIR}\nBINDIR=${BINDIR}\n")
 
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE
+    DESTINATION
+    ${CMAKE_INSTALL_PREFIX}/share/doc)
+
 add_subdirectory(src)
 add_subdirectory(interface)
