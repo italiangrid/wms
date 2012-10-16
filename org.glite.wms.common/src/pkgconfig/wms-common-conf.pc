@@ -1,7 +1,7 @@
-prefix=
-exec_prefix=
-libdir=
-includedir=
+prefix=/home/mcecchi/wmstest/org.glite.wms/org.glite.wms.common/stage/usr
+exec_prefix=/home/mcecchi/wmstest/org.glite.wms/org.glite.wms.common/stage/usr
+libdir=/home/mcecchi/wmstest/org.glite.wms/org.glite.wms.common/stage/usr/lib64
+includedir=/home/mcecchi/wmstest/org.glite.wms/org.glite.wms.common/stage/usr/include
 
 Name: wms common configuration api
 Description: WMS common configuration C/C++ APIs
