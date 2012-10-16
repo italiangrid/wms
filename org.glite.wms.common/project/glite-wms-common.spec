@@ -65,7 +65,7 @@ sed 's|^prefix=.*|prefix=/usr|g' %{buildroot}%{_libdir}/pkgconfig/wms-common-con
 mv %{buildroot}%{_libdir}/pkgconfig/wms-common-conf.pc.new %{buildroot}%{_libdir}/pkgconfig/wms-common-conf.pc
 sed 's|^prefix=.*|prefix=/usr|g' %{buildroot}%{_libdir}/pkgconfig/wms-common-quota.pc > %{buildroot}%{_libdir}/pkgconfig/wms-common-quota.pc.new
 mv %{buildroot}%{_libdir}/pkgconfig/wms-common-quota.pc.new %{buildroot}%{_libdir}/pkgconfig/wms-common-quota.pc
-rm %{buildroot}%{_libdir}/*.la
+rm -f %{buildroot}%{_libdir}/*.la
 chrpath --delete %{buildroot}%{_libdir}/libglite_wms_*.so.0.0.0
 chrpath --delete %{buildroot}/usr/sbin/glite-wms-quota-adjust
 chrpath --delete %{buildroot}/usr/bin/glite-wms-get-configuration
