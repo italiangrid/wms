@@ -10,6 +10,7 @@ CONF = $(top_builddir)/src/configuration/libglite_wms_conf.la
 
 lib_LTLIBRARIES    = \
 	libglite_wms_util.la \
+	libglite_wms_iiattrutil.la \
 	libglite_wms_quota.la
 
 sbin_PROGRAMS      = glite-wms-quota-adjust
@@ -52,6 +53,9 @@ libglite_wms_util_la_LIBADD = -lstdc++ \
 	$(GLITE_WMSUTILS_CLASSADS_LIBS) \
 	$(GLITE_JOBID_LIBS)
 
+libglite_wms_iiattrutil_la_SOURCES = \
+	ii_attr_utils.cpp
+
 libglite_wms_quota_la_SOURCES = \
 	quota.cpp
 
@@ -59,6 +63,7 @@ utilitiesincludedir = $(includedir)/glite/wms/common/utilities
 utilitiesinclude_HEADERS = \
 	boost_fs_add.h \
 	streamdescriptor.h \
+	ii_attr_utils.h \
 	LineParserExceptions.h \
 	quota.h \
 	triple.h \
