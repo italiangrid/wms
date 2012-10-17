@@ -56,16 +56,6 @@ typedef std::map<
   ad_ptr
 > PurchaserInfoContainer;
 
-<<<<<<< common.h
-typedef boost::shared_ptr<classad::ClassAd>      glue_info_type;
-typedef std::map<std::string, glue_info_type>    glue_info_container_type;
-typedef glue_info_container_type::const_iterator glue_info_const_iterator;
-typedef glue_info_container_type::iterator       glue_info_iterator;
-
-bool expand_information_service_info(glue_info_type& gluece_info);
-bool insert_gangmatch_storage_ad(glue_info_type& gluece_info);
-bool expand_glueceid_info(glue_info_type& gluece_info);
-=======
 typedef boost::shared_ptr<classad::ClassAd>        gluece_info_type;
 typedef std::map<std::string, gluece_info_type>    gluece_info_container_type;
 typedef gluece_info_container_type::const_iterator gluece_info_const_iterator;
@@ -89,7 +79,6 @@ void tokenize_ldap_dn(std::string const& s, std::vector<std::string> &v);
 bool expand_information_service_info(gluece_info_type& gluece_info);
 bool insert_gangmatch_storage_ad(gluece_info_type& gluece_info);
 bool expand_glueceid_info(gluece_info_type& gluece_info);
->>>>>>> 1.8.2.1.6.2.4.2
 bool split_information_service_url(
   classad::ClassAd const&,
   boost::tuple<std::string, int, std::string>&);
