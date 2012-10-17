@@ -156,7 +156,13 @@ no_build()
    PACKAGE_NAME=$4
 
    cd $COMPONENT
-   create_source_tarball ${PACKAGE_NAME} ${VERSION} ${AGE} ${PLATFORM}
+   mkdir -p rpmbuild/SOURCES rpmbuild/BUILD 2>/dev/null rpmbuild/SPECS rpmbuild/SRPMS rpmbuild/BUILD rpmbuild/RPMS 2>/dev/null
+   tar --exclude reports --exclude rpmbuild --exclude build --exclude bin --exclude tools -zcf \
+      ./rpmbuild/SOURCES/$PACKAGE_NAME-$VERSION-$AGE.noarch.tar.gz .
+   if [ $? -ne 0 ]; then
+     echo ERROR creating tarball
+     exit
+   fi
    eval "sed -e 's/__version__/$VERSION/g' -e 's/__release__/$AGE/g' \
       < project/$PACKAGE_NAME.spec.in > project/$PACKAGE_NAME.spec"
    rpmbuild -bb --target $ARCH --define "_topdir $BUILD_DIR/org.glite.wms/$COMPONENT/rpmbuild" \
@@ -230,7 +236,7 @@ get_external_deps()
       fi
       # install EMI repositories
       sudo rpm --import http://emisoft.web.cern.ch/emisoft/dist/EMI/$EMI_RELEASE/RPM-GPG-KEY-emi
-      sudo rpm -ivh "http://emisoft.web.cern.ch/emisoft/dist/EMI/$EMI_RELEASE/sl6/x86_64/base/emi-release-${EMI_RELEASE}.0.0-1.$PLATFORM.noarch.rpm"
+      sudo rpm -ivh "http://emisoft.web.cern.ch/emisoft/dist/EMI/$EMI_RELEASE/x86_64/base/emi-release-${EMI_RELEASE}.0.0-1.$PLATFORM.noarch.rpm"
       # WMS build dependencies and all that's needed to build and package
       sudo yum -y install ${RH_DEPS_LIST[@]}
    elif [ $PACKAGER = "deb" ]; then
@@ -265,7 +271,7 @@ BUILD_TYPE=( autotools autotools autotools autotools autotools autotools autotoo
 PACKAGE_NAME=( glite-wms-common glite-wms-ism glite-wms-helper glite-wms-purger glite-wms-jobsubmission glite-wms-manager glite-wms-wmproxy glite-wms-ice emi-wms-nagios emi-wms glite-wms-brokerinfo-access glite-wms-wmproxy-api-cpp glite-wms-wmproxy-api-java glite-wms-wmproxy-api-python glite-wms-ui-api-python glite-wms-ui-commands )
 VERSION=( 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 )
 AGE=( 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 )
-START=0
+START=8
 END=15
 
 # mock build
