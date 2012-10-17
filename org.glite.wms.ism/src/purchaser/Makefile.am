@@ -11,12 +11,24 @@
 ## See the License for the specific language governing permissions and 
 ## limitations under the License.
 
-lib_LTLIBRARIES    = libglite_wms_ism_ii_purchaser.la
+lib_LTLIBRARIES    = \
+  libglite_wms_ism_ii_purchaser.la \
+<<<<<<< Makefile.am
+  libglite_wms_ism_ii_g2_purchaser.la
+=======
+  libglite_wms_ism_file_purchaser.la 
+>>>>>>> 1.20.2.8.2.1.2.1.2.3.2.3
 
 libglite_wms_ism_ii_purchaser_la_SOURCES = \
         common.cpp \
+        ldap-utils.cpp \
+        ldap-utils-asynch.cpp \
+        ldap-dn-utils.cpp \
         schema_utils.cpp \
-        ism-ii-purchaser.cpp
+        ism-ii-purchaser.cpp \
+        ldap-utils-g2.cpp \
+        ldap-dn-utils-g2.cpp \
+        schema_utils-g2.cpp
 
 libglite_wms_ism_ii_purchaser_la_LIBADD = $(GLITE_WMSUTILS_CLASSADS_LIBS) \
                 $(GLITE_WMS_COMMON_LOGGER_LIBS) \
@@ -24,15 +36,18 @@ libglite_wms_ism_ii_purchaser_la_LIBADD = $(GLITE_WMSUTILS_CLASSADS_LIBS) \
                 $(CLASSAD_LIBS) \
                 $(LDAP_LIBS)
 
-#libglite_wms_ism_file_purchaser_la_SOURCES = \
-#        common.cpp \
-#        ism-file-purchaser.cpp 
+<<<<<<< Makefile.am
+=======
+libglite_wms_ism_file_purchaser_la_SOURCES = \
+        common.cpp \
+        ism-file-purchaser.cpp 
 
-#libglite_wms_ism_file_purchaser_la_LIBADD = $(GLITE_WMSUTILS_CLASSADS_LIBS) \
-#                $(GLITE_WMS_COMMON_LOGGER_LIBS) \
-#                $(BOOST_LIBS) \
-#                $(CLASSAD_LIBS)
+libglite_wms_ism_file_purchaser_la_LIBADD = $(GLITE_WMSUTILS_CLASSADS_LIBS) \
+                $(GLITE_WMS_COMMON_LOGGER_LIBS) \
+                $(BOOST_LIBS) \
+                $(CLASSAD_LIBS)
 
+>>>>>>> 1.20.2.8.2.1.2.1.2.3.2.3
 AM_CPPFLAGS = -I$(top_srcdir)/interface \
 		-I$(top_srcdir)/src \
 		$(GLITE_WMSUTILS_CLASSADS_CFLAGS) \

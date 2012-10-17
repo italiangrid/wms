@@ -17,27 +17,24 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+// File: common.h
 // Author: Salvatore Monforte
 // Author: Francesco Giacomini
-// Author: Marco Cecchi
+// Copyright (c) 2002 EU DataGrid.
+
+// $Id: common.h,v 1.8.2.1.6.2.4.2 2012/06/22 11:51:31 mcecchi Exp $
+
 #ifndef GLITE_WMS_ISM_PURCHASER_COMMON
 #define GLITE_WMS_ISM_PURCHASER_COMMON
 
 #include <vector>
 #include <string>
 #include <map>
-#include <ldap.h>
-#include <lber.h>
 
 #include <boost/shared_ptr.hpp>
-#include <boost/shared_array.hpp>
 #include <boost/tuple/tuple.hpp>
 #include <boost/function.hpp>
 #include <boost/regex.hpp>
-#include "glite/wms/ism/ism.h"
-
-#include <boost/flyweight.hpp>
-#include <boost/unordered_map.hpp>
 
 namespace classad {
 class ClassAd;
@@ -45,76 +42,57 @@ class ClassAd;
 
 namespace glite {
 namespace wms {
+
 namespace ism {
 namespace purchaser {
-
-class LDAPException: public std::exception
-{
-  std::string m_error;
-public:
-  LDAPException(std::string const& error)
-    : m_error(error) { }
-  ~LDAPException() throw() { }
-  virtual char const* what() const throw()
-  {
-    return m_error.c_str();
-  }
-};
 
 typedef boost::function<bool(void)> exit_predicate_type;
 typedef boost::function<bool(std::string const&)> skip_predicate_type;
 typedef boost::shared_ptr<classad::ClassAd> ad_ptr;
-typedef boost::function<bool(
-  int&,
-  boost::unordered_map<
-    boost::flyweight<std::string>,
-    boost::flyweight<std::string>,
-    flyweight_hash
-  >)> update_function_type;
+typedef boost::function<bool(int&, ad_ptr)> update_function_type;
 
-boost::unordered_map<
-  boost::flyweight<std::string>,
-  boost::flyweight<std::string>,
-  flyweight_hash
-> classad2flyweight(ad_ptr ad);
+typedef std::map<
+  std::string,
+  ad_ptr
+> PurchaserInfoContainer;
 
-void merge_ism(
-  boost::unordered_map<
-    boost::flyweight<std::string>,
-    boost::flyweight<std::string>,
-    flyweight_hash
-  >& keyvalue_info,
-  ism_type::iterator const& it
-);
-inline bool iequals(std::string const& a, std::string const& b);
-inline bool istarts_with(std::string const& a, std::string const& b);
-inline std::string strip_prefix(std::string const& prefix, std::string const& s);
-void insert_values(
-  std::string const& name,
-  boost::shared_array<struct berval*> values,
-  std::list<std::string> const& prefix,
-  classad::ClassAd& ad
-);
-classad::ClassAd*
-create_classad_from_ldap_entry(
-  LDAP* ld,
-  LDAPMessage* lde,
-  std::list<std::string> prefix,
-  bool is_schema_version_20 = false
-);
+<<<<<<< common.h
+typedef boost::shared_ptr<classad::ClassAd>      glue_info_type;
+typedef std::map<std::string, glue_info_type>    glue_info_container_type;
+typedef glue_info_container_type::const_iterator glue_info_const_iterator;
+typedef glue_info_container_type::iterator       glue_info_iterator;
+
+bool expand_information_service_info(glue_info_type& gluece_info);
+bool insert_gangmatch_storage_ad(glue_info_type& gluece_info);
+bool expand_glueceid_info(glue_info_type& gluece_info);
+=======
+typedef boost::shared_ptr<classad::ClassAd>        gluece_info_type;
+typedef std::map<std::string, gluece_info_type>    gluece_info_container_type;
+typedef gluece_info_container_type::const_iterator gluece_info_const_iterator;
+typedef gluece_info_container_type::iterator       gluece_info_iterator;
+
+typedef boost::shared_ptr<classad::ClassAd>        gluese_info_type;
+typedef std::map<std::string, gluese_info_type>    gluese_info_container_type;
+typedef gluese_info_container_type::const_iterator gluese_info_const_iterator;
+typedef gluese_info_container_type::iterator       gluese_info_iterator;
+
 void apply_skip_predicate(
-  ism_type& glue_info_container,
+  gluece_info_container_type& gluece_info_container,
+  std::vector<gluece_info_iterator>& gluece_info_container_updated_entries,
   skip_predicate_type skip,
   std::string const& purchased_by);
+void populate_ism(
+  std::vector<gluece_info_iterator>& gluece_info_container_updated_entries,
+  size_t the_ism_index,
+  update_function_type const& uf);
 void tokenize_ldap_dn(std::string const& s, std::vector<std::string> &v);
-void insert_gangmatch_storage_ad(classad::ClassAd& glue_info);
-bool expand_glueid_info(classad::ClassAd& glue_info);
-void insert_gangmatch_storage_ad(ad_ptr glue_info);
-bool expand_glueid_info(ad_ptr glue_info);
+bool expand_information_service_info(gluece_info_type& gluece_info);
+bool insert_gangmatch_storage_ad(gluece_info_type& gluece_info);
+bool expand_glueceid_info(gluece_info_type& gluece_info);
+>>>>>>> 1.8.2.1.6.2.4.2
 bool split_information_service_url(
   classad::ClassAd const&,
-  boost::tuple<std::string, int, std::string>&
-);
+  boost::tuple<std::string, int, std::string>&);
 
 enum exec_mode_t {
   once,

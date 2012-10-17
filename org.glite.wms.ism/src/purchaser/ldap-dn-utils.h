@@ -37,6 +37,7 @@ namespace wms {
 namespace ism {
 namespace purchaser {
 
+void tokenize_ldap_dn(std::string const&, std::vector<std::string>&);
 bool is_gluecluster_info_dn(std::vector<std::string> const&);
 bool is_gluece_info_dn(std::vector<std::string> const&);
 bool is_gluesubcluster_info_dn(std::vector<std::string> const&);
@@ -47,20 +48,6 @@ bool is_gluese_info_dn(std::vector<std::string> const&);
 bool is_gluesa_info_dn(std::vector<std::string> const&);
 bool is_gluese_access_protocol_info_dn(std::vector<std::string> const&);
 bool is_gluese_control_protocol_info_dn(std::vector<std::string> const&);
-
-bool is_glue2_service_dn(std::vector<std::string> const&);
-bool is_glue2_manager_dn(std::vector<std::string> const&);
-bool is_glue2_share_dn(std::vector<std::string> const&);
-bool is_glue2_endpoint_dn(std::vector<std::string> const&);
-bool is_glue2_to_storage_service_dn(std::vector<std::string> const&);
-bool is_glue2_mapping_policy_dn(std::vector<std::string> const&);
-bool is_glue2_access_policy_dn(std::vector<std::string> const&);
-bool is_glue2_resource_dn(std::vector<std::string> const&);
-bool is_glue2_benchmark_dn(std::vector<std::string> const&);
-bool is_glue2_application_env_dn(std::vector<std::string> const&);
-bool is_glue2_service_capacity_dn(std::vector<std::string> const&);
-bool is_glue2_share_capacity_dn(std::vector<std::string> const&);
-bool is_glue2_storage_access_protocol_dn(std::vector<std::string> const&);
 
 } // namespace purchaser
 } // namespace ism

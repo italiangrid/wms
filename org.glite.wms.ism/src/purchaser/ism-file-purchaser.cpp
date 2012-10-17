@@ -11,12 +11,18 @@ You may obtain a copy of the License at
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+// File: ism-file-purchaser.cpp
 // Author: Salvatore Monforte
+// Copyright (c) 2002 EU DataGrid.
+
+// $Id: ism-file-purchaser.cpp,v 1.8.2.4.2.1.2.1.2.2.4.1 2012/05/30 07:20:39 mcecchi Exp $
+
 #include <boost/regex.hpp>
 #include <fstream>
 #include "glite/wms/ism/ism.h"
@@ -120,7 +126,7 @@ void ism_file_purchaser::operator()()
               f_rgma_purchaser_entry_update_fn()));
           }
           else if (purchased_by==string("ism_cemon_async_purchaser")) {
-            get_ism(ism::ce).insert(make_ism_entry(id, ut, info));
+	    get_ism(ism::ce).insert(make_ism_entry(id, ut, info));
 	  }
         }
       }

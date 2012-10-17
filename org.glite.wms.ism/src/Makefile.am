@@ -28,6 +28,7 @@ AM_CPPFLAGS = -I$(top_srcdir)/interface \
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = wms-ism.pc \
-		wms-ism-ii-purchaser.pc
+		wms-ism-ii-purchaser.pc \
+		wms-ism-ii-g2-purchaser.pc
 
 MAINTAINERCLEANFILES = Makefile.in *.*~

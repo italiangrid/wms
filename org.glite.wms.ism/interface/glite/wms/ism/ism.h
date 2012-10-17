@@ -17,15 +17,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-// Authors:
+// File: ISM.h
+// Authors: Elisabetta Ronchieri <elisabetta.ronchieri@cnaf.infn.it>
 //          Marco Cecchi <marco.cecchi@cnaf.infn.it>
-//          Salvatore Monforte <salvatore.monforte@ct.infn.it>
-//          Elisabetta Ronchieri <elisabetta.ronchieri@cnaf.infn.it>
+//
+// $Id: ism.h,v 1.10.2.2.2.5.2.1.2.3.2.1 2011/09/30 12:46:14 mcecchi Exp $
 
 #ifndef GLITE_WMS_ISM_ISM_H
 #define GLITE_WMS_ISM_ISM_H
 
 #include <map>
+#include <vector>
 #include <string>
 #include <boost/shared_ptr.hpp>
 #include <boost/function.hpp>
@@ -33,11 +35,10 @@ limitations under the License.
 #include <boost/thread/thread.hpp>
 #include <boost/thread/recursive_mutex.hpp>
 #include <boost/thread/xtime.hpp>
-#include <boost/flyweight.hpp>
-#include <boost/unordered_map.hpp>
+//#include <boost/flyweight.hpp>
 
 namespace classad {
-   class ClassAd;
+class ClassAd;
 }
 
 namespace glite {
@@ -45,9 +46,10 @@ namespace wms {
 namespace ism {
 
 enum {
-  update_time_entry = 0,
+  id_entry = 0,
+  update_time_entry,
   expiry_time_entry,
-  keyvalue_info_entry,
+  ad_info_entry,
   update_function_entry,
   mutex_entry
 };
@@ -57,53 +59,22 @@ enum {
   se
 };
 
-// resource description
-typedef boost::shared_ptr<classad::ClassAd> ad_ptr;
-
-struct flyweight_hash
-{
-   std::size_t operator()(boost::flyweight<std::string> const& e) const
-   {
-      boost::hash<std::string> hasher;
-      std::string const& str = e.get();
-      return hasher(str);
-   }
-};
-
-// update function
 typedef boost::function<bool(
-  int&,
-  boost::unordered_map<
-    boost::flyweight<std::string>,
-    boost::flyweight<std::string>,
-    flyweight_hash
-  >
-)> update_function_type;
+  int&, boost::shared_ptr<std::map<std::string, std::string> >)
+> update_function_type;
 
 typedef boost::tuple<
+  std::string, // resource identifier
   int, // update time
-  int, // expiry  "
-  boost::unordered_map<
-    boost::flyweight<std::string>,
-    boost::flyweight<std::string>,
-    flyweight_hash
-  >, // ad description in terms of key/value pairs. this is ready to be used
-     // in a flyweight pattern or any distributed cache
+  int, // expiry "
+  boost::shared_ptr<
+    std::map<std::string, std::string>
+  >, // key/value resource description, READY TO BE 'MEMCACHED'
   update_function_type, // update function
-  boost::shared_ptr<boost::mutex::mutex> // one different mutex for each entry
-                                         // mutex is non-copyable
+  boost::shared_ptr<boost::mutex::mutex> // one different mutex for each entry, needed for updating the live side
 > ism_entry_type;
 
-// 1. resource identifier
-// 2. ism entry type
-typedef boost::unordered_map<
-  boost::flyweight<std::string>,
-  ism_entry_type,
-  flyweight_hash
-  //, , __gnu_cxx::malloc_allocator<ism_entry_type>
-> ism_type;
-
-// type specification for the mutex in ism
+typedef std::vector<ism_entry_type> ism_type; // as simple as that...
 typedef boost::recursive_mutex ism_mutex_type;
 
 void set_ism(
@@ -124,19 +95,19 @@ int matching_threads(int side);
 ism_type::value_type make_ism_entry(
   std::string const& id,
   int update_time,
-  boost::unordered_map<
-    boost::flyweight<std::string>,
-    boost::flyweight<std::string>,
-    flyweight_hash  
-  > const& ad_info,
+  boost::shared_ptr<
+    std::map<std::string, std::string>
+  > ad_info,
   int expiry_time = 300,
   update_function_type const& uf = update_function_type()
 );
 
 std::ostream& operator<<(std::ostream& os, ism_type::value_type const& value);
 
-struct call_update_ism_entries
+class call_update_ism_entries
 {
+  void _(size_t);
+public:
   void operator()();
 };
 
@@ -147,12 +118,8 @@ struct update_ism_entry
 
 bool is_expired_ism_entry(const ism_entry_type& entry);
 
-std::string get_ism_dump(void);
-
-struct call_dump_ism_entries
-{
-  void operator()();
-};
+// Returns whether the ism entry is assigned an expiry_time less or equal to 0, or not
+bool is_void_ism_entry(const ism_entry_type& entry);
 
 } // ism
 } // wms
