@@ -7,13 +7,13 @@ Vendor: EMI
 URL: http://glite.cern.ch/
 Group: System Environment/Libraries
 BuildArch: %{_arch}
-BuildRequires: glite-jobid-api-c-devel, chrpath
-BuildRequires: glite-jobid-api-cpp-devel, libtool
-BuildRequires: glite-wms-utils-exception-devel, boost-devel
-BuildRequires: glite-wms-utils-classad-devel, classads-devel
-BuildRequires: globus-ftp-client-devel
+BuildRequires: %{!?extbuilddir: glite-jobid-api-c-devel,} chrpath
+BuildRequires: %{!?extbuilddir: glite-jobid-api-cpp-devel,} libtool
+BuildRequires: %{!?extbuilddir: glite-wms-utils-exception-devel,} boost-devel
+BuildRequires: %{!?extbuilddir: glite-wms-utils-classad-devel,} classads-devel
+BuildRequires: globus-common-devel, globus-ftp-client-devel
 BuildRequires: globus-gss-assist-devel, globus-io-devel
-BuildRequires: glite-build-common-cpp, cppunit-devel, openldap-devel
+BuildRequires: %{!?extbuilddir: glite-build-common-cpp, } cppunit-devel, openldap-devel
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 AutoReqProv: yes
 Source: %{name}-%{version}-%{release}.tar.gz
@@ -65,7 +65,9 @@ sed 's|^prefix=.*|prefix=/usr|g' %{buildroot}%{_libdir}/pkgconfig/wms-common-con
 mv %{buildroot}%{_libdir}/pkgconfig/wms-common-conf.pc.new %{buildroot}%{_libdir}/pkgconfig/wms-common-conf.pc
 sed 's|^prefix=.*|prefix=/usr|g' %{buildroot}%{_libdir}/pkgconfig/wms-common-quota.pc > %{buildroot}%{_libdir}/pkgconfig/wms-common-quota.pc.new
 mv %{buildroot}%{_libdir}/pkgconfig/wms-common-quota.pc.new %{buildroot}%{_libdir}/pkgconfig/wms-common-quota.pc
-rm -f %{buildroot}%{_libdir}/*.la
+sed 's|^prefix=.*|prefix=/usr|g' %{buildroot}%{_libdir}/pkgconfig/wms-common-ldif2classads.pc > %{buildroot}%{_libdir}/pkgconfig/wms-common-ldif2classads.pc.new
+mv %{buildroot}%{_libdir}/pkgconfig/wms-common-ldif2classads.pc.new %{buildroot}%{_libdir}/pkgconfig/wms-common-ldif2classads.pc
+rm %{buildroot}%{_libdir}/*.la
 chrpath --delete %{buildroot}%{_libdir}/libglite_wms_*.so.0.0.0
 chrpath --delete %{buildroot}/usr/sbin/glite-wms-quota-adjust
 chrpath --delete %{buildroot}/usr/bin/glite-wms-get-configuration
@@ -90,6 +92,9 @@ rm -rf %{buildroot}
 /usr/bin/glite-wms-get-configuration
 /usr/libexec/glite-wms-eval_ad_expr
 
+
+
+
 %package devel
 Summary: Development files for WMS common module
 Group: System Environment/Libraries
@@ -97,7 +102,7 @@ Requires: %{name}%{?_isa} = %{version}-%{release}
 Requires: glite-jobid-api-c-devel, glite-jobid-api-cpp-devel
 Requires: glite-wms-utils-exception-devel
 Requires: glite-wms-utils-classad-devel, glite-build-common-cpp
-Requires: globus-ftp-client-devel
+Requires: globus-common-devel, globus-ftp-client-devel
 Requires: globus-gss-assist-devel, globus-io-devel
 
 %description devel
@@ -110,16 +115,21 @@ Development files for WMS common module
 %dir /usr/include/glite/wms/common/
 %dir /usr/include/glite/wms/common/logger/
 %dir /usr/include/glite/wms/common/configuration/
+%dir /usr/include/glite/wms/common/ldif2classad/
 %dir /usr/include/glite/wms/common/utilities/
 %dir /usr/include/glite/wms/common/process/
 
 /usr/include/glite/wms/common/logger/*.h
 /usr/include/glite/wms/common/configuration/*.h
+/usr/include/glite/wms/common/ldif2classad/*.h
 /usr/include/glite/wms/common/utilities/*.h
 /usr/include/glite/wms/common/process/*.h
 %{_libdir}/pkgconfig/wms-common*.pc
 %{_libdir}/libglite_wms_*.so
 
+
+
 %changelog
 * %{extcdate} WMS group <wms-support@lists.infn.it> - %{extversion}-%{extage}.%{extdist}
 - %{extclog}
+
