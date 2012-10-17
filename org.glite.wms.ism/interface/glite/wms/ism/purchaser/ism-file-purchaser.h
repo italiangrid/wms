@@ -17,7 +17,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+// File: ism-file-purchaser.h
 // Author: Salvatore Monforte <Salvatore.Monforte@ct.infn.it>
+// Copyright (c) 2004 EU DataGrid.
+
+// $Id: ism-file-purchaser.h,v 1.3.8.1.2.1.4.2 2010/04/08 13:54:43 mcecchi Exp $
+
 #ifndef GLITE_WMS_ISM_PURCHASER_ISM_FILE_PURCHASER_H
 #define GLITE_WMS_ISM_PURCHASER_ISM_FILE_PURCHASER_H
 

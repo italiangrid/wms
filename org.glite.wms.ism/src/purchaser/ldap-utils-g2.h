@@ -17,7 +17,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+// File: ldap-utils.h
 // Author: Salvatore Monforte
+// Copyright (c) 2004 EU DataGrid.
+
+// $Id: ldap-utils-g2.h,v 1.1.2.2 2012/06/19 13:53:37 mcecchi Exp $
+
 #ifndef GLITE_WMS_II_PURCHASER_LDAP_UTILS_G2_H
 #define GLITE_WMS_II_PURCHASER_LDAP_UTILS_G2_H
 
@@ -29,6 +34,23 @@ namespace wms {
 namespace ism {
 namespace purchaser {
 
+class LDAPException: public std::exception
+{
+  std::string m_error;
+public:
+  LDAPException(std::string const& error)
+    : m_error(error)
+  {
+  }
+  ~LDAPException() throw()
+  {
+  }
+  virtual char const* what() const throw()
+  {
+    return m_error.c_str();
+  }
+};
+
 void
 fetch_bdii_ce_info_g2(
   std::string const& hostname,
@@ -36,8 +58,7 @@ fetch_bdii_ce_info_g2(
   std::string const& basedn,
   time_t timeout,
   std::string const& ldap_ce_filter_ext,
-  ism_type&,
-  update_function_type const& uf
+  PurchaserInfoContainer&
 );
 
 void
@@ -47,8 +68,7 @@ fetch_bdii_se_info_g2(
   std::string const& basedn,
   time_t timeout,
   std::string const& ldap_se_filter_ext,
-  ism_type&,
-  update_function_type const& uf
+  PurchaserInfoContainer&
 );
 
 void 
@@ -59,9 +79,8 @@ fetch_bdii_info_g2(
   time_t timeout,
   std::string const& ldap_ce_filter_ext,
   std::string const& ldap_se_filter_ext,
-  ism_type& gluece_info_container,
-  ism_type& gluese_info_container,
-  update_function_type const& uf
+  PurchaserInfoContainer& ce_info,
+  PurchaserInfoContainer& se_info
 );
 
 }}}}

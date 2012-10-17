@@ -17,7 +17,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+// File: ldap-utils.cpp
 // Author: Salvatore Monforte
+// Copyright (c) 2002 EU DataGrid.
+
+// $Id: ldap-utils-g2.cpp,v 1.1.2.22 2012/06/22 11:51:32 mcecchi Exp $
 #include <sys/time.h>
 #include <ldap.h>
 #include <lber.h>
@@ -46,16 +50,12 @@ limitations under the License.
 #include <boost/assign/list_of.hpp>
 #include <boost/assign/std/vector.hpp>
 #include <boost/assign/list_inserter.hpp>
-
 #include "glite/wms/ism/purchaser/common.h"
-#include "glite/wmsutils/classads/classad_utils.h"
 #include "glite/wms/common/logger/logger_utils.h"
-#include "glite/wms/common/configuration/Configuration.h"
-#include "glite/wms/common/configuration/WMConfiguration.h"
-#include "glite/wms/common/configuration/NSConfiguration.h"
+#include "glite/wmsutils/classads/classad_utils.h"
 
-#include "ldap-dn-utils.h"
-#include "schema_utils.h"
+#include "ldap-dn-utils-g2.h"
+#include "schema_utils-g2.h"
 
 namespace cu  = glite::wmsutils::classads;
 namespace ba  = boost::algorithm;
@@ -67,13 +67,31 @@ namespace wms {
 namespace ism {
 namespace purchaser {
 
+typedef boost::shared_ptr<classad::ClassAd> ClassAdPtr;
+
+class LDAPException: public std::exception
+{
+  std::string m_error;
+public:
+  LDAPException(std::string const& error)
+    : m_error(error)
+  {
+  }
+  ~LDAPException() throw()
+  {
+  }
+  virtual char const* what() const throw()
+  {
+    return m_error.c_str();
+  }
+};
+
 namespace {
 
 struct ManagerInfo
 {
-  ad_ptr ad;
+  ClassAdPtr ad;
 };
-
 typedef std::map<std::string, ManagerInfo> ManagerInfoMap;
 
 struct ServiceInfo;
@@ -83,14 +101,15 @@ struct ShareInfo;
 typedef std::map<std::string, ShareInfo> ShareInfoMap;
 
 struct AccessPolicyInfo {
-  ad_ptr ad;
+  ClassAdPtr ad;
 };
 typedef std::map<std::string, AccessPolicyInfo> AccessPolicyInfoMap;
 
 class EndpointInfo
 {
 public:
-  ad_ptr ad;
+  ClassAdPtr ad;
+  std::vector<classad::ExprTree*> policy_rules;
   bool has_servicelnk_iterator;
   bool has_policylnk_iterator;
   bool has_shareslnk_iterators;
@@ -98,28 +117,26 @@ public:
   AccessPolicyInfoMap::iterator policy_lnk;
   std::vector<ShareInfoMap::iterator> shares_lnk;
   EndpointInfo()
-    : has_servicelnk_iterator(false),
-      has_policylnk_iterator(false),
-      has_shareslnk_iterators(false) { }
+    : has_servicelnk_iterator(false), has_policylnk_iterator(false), has_shareslnk_iterators(false) { }
 };
 typedef std::map<std::string, EndpointInfo> EndpointInfoMap;
 
 struct BenchMarkInfo
 {
-  ad_ptr ad;
+  ClassAdPtr ad;
 };
 typedef std::map<std::string, BenchMarkInfo> BenchMarkInfoMap;
 
 struct ExecEnvInfo
 {
-  ad_ptr ad;
+  ClassAdPtr ad;
   std::set<std::string> applications;
   std::vector<BenchMarkInfoMap::iterator> bmarks_lnk;
 };
 
 struct DataStoreInfo
 { 
-  ad_ptr ad;
+  ClassAdPtr ad;
 };
 
 typedef std::map<std::string, ExecEnvInfo> ExecEnvInfoMap;
@@ -129,11 +146,10 @@ struct ServiceInfo
 {
 public:
   ServiceInfo()
-    : has_managerlnk(false), has_shareslnk_iterators(false) { }
-  ad_ptr ad;
+    : has_managerlnk(false) { }
+  ClassAdPtr ad;
   ManagerInfoMap::iterator manager_lnk;
   bool has_managerlnk;
-  bool has_shareslnk_iterators;
   //////////////////////////////////////////////////////
   // The following is requireg since for StorageServices
   // the relevant Shares are most likely bound to the only
@@ -142,17 +158,16 @@ public:
   // 
   std::vector<ShareInfoMap::iterator> shares_lnk;
   /////////////////////////////////////////////////////
-  // The following applies only to StorageServices
-  std::vector<ad_ptr> access_protocols;
 };
 
 struct ShareInfo
 {
-  ad_ptr ad;
+  ClassAdPtr ad;
+  std::vector<classad::ExprTree*> policy_rules;
   std::vector<ResourceInfoMap::iterator> resources_lnk;
 };
 
-//typedef std::map<std::string, ad_ptr> SubClusterInfoMap;
+//typedef std::map<std::string, ClassAdPtr> SubClusterInfoMap;
 /*
 struct ClusterInfo {
   std::string site_id;
@@ -163,12 +178,12 @@ typedef std::map<std::string, ClusterInfo> ClusterInfoMap;
 
 struct VoViewInfo
 {
-  VoViewInfo(std::string const& i, ad_ptr a) 
+  VoViewInfo(std::string const& i, ClassAdPtr a) 
     : id(i), ad(a)
   {
   }
   std::string id;
-  ad_ptr ad; 
+  ClassAdPtr ad; 
 };
 
 typedef std::map<
@@ -178,11 +193,11 @@ typedef std::map<
 
 struct SEInfo
 {
-  ad_ptr ad;
+  ClassAdPtr ad;
   std::vector<classad::ExprTree*> storage_areas;
   std::vector<classad::ExprTree*> control_protocols;
   std::vector<classad::ExprTree*> access_protocols;
-  std::vector<ad_ptr> ces_binds;
+  std::vector<ClassAdPtr> ces_binds;
 };
 
 typedef std::map<std::string, SEInfo> SEInfoMap;
@@ -198,7 +213,6 @@ struct BDII_info
   AccessPolicyInfoMap policies;
   ResourceInfoMap resources;
   BenchMarkInfoMap benchmarks;
-  
 };
 
 struct is_a_literal_node_starting_with
@@ -230,7 +244,7 @@ struct is_a_literal_node_equals_to
   std::string value;
 };
 
-inline void cleanup_glue2_info(ad_ptr ad, std::list<std::string> a)
+inline void cleanup_glue2_info(ClassAdPtr ad, std::list<std::string> a)
 {
   a.push_back("objectClass");
   std::for_each(
@@ -268,35 +282,9 @@ inline bool is_glue2_datastore_resource(const classad::ClassAd& ad)
   return is_objectclass("GLUE2DataStore", ad);
 }
 
-void process_glue2_storage_access_protocol_info(
- std::vector<std::string> const& ldap_dn_tokens,
-  ad_ptr ad,
-  BDII_info& bdii_info
-)
-{  
-  std::string const protocol_id(
-   ldap_dn_tokens[0].substr(ldap_dn_tokens[0].find("=")+1)
-  );
-  std::string const service_id(
-   ldap_dn_tokens[1].substr(ldap_dn_tokens[1].find("=")+1)
-  );
-  
-  ServiceInfoMap::iterator it;
-  bool insert;
-  boost::tie(it, insert) = bdii_info.services.insert(
-    std::make_pair(service_id, ServiceInfo())
-  );
-  cleanup_glue2_info(ad,
-    bas::list_of("StorageServiceForeignKey")
-  );
-  it->second.access_protocols.push_back(
-    ad
-  );
-}
-
 void process_glue2_service_info(
   std::vector<std::string> const& ldap_dn_tokens, 
-  ad_ptr ad, 
+  ClassAdPtr ad, 
   BDII_info& bdii_info
 ) 
 {
@@ -329,7 +317,7 @@ void process_glue2_service_info(
 
 void process_glue2_manager_info(
   std::vector<std::string> const& ldap_dn_tokens, 
-  ad_ptr ad, 
+  ClassAdPtr ad, 
   BDII_info& bdii_info
 ) 
 {
@@ -392,7 +380,7 @@ void extract_glue2_info_value_in(
 
 void process_glue2_resource_fk(
   ShareInfoMap::iterator& share_it, 
-  ad_ptr ad, 
+  ClassAdPtr ad, 
   BDII_info& bdii_info)
 {
   classad::ExprList* el = dynamic_cast<classad::ExprList*>(
@@ -411,7 +399,7 @@ void process_glue2_resource_fk(
     else if (is_glue2_storage_share(*ad)) resource = DataStoreInfo();
     else {
       Error("Cannot discriminate between Computing or Storage share: " << *ad);
-      return;
+      return ;
     }
     boost::tie(resource_it, insert) = bdii_info.resources.insert(
       std::make_pair(s, resource)
@@ -441,7 +429,7 @@ process_glue2_endpoint_fk_entry(
 
 bool process_glue2_endpoint_fk(
   ShareInfoMap::iterator& share_it, 
-  ad_ptr ad, 
+  ClassAdPtr ad, 
   BDII_info& bdii_info)
 {
   std::string const fk(
@@ -482,12 +470,11 @@ void bind_share_to_service(
     std::make_pair(service_id, ServiceInfo())
   );
   service_it->second.shares_lnk.push_back(share_it);
-  service_it->second.has_shareslnk_iterators = true;
 }
 
 void process_glue2_share_info(
   std::vector<std::string> const& ldap_dn_tokens, 
-  ad_ptr ad, 
+  ClassAdPtr ad, 
   BDII_info& bdii_info
 ) 
 {
@@ -537,7 +524,7 @@ void process_glue2_share_info(
 
 void process_glue2_endpoint_info(
   std::vector<std::string> const& ldap_dn_tokens, 
-  ad_ptr ad, 
+  ClassAdPtr ad, 
   BDII_info& bdii_info
 ) 
 {
@@ -580,7 +567,7 @@ void process_glue2_endpoint_info(
 void process_glue2_execenv_info(
 std::string const resource_id,
 std::string const service_id,
-ad_ptr ad,
+ClassAdPtr ad,
   BDII_info& bdii_info
 ) {
   
@@ -600,7 +587,7 @@ ad_ptr ad,
     ("ManagerForeignKey")
   );
 
-  ad_ptr resource_ad(new classad::ClassAd());
+  ClassAdPtr resource_ad(new classad::ClassAd());
   resource_ad->Insert(
     "ExecutionEnvironment", ad->Copy()
   );
@@ -611,7 +598,7 @@ ad_ptr ad,
 void process_glue2_datastore_info(
   std::string const resource_id,
   std::string const service_id,
-  ad_ptr ad,
+  ClassAdPtr ad,
   BDII_info& bdii_info
 ) {
   bool insert;
@@ -625,7 +612,7 @@ void process_glue2_datastore_info(
     ("ManagerForeignKey")
   );
 
-  ad_ptr resource_ad(new classad::ClassAd());
+  ClassAdPtr resource_ad(new classad::ClassAd());
   resource_ad->Insert(
     "DataStore", ad->Copy()
   );
@@ -635,7 +622,7 @@ void process_glue2_datastore_info(
 
 void process_glue2_resource_info(
   std::vector<std::string> const& ldap_dn_tokens, 
-  ad_ptr ad, 
+  ClassAdPtr ad, 
   BDII_info& bdii_info
 ) 
 {
@@ -655,7 +642,7 @@ void process_glue2_resource_info(
 
 void process_glue2_application_env_info(
   std::vector<std::string> const& ldap_dn_tokens,
-  ad_ptr ad,
+  ClassAdPtr ad,
   BDII_info& bdii_info
 )
 {
@@ -682,7 +669,7 @@ void process_glue2_application_env_info(
 
 void process_glue2_benchmark_info(
   std::vector<std::string> const& ldap_dn_tokens, 
-  ad_ptr ad, 
+  ClassAdPtr ad, 
   BDII_info& bdii_info
 ) 
 {
@@ -727,7 +714,7 @@ void process_glue2_benchmark_info(
 
 void process_glue2_mapping_policy_info(
   std::vector<std::string> const& ldap_dn_tokens, 
-  ad_ptr ad, 
+  ClassAdPtr ad, 
   BDII_info& bdii_info
 ) 
 {
@@ -740,23 +727,22 @@ void process_glue2_mapping_policy_info(
   boost::tie(share_it, insert) = bdii_info.shares.insert(
     std::make_pair(share_id, ShareInfo())
   );
-  if (!share_it->second.ad) {
-    share_it->second.ad.reset(new classad::ClassAd);
-    share_it->second.ad->Insert(                                                                                                                                                   
-      "Share",                                                                                                                                                                     
-      new classad::ClassAd()                                                                                                                                                                 
-    );     
-  }
-
-  share_it->second.ad->DeepInsert(
-    share_it->second.ad->Lookup("Share"), 
-    "Policy", ad->Lookup("Rule")->Copy()
+  classad::ExprList* el = dynamic_cast<classad::ExprList*>(
+    ad->Lookup("Rule")
+  );
+  std::transform(
+    el->begin(), el->end(),
+    std::inserter(
+      share_it->second.policy_rules, 
+      share_it->second.policy_rules.end()
+    ),
+    boost::bind(&classad::ExprTree::Copy, _1)
   );
 }
 
 void process_glue2_access_policy_info(
   std::vector<std::string> const& ldap_dn_tokens, 
-  ad_ptr ad, 
+  ClassAdPtr ad, 
   BDII_info& bdii_info
 ) 
 {
@@ -791,7 +777,7 @@ void process_glue2_access_policy_info(
 
 void process_glue2_service_capacity_info(
   std::vector<std::string> const& ldap_dn_tokens,
-  ad_ptr ad,
+  ClassAdPtr ad,
   BDII_info& bdii_info
 )
 {
@@ -825,7 +811,7 @@ void process_glue2_service_capacity_info(
 
 void process_glue2_share_capacity_info(
   std::vector<std::string> const& ldap_dn_tokens,
-  ad_ptr ad,
+  ClassAdPtr ad,
   BDII_info& bdii_info
 )
 {
@@ -853,6 +839,105 @@ void process_glue2_share_capacity_info(
   );
 }
 
+inline bool iequals(std::string const& a, std::string const& b)
+{
+ return ba::iequals(a,b);
+}
+
+inline bool istarts_with(std::string const& a, std::string const& b)
+{
+ return ba::istarts_with(a,b);
+}
+
+inline std::string strip_prefix(std::string const& prefix, std::string const& s)
+{
+  return boost::algorithm::istarts_with(s,prefix) ?
+    boost::algorithm::erase_head_copy(s, prefix.length()) : s;
+}
+
+void insert_values(
+  std::string const& name,
+  boost::shared_array<struct berval*> values,
+  std::list<std::string> const& prefix,
+  classad::ClassAd& ad
+) {
+  std::vector<std::string>::const_iterator list_b, number_b;
+  std::vector<std::string>::const_iterator list_e, number_e;
+    
+  boost::tie(list_b, list_e) = bdii_schema_info_g2().multi_valued();
+  boost::tie(number_b, number_e) = bdii_schema_info_g2().number_valued();
+
+  bool is_list = ba::iequals(name,"objectclass") || std::find_if(
+    list_b, list_e, boost::bind(iequals,_1, name)
+  ) != list_e;
+
+  bool is_number = std::find_if(
+    number_b, number_e, boost::bind(iequals, _1, name)
+  ) != number_e; 
+
+  std::string result;
+  for (size_t i=0; values[i] != 0; ++i) {
+
+    if (i) result.append(",");
+    if (is_number || ba::iequals("undefined", values[i]->bv_val) || 
+      ba::iequals("false", values[i]->bv_val) || ba::iequals("true", values[i]->bv_val)) {  
+    
+      result.append(values[i]->bv_val);
+    }
+    else {
+      result.append("\"").append(values[i]->bv_val).append("\"");
+    }
+  }
+  if (is_list) {
+    std::string s("{");
+    s.append(result).append("}");
+    result.swap(s);
+  }
+  classad::ExprTree* e = 0;
+  classad::ClassAdParser parser;
+  parser.ParseExpression(result, e);
+
+  if (e) {
+    std::list<std::string>::const_iterator it =  std::find_if(
+      prefix.begin(), prefix.end(), 
+      boost::bind(istarts_with, name, _1)
+    );
+    ad.Insert(
+      ( it != prefix.end() ) ? strip_prefix(*it, name) : name,
+      e
+      );
+  }
+}
+classad::ClassAd*
+create_classad_from_ldap_entry(
+  LDAP* ld, LDAPMessage* lde,
+  std::list<std::string> prefix
+) {
+  classad::ClassAd* result = new classad::ClassAd;
+  BerElement* ber = 0;
+  for(
+    char* attr = ldap_first_attribute(ld, lde, &ber);
+    attr; attr = ldap_next_attribute(ld, lde, ber)
+  ) {
+    boost::shared_ptr<void> attr_guard(
+      attr, ber_memfree
+    );
+    boost::shared_array<struct berval*> values(
+      ldap_get_values_len(ld, lde, attr),
+      ldap_value_free_len
+    );
+
+    if (!values) continue;
+    insert_values( 
+      attr, values, prefix, *result
+    );
+  }
+  boost::shared_ptr<void> ber_guard(
+    static_cast<void*>(0),boost::bind(ber_free, ber, 0)
+  );
+  return result;
+}
+
 inline classad::ExprTree* make_literal(std::string const& s)
 {
   classad::Value v;
@@ -877,7 +962,7 @@ typedef boost::function<
 
 typedef boost::function<void(
   std::vector<std::string> const&, 
-  ad_ptr,
+  ClassAdPtr,
   BDII_info&
 )> glue2_info_processing_fn;
 
@@ -896,8 +981,7 @@ const glue2_stripping_prefix
   mpolicy_pfx  = bas::list_of("GLUE2Entity")("GLUE2Policy")("GLUE2MappingPolicy"),
   apolicy_pfx  = bas::list_of("GLUE2Entity")("GLUE2Policy")("GLUE2AccessPolicy"),
   appenv_pfx   = bas::list_of("GLUE2Entity")("GLUE2ApplicationEnvironment"),
-  bmark_pfx    = bas::list_of("GLUE2Entity")("GLUE2Benchmark"),
-  proto_pfx    = bas::list_of("GLUE2Entity")("GLUE2StorageAccessProtocol");
+  bmark_pfx    = bas::list_of("GLUE2Entity")("GLUE2Benchmark");
   
 std::list<glue2_info_processor_tuple> 
 glue2_info_processors = bas::tuple_list_of
@@ -912,7 +996,6 @@ glue2_info_processors = bas::tuple_list_of
   (is_glue2_benchmark_dn, bmark_pfx, process_glue2_benchmark_info)
   (is_glue2_service_capacity_dn, service_pfx, process_glue2_service_capacity_info)
   (is_glue2_share_capacity_dn, share_pfx, process_glue2_share_capacity_info)
-  (is_glue2_storage_access_protocol_dn, proto_pfx, process_glue2_storage_access_protocol_info)
 ;
   // The Helper expects to find some attribute 
   // required to support LCGCE and GLUE13
@@ -920,11 +1003,11 @@ glue2_info_processors = bas::tuple_list_of
   typedef std::pair< std::string, std::string > str_pair;
   struct parse_expression_and_insert
   {
-    parse_expression_and_insert(ad_ptr _ad) : ad(_ad) {}
+    parse_expression_and_insert(ClassAdPtr _ad) : ad(_ad) {}
     inline void operator()(str_pair const& p) {
       ad->Insert(p.first, parse_expression(p.second));
     } 
-    ad_ptr ad;
+    ClassAdPtr ad;
   };
   std::vector<str_pair> glue13_attr_refs = bas::list_of<str_pair>
     ("GlueCEInfoHostName", "GLUE2.Computing.Share.OtherInfo.InfoProviderHost")
@@ -945,16 +1028,8 @@ fetch_bdii_se_info_g2(
   std::string const& dn, 
   time_t timeout,
   std::string const& ldap_se_filter_ext,
-  ism_type& se_info_container,
-  update_function_type const& uf)
+  ism::purchaser::PurchaserInfoContainer& se_info_container) 
 {
-  static glite::wms::common::configuration::Configuration const& config(
-    *glite::wms::common::configuration::Configuration::instance()
-  );
-  static const time_t expiry_time(
-    config.wm()->ism_ii_purchasing_rate() + config.ns()->ii_timeout()
-  );
-
   LDAP* ld = 0;
   int result = ldap_initialize(
     &ld, 
@@ -1028,9 +1103,9 @@ fetch_bdii_se_info_g2(
       
       if (check(ldap_dn_tokens)) {
         
-        ad_ptr ad(
+        ClassAdPtr ad(
           create_classad_from_ldap_entry(
-            ld, lde, p_it->get<1>(), true /* GLUE2 schema */
+            ld, lde, p_it->get<1>()
         ));
         glue2_info_processing_fn process = p_it->get<2>();
         process(ldap_dn_tokens, ad, bdii_info);
@@ -1045,9 +1120,9 @@ fetch_bdii_se_info_g2(
   
   time_t const t1 = std::time(0);
   size_t n_shares = 0;
-  for ( ; ep_it != ep_e; ++ep_it) {
+  for( ; ep_it != ep_e; ++ep_it) {
 
-    ad_ptr storageAd(new classad::ClassAd);
+    ClassAdPtr storageAd(new classad::ClassAd);
     if (ep_it->second.ad) {
       storageAd->Update(*ep_it->second.ad);
       if (ep_it->second.has_servicelnk_iterator) {
@@ -1060,57 +1135,31 @@ fetch_bdii_se_info_g2(
         }
       }
     }
-
     if (ep_it->second.has_policylnk_iterator &&
       ep_it->second.policy_lnk->second.ad && 
-      storageAd->Lookup("Endpoint")) {
-      storageAd->DeepInsert(
-        storageAd->Lookup("Endpoint"),
-        "Policy",
-        ep_it->second.policy_lnk->second.ad->Lookup("Rule")->Copy()
-      );
-    }
-    if (ep_it->second.has_servicelnk_iterator) {
-
-      if (ep_it->second.service_lnk->second.ad)
-        storageAd->Update(
-          *ep_it->second.service_lnk->second.ad
-        );
-      
-      std::vector<classad::ExprTree*> protocols;
-      std::transform(
-        ep_it->second.service_lnk->second.access_protocols.begin(), 
-        ep_it->second.service_lnk->second.access_protocols.end(),
-        std::inserter(protocols, protocols.end()),
-        boost::bind(&classad::ExprTree::Copy, _1)
-      );
-      storageAd->Insert(
-        "Protocols", 
-        classad::ExprList::MakeExprList(protocols)
-      );
-    }
+        storageAd->Lookup("Endpoint")) {
+    storageAd->DeepInsert(
+      storageAd->Lookup("Endpoint"),
+      "Policy",
+       ep_it->second.policy_lnk->second.ad->Lookup("Rule")->Copy()
+    );
+  }
 
     // If there is no Share bound to the Endpoint then we have to choose
     // Shares directly from the Service
+  if (ep_it->second.has_shareslnk_iterators) {
+    std::vector<ShareInfoMap::iterator> const& shares(
+      ep_it->second.shares_lnk.empty() ? 
+        ep_it->second.service_lnk->second.shares_lnk :
+        ep_it->second.shares_lnk
+    );
 
-    std::vector<ShareInfoMap::iterator> shares;
-    if (ep_it->second.shares_lnk.empty()) {
-      if (ep_it->second.has_servicelnk_iterator && ep_it->second.service_lnk->second.has_shareslnk_iterators) {
-        shares = ep_it->second.service_lnk->second.shares_lnk;
-      } else {
-        continue;
-      }
-    } else {
-      if (ep_it->second.has_shareslnk_iterators) {
-        shares = ep_it->second.shares_lnk;
-      } else {
-        continue;
-      }
-    }
-     
-    std::vector<ShareInfoMap::iterator>::const_iterator sh_it(shares.begin());
-    std::vector<ShareInfoMap::iterator>::const_iterator const sh_e(shares.end());
-    for ( ; sh_it != sh_e; ++sh_it) {
+    std::vector<ShareInfoMap::iterator>::const_iterator sh_it(
+      shares.begin()
+    );
+    std::vector<ShareInfoMap::iterator>::const_iterator const sh_e(
+      shares.end());
+    for( ; sh_it != sh_e; ++sh_it) {
 
       classad::ClassAd* storageAd_copy(
         dynamic_cast<classad::ClassAd*>(storageAd->Copy())
@@ -1118,9 +1167,12 @@ fetch_bdii_se_info_g2(
       classad::ExprTree* shareAd_copy(
         (*sh_it)->second.ad->Lookup("Share")->Copy()
       );
-      
+      dynamic_cast<classad::ClassAd*>(shareAd_copy)->Insert(
+        "Policy",
+        classad::ExprList::MakeExprList((*sh_it)->second.policy_rules)
+      );
       storageAd_copy->Insert("Share", shareAd_copy);
-      
+    
       if( !(*sh_it)->second.resources_lnk.empty() ) {
         DataStoreInfo const& dsi(
           boost::any_cast<DataStoreInfo const&>(
@@ -1131,49 +1183,19 @@ fetch_bdii_se_info_g2(
         storageAd_copy->Update(*dsi.ad);
       }
 
-     
       classad::ClassAd* g2Ad = new classad::ClassAd;
 
       g2Ad->Insert("Storage", storageAd_copy);
-      ad_ptr result( new classad::ClassAd );
+      ClassAdPtr result( new classad::ClassAd );
       result->Insert("GLUE2", g2Ad);
-
-      std::string id;
-      try {
-        id = std::string(
-          cu::evaluate_expression(
-            *result,
-            "GLUE2.Storage.Share.ID"
-          )
-        );
-      } catch (std::exception) {
-        Info("purchased entry missing GLUE2.Storage.Share.ID");
-        continue;
-      }
-      ism_type::iterator se_map_it;
-      bool gluese_info_map_insert = false;
-      boost::unordered_map<
-        boost::flyweight<std::string>,
-        boost::flyweight<std::string>,
-        flyweight_hash
-      > keyvalue_se_info(classad2flyweight(result));
-      boost::tie(se_map_it, gluese_info_map_insert) =
-      se_info_container.insert(
-        make_ism_entry(
-          boost::flyweight<std::string>(id),
-          std::time(0),
-          keyvalue_se_info,
-          expiry_time,
-          uf
-        )
+      std::string const id = cu::evaluate_expression(*result,
+        "GLUE2.Storage.Share.ID"
       );
-      if (!gluese_info_map_insert) {
-        merge_ism(keyvalue_se_info, se_map_it);
-      }
+      se_info_container.insert(std::make_pair(id, result));
       n_shares++;
     }
   }
-
+  }
   Debug("#" << n_shares << " GLUE2StorageShare's ClassAd(s) generated in " << std::time(0) - t1 << " seconds");
 }
 
@@ -1184,16 +1206,8 @@ fetch_bdii_ce_info_g2(
   std::string const& dn,
   time_t timeout,
   std::string const& ldap_ce_filter_ext,
-  ism_type& ce_info_container,
-  update_function_type const& uf)
+  ism::purchaser::PurchaserInfoContainer& ce_info_container) 
 {
-  static glite::wms::common::configuration::Configuration const& config(
-    *glite::wms::common::configuration::Configuration::instance()
-  );
-  static const time_t expiry_time(
-    config.wm()->ism_ii_purchasing_rate() + config.ns()->ii_timeout()
-  );
-
   LDAP* ld = 0;
   int result = ldap_initialize(
     &ld, 
@@ -1219,7 +1233,7 @@ fetch_bdii_ce_info_g2(
   ldap_set_option(ld, LDAP_OPT_NETWORK_TIMEOUT, &to);
 
   LDAPMessage *ldresult = 0;
-  if ((result = ldap_search_ext_s(
+  if ( (result = ldap_search_ext_s(
     ld,
     dn.c_str(),
     LDAP_SCOPE_SUBTREE,
@@ -1267,9 +1281,9 @@ fetch_bdii_ce_info_g2(
       
       if (check(ldap_dn_tokens)) {
         
-        ad_ptr ad(
+        ClassAdPtr ad(
           create_classad_from_ldap_entry(
-            ld, lde, p_it->get<1>(), true
+            ld, lde, p_it->get<1>()
         ));
         glue2_info_processing_fn process = p_it->get<2>();
         process(ldap_dn_tokens, ad, bdii_info);
@@ -1289,7 +1303,7 @@ fetch_bdii_ce_info_g2(
     if ( ep_it->second.shares_lnk.empty() ) { // Not an Endpoint bound to Shares
        continue;
     }
-    ad_ptr computingAd(new classad::ClassAd);
+    ClassAdPtr computingAd(new classad::ClassAd);
 
     if (ep_it->second.ad) {
       computingAd->Update(*ep_it->second.ad); 
@@ -1347,16 +1361,11 @@ fetch_bdii_ce_info_g2(
         g2Ad->Update(*eei.ad);
       }
       g2Ad->Insert("Computing", computingAd_copy);
-     /*
-     if ((*sh_it)->second.ad &&
-        (*sh_it)->second.ad->Lookup("Rule")) {
-        g2Ad->DeepInsert(
-          computingAd_copy->Lookup("Share"),
-          "Policy", 
-          (*sh_it)->second.ad->Lookup("Rule")->Copy()
-        );
-      }
-      */
+      g2Ad->DeepInsert(
+        computingAd_copy->Lookup("Share"),
+        "Policy", 
+        classad::ExprList::MakeExprList((*sh_it)->second.policy_rules)
+      );
       std::string interface_name = cu::evaluate_expression(
         *ep_it->second.ad, "EndPoint.InterfaceName"
       );
@@ -1398,26 +1407,16 @@ fetch_bdii_ce_info_g2(
         "OtherInfo", oi
       );
 
-      ad_ptr result(new classad::ClassAd);
+      ClassAdPtr result( new classad::ClassAd );
       result->Insert("GLUE2", g2Ad);
 
       std::string const id = cu::evaluate_expression(*result,
         "IsUndefined(GLUE2.Computing.Share.OtherInfo.CREAMCEId) ?"
         "    GLUE2.Computing.Share.ID : GLUE2.Computing.Share.OtherInfo.CREAMCEId"
       );
-
-      std::string policy;
-      try {
-        policy = std::string(
-          cu::evaluate_expression(
-           *result,
-          "GLUE2.Computing.Share.Policy[0]"
-          )
-        );
-      } catch (std::exception) {
-        Info("cannot evaluate GLUE2.Computing.Share.Policy[0] for " << id);
-        continue;
-      }
+      std::string const policy = cu::evaluate_expression(*result,
+        "GLUE2.Computing.Share.Policy[0]"
+      );
 
       std::string const glue13Id(
         id + "/" + ba::erase_regex_copy(policy, boost::regex(".+:"))
@@ -1427,30 +1426,10 @@ fetch_bdii_ce_info_g2(
         parse_expression_and_insert(result)
       );
       result->InsertAttr("CEid", id); 
-      ism_type::iterator ce_map_it;
-      bool gluece_info_map_insert = false;
-      boost::unordered_map<
-        boost::flyweight<std::string>,
-        boost::flyweight<std::string>,
-        flyweight_hash
-      > keyvalue_ce_info(classad2flyweight(result));
-      boost::tie(ce_map_it, gluece_info_map_insert) =
-      ce_info_container.insert(
-        make_ism_entry(
-          boost::flyweight<std::string>(id),
-          std::time(0),
-          keyvalue_ce_info,
-          expiry_time,
-          uf
-        )
-      );
-      if (!gluece_info_map_insert) {
-        merge_ism(keyvalue_ce_info, ce_map_it);
-      }
+      ce_info_container.insert(std::make_pair(glue13Id, result));
       n_shares++;
     }   
   }
-
   Debug("#" << n_shares << " GLUE2ComputingShare's ClassAd(s) generated in " << std::time(0) - t1 << " seconds");
 }
 
@@ -1461,28 +1440,11 @@ void fetch_bdii_info_g2(
   time_t timeout,
   std::string const& ldap_ce_filter_ext,
   std::string const& ldap_se_filter_ext,
-  ism_type& ce_info_container,
-  ism_type& se_info_container,
-  update_function_type const& uf)
+  ism::purchaser::PurchaserInfoContainer& ce_info_container,
+  ism::purchaser::PurchaserInfoContainer& se_info_container)
 {
-  fetch_bdii_ce_info_g2(
-    hostname,
-    port,
-    dn,
-    timeout,
-    ldap_ce_filter_ext,
-    ce_info_container,
-    uf
-  );
-  fetch_bdii_se_info_g2(
-    hostname,
-    port,
-    dn,
-    timeout,
-    ldap_se_filter_ext,
-    se_info_container,
-    uf
-  );
+  fetch_bdii_ce_info_g2(hostname, port, dn, timeout, ldap_ce_filter_ext, ce_info_container);
+  fetch_bdii_se_info_g2(hostname, port, dn, timeout, ldap_se_filter_ext, se_info_container);
 }
 
 }}}}

@@ -19,10 +19,10 @@ limitations under the License.
 
 // File: schema_utils.h
 // Author: Salvatore Monforte
-// $Id: schema_utils-g2.h,v 1.1.2.1 2011/11/15 16:04:56 monforte Exp $
+// $Id: schema_utils.h,v 1.1.2.1.6.2 2010/04/08 13:54:43 mcecchi Exp $
 
-#ifndef GLITE_WMS_II_PURCHASER_SCHEMA_UTILS_G2_H
-#define GLITE_WMS_II_PURCHASER_SCHEMA_UTILS_G2_H
+#ifndef GLITE_WMS_II_PURCHASER_SCHEMA_UTILS_H
+#define GLITE_WMS_II_PURCHASER_SCHEMA_UTILS_H
 
 #include <string>
 #include <utility>
@@ -35,8 +35,9 @@ namespace purchaser {
 
 class bdii_schema_info_type
 {
+  bdii_schema_info_type();
+  bdii_schema_info_type(const bdii_schema_info_type&);
 public:
-  bdii_schema_info_type(std::string const& schema_type);
   std::pair<
     std::vector<std::string>::const_iterator, 
     std::vector<std::string>::const_iterator
@@ -46,7 +47,12 @@ public:
     std::vector<std::string>::const_iterator,
     std::vector<std::string>::const_iterator
    > number_valued(void);
+
+  friend bdii_schema_info_type& bdii_schema_info();
 };
+
+bdii_schema_info_type&
+bdii_schema_info();
 
 }}}}
 
