@@ -509,7 +509,7 @@ fetch_bdii_ce_info(boost::shared_ptr<ldif2classad::LDAPConnection> IIconnection,
           
           Debug("Skipping cluster " << cl_it->first << " due to empty subcluster definition");
           vector<gluece_info_map_type::iterator>::const_iterator ce_it(
-	    boost::tuples::get<1>(cl_it->second).begin()
+       boost::tuples::get<1>(cl_it->second).begin()
           );
           vector<gluece_info_map_type::iterator>::const_iterator const ce_e( 
             boost::tuples::get<1>(cl_it->second).end()
@@ -710,3 +710,4 @@ void fetch_bdii_info(
 }
 
 }}}}
+

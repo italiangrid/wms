@@ -261,3 +261,4 @@ boost::function<bool(int&, ad_ptr)> create_ii_entry_update_fn()
 } // namespace ism
 } // namespace wms
 } // namespace glite
+
