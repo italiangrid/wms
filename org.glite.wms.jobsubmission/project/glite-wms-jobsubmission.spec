@@ -32,9 +32,9 @@ Condor-G connector for the Workload Management System
 %setup -c -q
 
 %build
-cp %{extbuilddir}/../project/emi-condorg.pc /usr/lib64/pkgconfig/
 %{!?extbuilddir:%define extbuilddir "--"}
 if test "x%{extbuilddir}" == "x--" ; then
+  cp %{extbuilddir}/../project/condor-emi.pc /usr/lib64/pkgconfig/
   ./configure --prefix=%{buildroot}/usr --sysconfdir=%{buildroot}/etc --disable-static PVER=%{version}
   make
 fi
