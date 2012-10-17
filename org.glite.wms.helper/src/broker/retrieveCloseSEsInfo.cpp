@@ -18,7 +18,7 @@
  * For license conditions see http://www.eu-datagrid.org/license.html
  */
 
-// $Id: retrieveCloseSEsInfo.cpp,v 1.1.2.1 2012/09/11 10:19:43 mcecchi Exp $
+// $Id: retrieveCloseSEsInfo.cpp,v 1.1.2.3 2010/07/15 16:38:09 mcecchi Exp $
 
 #include <classad_distribution.h>
 #include <fnCall.h>
@@ -150,26 +150,12 @@ bool retrieveCloseSEsInfo(
             "name",name
           );
           ism::ism_type::const_iterator se_it(
-            ism::get_ism(ism::se).find(boost::flyweight<std::string>(name))
+            ism::get_ism(ism::se).find(name)
           );
           if (se_it != ism_end) {
-
-            boost::shared_ptr<classad::ClassAd> se_ad_ptr;
-            boost::unordered_map<
-              boost::flyweight<std::string>,
-              boost::flyweight<std::string>,
-              ism::flyweight_hash
-            > keyvalue_info(boost::tuples::get<ism::keyvalue_info_entry>(se_it->second));
-            for (
-              boost::unordered_map<
-               boost::flyweight<std::string>,
-               boost::flyweight<std::string>,
-               ism::flyweight_hash>::iterator iter(keyvalue_info.begin());
-              iter != keyvalue_info.end();
-              ++iter
-            ) {
-              se_ad_ptr->InsertAttr(iter->first, iter->second);
-            }
+            boost::shared_ptr<classad::ClassAd> se_ad_ptr(
+              boost::tuples::get<2>(se_it->second)
+            );
 
             classad::ClassAd* sesa_ad_ptr =
               utils::parse_classad(sesa_ad_template_str);
@@ -206,10 +192,12 @@ bool retrieveCloseSEsInfo(
             }
             sesa_ads.push_back(sesa_ad_ptr); 
           }
+
         }
         result.SetListValue(ExprList::MakeExprList(sesa_ads));
         eval_successful=true;
-      } else {
+      }
+      else {
         result.SetUndefinedValue();
       }
     }

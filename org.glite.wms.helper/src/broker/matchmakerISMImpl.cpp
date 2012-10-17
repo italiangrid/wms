@@ -22,10 +22,9 @@ limitations under the License.
 //          Marco Cecchi
 // Copyright (c) 2002 EU DataGrid.
 
-// $Id: matchmakerISMImpl.cpp,v 1.15.2.11.2.6.2.3.2.3.2.3 2012/06/05 15:07:47 mcecchi Exp $
+// $Id: matchmakerISMImpl.cpp,v 1.15.2.11.2.6.2.3.2.3.2.5 2012/06/15 07:59:19 mcecchi Exp $
 
 #include <boost/shared_ptr.hpp>
-#include <boost/regex.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <algorithm>
 #include <ctime>
@@ -38,41 +37,6 @@ limitations under the License.
 #include "mm_exceptions.h"
 
 namespace jdlc = glite::jdl;
-
-namespace {
-
-std::string const gangmatch_storage_ad_str(
-  "[CloseSEs = retrieveCloseSEsInfo(.VirtualOrganisation);]"
-);
-
-// regular expression to extract attribute names referenced with 'other.'
-boost::regex pattern(
-  "(.*?)other\\.(.*?)[+[\\-*/ ):?;,}&|\\^=!\\n<>%](.*)",
-  boost::regex::perl | boost::regex::icase
-);
-
-void add_referenced_attributes(
-  classad::ExprTree* expr_tree,
-  std::set<std::string>& attributes)
-{
-  std::string expr_str;
-  classad::ClassAdUnParser unp;
-  unp.Unparse(expr_str, expr_tree);
-  expr_str += ' '; // for an easier regexp
-
-  // let's find all the 'other' attributes referenced in the requirements
-  std::string::const_iterator start = expr_str.begin();
-  std::string::const_iterator end = expr_str.end();
-  boost::match_results<std::string::const_iterator> what;
-  boost::match_flag_type flags = boost::match_default;
-  while (regex_search(start, end, what, pattern, flags)) {
-    attributes.insert(std::string(what[2].first, what[2].second));
-    start = what[3].first;
-    flags |= boost::match_prev_avail;
-  }
-}
-
-} // anonymous
 
 namespace glite {
 namespace utils = wmsutils::classads;
@@ -104,90 +68,34 @@ matchmakerISMImpl::checkRequirement(
   ism::ism_type::const_iterator ism_it = taken_ism.begin();
   ism::ism_type::const_iterator const ism_end = taken_ism.end();
 
-  std::set<std::string> attributes;
-
-  // required by helper modules, so they must always be present in the 'enriched' classad
-  attributes.insert("DataAccessProtocol");
-  attributes.insert("GlueCEUniqueID");
-  attributes.insert("GlobusResourceContactString");
-  attributes.insert("QueueName");
-  attributes.insert("LRMSType");
-  attributes.insert("CEid");
-  attributes.insert("GlueCEInfoHostName");
-  attributes.insert("GlueCEInfoApplicationDir");
-
-  // for match-making, we'll only need to retrieve those attributes
-  // referenced in the requirements and rank expressions, not the whole ce ad
-  for (classad::ClassAd::iterator it(jdl.begin()); it != jdl.end(); ++it) {
-    add_referenced_attributes(it->second, attributes);
-  }
-  // this would be faster but not totally correct
-  //add_referenced_attributes(jdl.Lookup("requirements"), attributes);
-  //add_referenced_attributes(jdl.Lookup("rank"), attributes);
-
-  bool match;
-  classad::ClassAdParser parser;
   for ( ; ism_it != ism_end; ++ism_it) {
 
-    boost::unordered_map<
-      boost::flyweight<std::string>,
-      boost::flyweight<std::string>,
-      ism::flyweight_hash
-    > ce_map(
-      boost::tuples::get<ism::keyvalue_info_entry>(ism_it->second)
-    );
-    std::string ce_ad_str("[");
-    boost::unordered_map<
-      boost::flyweight<std::string>,
-      boost::flyweight<std::string>,
-      ism::flyweight_hash
-    >::iterator const ce_end = ce_map.end();
-    for (
-      boost::unordered_map<
-        boost::flyweight<std::string>,
-        boost::flyweight<std::string>,
-        ism::flyweight_hash
-      >::iterator ce_it = ce_map.begin();
-      ce_it != ce_end;
-      ++ce_it
-    ) {
-      if (attributes.find(ce_it->first) != attributes.end()) {
-          ce_ad_str += std::string(ce_it->first) + '=' + std::string(ce_it->second) + ';';
-      }
+    if (ism::is_void_ism_entry(ism_it->second)) {
+      continue;
     }
-    ce_ad_str += "];";
 
-    std::auto_ptr<classad::ClassAd> ce_ad_ptr(utils::parse_classad(ce_ad_str));
-    std::auto_ptr<classad::ExprTree> gangmatch_storage_ad(
-      parser.ParseExpression(gangmatch_storage_ad_str)
+    boost::shared_ptr<classad::ClassAd> ce_ad_ptr(
+      boost::tuples::get<2>(ism_it->second)
     );
-    ce_ad_ptr->Insert("storage", gangmatch_storage_ad.get());
-    gangmatch_storage_ad.release();
+    classad::ClassAd& ce_ad(*ce_ad_ptr);
+    // this innocuous lock is only needed because of a flaw in classad
+    boost::mutex::scoped_lock l(*boost::tuples::get<4>(ism_it->second));
+    if (
+      -1 != boost::tuples::get<glite::wms::ism::expiry_time_entry>(
+        ism_it->second // not set as expired by the ISM updater thread
+      )
+    ) {
 
-    // Insert here causes to delete the previous 'other', if it exists
-    jdl.Insert("other", static_cast<classad::ExprTree*>(ce_ad_ptr.get()));
-    ce_ad_ptr.release();
-    // this per-entry lock is needed to synchronize with the updater thread
-    // that updates values on the live side (without invalidating iterators)
-    boost::mutex::scoped_lock l(*boost::tuples::get<ism::mutex_entry>(ism_it->second));
-    if (-1 != boost::tuples::get<ism::expiry_time_entry>(ism_it->second))
-    { // not set as expired by the ISM updater thread
-        if (jdl.EvaluateAttrBool("requirements", match) && match) {
-
-          boost::shared_ptr<classad::ClassAd> ce_ad_ptr_copy(
-            static_cast<classad::ClassAd*>(jdl.Lookup("other")->Copy())
-          );
-          // TODO: optimization here, we don't need the whole ad. also, not
-          // using ce_ad_ptr_copy will not need passing a Copy()
-          suitableCEs[ism_it->first] = boost::tuples::make_tuple(
-            std::make_pair(false, 0.0), ce_ad_ptr_copy
-          );
-        }
+      if (utils::left_matches_right(ce_ad, jdl)) {
+        suitableCEs[ism_it->first] = boost::tuples::make_tuple(
+          std::make_pair(false, 0.0), ce_ad_ptr
+        );
+      }
       ++valid_entries;
     }
+
     l.unlock();
   }
-  jdl.Delete("other");
 
   std::time_t const t_mm = std::time(0) - t_start;
   if (has_jobid) {
@@ -255,7 +163,7 @@ struct starts_with
  starts_with(const std::string& p) : m_pattern(p) {}
  bool operator()(ism::ism_type::value_type const& v)
  {
-   return boost::starts_with(std::string(v.first), m_pattern);
+   return boost::starts_with(v.first, m_pattern);
  }
 };
 }
@@ -273,15 +181,6 @@ matchmakerISMImpl::checkRequirement(
   std::time_t const t_start = std::time(0);
   int valid_entries = 0;
  
-  std::set<std::string> attributes;
-  // for match-making, we'll only need to retrieve those attributes
-  // referenced in the requirements and rank expressions, not the whole ce ad
-  add_referenced_attributes(jdl.Lookup("requirements"), attributes);
-  add_referenced_attributes(jdl.Lookup("rank"), attributes);
-
-  bool match;
-  classad::ClassAdParser parser;
-
   std::set<matchtable::key_type>::const_iterator ce_ids_it = ce_ids.begin();
   std::set<matchtable::key_type>::const_iterator const ce_ids_end = ce_ids.end();
 
@@ -295,6 +194,7 @@ matchmakerISMImpl::checkRequirement(
   // no pending matching_threads must exist
   ism::ism_type& taken_ism = ism::get_ism(ism::ce, ret.second /* side */);
   ism::ism_type::const_iterator const ism_end = taken_ism.end();
+  
   for( ; ce_ids_it != ce_ids_end ; ++ce_ids_it ) {
 
     // Previous match handling
@@ -311,59 +211,27 @@ matchmakerISMImpl::checkRequirement(
     }
  
     do {
-      boost::unordered_map<
-        boost::flyweight<std::string>,
-        boost::flyweight<std::string>,
-        ism::flyweight_hash
-      > ce_map(
-        boost::tuples::get<ism::keyvalue_info_entry>(ism_it->second)
+
+      boost::shared_ptr<classad::ClassAd> ce_ad_ptr(
+        boost::tuples::get<2>(ism_it->second)
       );
-      std::string ce_ad_str("[");
-      boost::unordered_map<
-        boost::flyweight<std::string>,
-        boost::flyweight<std::string>,
-        ism::flyweight_hash
-      >::iterator const ce_end = ce_map.end();
-      for (
-        boost::unordered_map<
-          boost::flyweight<std::string>,
-          boost::flyweight<std::string>,
-          ism::flyweight_hash
-        >::iterator ce_it = ce_map.begin();
-        ce_it != ce_end;
-        ++ce_it
+      classad::ClassAd& ce_ad(*ce_ad_ptr);
+      // this innocuous lock is only needed because of a flaw in classad
+      boost::mutex::scoped_lock l(*boost::tuples::get<4>(ism_it->second));
+      if (
+        -1 != boost::tuples::get<glite::wms::ism::expiry_time_entry>(
+          ism_it->second
+        )
       ) {
-        if (attributes.find(ce_it->first) != attributes.end()) {
-          ce_ad_str += std::string(ce_it->first) + '=' + std::string(ce_it->second) + ';';
-        }
-      }
-      ce_ad_str += "];";
 
-      std::auto_ptr<classad::ClassAd> ce_ad_ptr(utils::parse_classad(ce_ad_str));
-      std::auto_ptr<classad::ExprTree> gangmatch_storage_ad(
-        parser.ParseExpression(gangmatch_storage_ad_str)
-      );
-      ce_ad_ptr->Insert("storage", gangmatch_storage_ad.get());
-      gangmatch_storage_ad.release();
-
-      // Insert here causes to delete the previous 'other', if it exists
-      jdl.Insert("other", static_cast<classad::ExprTree*>(ce_ad_ptr->Copy()));
-      ce_ad_ptr.release();
-
-      boost::mutex::scoped_lock l(*boost::tuples::get<ism::mutex_entry>(ism_it->second));
-      if (-1 != boost::tuples::get<ism::expiry_time_entry>(ism_it->second)) {
-        if (jdl.EvaluateAttrBool("requirements", match) && match) {
-
-          boost::shared_ptr<classad::ClassAd> ce_ad_ptr_copy(
-            static_cast<classad::ClassAd*>(jdl.Lookup("other")->Copy())
-          );
-          // TODO II refactoring: optimization here
+        if (utils::left_matches_right(ce_ad, jdl)) {
           suitableCEs[ism_it->first] = boost::tuples::make_tuple(
-            std::make_pair(false, 0.0), ce_ad_ptr_copy
+            std::make_pair(false, 0.0), ce_ad_ptr
           );
         }
         ++valid_entries;
       }
+
       l.unlock();
 
       if (++ism_it == ism_end) {
@@ -375,8 +243,7 @@ matchmakerISMImpl::checkRequirement(
         taken_ism.end(),
         starts_with(*ce_ids_it)
       );
-    } while (ism_it != ism_end);
-    jdl.Delete("other");
+    } while( (ism_it != ism_end) );
   }
 
   std::time_t const t_mm = std::time(0) - t_start;
