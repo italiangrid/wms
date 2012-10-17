@@ -171,7 +171,8 @@ no_build()
      echo ERROR
      exit
    fi
-   mv ./rpmbuild/SOURCES/${PACKAGE_NAME}-${VERSION}-${AGE}.${PLATFORM}.tar.gz "$BUILD_DIR"/org.glite.wms/tgz
+   mv rpmbuild/SOURCES/${PACKAGE_NAME}-${VERSION}-${AGE}.noarch.tar.gz "$BUILD_DIR"/org.glite.wms/tgz
+   mv rpmbuild/RPMS/noarch/* "$BUILD_DIR"/org.glite.wms/RPMS
    cd $BUILD_DIR/org.glite.wms
 }
 
