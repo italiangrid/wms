@@ -23,12 +23,7 @@
 #include <classad_distribution.h>
 
 #include "ldap-utils.h"
-<<<<<<< ism-ii-purchaser.cpp
-#include "ldap-utils-asynch.h"
-#include "glite/wmsutils/classads/classad_utils.h"
-=======
 #include "ldap-utils-g2.h"
->>>>>>> 1.19.2.8.2.11.2.3.2.2.2.3
 #include "glite/wms/ism/ism.h"
 #include "glite/wms/ism/purchaser/ism-ii-purchaser.h"
 #include "glite/wms/common/logger/logger_utils.h"
@@ -37,7 +32,6 @@
 #include "glite/wms/common/configuration/NSConfiguration.h"
 
 using namespace std;
-namespace utils = glite::wmsutils::classads;
 
 namespace glite {
 namespace wms {
@@ -53,8 +47,8 @@ boost::mutex     f_purchasing_cycle_run_mutex;
 
 bool 
 ism_ii_purchaser_entry_update::operator()(
-  int& a,
-  boost::shared_ptr<std::map<std::string, std::string> >
+  int a,
+  boost::shared_ptr<classad::ClassAd>& ad
 )
 {
   boost::mutex::scoped_lock l(f_purchasing_cycle_run_mutex);
@@ -94,85 +88,6 @@ ism_ii_purchaser::ism_ii_purchaser(
 {
 }
 
-<<<<<<< ism-ii-purchaser.cpp
-namespace {
-
-void apply_skip_predicate(
-  glue_info_container_type& glue_info_container,
-  vector<glue_info_iterator>& glue_info_container_updated_entries,
-  skip_predicate_type skip
-)
-{
-  glue_info_iterator it = glue_info_container.begin();
-  glue_info_iterator const gluece_info_container_end(
-    glue_info_container.end()
-  );
-
-  for ( ; it != gluece_info_container_end; ++it) {
-    if (!skip(it->first)) {
-      glue_info_container_updated_entries.push_back(it);
-    }
-    else {
-      Debug("Skipping " << it->first << " due to skip predicate settings");
-    }
-  }
-}
-
-void populate_ism(
-  vector<glue_info_iterator>& glue_info_container_updated_entries,
-  size_t the_ism_index)
-{      
-  static glite::wms::common::configuration::Configuration const& config(
-    *glite::wms::common::configuration::Configuration::instance()
-  ); 
-  static const time_t expiry_time( 
-    config.wm()->ism_ii_purchasing_rate() + config.ns()->ii_timeout()
-  );
-
-  vector<glue_info_iterator>::const_iterator it(
-    glue_info_container_updated_entries.begin()
-  );
-  vector<glue_info_iterator>::const_iterator const e(
-    glue_info_container_updated_entries.end()
-  );
-
-  // no locking is needed here (before the switch)
-  int dark_side = ism::dark_side();
-  for ( ; it != e; ++it ) {
-
-    boost::shared_ptr<std::map<std::string, std::string> > indexed_ce_info(
-      new std::map<std::string, std::string>
-    );
-    for (
-      classad::ClassAd::iterator iter((*it)->second->begin());
-      iter != (*it)->second->end();
-      ++iter
-    ) {
-      classad::ClassAd* tmp(static_cast<classad::ClassAd*>(iter->second));
-      (*indexed_ce_info)[iter->first] = utils::unparse_classad(*tmp); // let's keep
-                                             // ldap-utils generating a classad for now,
-                                             // it will be easier to generate the ce_ad
-                                             // upon MM, without storing the data type
-                                             // for each attribute
-    }
-
-    get_ism(the_ism_index, dark_side).push_back( 
-      make_ism_entry(
-        (*it)->first,
-        std::time(0),
-        indexed_ce_info,
-        expiry_time,
-        ism_ii_purchaser_entry_update()
-      )
-    );
-    Debug((*it)->first << " added to ISM ");
-  } 
-}
-
-}
-
-=======
->>>>>>> 1.19.2.8.2.11.2.3.2.2.2.3
 void ism_ii_purchaser::operator()()
 {
   static glite::wms::common::configuration::Configuration const& config(
@@ -190,11 +105,7 @@ void ism_ii_purchaser::operator()()
        " threads to match before switching the ISM side "
      );
 
-<<<<<<< ism-ii-purchaser.cpp
-     ::sleep(1);
-=======
      ::sleep(1); // we don't need to be waken up by thousands spurious signals
->>>>>>> 1.19.2.8.2.11.2.3.2.2.2.3
     }
 
     // free this memory _before_ other huge allocations made by the purchaser (fetch_bdii_info*)
@@ -203,13 +114,6 @@ void ism_ii_purchaser::operator()()
 
     try {
 
-<<<<<<< ism-ii-purchaser.cpp
-     glue_info_container_type gluece_info_container;
-     vector<glue_info_iterator> gluece_info_container_updated_entries;
-
-     glue_info_container_type gluese_info_container;
-     vector<glue_info_iterator> gluese_info_container_updated_entries;
-=======
       time_t t0 = std::time(0);
       static bool const glue13_purchasing_is_enabled(
         config.wm()->enable_ism_ii_glue13_purchasing()
@@ -259,7 +163,6 @@ void ism_ii_purchaser::operator()()
         vector<gluece_info_iterator> gluece_info_container_updated_entries;
         gluese_info_container_type gluese_info_container;
         vector<gluese_info_iterator> gluese_info_container_updated_entries;
->>>>>>> 1.19.2.8.2.11.2.3.2.2.2.3
 
         fetch_bdii_info_g2(
          m_hostname,
@@ -290,18 +193,6 @@ void ism_ii_purchaser::operator()()
 
       ism::switch_active_side();
 
-<<<<<<< ism-ii-purchaser.cpp
-     // incoming requests asking for MM will be assigned the current active
-     // side so we can operate without locking here, now that older threads
-     // against the current dark side wll all haved flushed at this point
-     populate_ism(gluece_info_container_updated_entries, ism::ce);
-     populate_ism(gluese_info_container_updated_entries, ism::se);
-     
-     // If both glue13 and glue20 purchasing is enabled the switch should 
-     // be preveted here since the purcasing actually continues
-     if(!glue20_purchsing_is_enabled) ism::switch_active_side();
-=======
->>>>>>> 1.19.2.8.2.11.2.3.2.2.2.3
     } catch (LDAPException& e) {
 
       Error(
@@ -361,7 +252,7 @@ void destroy_ii_purchaser(ism_ii_purchaser* p) {
 
 // the entry update function factory
 extern "C" 
-boost::function<bool(int&, boost::shared_ptr<std::map<std::string, std::string> >)> create_ii_entry_update_fn() 
+boost::function<bool(int&, ad_ptr)> create_ii_entry_update_fn() 
 {
   return ism_ii_purchaser_entry_update();
 }

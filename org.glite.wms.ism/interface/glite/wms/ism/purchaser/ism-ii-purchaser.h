@@ -21,7 +21,7 @@ limitations under the License.
 // Author: Salvatore Monforte <Salvatore.Monforte@ct.infn.it>
 // Copyright (c) 2004 EU DataGrid.
 
-// $Id: ism-ii-purchaser.h,v 1.9.2.3.2.3.4.2.4.1 2012/06/22 11:51:31 mcecchi Exp $
+// $Id: ism-ii-purchaser.h,v 1.9.2.3.2.3.4.2.4.3 2012/07/12 10:02:54 mcecchi Exp $
 
 #ifndef GLITE_WMS_ISM_PURCHASER_ISM_II_PURCHASER_H
 #define GLITE_WMS_ISM_PURCHASER_ISM_II_PURCHASER_H
@@ -38,14 +38,13 @@ namespace purchaser {
 class ism_ii_purchaser : public ism_purchaser
 {
 public:
-                
   ism_ii_purchaser(
     std::string const& hostname,
     int port,
     std::string const& distinguished_name,
     int timeout = 30,
     std::string const& ldap_ce_filter_g13 = std::string(),
-    std::string const& ldap_ce_filter_g13 = std::string(),
+    std::string const& ldap_ce_filter_g20 = std::string(),
     std::string const& ldap_se_filter_g20 = std::string(),
     bool ldap_search_async = false,
     exec_mode_t mode = loop,
@@ -70,8 +69,8 @@ private:
 class ism_ii_purchaser_entry_update
 {
 public:
-  ism_ii_purchaser_entry_update() { }
-  bool operator()(int& a, boost::shared_ptr<std::map<std::string, std::string> >);
+  ism_ii_purchaser_entry_update() {}
+  bool operator()(int a, boost::shared_ptr<classad::ClassAd>& ad);
 };
 
 namespace ii {
@@ -81,7 +80,7 @@ typedef ism_ii_purchaser* create_t(std::string const& hostname,
     std::string const& distinguished_name,
     int timeout = 30,
     std::string const& ldap_ce_filter_g13 = std::string(),
-    std::string const& ldap_ce_filter_g13 = std::string(),
+    std::string const& ldap_ce_filter_g20 = std::string(),
     std::string const& ldap_se_filter_g20 = std::string(),
     bool ldap_search_async = false,
     exec_mode_t mode = loop,
@@ -93,7 +92,7 @@ typedef ism_ii_purchaser* create_t(std::string const& hostname,
 typedef void destroy_t(ism_ii_purchaser*);
 
 // type of the entry update function factory
-typedef boost::function<bool(int&, boost::shared_ptr<std::map<std::string, std::string> >)> create_entry_update_fn_t();
+typedef boost::function<bool(int&, boost::shared_ptr<classad::ClassAd>)> create_entry_update_fn_t();
 }
 
 }}}}

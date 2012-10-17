@@ -27,7 +27,6 @@ limitations under the License.
 #define GLITE_WMS_ISM_ISM_H
 
 #include <map>
-#include <vector>
 #include <string>
 #include <boost/shared_ptr.hpp>
 #include <boost/function.hpp>
@@ -35,7 +34,6 @@ limitations under the License.
 #include <boost/thread/thread.hpp>
 #include <boost/thread/recursive_mutex.hpp>
 #include <boost/thread/xtime.hpp>
-//#include <boost/flyweight.hpp>
 
 namespace classad {
 class ClassAd;
@@ -46,12 +44,10 @@ namespace wms {
 namespace ism {
 
 enum {
-  id_entry = 0,
-  update_time_entry,
+  update_time_entry = 0,
   expiry_time_entry,
-  ad_info_entry,
-  update_function_entry,
-  mutex_entry
+  ad_ptr_entry,
+  update_function_entry
 };
 
 enum {
@@ -59,22 +55,34 @@ enum {
   se
 };
 
-typedef boost::function<bool(
-  int&, boost::shared_ptr<std::map<std::string, std::string> >)
-> update_function_type;
+// resource identifier
+typedef std::string id_type;
+
+// resource description
+typedef boost::shared_ptr<classad::ClassAd> ad_ptr;
+// update function
+typedef boost::function<bool(int&, ad_ptr)> update_function_type;
 
 typedef boost::tuple<
-  std::string, // resource identifier
   int, // update time
   int, // expiry "
-  boost::shared_ptr<
-    std::map<std::string, std::string>
-  >, // key/value resource description, READY TO BE 'MEMCACHED'
+  ad_ptr, // resource description
   update_function_type, // update function
-  boost::shared_ptr<boost::mutex::mutex> // one different mutex for each entry, needed for updating the live side
+  boost::shared_ptr<boost::mutex::mutex> // one different mutex for each entry  
 > ism_entry_type;
 
-typedef std::vector<ism_entry_type> ism_type; // as simple as that...
+// 1. resource identifier
+// 2. ism entry type
+typedef std::map<
+  id_type,
+  ism_entry_type,
+  std::less<id_type>
+  //,__gnu_cxx::malloc_allocator<ism_entry_type>
+> ism_type;
+typedef std::map<id_type, ism_entry_type> ism_type;
+//typedef std::multimap<double, ism_entry_type> ism_type;
+
+// type specification for the mutex in ism
 typedef boost::recursive_mutex ism_mutex_type;
 
 void set_ism(
@@ -93,13 +101,11 @@ std::pair<boost::shared_ptr<void>, int> match_on_active_side();
 int matching_threads(int side);
 
 ism_type::value_type make_ism_entry(
-  std::string const& id,
-  int update_time,
-  boost::shared_ptr<
-    std::map<std::string, std::string>
-  > ad_info,
-  int expiry_time = 300,
-  update_function_type const& uf = update_function_type()
+  std::string const& id, // resource identifier
+  int update_time,	 // update time
+  ad_ptr const& ad,	 // resource descritpion
+  update_function_type const& uf = update_function_type(), // update function
+  int expiry_time = 300
 );
 
 std::ostream& operator<<(std::ostream& os, ism_type::value_type const& value);
@@ -120,6 +126,15 @@ bool is_expired_ism_entry(const ism_entry_type& entry);
 
 // Returns whether the ism entry is assigned an expiry_time less or equal to 0, or not
 bool is_void_ism_entry(const ism_entry_type& entry);
+
+std::string get_ism_dump(void);
+
+class call_dump_ism_entries
+{
+  void _(size_t, std::ios_base::openmode, std::string const&);
+public:
+  void operator()();
+};
 
 } // ism
 } // wms
