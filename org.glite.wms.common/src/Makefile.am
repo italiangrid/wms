@@ -7,12 +7,13 @@
 ## *********************************************************************
 
 ## Subdirectories list
-SUBDIRS = scripts configuration utilities logger \
+SUBDIRS = scripts ldif2classad configuration utilities logger \
 	process programs
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = wms-common.pc \
 		wms-common-conf.pc \
+		wms-common-ldif2classads.pc \
 		wms-common-process.pc \
 		wms-common-util.pc \
 		wms-common-ii.pc \
