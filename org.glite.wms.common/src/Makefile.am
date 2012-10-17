@@ -7,7 +7,7 @@
 ## *********************************************************************
 
 ## Subdirectories list
-SUBDIRS = scripts configuration utilities logger \
+SUBDIRS = scripts ldif2classad configuration utilities logger \
 	process programs
 
 pkgconfigdir = $(libdir)/pkgconfig
