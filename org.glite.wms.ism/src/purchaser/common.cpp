@@ -45,8 +45,6 @@ namespace purchaser {
 
 namespace {
 
-<<<<<<< common.cpp
-=======
 boost::shared_ptr<classad::ClassAd> glue13_mapping_ad(
    glite::wmsutils::classads::parse_classad(
     "["
@@ -186,11 +184,10 @@ namespace {
     "]"
   );
 
->>>>>>> 1.8.2.4.6.2.4.3
   boost::scoped_ptr<classad::ClassAd> gangmatch_storage_ad;
 }
 
-bool expand_information_service_info(glue_info_type& gluece_info)
+bool expand_information_service_info(gluece_info_type& gluece_info)
 {
   string isURL;
   bool result = false;
@@ -221,7 +218,23 @@ bool expand_information_service_info(glue_info_type& gluece_info)
   return result;
 }
 
-bool expand_glueceid_info(glue_info_type& gluece_info)
+bool insert_gangmatch_storage_ad(gluece_info_type& gluece_info)
+{
+ try {
+    if(!gangmatch_storage_ad) {
+      gangmatch_storage_ad.reset( 
+        utils::parse_classad(gangmatch_storage_ad_str)
+      ); 
+    }
+    gluece_info->Update( *gangmatch_storage_ad);
+  }
+  catch(...) {
+    assert(false);
+  }
+  return true;
+}
+
+bool expand_glueceid_info(gluece_info_type& gluece_info)
 {
   string ce_str;
   ce_str.assign(utils::evaluate_attribute(*gluece_info, "GlueCEUniqueID"));

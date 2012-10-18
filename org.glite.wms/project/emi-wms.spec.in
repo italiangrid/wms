@@ -4,9 +4,8 @@ Release: __release__
 Name: emi-wms
 License: Apache License 2.0
 Vendor: EMI
+Buildarch: noarch
 Group: System Environment/Libraries
-Packager: ETICS
-BuildArch: noarch
 Requires: lcmaps-plugins-voms
 Requires: emi-version
 Requires: glite-wms-ice

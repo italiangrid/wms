@@ -12,18 +12,16 @@ Requires: httpd
 Requires: mod_ssl
 Requires: gridsite-apache
 Requires: glite-px-proxyrenewal glite-px-proxyrenewal-progs
-Requires: glite-wms-configuration
-Requires: lcmaps-plugins-basic
+Requires: %{!?extbuilddir: glite-wms-configuration, glite-wms-purger-devel, } lcmaps-plugins-basic
 Requires(post): chkconfig
 Requires(preun): chkconfig
 Requires(preun): initscripts
 BuildRequires: glite-jobid-api-c-devel, glite-jobid-api-cpp-devel, voms-devel, chrpath
 BuildRequires: gridsite-devel, libxml2-devel
-BuildRequires: argus-pep-api-c-devel, glite-wms-purger-devel, libtool
+BuildRequires: argus-pep-api-c-devel, libtool
 BuildRequires: lcmaps-without-gsi-devel, lcmaps-devel, classads-devel
 BuildRequires: glite-jdl-api-cpp-devel, glite-lb-client-devel, fcgi-devel
-BuildRequires: glite-px-proxyrenewal-devel, libxslt-devel
-BuildRequires: glite-wms-wmproxy-interface, libtar-devel
+BuildRequires: glite-px-proxyrenewal-devel, libxslt-devel, libtar-devel
 BuildRequires: glite-build-common-cpp, gsoap-devel
 BuildRequires: httpd-devel, zlib-devel, boost-devel, c-ares-devel
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)

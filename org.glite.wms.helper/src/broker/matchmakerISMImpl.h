@@ -21,7 +21,7 @@ limitations under the License.
 // Author: Salvatore Monforte
 // Copyright (c) 2002 EU DataGrid.
 
-// $Id: matchmakerISMImpl.h,v 1.1.2.2 2012/09/12 10:02:12 mcecchi Exp $
+// $Id: matchmakerISMImpl.h,v 1.2.8.1.2.2 2010/04/08 13:57:07 mcecchi Exp $
 
 #ifndef GLITE_WMS_MATCHMAKING_MATCHMAKERISMIMPL_H
 #define GLITE_WMS_MATCHMAKING_MATCHMAKERISMIMPL_H
