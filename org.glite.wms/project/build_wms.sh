@@ -281,7 +281,7 @@ if [ $8 -eq 1 ]; then
 
    # file /etc/mock/emi${EMI_RELEASE}-$PLATFORM-$ARCH.cfg must be created, with all the required repositories and stuff
    if [ ! -r /etc/mock/emi${EMI_RELEASE}-$PLATFORM-$ARCH.cfg ]; then
-      echo "Do you also want me to prepare the mock configuration?!? What else?"
+      echo "Expected configuration emi${EMI_RELEASE}-$PLATFORM-$ARCH.cfg does not exists. Do you also want me to prepare the mock configuration?!? What else?"
       exit
    fi
 
