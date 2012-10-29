@@ -323,7 +323,7 @@ sub test_threshold{
 		$memperc=100*$mems{'Active'}/$mems{'MemTotal'};
 	}
 	if($mems{'SwapTotal'} == 0){
-		$swapperc=100;
+		$swapperc=0;
 	}else{
 		$swapperc=100*($mems{'SwapTotal'}-$mems{'SwapFree'})/$mems{'SwapTotal'};
 	}
