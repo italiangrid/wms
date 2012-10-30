@@ -325,7 +325,8 @@ getOutputFileList(getOutputFileListResponse& getOutputFileList_response,
       string jobdirectory = wmputilities::getJobDirectoryPath(jobid);
 
       // Checking for maradona file, created if and only if the job is in DONE state
-      edglog(info)<<"Searching for Maradona file: "<<jobdirectory + FILE_SEPARATOR
+      // isn't the check on the status already done in the client?
+      edglog(info)<<"Searching for MARADONA file: "<<jobdirectory + FILE_SEPARATOR
                    + MARADONA_FILE<<endl;
       if (!wmputilities::fileExists(jobdirectory + FILE_SEPARATOR + MARADONA_FILE)) {
          // MARADONA file NOT found
@@ -335,19 +336,20 @@ getOutputFileList(getOutputFileListResponse& getOutputFileList_response,
          wmplogger.init_and_set_logging_job("", 0, &jobid);
 
          string userProxyJob =  wmputilities::getJobDelegatedProxyPath(jobid);
+       
          long timeleft = 0;
          try {
            security::getProxyTimeLeft(userProxyJob);
-         } catch(...) { // the user proxy might not exist anymore
+         } catch (glite::wmsutils::exception::Exception& ex) {
          }
 
-         // Setting user proxy, checks whether the user proxy is still valid
-         // switching to host proxy if the user proxy expired
+         // Setting user proxy, checks whether the user proxy is still valid,
+         // switching to the host proxy if the user proxy expired
          if ( timeleft <= 1) {
             string hostProxy = configuration::Configuration::instance()->common()->host_proxy_file();
-            wmplogger.setUserProxy(hostProxy);
+            wmplogger.setUserProxy(hostProxy); // throws
          } else {
-            wmplogger.setUserProxy(userProxyJob);
+            wmplogger.setUserProxy(userProxyJob); // throws
          }
 
          // Getting job status to check if is a job and its status
@@ -410,7 +412,7 @@ getOutputFileList(getOutputFileListResponse& getOutputFileList_response,
       }
       list->file = file;
       getOutputFileList_response.OutputFileAndSizeList = list;
-      edglog(debug)<<"Successfully retrieved the list of files to be transferred: "<<found.size()<<endl;
+      edglog(debug)<<"Successfully retrieved files: "<<found.size()<<endl;
       edglog(debug)<<"Removing lock..."<<std::endl;
       wmputilities::operationUnlock(fd);
    } catch (glite::wmsutils::exception::Exception const& e) {

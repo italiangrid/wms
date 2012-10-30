@@ -788,20 +788,8 @@ WMPEventLogger::setUserProxy(const string& proxy)
 
    this->delegatedproxy = proxy;
    if (!proxy.empty()) {
-      try {
-         security::checkProxyValidity(proxy);
-      } catch (Exception& ex) {
-         if (ex.getCode() != wmputilities::WMS_PROXY_EXPIRED) {
-            // Problem with proxy (not expired)
-            throw ex;
-            // } else {
-            // Delegated proxy expired - continue processing
-            // TODO most commands cannot be performed anymore:
-            // submit/cancel will fail anyway (to be tested)
-            // output/ perusal may continue (to be tested)
-         }
+       security::checkProxyValidity(proxy); // throws
 
-      }
       if (edg_wll_SetParam(ctx_, EDG_WLL_PARAM_X509_PROXY, proxy.c_str())) {
          string msg = error_message("Unable to set User Proxy for "
                                     "LB context\nedg_wll_SetParam");

@@ -977,7 +977,12 @@ jobpurge(jobPurgeResponse& jobPurge_response, JobId *jobid, bool checkstate = fa
    wmplogger.init_and_set_logging_job("", 0, jobid);
    wmplogger.setLBProxy(conf.isLBProxyAvailable(), wmputilities::getDN_SSL());
 
-   wmplogger.setUserProxy(delegatedproxy);
+   try {
+     wmplogger.setUserProxy(delegatedproxy);
+   } catch (glite::wmsutils::exception::Exception const& ex) {
+     string hostProxy = configuration::Configuration::instance()->common()->host_proxy_file();
+     wmplogger.setUserProxy(hostProxy);
+   }
 
    // Getting job status to check if purge is possible
    JobStatus status = wmplogger.getStatus(false);
@@ -1003,7 +1008,11 @@ jobpurge(jobPurgeResponse& jobPurge_response, JobId *jobid, bool checkstate = fa
       string userkey;
       bool isproxyfile = false;
       try {
-         security::checkProxyValidity(delegatedproxy);
+
+         try {
+           security::checkProxyValidity(delegatedproxy); // are we sure we need valid delegated credential for a job purge?
+         } catch (glite::wmsutils::exception::Exception& ex) {
+         }
 
          // Creating temporary Proxy file
          char time_string[20];
@@ -1868,6 +1877,7 @@ jobStart(jobStartResponse& jobStart_response, const string& job_id, struct soap 
    wmplogger.setLBProxy(conf.isLBProxyAvailable(), wmputilities::getDN_SSL());
    std::string delegatedproxy = wmputilities::getJobDelegatedProxyPath(job_id);
    wmplogger.setUserProxy(delegatedproxy);
+
    wmplogger.init_and_set_logging_job("", 0, jid.get());
 
    pair<string, regJobEvent> startpair = wmplogger.isStartAllowed();
@@ -1962,7 +1972,7 @@ jobSubmit(struct ns1__jobSubmitResponse& response,
       edglog(debug)<<"No drain"<<endl;
    }
 
-   security::checkProxyValidity(delegatedproxy);
+   security::checkProxyValidity(delegatedproxy); // throws
 
    // Registering the job for submission
    jobRegisterResponse jobRegister_response;
@@ -2442,7 +2452,7 @@ jobPurge(jobPurgeResponse& jobPurge_response, const string& jid)
    edglog_fn("wmpcoreoperations::jobPurge");
 
    initWMProxyOperation("jobPurge");
-   security::do_authZ_jobid("jobPurge", jid);
+   security::do_authZ("jobPurge"); // the delegated proxy can even be expired, why not?
 
    boost::scoped_ptr<JobId> jobid(new JobId(jid));
 

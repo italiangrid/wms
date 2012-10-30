@@ -89,17 +89,17 @@ getNotBefore(const string& pxfile)
             edglog(severe)<<"Error in PEM_read_bio_X509: Proxy file "
                           "doesn't exist or has bad permissions"<<endl;
             throw wmputilities::AuthorizationException(__FILE__, __LINE__,
-                  "VOMSAuthN::getProxyTimeLeft", wmputilities::WMS_AUTHORIZATION_ERROR,
-                  "Proxy file doesn't exist or has bad permissions");
+                  "security::getProxyTimeLeft", wmputilities::WMS_AUTHORIZATION_ERROR,
+                  "proxy file doesn't exist or has bad permissions");
          }
          sec = ASN1_UTCTIME_get(X509_get_notBefore(x));
          free(x);
       } else {
          BIO_free(in);
-         edglog(error)<<"Unable to get Not Before date from Proxy"<<endl;
+         edglog(error)<<"Unable to get Not Before date from proxy"<<endl;
          throw wmputilities::ProxyOperationException(__FILE__, __LINE__,
                "getNotBefore()", wmputilities::WMS_PROXY_ERROR,
-               "Unable to get Not Before date from Proxy");
+               "Unable to get Not Before date from proxy");
       }
       BIO_free(in);
    } else {
@@ -117,7 +117,7 @@ getNotBefore(const string& pxfile)
 auth_info
 authorize_and_map(std::string const& action, std::string const& delegatedproxy)
 {
-   edglog_fn("security::authorize_and_map()");
+   edglog_fn("WMPAuthorizer::authorize_and_map()");
    checkProxyValidity(delegatedproxy);
    WMPAuthorizer auth(action, delegatedproxy);
    auth.authorize(); // throws
@@ -128,7 +128,7 @@ void
 checkGaclUserAuthZ(string const& fqan, string const& dn)
 try
 {
-   edglog_fn("security::checkGaclUserAuthZ");
+   edglog_fn("WMPAuthorizer::checkGaclUserAuthZ");
 
    bool exec = false;
    bool execDN = false;
@@ -377,7 +377,7 @@ WMPAuthorizer::map_user_lcmaps()
 void
 setGridsiteJobGacl(std::vector<std::string> &jobids)
 {
-   edglog_fn("security::setGridsiteJobGacl()");
+   edglog_fn("WMPAuthorizer::setGridsiteJobGacl()");
 
    if (jobids.size()) {
       string user_dn = wmputilities::getDN_SSL(); // taken from ssl
@@ -442,7 +442,7 @@ setGridsiteJobGacl(std::vector<std::string> &jobids)
 bool
 checkJobDrain()
 {
-   edglog_fn("security::checkJobDrain");
+   edglog_fn("WMPAuthorizer::checkJobDrain");
 
    bool ret = false;
    char* doc_root = getenv(DOCUMENT_ROOT.c_str());
@@ -464,39 +464,40 @@ checkProxyValidity(const string& proxy)
 {
    edglog_fn("security::checkProxyValidity");
 
-   edglog(debug)<<"Proxy path: "<<proxy<<endl;
+   edglog(debug)<<"Proxy path: " << proxy << endl;
 
    static int const PROXY_TIME_MISALIGNMENT_TOLERANCE = 5;
-   time_t now = time(NULL);
-   time_t proxytime = getNotBefore(proxy);
+   time_t now = time(0);
+   time_t proxytime = time(0);
+   proxytime = getNotBefore(proxy);
    double timediff = proxytime - now;
-   edglog(debug)<<"Delegated Proxy Time difference (proxy - now): "<< boost::lexical_cast<std::string>(timediff)<<endl;
+   edglog(debug)<<"proxy time difference (proxy - now): "<< boost::lexical_cast<std::string>(timediff)<<endl;
    if (timediff > PROXY_TIME_MISALIGNMENT_TOLERANCE) {
-      edglog(error)<<"Proxy validity starting time in the future ("<< timediff << " secs)"  <<endl;
+      edglog(error)<<"validity starting time in the future ("<< timediff << " secs)"  <<endl;
       throw wmputilities::ProxyOperationException(__FILE__, __LINE__,
             "checkProxyValidity()", wmputilities::WMS_PROXY_ERROR,
-            "Proxy validity starting time in the future"
+            "proxy validity starting time in the future"
             "\nPlease check client date/time");
    } else {
       if (timediff > 0) {
-         edglog(debug)<<"Tolerable Proxy validity starting time in the future ("
+         edglog(debug)<<"tolerable Proxy validity starting time in the future ("
                       <<timediff<<" secs)"<<endl;
       }
    }
    long timeleft = getProxyTimeLeft(proxy);
-   edglog(debug)<<"Proxy Time Left (should be positive number): "<<timeleft<<endl;
+   edglog(debug)<<"time left (should be positive): "<<timeleft<<endl;
    if (timeleft <= 1) {
-      edglog(error)<<"The delegated Proxy has expired!"<<endl;
+      edglog(error)<<"the proxy has expired!"<<endl;
       throw wmputilities::ProxyOperationException(__FILE__, __LINE__,
             "checkProxyValidity()", wmputilities::WMS_PROXY_EXPIRED,
-            "The delegated Proxy has expired");
+            "the proxy has expired");
    }
 }
 
 void
 checkProxyExistence(const string& userproxypath, const string& jobid)
 {
-   edglog_fn("security::checkProxyExistence");
+   edglog_fn("WMPAuthorizer::checkProxyExistence");
 
    string userproxypathbak = wmputilities::getJobDelegatedProxyPathBak(jobid);
    if (!wmputilities::fileExists(userproxypath)) {
