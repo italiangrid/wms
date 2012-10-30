@@ -19,7 +19,7 @@ Requires: fetch-crl
 Requires: mysql-server
 Requires: lcas-plugins-basic
 Requires: glite-yaim-wms
-Requires: condor-lcg
+Requires: condor-emi
 Requires: glite-wms-manager
 Requires: globus-proxy-utils
 Requires: glite-wms-wmproxy
