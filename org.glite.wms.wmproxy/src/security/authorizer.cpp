@@ -74,7 +74,7 @@ long
 getNotBefore(const string& pxfile)
 {
    GLITE_STACK_TRY("getNotBefore()");
-   edglog_fn("WMPAuthorizer::getNotBefore");
+   edglog_fn("security::getNotBefore");
 
    long sec = 0;
    X509 *x = NULL;
@@ -117,7 +117,7 @@ getNotBefore(const string& pxfile)
 auth_info
 authorize_and_map(std::string const& action, std::string const& delegatedproxy)
 {
-   edglog_fn("WMPAuthorizer::authorize_and_map()");
+   edglog_fn("security::authorize_and_map()");
    checkProxyValidity(delegatedproxy);
    WMPAuthorizer auth(action, delegatedproxy);
    auth.authorize(); // throws
@@ -128,7 +128,7 @@ void
 checkGaclUserAuthZ(string const& fqan, string const& dn)
 try
 {
-   edglog_fn("WMPAuthorizer::checkGaclUserAuthZ");
+   edglog_fn("security::checkGaclUserAuthZ");
 
    bool exec = false;
    bool execDN = false;
@@ -377,7 +377,7 @@ WMPAuthorizer::map_user_lcmaps()
 void
 setGridsiteJobGacl(std::vector<std::string> &jobids)
 {
-   edglog_fn("WMPAuthorizer::setGridsiteJobGacl()");
+   edglog_fn("security::setGridsiteJobGacl()");
 
    if (jobids.size()) {
       string user_dn = wmputilities::getDN_SSL(); // taken from ssl
@@ -442,7 +442,7 @@ setGridsiteJobGacl(std::vector<std::string> &jobids)
 bool
 checkJobDrain()
 {
-   edglog_fn("WMPAuthorizer::checkJobDrain");
+   edglog_fn("security::checkJobDrain");
 
    bool ret = false;
    char* doc_root = getenv(DOCUMENT_ROOT.c_str());
@@ -462,7 +462,7 @@ checkJobDrain()
 void
 checkProxyValidity(const string& proxy)
 {
-   edglog_fn("WMPAuthorizer::checkProxyValidity");
+   edglog_fn("security::checkProxyValidity");
 
    edglog(debug)<<"Proxy path: "<<proxy<<endl;
 
@@ -496,7 +496,7 @@ checkProxyValidity(const string& proxy)
 void
 checkProxyExistence(const string& userproxypath, const string& jobid)
 {
-   edglog_fn("WMPAuthorizer::checkProxyExistence");
+   edglog_fn("security::checkProxyExistence");
 
    string userproxypathbak = wmputilities::getJobDelegatedProxyPathBak(jobid);
    if (!wmputilities::fileExists(userproxypath)) {
