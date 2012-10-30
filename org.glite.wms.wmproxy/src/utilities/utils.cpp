@@ -638,7 +638,7 @@ getJobJDLStartedPath(jobid::JobId jid, bool isrelative, int level)
    GLITE_STACK_TRY("getJobJDLStartedPath()");
    //TBD Check path
    if (!isrelative) {
-      return string(getenv(DOCUMENT_ROOT)
+      return string(getenv(DOCUMENT_ROOT) + FILE_SEP
                     + to_filename(jid, level)
                     + FILE_SEP + JDL_STARTED_FILE_NAME);
    } else {
@@ -651,7 +651,7 @@ getJobJDLStartedPath(jobid::JobId jid, bool isrelative, int level)
 string
 getJobJDLExistingStartPath(jobid::JobId jid, bool isrelative, int level)
 {
-   GLITE_STACK_TRY("getJobJDLStartedPath()");
+   GLITE_STACK_TRY("getJobJDLExistingPath()");
 
    string started = getJobJDLStartedPath(jid);
    if (fileExists(started)) {
