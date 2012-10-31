@@ -17,7 +17,9 @@
 // Author: Marco Cecchi <marco.cecchi@cnaf.infn.it>
 //
 
-#include<cstring>
+#include <string>
+#include <iostream>
+#include <fstream>
 
 #include "glite/wms/common/logger/logger_utils.h"
 #include "glite/wms/common/logger/edglog.h"
@@ -33,6 +35,37 @@ namespace wmproxy {
 namespace security {
 
 namespace {
+
+// Reads the certificate file and returns the public part as a string
+std::string read_certchain(std::string filename)
+{
+   edglog_fn("argus_authZ::read_certchain");
+   
+   // PEM cert delimiters for certchain
+   static std::string CERT_BEGIN("-----BEGIN CERTIFICATE-----");
+   static std::string CERT_END("-----END CERTIFICATE-----");
+
+   std::ifstream infile(filename.c_str());
+   std::string line;
+   std::string cert;
+   if (infile.fail()) {
+      edglog(error) << "failed to open certificate file:" << filename << std::endl;
+      return "";
+   }
+   bool cert_part = false;
+   while (infile.good()) {
+      getline(infile, line);
+      if (CERT_BEGIN == line) {
+         cert_part = true;
+      } else if (CERT_END == line) {
+         cert_part = false; // more certs can be interleaved with the private key in the middle
+      } else if (cert_part) {
+         cert += line;
+      }
+   }
+
+   return cert;
+}
 
 xacml_subject_t*
 create_xacml_subjectid(std::string const& x500dn)
@@ -59,6 +92,31 @@ create_xacml_subjectid(std::string const& x500dn)
    xacml_attribute_setdatatype(subject_attrid, XACML_DATATYPE_X500NAME);
    xacml_attribute_addvalue(subject_attrid, x500dn.c_str());
    xacml_subject_addattribute(subject, subject_attrid);
+
+   return subject;
+}
+
+xacml_subject_t*
+create_xacml_subject_certchain(std::string const& certchain)
+{
+   edglog_fn("argus_authZ::create_xacml_subject_certchain");
+
+   xacml_subject_t* subject = xacml_subject_create();
+   if (!subject) {
+      edglog(error) << "can not allocate XACML Subject" << std::endl;
+      return 0;
+   }
+   xacml_attribute_t* subject_attr_id = xacml_attribute_create(
+      XACML_AUTHZINTEROP_SUBJECT_CERTCHAIN);
+   if (!subject_attr_id) {
+      edglog(error) << "can not allocate XACML Subject/Attribute: "
+        << XACML_AUTHZINTEROP_SUBJECT_CERTCHAIN << std::endl;
+      xacml_subject_delete(subject);
+      return 0;
+   }
+   xacml_attribute_setdatatype(subject_attr_id, XACML_DATATYPE_BASE64BINARY);
+   xacml_attribute_addvalue(subject_attr_id, certchain.c_str());
+   xacml_subject_addattribute(subject, subject_attr_id);
 
    return subject;
 }
@@ -403,15 +461,18 @@ argus_authZ(
    //}
 
    xacml_subject_t* subject = xacml_subject_create();
+   // subject-id, cert-chain and VOMS FQANs are all one Subject
    xacml_subject_t* subject_id = create_xacml_subjectid(dn);
-   if (
-      !subject_id
-      || !merge_xacml_subject_attrs_into(subject_id, subject)
-   ) {
+   if (!subject_id || !merge_xacml_subject_attrs_into(subject_id, subject)) {
       pep_destroy(pep);
       return error;
    }
-
+   std::string certchain(read_certchain(userproxypath));
+   xacml_subject_t* subject_certchain = create_xacml_subject_certchain(certchain);
+   if (!merge_xacml_subject_attrs_into(subject_certchain, subject)) {
+      pep_destroy(pep);
+      return error;
+   }
    xacml_subject_t* subject_voms_fqan = create_xacml_subject_voms_fqans(fqans);
    if (!subject_voms_fqan) {
       pep_destroy(pep);
@@ -451,10 +512,10 @@ argus_authZ(
    xacml_response_delete(response);
 
    return boost::tuple<bool, xacml_decision_t, uid_t, gid_t>(
-             true,
-             decision.get<0>(),
-             decision.get<1>(),
-             decision.get<2>());
+      true,
+      decision.get<0>(),
+      decision.get<1>(),
+      decision.get<2>());
 }
 
 }}}}
