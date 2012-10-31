@@ -57,10 +57,12 @@ std::string read_certchain(std::string filename)
       getline(infile, line);
       if (CERT_BEGIN == line) {
          cert_part = true;
-      } else if (CERT_END == line) {
-         cert_part = false; // more certs can be interleaved with the private key in the middle
-      } else if (cert_part) {
+      }
+      if (cert_part) {
          cert += line;
+      }
+      if (CERT_END == line) {
+         cert_part = false; // more certs can be interleaved with the private key in the middle
       }
    }
 
