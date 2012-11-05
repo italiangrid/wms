@@ -55,7 +55,7 @@ limitations under the License.
 #include "glite/wmsutils/classads/classad_utils.h"
 
 #include "ldap-dn-utils-g2.h"
-#include "schema_utils-g2.h"
+#include "schema_utils.h"
 
 namespace cu  = glite::wmsutils::classads;
 namespace ba  = boost::algorithm;
@@ -68,23 +68,6 @@ namespace ism {
 namespace purchaser {
 
 typedef boost::shared_ptr<classad::ClassAd> ClassAdPtr;
-
-class LDAPException: public std::exception
-{
-  std::string m_error;
-public:
-  LDAPException(std::string const& error)
-    : m_error(error)
-  {
-  }
-  ~LDAPException() throw()
-  {
-  }
-  virtual char const* what() const throw()
-  {
-    return m_error.c_str();
-  }
-};
 
 namespace {
 
@@ -839,105 +822,6 @@ void process_glue2_share_capacity_info(
   );
 }
 
-inline bool iequals(std::string const& a, std::string const& b)
-{
- return ba::iequals(a,b);
-}
-
-inline bool istarts_with(std::string const& a, std::string const& b)
-{
- return ba::istarts_with(a,b);
-}
-
-inline std::string strip_prefix(std::string const& prefix, std::string const& s)
-{
-  return boost::algorithm::istarts_with(s,prefix) ?
-    boost::algorithm::erase_head_copy(s, prefix.length()) : s;
-}
-
-void insert_values(
-  std::string const& name,
-  boost::shared_array<struct berval*> values,
-  std::list<std::string> const& prefix,
-  classad::ClassAd& ad
-) {
-  std::vector<std::string>::const_iterator list_b, number_b;
-  std::vector<std::string>::const_iterator list_e, number_e;
-    
-  boost::tie(list_b, list_e) = bdii_schema_info_g2().multi_valued();
-  boost::tie(number_b, number_e) = bdii_schema_info_g2().number_valued();
-
-  bool is_list = ba::iequals(name,"objectclass") || std::find_if(
-    list_b, list_e, boost::bind(iequals,_1, name)
-  ) != list_e;
-
-  bool is_number = std::find_if(
-    number_b, number_e, boost::bind(iequals, _1, name)
-  ) != number_e; 
-
-  std::string result;
-  for (size_t i=0; values[i] != 0; ++i) {
-
-    if (i) result.append(",");
-    if (is_number || ba::iequals("undefined", values[i]->bv_val) || 
-      ba::iequals("false", values[i]->bv_val) || ba::iequals("true", values[i]->bv_val)) {  
-    
-      result.append(values[i]->bv_val);
-    }
-    else {
-      result.append("\"").append(values[i]->bv_val).append("\"");
-    }
-  }
-  if (is_list) {
-    std::string s("{");
-    s.append(result).append("}");
-    result.swap(s);
-  }
-  classad::ExprTree* e = 0;
-  classad::ClassAdParser parser;
-  parser.ParseExpression(result, e);
-
-  if (e) {
-    std::list<std::string>::const_iterator it =  std::find_if(
-      prefix.begin(), prefix.end(), 
-      boost::bind(istarts_with, name, _1)
-    );
-    ad.Insert(
-      ( it != prefix.end() ) ? strip_prefix(*it, name) : name,
-      e
-      );
-  }
-}
-classad::ClassAd*
-create_classad_from_ldap_entry(
-  LDAP* ld, LDAPMessage* lde,
-  std::list<std::string> prefix
-) {
-  classad::ClassAd* result = new classad::ClassAd;
-  BerElement* ber = 0;
-  for(
-    char* attr = ldap_first_attribute(ld, lde, &ber);
-    attr; attr = ldap_next_attribute(ld, lde, ber)
-  ) {
-    boost::shared_ptr<void> attr_guard(
-      attr, ber_memfree
-    );
-    boost::shared_array<struct berval*> values(
-      ldap_get_values_len(ld, lde, attr),
-      ldap_value_free_len
-    );
-
-    if (!values) continue;
-    insert_values( 
-      attr, values, prefix, *result
-    );
-  }
-  boost::shared_ptr<void> ber_guard(
-    static_cast<void*>(0),boost::bind(ber_free, ber, 0)
-  );
-  return result;
-}
-
 inline classad::ExprTree* make_literal(std::string const& s)
 {
   classad::Value v;
@@ -1028,7 +912,7 @@ fetch_bdii_se_info_g2(
   std::string const& dn, 
   time_t timeout,
   std::string const& ldap_se_filter_ext,
-  ism::purchaser::PurchaserInfoContainer& se_info_container) 
+  gluece_info_container_type& se_info_container)
 {
   LDAP* ld = 0;
   int result = ldap_initialize(
@@ -1105,7 +989,7 @@ fetch_bdii_se_info_g2(
         
         ClassAdPtr ad(
           create_classad_from_ldap_entry(
-            ld, lde, p_it->get<1>()
+            ld, lde, p_it->get<1>(), true
         ));
         glue2_info_processing_fn process = p_it->get<2>();
         process(ldap_dn_tokens, ad, bdii_info);
@@ -1206,7 +1090,7 @@ fetch_bdii_ce_info_g2(
   std::string const& dn,
   time_t timeout,
   std::string const& ldap_ce_filter_ext,
-  ism::purchaser::PurchaserInfoContainer& ce_info_container) 
+  gluece_info_container_type& ce_info_container)
 {
   LDAP* ld = 0;
   int result = ldap_initialize(
@@ -1283,7 +1167,7 @@ fetch_bdii_ce_info_g2(
         
         ClassAdPtr ad(
           create_classad_from_ldap_entry(
-            ld, lde, p_it->get<1>()
+            ld, lde, p_it->get<1>(), true
         ));
         glue2_info_processing_fn process = p_it->get<2>();
         process(ldap_dn_tokens, ad, bdii_info);
@@ -1440,11 +1324,11 @@ void fetch_bdii_info_g2(
   time_t timeout,
   std::string const& ldap_ce_filter_ext,
   std::string const& ldap_se_filter_ext,
-  ism::purchaser::PurchaserInfoContainer& ce_info_container,
-  ism::purchaser::PurchaserInfoContainer& se_info_container)
+  gluece_info_container_type& gluece_info_container,
+  gluece_info_container_type& gluese_info_container)
 {
-  fetch_bdii_ce_info_g2(hostname, port, dn, timeout, ldap_ce_filter_ext, ce_info_container);
-  fetch_bdii_se_info_g2(hostname, port, dn, timeout, ldap_se_filter_ext, se_info_container);
+  fetch_bdii_ce_info_g2(hostname, port, dn, timeout, ldap_ce_filter_ext, gluece_info_container);
+  fetch_bdii_se_info_g2(hostname, port, dn, timeout, ldap_se_filter_ext, gluese_info_container);
 }
 
 }}}}
