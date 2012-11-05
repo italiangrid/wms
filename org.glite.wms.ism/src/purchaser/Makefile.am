@@ -21,8 +21,7 @@ libglite_wms_ism_ii_purchaser_la_SOURCES = \
         schema_utils.cpp \
         ism-ii-purchaser.cpp \
         ldap-utils-g2.cpp \
-        ldap-dn-utils-g2.cpp \
-        schema_utils-g2.cpp
+        ldap-dn-utils-g2.cpp
 
 libglite_wms_ism_ii_purchaser_la_LIBADD = $(GLITE_WMSUTILS_CLASSADS_LIBS) \
                 $(GLITE_WMS_COMMON_LOGGER_LIBS) \

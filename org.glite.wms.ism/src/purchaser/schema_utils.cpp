@@ -19,7 +19,7 @@ limitations under the License.
 
 // File: schema_utils.cpp
 // Author: Salvatore Monforte
-// $Id: schema_utils.cpp,v 1.1.2.1.4.2.2.2 2010/04/08 13:54:43 mcecchi Exp $
+// $Id: schema_utils-g2.cpp,v 1.1.2.1 2011/11/15 16:04:56 monforte Exp $
 #include <sys/time.h>
 #include <ldap.h>
 #include <lber.h>
@@ -40,13 +40,15 @@ limitations under the License.
 #include <boost/scoped_ptr.hpp>
 #include <boost/regex.hpp>
 #include <boost/algorithm/string/predicate.hpp>
+#include <boost/lexical_cast.hpp>
 
-#include "glite/wms/common/configuration/NSConfiguration.h"
 #include "glite/wms/common/configuration/Configuration.h"
+#include "glite/wms/common/configuration/NSConfiguration.h"
+#include "glite/wms/common/utilities/scope_guard.h"
+
 #include "glite/wmsutils/exception/Exception.h"
 
 #include "schema_utils.h"
-#include "glite/wms/common/utilities/scope_guard.h"
 
 namespace cfg = glite::wms::common::configuration;
 namespace ut = glite::wms::common::utilities;
@@ -57,7 +59,6 @@ namespace ism {
 namespace purchaser {
 
 namespace {
-	
 boost::mutex f_mutex;
 boost::shared_ptr<std::vector<std::string> > f_multi_attributes;
 boost::shared_ptr<std::vector<std::string> > f_number_attributes;
@@ -70,36 +71,35 @@ struct attributetype
   enum { single = 0x01, multi, all, number = 0x08 };
 
   attributetype(const std::string& a) {
-  
+
     boost::smatch m;
     if (boost::regex_match(a, m, f_regex) ) {
       name = std::string(m[1].first, m[1].second);
-      numbervalue = std::string(m[2].first, m[2].second) == "integerMatch";     
+      numbervalue = std::string(m[2].first, m[2].second) == "integerMatch";
       singlevalue = a.rfind("SINGLE-VALUE")!= std::string::npos;
     }
-  } 
+  }
   std::string name;
   bool singlevalue;
   bool numbervalue;
 };
-	
-std::vector<std::string> 
+
+std::vector<std::string>
 getTypes()
 {
-  const cfg::NSConfiguration* ns_conf(
-    cfg::Configuration::instance() -> ns()
+  static glite::wms::common::configuration::Configuration const& config(
+    *cfg::Configuration::instance()
   );
   boost::shared_ptr<LDAP> handle(
     ldap_init(
-      ns_conf->ii_contact().c_str(), ns_conf->ii_port()
-    ), 
+      config.ns()->ii_contact().c_str(), config.ns()->ii_port()
+    ),
     ldap_unbind
   );
-  
-  std::vector<std::string> results;
 
+  std::vector<std::string> results;
   int result = ldap_simple_bind_s(handle.get(),0,0);
-  
+
   if (result != LDAP_SUCCESS ) {
     return results;
   }
@@ -114,27 +114,27 @@ getTypes()
   timeout.tv_sec = 30;
   ldap_set_option(handle.get(), LDAP_OPT_NETWORK_TIMEOUT, &timeout);
 
-  result = ldap_search_st( 
-    handle.get(), 
-    "cn=subschema", 
-    LDAP_SCOPE_BASE, 
-    "objectclass=*", 
-    attr_req, 
+  result = ldap_search_st(
+    handle.get(),
+    "cn=subschema",
+    LDAP_SCOPE_BASE,
+    "objectclass=*",
+    attr_req,
     false,
-    &timeout, 
+    &timeout,
     &ldresult
   );
 
   if (result != LDAP_SUCCESS ) {
     return results;
   }
-    
+
   for (
     LDAPMessage* lde = ldap_first_entry(handle.get(), ldresult);
     lde != 0; lde = ldap_next_entry(handle.get(), lde)
   ) {
     boost::shared_ptr<char> dn_str(
-      ldap_get_dn( handle.get(), lde ),
+      ldap_get_dn(handle.get(), lde),
       ldap_memfree
     );
 
@@ -142,10 +142,10 @@ getTypes()
     ut::scope_guard ber_guard(
       boost::bind(ber_free, ber, 1)
     );
-    
-    for( 
+
+    for (
       char* attr = ldap_first_attribute(handle.get(), lde, &ber);
-      attr; attr = ldap_next_attribute(handle.get(), lde, ber) 
+      attr; attr = ldap_next_attribute(handle.get(), lde, ber)
     ) {
       ut::scope_guard attr_guard(
         boost::bind(ldap_memfree, attr)
@@ -154,70 +154,77 @@ getTypes()
         ldap_get_values(handle.get(), lde, attr),
         ldap_value_free
       );
-    
-      if (!values) continue;
-      for(size_t i=0; values[i] != 0; ++i) {
-        results.push_back(values[i]); 
+
+      if (!values) { continue; }
+      for (size_t i=0; values[i] != 0; ++i) {
+        results.push_back(values[i]);
       }
     }
   }
-  return results;
-} 
 
-std::vector<std::string> 
-filterTypes(std::vector<std::string>& attributetypes, int m)
+  return results;
+}
+
+std::vector<std::string>
+filterTypes(std::vector<std::string>& attributetypes, int m, std::string const& schema_type)
 {
-  std::vector<std::string> value; 
-  for(	std::vector<std::string>::const_iterator it = attributetypes.begin();
-	it != attributetypes.end(); it++ ) {
+  std::vector<std::string> value;
+  for(   std::vector<std::string>::const_iterator it = attributetypes.begin();
+   it != attributetypes.end(); it++ ) {
 
     boost::scoped_ptr<attributetype> at(
       new attributetype(*it)
     );
 
-    if ( !boost::algorithm::istarts_with(at->name, "Glue") ) continue;
-    
+    if (!boost::algorithm::istarts_with(at->name, schema_type)) {
+      continue;
+    }
+
     bool ok = false;
-    
-    switch( m & 0x03) {
-    case attributetype::single: ok =  at->singlevalue;  break; 
-    case attributetype::multi:  ok = !at->singlevalue;  break; 
-    case attributetype::all:    ok = true;              break;
+    switch (m & 0x03) {
+      case attributetype::single:
+        ok =  at->singlevalue;
+      break;
+      case attributetype::multi:
+        ok = !at->singlevalue;
+      break;
+      case attributetype::all:
+        ok = true;
+      break;
     }
-    if (m & 0x8) ok = at->numbervalue;	
-
-    if( ok ) {
-      value.push_back( at->name ); 
-    }	
+    if (m & 0x8) {
+      ok = at->numbervalue;
+    }
+    if (ok) {
+      value.push_back(at->name);
+    }
   }
-  return value;	 
-}
-} // hidden namespace closure
 
-bdii_schema_info_type::bdii_schema_info_type()
+  return value;
+}
+
+}
+
+bdii_schema_info_type::bdii_schema_info_type(std::string const& schema_type)
 {
-  if( !f_multi_attributes.get() ) {
-  
-    boost::mutex::scoped_lock l( f_mutex );
-    if( !f_multi_attributes.get() ) {
-	
-      std::vector<std::string> attributetypes( getTypes() );
-    
-      f_multi_attributes.reset( 
-        new std::vector<std::string>( 
-          filterTypes( attributetypes, attributetype::multi) 
+  if (!f_multi_attributes.get()) {
+
+    boost::mutex::scoped_lock l(f_mutex);
+    if (!f_multi_attributes.get()) {
+
+      std::vector<std::string> attributetypes(getTypes());
+
+      f_multi_attributes.reset(
+        new std::vector<std::string>(
+          filterTypes( attributetypes, attributetype::multi, schema_type)
       ));
-    
-      f_number_attributes.reset( 
-        new std::vector<std::string>( 
-          filterTypes( attributetypes, attributetype::all | attributetype::number)
-        ));
-      }
-    }
-}
 
-bdii_schema_info_type::bdii_schema_info_type(const bdii_schema_info_type&)
-{
+      f_number_attributes.reset(
+        new std::vector<std::string>(
+          filterTypes( attributetypes, attributetype::all | attributetype::number, schema_type)
+      ));
+    }
+  }
 }
 
 std::pair<
@@ -225,9 +232,9 @@ std::pair<
   std::vector<std::string>::const_iterator
 > bdii_schema_info_type::multi_valued()
 {
-  return std::make_pair( 
-    f_multi_attributes -> begin(), 
-    f_multi_attributes -> end() 
+  return std::make_pair(
+    f_multi_attributes->begin(),
+    f_multi_attributes->end()
   );
 }
 
@@ -237,15 +244,9 @@ std::pair<
 > bdii_schema_info_type::number_valued()
 {
   return std::make_pair(
-    f_number_attributes -> begin(),
-    f_number_attributes -> end()
+    f_number_attributes->begin(),
+    f_number_attributes->end()
   );
 }
 
-bdii_schema_info_type& 
-bdii_schema_info()
-{
-  static bdii_schema_info_type _;
-  return _;
-}
 }}}}
