@@ -144,7 +144,7 @@ python_build()
    elif [ $PACKAGER = "deb" ]; then
       deb_package $VERSION $AGE $PLATFORM $PACKAGE_NAME $COMPONENT $LOCAL_STAGE_DIR
    fi
-   mv ./rpmbuild/SOURCES/${PACKAGE_NAME}-${VERSION}-${AGE}.${PLATFORM}.tar.gz "$BUILD_DIR"/org.glite.wms/tgz
+   mv ./rpmbuild/SOURCES/${PACKAGE_NAME}-${VERSION}-${AGE}.$PLATFORM.tar.gz "$BUILD_DIR"/org.glite.wms/tgz
    cd $BUILD_DIR/org.glite.wms
 }
 
@@ -202,6 +202,7 @@ rpm_package()
    /usr/bin/rpmlint --file=/usr/share/rpmlint/config -i rpmbuild/SRPMS/*
 
    mv rpmbuild/RPMS/$ARCH/* "$BUILD_DIR"/org.glite.wms/RPMS
+   mv rpmbuild/RPMS/noarch/* "$BUILD_DIR"/org.glite.wms/RPMS
    mv rpmbuild/SRPMS/* "$BUILD_DIR"/org.glite.wms/SRPMS
 }
 
@@ -272,7 +273,7 @@ BUILD_TYPE=( autotools autotools autotools autotools autotools autotools autotoo
 PACKAGE_NAME=( glite-wms-common glite-wms-ism glite-wms-helper glite-wms-purger glite-wms-jobsubmission glite-wms-manager glite-wms-wmproxy glite-wms-ice emi-wms-nagios emi-wms glite-wms-brokerinfo-access glite-wms-wmproxy-api-cpp glite-wms-wmproxy-api-java glite-wms-wmproxy-api-python glite-wms-ui-api-python glite-wms-ui-commands )
 VERSION=( 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 )
 AGE=( 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 )
-START=9
+START=1
 END=15
 
 # mock build
