@@ -62,9 +62,6 @@ AC_CHECK_FUNCS([bzero endpwent ftruncate getmntent memset mkdir pow strerror str
 
 GLITE_CHECK_LIBDIR
 
-AC_DEFINE([CONDORG_VERSION], [], ["Condor version"])
-AC_CONDORG(6.7.1, AC_MSG_RESULT(["CONDORG ok"]), AC_MSG_ERROR(["CONDORG not found"]))
-
 # Configuration items
 AC_PREFIX_DEFAULT([/usr])
 AM_CONFIG_HEADER([src/autogen/config.h])
@@ -79,4 +76,3 @@ AC_CONFIG_FILES([config/glite-wms-vars.csh])
 AC_CONFIG_FILES([config/glite-wms-vars.sh])
 
 AC_OUTPUT
-
