@@ -1,9 +1,0 @@
-	<!-- ======================================================
-                 Define extra properties here ...
-                 ====================================================== -->
-        
-	<project name="configure options">                                                                        
-        <property name="configure.args"
-               value="--prefix=${workspace.abs.dir}/stage --with-globus-prefix=${with.globus.prefix} --with-globus-thr-flavor=${with.globus.thr.flavor} --with-globus-nothr-flavor=${with.globus.nothr.flavor} --with-classads-prefix=${with.classads.prefix} --with-boost-prefix=${with.boost.prefix} --enable-boost_debug=${enable.boost.debug} --with-gsoap-location=${with.gsoap.prefix} --with-gsoap-version=${ext.gsoap.version} --with-replica-manager-prefix=${with.replica-manager.prefix} --with-replica-location-prefix=${with.replica-location.prefix} --with-replica-metadata-prefix=${with.replica-metadata.prefix} --with-replica-optimization-prefix=${with.replica-optimization.prefix} --with-glite-location=${with.glite.location} --with-dist-location=${with.dist.location} --with-xerces-location=${with.xerces.prefix} --with-sd-prefix=${with.sd.prefix} --enable-optimization=${enable.optimization}"/>
-
-	</project>
