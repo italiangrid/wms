@@ -8,7 +8,7 @@ URL: http://glite.cern.ch/
 Group: System Environment/Libraries
 BuildArch: %{_arch}
 BuildRequires: %{!?extbuilddir: glite-jobid-api-c-devel,} chrpath
-BuildRequires: %{!?extbuilddir: glite-jobid-api-cpp-devel,} libtool
+BuildRequires: %{!?extbuilddir: glite-jobid-api-cpp-devel,} libtool, gcc, gcc-c++
 BuildRequires: %{!?extbuilddir: glite-wms-utils-exception-devel,} boost-devel
 BuildRequires: %{!?extbuilddir: glite-wms-utils-classad-devel,} classads-devel
 BuildRequires: globus-common-devel, globus-ftp-client-devel
