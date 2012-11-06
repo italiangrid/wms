@@ -253,7 +253,7 @@ fetch_bdii_se_info(
       );
       cleanup_glue_info(seAd, std::list<std::string>());
       string const gluese_unique_id(
-        ldap_dn_tokens[0].substr(ldap_dn_tokens[0].find("=")+1)
+        ldap_dn_tokens[0].substr(ldap_dn_tokens[0].find("=") + 1)
       );
       gluese_info_map_type::iterator it;
       bool gluese_info_map_insert;
@@ -283,17 +283,18 @@ fetch_bdii_se_info(
         create_classad_from_ldap_entry(
             ld, lde, std::list<std::string>()
         )
-      );
+      ); // freed up when seAd is deleted
+      //cleanup_glue_info(, std::list<std::string>());
 
       string const gluese_unique_id(
-        ldap_dn_tokens[1].substr(ldap_dn_tokens[1].find("=")+1)
+        ldap_dn_tokens[1].substr(ldap_dn_tokens[1].find("=") + 1)
       );
       gluese_info_map_type::iterator it(
         gluese_info_map.find(gluese_unique_id)
       );
       if (it == gluese_info_map.end()) {
         bool gluese_info_map_insert; 
-        boost::tie(it, gluese_info_map_insert) = gluese_info_map.insert(           // (*)
+        boost::tie(it, gluese_info_map_insert) = gluese_info_map.insert(
           std::make_pair(
             gluese_unique_id,
             boost::make_tuple(
