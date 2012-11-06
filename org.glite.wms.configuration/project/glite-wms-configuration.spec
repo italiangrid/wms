@@ -10,7 +10,7 @@ BuildArch: noarch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 AutoReqProv: yes
 Source: %{name}-%{version}-%{release}.tar.gz
-Requires: glite-yaim-core
+Requires: glite-yaim-core glite-yaim-lb
 Obsoletes: glite-yaim-wms
 Prefix: /opt/glite
 
