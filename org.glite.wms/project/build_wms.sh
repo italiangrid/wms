@@ -249,8 +249,8 @@ get_external_deps()
 #
 # MAIN
 #
-if [ -z $8 ]; then
-   echo "wms <tag:master/...> <build-dir-name> <emi-release:1/2/3> <os:sl5/sl6/deb6> <want_external_deps:0/1> <want_vcs_checkout:0/1> <want_cleanup:0/1> <want_mock:0/1>"
+if [ -z $8 ]; then # let's keep start and end optional
+   echo "wms <tag:master/...> <build-dir-name> <emi-release:1/2/3> <os:sl5/sl6/deb6> <want_external_deps:0/1> <want_vcs_checkout:0/1> <want_cleanup:0/1> <want_mock:0/1> <<start:0-16>> <<end::0-16>>"
    exit
 fi
 
@@ -273,8 +273,8 @@ BUILD_TYPE=( autotools autotools autotools autotools autotools autotools autotoo
 PACKAGE_NAME=( glite-wms-configuration glite-wms-common glite-wms-ism glite-wms-helper glite-wms-purger glite-wms-jobsubmission glite-wms-manager glite-wms-wmproxy glite-wms-ice emi-wms-nagios emi-wms glite-wms-brokerinfo-access glite-wms-wmproxy-api-cpp glite-wms-wmproxy-api-java glite-wms-wmproxy-api-python glite-wms-ui-api-python glite-wms-ui-commands )
 VERSION=( 3.5 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 )
 AGE=( 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 )
-START=0
-END=1
+START=$9
+END=${10}
 
 # mock build
 if [ $8 -eq 1 ]; then
