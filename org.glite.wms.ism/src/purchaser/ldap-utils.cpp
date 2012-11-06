@@ -154,7 +154,7 @@ string get_site_name(boost::shared_ptr<classad::ClassAd> cluster_ad)
     }
     if (!found) {
 
-      Warning("Cannot find GlueSiteUniqueID assignment.");
+      Warning("Cannot find GlueSiteUniqueID assignment for " << *cluster_ad);
     }
   } catch (boost::bad_expression const& e){
 
@@ -251,6 +251,7 @@ fetch_bdii_se_info(
             ld, lde, std::list<std::string>()
         )
       );
+      cleanup_glue_info(seAd, std::list<std::string>());
       string const gluese_unique_id(
         ldap_dn_tokens[0].substr(ldap_dn_tokens[0].find("=")+1)
       );
@@ -471,6 +472,7 @@ fetch_bdii_ce_info(
           ld, lde, std::list<std::string>()
         )
       );
+      cleanup_glue_info(cluster_ad, std::list<std::string>());
       string glue_site_unique_id(get_site_name(cluster_ad));
       gluecluster_info_map_type::iterator it;
       bool gluecluster_info_map_insert;
@@ -493,6 +495,7 @@ fetch_bdii_ce_info(
             ld, lde, std::list<std::string>()
         )
       );
+      cleanup_glue_info(ceAd, std::list<std::string>());
       string gluece_unique_id(
         ldap_dn_tokens[0].substr(ldap_dn_tokens[0].find("=") + 1)
       );
@@ -517,6 +520,7 @@ fetch_bdii_ce_info(
             ld, lde, std::list<std::string>()
         )
       );
+      cleanup_glue_info(scAd, std::list<std::string>());
       string gluesubcluster_unique_id(
         ldap_dn_tokens[0].substr(ldap_dn_tokens[0].find("=")+1)
       );
@@ -539,6 +543,7 @@ fetch_bdii_ce_info(
             ld, lde, std::list<std::string>()
         )
       );
+      cleanup_glue_info(bnAd, std::list<std::string>());
       string glueceuniqueid(
         ldap_dn_tokens[1].substr(ldap_dn_tokens[1].find("=") + 1)
       );
@@ -549,13 +554,13 @@ fetch_bdii_ce_info(
             ld, lde, std::list<std::string>()
         )
       );
+      cleanup_glue_info(voAd, std::list<std::string>());
       string gluevoviewlocalid(
         ldap_dn_tokens[0].substr(ldap_dn_tokens[0].find("=")+1)
       );
       string glueceuniqueid(
         ldap_dn_tokens[1].substr(ldap_dn_tokens[1].find("=")+1)
       );
-
       gluece_voview_info_map[glueceuniqueid].push_back(
         std::make_pair(gluevoviewlocalid, voAd)
       );

@@ -300,6 +300,15 @@ void tokenize_ldap_dn(std::string const& s, std::vector<std::string> &v)
 
 }
 
+void cleanup_glue_info(ad_ptr ad, std::list<std::string> a)
+{
+  a.push_back("objectClass");
+  std::for_each(
+   a.begin(), a.end(),
+   boost::bind(&classad::ClassAd::Delete, ad, _1)
+  );
+}
+
 namespace {
 
    std::string const gangmatch_storage_ad_str(

@@ -67,13 +67,11 @@ namespace wms {
 namespace ism {
 namespace purchaser {
 
-typedef boost::shared_ptr<classad::ClassAd> ClassAdPtr;
-
 namespace {
 
 struct ManagerInfo
 {
-  ClassAdPtr ad;
+  ad_ptr ad;
 };
 typedef std::map<std::string, ManagerInfo> ManagerInfoMap;
 
@@ -84,14 +82,14 @@ struct ShareInfo;
 typedef std::map<std::string, ShareInfo> ShareInfoMap;
 
 struct AccessPolicyInfo {
-  ClassAdPtr ad;
+  ad_ptr ad;
 };
 typedef std::map<std::string, AccessPolicyInfo> AccessPolicyInfoMap;
 
 class EndpointInfo
 {
 public:
-  ClassAdPtr ad;
+  ad_ptr ad;
   std::vector<classad::ExprTree*> policy_rules;
   bool has_servicelnk_iterator;
   bool has_policylnk_iterator;
@@ -106,20 +104,20 @@ typedef std::map<std::string, EndpointInfo> EndpointInfoMap;
 
 struct BenchMarkInfo
 {
-  ClassAdPtr ad;
+  ad_ptr ad;
 };
 typedef std::map<std::string, BenchMarkInfo> BenchMarkInfoMap;
 
 struct ExecEnvInfo
 {
-  ClassAdPtr ad;
+  ad_ptr ad;
   std::set<std::string> applications;
   std::vector<BenchMarkInfoMap::iterator> bmarks_lnk;
 };
 
 struct DataStoreInfo
 { 
-  ClassAdPtr ad;
+  ad_ptr ad;
 };
 
 typedef std::map<std::string, ExecEnvInfo> ExecEnvInfoMap;
@@ -130,7 +128,7 @@ struct ServiceInfo
 public:
   ServiceInfo()
     : has_managerlnk(false) { }
-  ClassAdPtr ad;
+  ad_ptr ad;
   ManagerInfoMap::iterator manager_lnk;
   bool has_managerlnk;
   //////////////////////////////////////////////////////
@@ -145,12 +143,12 @@ public:
 
 struct ShareInfo
 {
-  ClassAdPtr ad;
+  ad_ptr ad;
   std::vector<classad::ExprTree*> policy_rules;
   std::vector<ResourceInfoMap::iterator> resources_lnk;
 };
 
-//typedef std::map<std::string, ClassAdPtr> SubClusterInfoMap;
+//typedef std::map<std::string, ad_ptr> SubClusterInfoMap;
 /*
 struct ClusterInfo {
   std::string site_id;
@@ -161,12 +159,12 @@ typedef std::map<std::string, ClusterInfo> ClusterInfoMap;
 
 struct VoViewInfo
 {
-  VoViewInfo(std::string const& i, ClassAdPtr a) 
+  VoViewInfo(std::string const& i, ad_ptr a) 
     : id(i), ad(a)
   {
   }
   std::string id;
-  ClassAdPtr ad; 
+  ad_ptr ad; 
 };
 
 typedef std::map<
@@ -176,11 +174,11 @@ typedef std::map<
 
 struct SEInfo
 {
-  ClassAdPtr ad;
+  ad_ptr ad;
   std::vector<classad::ExprTree*> storage_areas;
   std::vector<classad::ExprTree*> control_protocols;
   std::vector<classad::ExprTree*> access_protocols;
-  std::vector<ClassAdPtr> ces_binds;
+  std::vector<ad_ptr> ces_binds;
 };
 
 typedef std::map<std::string, SEInfo> SEInfoMap;
@@ -227,15 +225,6 @@ struct is_a_literal_node_equals_to
   std::string value;
 };
 
-inline void cleanup_glue2_info(ClassAdPtr ad, std::list<std::string> a)
-{
-  a.push_back("objectClass");
-  std::for_each(
-   a.begin(), a.end(),
-   boost::bind(&classad::ClassAd::Delete, ad, _1)
-  );
-}
-
 inline bool is_objectclass(std::string const& item, const classad::ClassAd& ad)
 {
   bool result = false;
@@ -267,7 +256,7 @@ inline bool is_glue2_datastore_resource(const classad::ClassAd& ad)
 
 void process_glue2_service_info(
   std::vector<std::string> const& ldap_dn_tokens, 
-  ClassAdPtr ad, 
+  ad_ptr ad, 
   BDII_info& bdii_info
 ) 
 {
@@ -279,7 +268,7 @@ void process_glue2_service_info(
   boost::tie(it, insert) = bdii_info.services.insert(
     std::make_pair(service_id, ServiceInfo())
   );
-  cleanup_glue2_info(ad,
+  cleanup_glue_info(ad,
     bas::list_of("CreationTime")
       ("AdminDomainForeignKey")
       ("OtherInfo")
@@ -300,7 +289,7 @@ void process_glue2_service_info(
 
 void process_glue2_manager_info(
   std::vector<std::string> const& ldap_dn_tokens, 
-  ClassAdPtr ad, 
+  ad_ptr ad, 
   BDII_info& bdii_info
 ) 
 {
@@ -315,7 +304,7 @@ void process_glue2_manager_info(
   boost::tie(manager_it, insert) = bdii_info.managers.insert(
     std::make_pair(manager_id, ManagerInfo())
   );
-  cleanup_glue2_info(ad,
+  cleanup_glue_info(ad,
     bas::list_of("CreationTime")
       ("ComputingServiceForeignKey")
       ("ServiceForeignKey")
@@ -363,7 +352,7 @@ void extract_glue2_info_value_in(
 
 void process_glue2_resource_fk(
   ShareInfoMap::iterator& share_it, 
-  ClassAdPtr ad, 
+  ad_ptr ad, 
   BDII_info& bdii_info)
 {
   classad::ExprList* el = dynamic_cast<classad::ExprList*>(
@@ -412,7 +401,7 @@ process_glue2_endpoint_fk_entry(
 
 bool process_glue2_endpoint_fk(
   ShareInfoMap::iterator& share_it, 
-  ClassAdPtr ad, 
+  ad_ptr ad, 
   BDII_info& bdii_info)
 {
   std::string const fk(
@@ -457,7 +446,7 @@ void bind_share_to_service(
 
 void process_glue2_share_info(
   std::vector<std::string> const& ldap_dn_tokens, 
-  ClassAdPtr ad, 
+  ad_ptr ad, 
   BDII_info& bdii_info
 ) 
 {
@@ -482,7 +471,7 @@ void process_glue2_share_info(
     bind_share_to_service(share_it, service_id, bdii_info);
   }
   
-  cleanup_glue2_info(ad,
+  cleanup_glue_info(ad,
     bas::list_of("CreationTime")
       ("ComputingEndpointForeignKey")
       ("ComputingServiceForeignKey")
@@ -507,7 +496,7 @@ void process_glue2_share_info(
 
 void process_glue2_endpoint_info(
   std::vector<std::string> const& ldap_dn_tokens, 
-  ClassAdPtr ad, 
+  ad_ptr ad, 
   BDII_info& bdii_info
 ) 
 {
@@ -528,7 +517,7 @@ void process_glue2_endpoint_info(
   extract_glue2_info_value_in<std::string>(*ad, "OtherInfo", "MiddlewareVersion", oi);
   ad->Insert("OtherInfo", oi);
 
-  cleanup_glue2_info(ad,
+  cleanup_glue_info(ad,
     bas::list_of("CreationTime")
       ("ComputingServiceForeignKey")
       ("ServiceForeignKey")
@@ -550,7 +539,7 @@ void process_glue2_endpoint_info(
 void process_glue2_execenv_info(
 std::string const resource_id,
 std::string const service_id,
-ClassAdPtr ad,
+ad_ptr ad,
   BDII_info& bdii_info
 ) {
   
@@ -565,12 +554,12 @@ ClassAdPtr ad,
   extract_glue2_info_value_in<short>(*ad, "OtherInfo", "Cores", oi);
   ad->Insert("OtherInfo", oi);
 
-  cleanup_glue2_info(ad, bas::list_of("CreationTime")
+  cleanup_glue_info(ad, bas::list_of("CreationTime")
     ("ComputingManagerForeignKey")
     ("ManagerForeignKey")
   );
 
-  ClassAdPtr resource_ad(new classad::ClassAd());
+  ad_ptr resource_ad(new classad::ClassAd());
   resource_ad->Insert(
     "ExecutionEnvironment", ad->Copy()
   );
@@ -581,7 +570,7 @@ ClassAdPtr ad,
 void process_glue2_datastore_info(
   std::string const resource_id,
   std::string const service_id,
-  ClassAdPtr ad,
+  ad_ptr ad,
   BDII_info& bdii_info
 ) {
   bool insert;
@@ -590,12 +579,12 @@ void process_glue2_datastore_info(
     std::make_pair(resource_id, DataStoreInfo())
   );
     
-  cleanup_glue2_info(ad, bas::list_of("CreationTime")
+  cleanup_glue_info(ad, bas::list_of("CreationTime")
     ("ComputingManagerForeignKey")
     ("ManagerForeignKey")
   );
 
-  ClassAdPtr resource_ad(new classad::ClassAd());
+  ad_ptr resource_ad(new classad::ClassAd());
   resource_ad->Insert(
     "DataStore", ad->Copy()
   );
@@ -605,7 +594,7 @@ void process_glue2_datastore_info(
 
 void process_glue2_resource_info(
   std::vector<std::string> const& ldap_dn_tokens, 
-  ClassAdPtr ad, 
+  ad_ptr ad, 
   BDII_info& bdii_info
 ) 
 {
@@ -625,7 +614,7 @@ void process_glue2_resource_info(
 
 void process_glue2_application_env_info(
   std::vector<std::string> const& ldap_dn_tokens,
-  ClassAdPtr ad,
+  ad_ptr ad,
   BDII_info& bdii_info
 )
 {
@@ -652,7 +641,7 @@ void process_glue2_application_env_info(
 
 void process_glue2_benchmark_info(
   std::vector<std::string> const& ldap_dn_tokens, 
-  ClassAdPtr ad, 
+  ad_ptr ad, 
   BDII_info& bdii_info
 ) 
 {
@@ -670,7 +659,7 @@ void process_glue2_benchmark_info(
     std::make_pair(bmark_id, BenchMarkInfo())
   );
 
-  cleanup_glue2_info(ad,
+  cleanup_glue_info(ad,
     bas::list_of("CreationTime")
       ("ComputingManagerForeignKey")
       ("ExecutionEnvironmentForeignKey")
@@ -697,7 +686,7 @@ void process_glue2_benchmark_info(
 
 void process_glue2_mapping_policy_info(
   std::vector<std::string> const& ldap_dn_tokens, 
-  ClassAdPtr ad, 
+  ad_ptr ad, 
   BDII_info& bdii_info
 ) 
 {
@@ -725,7 +714,7 @@ void process_glue2_mapping_policy_info(
 
 void process_glue2_access_policy_info(
   std::vector<std::string> const& ldap_dn_tokens, 
-  ClassAdPtr ad, 
+  ad_ptr ad, 
   BDII_info& bdii_info
 ) 
 {
@@ -741,7 +730,7 @@ void process_glue2_access_policy_info(
     std::make_pair(policy_id, AccessPolicyInfo())
   );
 
-  cleanup_glue2_info(ad,
+  cleanup_glue_info(ad,
     bas::list_of("CreationTime")
       ("UserDomainForeignKey")
       ("EndpointForeignKey")
@@ -760,7 +749,7 @@ void process_glue2_access_policy_info(
 
 void process_glue2_service_capacity_info(
   std::vector<std::string> const& ldap_dn_tokens,
-  ClassAdPtr ad,
+  ad_ptr ad,
   BDII_info& bdii_info
 )
 {
@@ -774,7 +763,7 @@ void process_glue2_service_capacity_info(
     std::make_pair(service_id, ServiceInfo())
   );
   if (ad) {
-    cleanup_glue2_info(ad,
+    cleanup_glue_info(ad,
       bas::list_of("StorageServiceForeignKey")
     );
   }
@@ -794,7 +783,7 @@ void process_glue2_service_capacity_info(
 
 void process_glue2_share_capacity_info(
   std::vector<std::string> const& ldap_dn_tokens,
-  ClassAdPtr ad,
+  ad_ptr ad,
   BDII_info& bdii_info
 )
 {
@@ -807,7 +796,7 @@ void process_glue2_share_capacity_info(
   boost::tie(it, insert) = bdii_info.shares.insert(
     std::make_pair(share_id, ShareInfo())
   );
-  cleanup_glue2_info(ad,
+  cleanup_glue_info(ad,
     bas::list_of("StorageShareForeignKey")
   );
   // process_glue2_service_info might have inserted its ad before
@@ -846,7 +835,7 @@ typedef boost::function<
 
 typedef boost::function<void(
   std::vector<std::string> const&, 
-  ClassAdPtr,
+  ad_ptr,
   BDII_info&
 )> glue2_info_processing_fn;
 
@@ -887,11 +876,11 @@ glue2_info_processors = bas::tuple_list_of
   typedef std::pair< std::string, std::string > str_pair;
   struct parse_expression_and_insert
   {
-    parse_expression_and_insert(ClassAdPtr _ad) : ad(_ad) {}
+    parse_expression_and_insert(ad_ptr _ad) : ad(_ad) {}
     inline void operator()(str_pair const& p) {
       ad->Insert(p.first, parse_expression(p.second));
     } 
-    ClassAdPtr ad;
+    ad_ptr ad;
   };
   std::vector<str_pair> glue13_attr_refs = bas::list_of<str_pair>
     ("GlueCEInfoHostName", "GLUE2.Computing.Share.OtherInfo.InfoProviderHost")
@@ -987,7 +976,7 @@ fetch_bdii_se_info_g2(
       
       if (check(ldap_dn_tokens)) {
         
-        ClassAdPtr ad(
+        ad_ptr ad(
           create_classad_from_ldap_entry(
             ld, lde, p_it->get<1>(), true
         ));
@@ -1006,7 +995,7 @@ fetch_bdii_se_info_g2(
   size_t n_shares = 0;
   for( ; ep_it != ep_e; ++ep_it) {
 
-    ClassAdPtr storageAd(new classad::ClassAd);
+    ad_ptr storageAd(new classad::ClassAd);
     if (ep_it->second.ad) {
       storageAd->Update(*ep_it->second.ad);
       if (ep_it->second.has_servicelnk_iterator) {
@@ -1070,7 +1059,7 @@ fetch_bdii_se_info_g2(
       classad::ClassAd* g2Ad = new classad::ClassAd;
 
       g2Ad->Insert("Storage", storageAd_copy);
-      ClassAdPtr result( new classad::ClassAd );
+      ad_ptr result( new classad::ClassAd );
       result->Insert("GLUE2", g2Ad);
       std::string const id = cu::evaluate_expression(*result,
         "GLUE2.Storage.Share.ID"
@@ -1165,7 +1154,7 @@ fetch_bdii_ce_info_g2(
       
       if (check(ldap_dn_tokens)) {
         
-        ClassAdPtr ad(
+        ad_ptr ad(
           create_classad_from_ldap_entry(
             ld, lde, p_it->get<1>(), true
         ));
@@ -1187,7 +1176,7 @@ fetch_bdii_ce_info_g2(
     if ( ep_it->second.shares_lnk.empty() ) { // Not an Endpoint bound to Shares
        continue;
     }
-    ClassAdPtr computingAd(new classad::ClassAd);
+    ad_ptr computingAd(new classad::ClassAd);
 
     if (ep_it->second.ad) {
       computingAd->Update(*ep_it->second.ad); 
@@ -1291,7 +1280,7 @@ fetch_bdii_ce_info_g2(
         "OtherInfo", oi
       );
 
-      ClassAdPtr result( new classad::ClassAd );
+      ad_ptr result( new classad::ClassAd );
       result->Insert("GLUE2", g2Ad);
 
       std::string const id = cu::evaluate_expression(*result,

@@ -98,6 +98,7 @@ void populate_ism(
   size_t the_ism_index,
   update_function_type const& uf);
 void tokenize_ldap_dn(std::string const& s, std::vector<std::string> &v);
+void cleanup_glue_info(ad_ptr ad, std::list<std::string> a);
 bool expand_glueceid_info(boost::shared_ptr<classad::ClassAd>& gluece_info);
 bool insert_gangmatch_storage_ad(gluece_info_type& gluece_info);
 bool expand_glueid_info(ad_ptr glue_info);
