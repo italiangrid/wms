@@ -238,7 +238,7 @@ get_external_deps()
       fi
       # install EMI repositories
       sudo rpm --import http://emisoft.web.cern.ch/emisoft/dist/EMI/$EMI_RELEASE/RPM-GPG-KEY-emi
-      sudo rpm -ivh "http://emisoft.web.cern.ch/emisoft/dist/EMI/$EMI_RELEASE/x86_64/base/emi-release-${EMI_RELEASE}.0.0-1.$PLATFORM.noarch.rpm"
+      sudo rpm -ivh "http://emisoft.web.cern.ch/emisoft/dist/EMI/$EMI_RELEASE/$PLATFORM/x86_64/base/emi-release-${EMI_RELEASE}.0.0-1.$PLATFORM.noarch.rpm"
       # WMS build dependencies and all that's needed to build and package
       sudo yum -y install ${RH_DEPS_LIST[@]}
    elif [ $PACKAGER = "deb" ]; then
