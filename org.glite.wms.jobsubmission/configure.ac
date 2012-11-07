@@ -65,9 +65,9 @@ AC_BOOST([], AC_MSG_RESULT(["BOOST ok"]), AC_MSG_ERROR(["BOOST not found"]))
 
 PKG_CHECK_MODULES(CLASSAD, emi-classad-ns, , AC_MSG_ERROR(["CLASSADS not found"]))
 
-PKG_CHECK_MODULES(CONDORG, emi-condorg, , AC_MSG_ERROR(["CONDORG not found"]))
+PKG_CHECK_MODULES(CONDORG, condor-emi, , AC_MSG_ERROR(["CONDORG not found"]))
 
-condor_version=`pkg-config --modversion emi-condorg`
+condor_version=`pkg-config --modversion condor-emi`
 CONDORG_VERSION=`echo $condor_version | awk -F . '{print $'1'*10000+$'2'*100+$'3'}'`
 AC_SUBST(CONDORG_VERSION)
 AC_MSG_RESULT([Found condor version: ${CONDORG_VERSION}])

@@ -37,21 +37,20 @@ glite_wms_lm_job_status_LDADD = libglite_wms_jss_logmonitor.la \
 	../controller/libglite_wms_jss_controller.la \
 	../controller/libglite_wms_jss_controller_adapter.la \
 	../common/libglite_wms_jss_common.la \
+	$(BOOST_FS_LIBS) $(BOOST_THREAD_LIBS) $(BOOST_REGEX_LIBS) \
+	$(ARES_LIBS) \
+	$(CLASSAD_LIBS) \
+	$(CONDORG_LIBS) \
 	$(GLITE_WMS_COMMON_CONF_LIBS) \
-	$(GLITE_JOBID_LIBS) \
 	$(GLITE_WMS_COMMON_LOGGER_LIBS) \
 	$(GLITE_JDL_LIBS) \
+	$(GLITE_JOBID_LIBS) \
 	$(GLITE_WMSUTILS_CLASSADS_LIBS) \
         $(GLITE_WMS_COMMON_UT_UTIL_LIBS) \
 	$(GLITE_WMSUTILS_EXCEPTION_LIBS) \
-	$(BOOST_FS_LIBS) $(BOOST_THREAD_LIBS) $(BOOST_REGEX_LIBS) \
-	$(CLASSAD_LIBS) \
-	$(CONDORG_LIBS) \
-	$(ARES_LIBS) \
 	$(GLITE_LB_CLIENT_LIBS) \
 	$(GLITE_LB_CLIENTPP_LIBS) \
 	$(GLITE_LB_COMMON_LIBS) \
-	$(RENEWAL_LIBS) \
 	$(GLITE_WMS_PURGER_LIBS) \
         $(RENEWAL_LIBS) \
 	$(GLITE_JOBID_LIBS)
