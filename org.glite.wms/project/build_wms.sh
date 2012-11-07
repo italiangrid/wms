@@ -291,8 +291,8 @@ if [ $8 -eq 1 ]; then
       mock -r emi${EMI_RELEASE}-$PLATFORM-$ARCH --clean
       echo -e "\n*** one time initialization of the mock environment ***\n"
       mock -r emi${EMI_RELEASE}-$PLATFORM-$ARCH --init
-      yum --installroot emi${EMI_RELEASE}-$PLATFORM-$ARCH clean all
-      yum -y --nogpgcheck --installroot emi${EMI_RELEASE}-$PLATFORM-$ARCH install ${RH_DEPS_LIST[@]}
+      #yum --installroot /etc/mock/emi${EMI_RELEASE}-$PLATFORM-$ARCH clean all
+      #yum -y --nogpgcheck --installroot /etc/mock/emi${EMI_RELEASE}-$PLATFORM-$ARCH install ${RH_DEPS_LIST[@]}
    fi
 
    rm -f /var/lib/mock/emi${EMI_RELEASE}-$PLATFORM-$ARCH/result/build.log 
