@@ -99,6 +99,7 @@ stop()
    kill $pid
    sleep 1
    echo "ok"
+   rm -f ${pid_file}
   fi
    return
 }
