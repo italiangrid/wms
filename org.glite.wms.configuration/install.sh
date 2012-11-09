@@ -19,8 +19,8 @@ cp config/glite-wms-parse-configuration.sh.in ${PREFIX}/usr/libexec/glite-wms-pa
 cp config/glite-wms-services-certs.sh ${PREFIX}/usr/libexec/glite-wms-services-certs.sh
 
 cp config/defaults/* ${PREFIX}/opt/glite/yaim/defaults/
-cp config/man/* ${PREFIX}/opt/glite/yaim/man/
-cp config/man/glite-WMS.1 ${PREFIX}/opt/glite/share/man/man1
+gzip config/man/glite-WMS.1
+cp config/man/glite-WMS.1.gz ${PREFIX}/opt/glite/share/man/man1
 cp config/functions/* ${PREFIX}/opt/glite/yaim/functions/
 cp config/services/glite-wms ${PREFIX}/opt/glite/yaim/services/
 cp config/node-info.d/* ${PREFIX}/opt/glite/yaim/node-info.d/

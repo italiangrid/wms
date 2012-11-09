@@ -6,7 +6,7 @@ License: Apache Software License
 Vendor: EMI
 URL: http://glite.cern.ch/
 Group: System Environment/Libraries
-BuildArch: noarch
+BuildArch: %{_arch}
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 AutoReqProv: yes
 Source: %{name}-%{version}-%{release}.tar.gz
@@ -26,7 +26,7 @@ rm -rf %{buildroot}
 mkdir -p %{buildroot}
 %{!?extbuilddir:%define extbuilddir "--"}
 if test "x%{extbuilddir}" == "x--" ; then
-  ./install.sh %{buildroot} %{version}
+  sh ./install.sh %{buildroot} %{version}
 else
   cp -R %{extbuilddir}/* %{buildroot}
 fi
@@ -48,15 +48,14 @@ rm -rf %{buildroot}
 /usr/libexec/glite-wms-services-certs.sh
 %{prefix}/yaim/functions/config_*
 %config(noreplace) %{prefix}/yaim/node-info.d/glite-*
-/usr/share/man/man1/glite-WMS.1.gz
+%{prefix}/share/man/man1/glite-WMS.1.gz
 %{prefix}/yaim/defaults/glite-*
 %{prefix}/yaim/services/glite-wms
-#%{prefix}/yaim/etc/versions/glite-yaim-wms
 
 %post
                                                                                                                            
 %postun
-rm -f %{prefix}/share/man/man1/yaim-WMS.1
+rm -f %{prefix}/share/man/man1/yaim-WMS.1*
 
 %changelog
 * %{extcdate} WMS group <wms-support@lists.infn.it> - %{extversion}-%{extage}.%{extdist}
