@@ -308,8 +308,11 @@ if [ $8 -eq 1 ]; then
       fi
       # install the generated package(s)
       mock -r emi${EMI_RELEASE}-$PLATFORM-$ARCH --install \
-         /var/lib/mock/emi${EMI_RELEASE}-$PLATFORM-$ARCH/result/${PACKAGE_NAME[$i]}-$VERSION-$AGE.$PLATFORM.$ARCH.rpm \
-         /var/lib/mock/emi${EMI_RELEASE}-$PLATFORM-$ARCH/result/${PACKAGE_NAME[$i]}-devel-$VERSION-$AGE.$PLATFORM.$ARCH.rpm
+         /var/lib/mock/emi${EMI_RELEASE}-$PLATFORM-$ARCH/result/${PACKAGE_NAME[$i]}-$VERSION-$AGE.$PLATFORM.$ARCH.rpm
+      if [ -r /var/lib/mock/emi${EMI_RELEASE}-$PLATFORM-$ARCH/result/${PACKAGE_NAME[$i]}-devel-$VERSION-$AGE.$PLATFORM.$ARCH.rpm ]; then
+         mock -r emi${EMI_RELEASE}-$PLATFORM-$ARCH --install \
+            /var/lib/mock/emi${EMI_RELEASE}-$PLATFORM-$ARCH/result/${PACKAGE_NAME[$i]}-devel-$VERSION-$AGE.$PLATFORM.$ARCH.rpm
+      fi
    done
 
    echo -e "\n*** mock build completed ***\n"
