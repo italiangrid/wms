@@ -281,7 +281,7 @@ END=${10}
 
 # mock build
 if [ $8 -eq 1 ]; then
-   echo -e "\n*** starting mock build for `ls -1 $BUILD_DIR/org.glite.wms/SRPMS/` ***\n"
+   echo -e "\n*** mock build ***\n"
 
    # file /etc/mock/emi${EMI_RELEASE}-$PLATFORM-$ARCH.cfg must be created, with all the required repositories and stuff
    if [ ! -r /etc/mock/emi${EMI_RELEASE}-$PLATFORM-$ARCH.cfg ]; then
