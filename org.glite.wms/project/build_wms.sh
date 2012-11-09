@@ -100,6 +100,7 @@ ant_build()
    AGE=$3
    PACKAGE_NAME=$4
    LOCAL_STAGE_DIR=$5
+   PLATFORM=noarch # that's supposed to be java stuff
 
    cd $COMPONENT
    mkdir -p lib bin autogen doc/autogen src/autogen ${LOCAL_STAGE_DIR}/usr/share/doc/
@@ -191,8 +192,7 @@ rpm_package()
       -e 's/%{extclog}/Bug fixing/g' \
       < project/$PACKAGE_NAME.spec > rpmbuild/SPECS/${PACKAGE_NAME}.spec"
    rpmbuild -ba --define "_topdir ${BUILD_DIR}/org.glite.wms/$COMPONENT/rpmbuild" \
-      --define "extbuilddir $LOCAL_STAGE_DIR" \
-      rpmbuild/SPECS/${PACKAGE_NAME}.spec
+      --define "extbuilddir $LOCAL_STAGE_DIR" rpmbuild/SPECS/${PACKAGE_NAME}.spec
    if [ $? -ne 0 ]; then
       echo ERROR
       exit
@@ -306,17 +306,22 @@ if [ $8 -eq 1 ]; then
          echo ERROR
          exit
       fi
-      # install the generated package(s)
-      if [ -r /var/lib/mock/emi${EMI_RELEASE}-$PLATFORM-$ARCH/result/${PACKAGE_NAME[$i]}-lib-$VERSION-$AGE.$PLATFORM.$ARCH.rpm ]; then
-         mock -r emi${EMI_RELEASE}-$PLATFORM-$ARCH --install \
-            /var/lib/mock/emi${EMI_RELEASE}-$PLATFORM-$ARCH/result/${PACKAGE_NAME[$i]}-lib-$VERSION-$AGE.$PLATFORM.$ARCH.rpm
+      if [ `expr match "${PACKAGE_NAME[$i]}" '.*java.*'` -gt 0 ]; then
+         ARTEFACT_ARCH=noarch
+      else
+         ARTEFACT_ARCH=$ARCH
       fi
-      if [ -r /var/lib/mock/emi${EMI_RELEASE}-$PLATFORM-$ARCH/result/${PACKAGE_NAME[$i]}-devel-$VERSION-$AGE.$PLATFORM.$ARCH.rpm ]; then
+      # install the generated package(s)
+      if [ -r /var/lib/mock/emi${EMI_RELEASE}-$PLATFORM-$ARCH/result/${PACKAGE_NAME[$i]}-lib-$VERSION-$AGE.$PLATFORM.$ARTEFACT_ARCH.rpm ]; then
          mock -r emi${EMI_RELEASE}-$PLATFORM-$ARCH --install \
-            /var/lib/mock/emi${EMI_RELEASE}-$PLATFORM-$ARCH/result/${PACKAGE_NAME[$i]}-devel-$VERSION-$AGE.$PLATFORM.$ARCH.rpm
+            /var/lib/mock/emi${EMI_RELEASE}-$PLATFORM-$ARCH/result/${PACKAGE_NAME[$i]}-lib-$VERSION-$AGE.$PLATFORM.$ARTEFACT_ARCH.rpm
+      fi
+      if [ -r /var/lib/mock/emi${EMI_RELEASE}-$PLATFORM-$ARCH/result/${PACKAGE_NAME[$i]}-devel-$VERSION-$AGE.$PLATFORM.$ARTEFACT_ARCH.rpm ]; then
+         mock -r emi${EMI_RELEASE}-$PLATFORM-$ARCH --install \
+            /var/lib/mock/emi${EMI_RELEASE}-$PLATFORM-$ARCH/result/${PACKAGE_NAME[$i]}-devel-$VERSION-$AGE.$PLATFORM.$ARTEFACT_ARCH.rpm
       fi
       mock -r emi${EMI_RELEASE}-$PLATFORM-$ARCH --install \
-         /var/lib/mock/emi${EMI_RELEASE}-$PLATFORM-$ARCH/result/${PACKAGE_NAME[$i]}-$VERSION-$AGE.$PLATFORM.$ARCH.rpm
+         /var/lib/mock/emi${EMI_RELEASE}-$PLATFORM-$ARCH/result/${PACKAGE_NAME[$i]}-$VERSION-$AGE.$PLATFORM.$ARTEFACT_ARCH.rpm
    done
 
    echo -e "\n*** mock build completed ***\n"
