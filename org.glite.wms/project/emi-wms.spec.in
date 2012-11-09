@@ -37,18 +37,17 @@ Source: emi-wms-%{version}-%{release}.noarch.tar.gz
 Meta-package to install the WMS service
 
 %prep
-
 %setup -c
 
 %install
- 
 rm -rf %{buildroot}
 mkdir -p %{buildroot}
+cp ./LICENSE %{buildroot}
 
 %clean
 
 %files
 %defattr(-,root,root)
+/LICENSE
 
 %changelog
- 
