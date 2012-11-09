@@ -6,7 +6,7 @@ License: Apache Software License
 Vendor: EMI
 URL: http://glite.cern.ch/
 Group: System Environment/Libraries
-BuildArch: noarch
+BuildArch: %{_arch}
 BuildRequires: python-fpconst, PyXML, SOAPpy, python-devel
 Requires: python-fpconst, PyXML, SOAPpy
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
