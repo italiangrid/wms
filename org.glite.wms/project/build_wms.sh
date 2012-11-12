@@ -100,6 +100,7 @@ ant_build()
    AGE=$3
    PACKAGE_NAME=$4
    LOCAL_STAGE_DIR=$5
+   PLATFORM=noarch # that's supposed to be java stuff
 
    cd $COMPONENT
    mkdir -p lib bin autogen doc/autogen src/autogen ${LOCAL_STAGE_DIR}/usr/share/doc/
@@ -191,8 +192,7 @@ rpm_package()
       -e 's/%{extclog}/Bug fixing/g' \
       < project/$PACKAGE_NAME.spec > rpmbuild/SPECS/${PACKAGE_NAME}.spec"
    rpmbuild -ba --define "_topdir ${BUILD_DIR}/org.glite.wms/$COMPONENT/rpmbuild" \
-      --define "extbuilddir $LOCAL_STAGE_DIR" \
-      rpmbuild/SPECS/${PACKAGE_NAME}.spec
+      --define "extbuilddir $LOCAL_STAGE_DIR" rpmbuild/SPECS/${PACKAGE_NAME}.spec
    if [ $? -ne 0 ]; then
       echo ERROR
       exit
@@ -274,14 +274,14 @@ DEB_DEPS_LIST=( )
 COMPONENT=( org.glite.wms.configuration org.glite.wms.common org.glite.wms.ism org.glite.wms.helper org.glite.wms.purger org.glite.wms.jobsubmission org.glite.wms.manager org.glite.wms.wmproxy org.glite.wms.ice org.glite.wms.nagios org.glite.wms org.glite.wms.brokerinfo-access org.glite.wms.wmproxy-api-cpp org.glite.wms.wmproxy-api-java org.glite.wms.wmproxy-api-python org.glite.wms-ui.api-python org.glite.wms-ui.commands )
 BUILD_TYPE=( autotools autotools autotools autotools autotools autotools autotools autotools autotools null metapackage autotools autotools ant python autotools autotools )
 PACKAGE_NAME=( glite-wms-configuration glite-wms-common glite-wms-ism glite-wms-helper glite-wms-purger glite-wms-jobsubmission glite-wms-manager glite-wms-wmproxy glite-wms-ice emi-wms-nagios emi-wms glite-wms-brokerinfo-access glite-wms-wmproxy-api-cpp glite-wms-wmproxy-api-java glite-wms-wmproxy-api-python glite-wms-ui-api-python glite-wms-ui-commands )
-VERSION=( 3.5 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 )
+VERSION=( 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 )
 AGE=( 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 )
 START=$9
 END=${10}
 
 # mock build
 if [ $8 -eq 1 ]; then
-   echo -e "\n*** starting mock build for `ls -1 $BUILD_DIR/org.glite.wms/SRPMS/` ***\n"
+   echo -e "\n*** mock build ***\n"
 
    # file /etc/mock/emi${EMI_RELEASE}-$PLATFORM-$ARCH.cfg must be created, with all the required repositories and stuff
    if [ ! -r /etc/mock/emi${EMI_RELEASE}-$PLATFORM-$ARCH.cfg ]; then
@@ -306,10 +306,22 @@ if [ $8 -eq 1 ]; then
          echo ERROR
          exit
       fi
+      if [ `expr match "${PACKAGE_NAME[$i]}" '.*java.*'` -gt 0 ]; then
+         ARTEFACT_ARCH=noarch
+      else
+         ARTEFACT_ARCH=$ARCH
+      fi
       # install the generated package(s)
+      if [ -r /var/lib/mock/emi${EMI_RELEASE}-$PLATFORM-$ARCH/result/${PACKAGE_NAME[$i]}-lib-$VERSION-$AGE.$PLATFORM.$ARTEFACT_ARCH.rpm ]; then
+         mock -r emi${EMI_RELEASE}-$PLATFORM-$ARCH --install \
+            /var/lib/mock/emi${EMI_RELEASE}-$PLATFORM-$ARCH/result/${PACKAGE_NAME[$i]}-lib-$VERSION-$AGE.$PLATFORM.$ARTEFACT_ARCH.rpm
+      fi
+      if [ -r /var/lib/mock/emi${EMI_RELEASE}-$PLATFORM-$ARCH/result/${PACKAGE_NAME[$i]}-devel-$VERSION-$AGE.$PLATFORM.$ARTEFACT_ARCH.rpm ]; then
+         mock -r emi${EMI_RELEASE}-$PLATFORM-$ARCH --install \
+            /var/lib/mock/emi${EMI_RELEASE}-$PLATFORM-$ARCH/result/${PACKAGE_NAME[$i]}-devel-$VERSION-$AGE.$PLATFORM.$ARTEFACT_ARCH.rpm
+      fi
       mock -r emi${EMI_RELEASE}-$PLATFORM-$ARCH --install \
-         /var/lib/mock/emi${EMI_RELEASE}-$PLATFORM-$ARCH/result/${PACKAGE_NAME[$i]}-$VERSION-$AGE.$PLATFORM.$ARCH.rpm \
-         /var/lib/mock/emi${EMI_RELEASE}-$PLATFORM-$ARCH/result/${PACKAGE_NAME[$i]}-devel-$VERSION-$AGE.$PLATFORM.$ARCH.rpm
+         /var/lib/mock/emi${EMI_RELEASE}-$PLATFORM-$ARCH/result/${PACKAGE_NAME[$i]}-$VERSION-$AGE.$PLATFORM.$ARTEFACT_ARCH.rpm
    done
 
    echo -e "\n*** mock build completed ***\n"

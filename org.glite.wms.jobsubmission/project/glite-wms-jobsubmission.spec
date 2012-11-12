@@ -34,7 +34,7 @@ Condor-G connector for the Workload Management System
 %build
 %{!?extbuilddir:%define extbuilddir "--"}
 if test "x%{extbuilddir}" == "x--" ; then
-  cp %{extbuilddir}/../project/condor-emi.pc /usr/lib64/pkgconfig/
+  export PKG_CONFIG_PATH=project/:$PKG_CONFIG_PATH
   ./configure --prefix=%{buildroot}/usr --sysconfdir=%{buildroot}/etc --disable-static PVER=%{version}
   make
 fi
@@ -79,7 +79,6 @@ fi
 
 %files
 %defattr(-,root,root)
-%dir /etc/init.d/
 /etc/init.d/glite-wms-lm
 /etc/init.d/glite-wms-jc
 /usr/bin/glite-wms-job_controller
