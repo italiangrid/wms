@@ -91,4 +91,3 @@ Development files for the WMS information superkmarket
 %changelog
 * %{extcdate} WMS group <wms-support@lists.infn.it> - %{extversion}-%{extage}.%{extdist}
 - %{extclog}
-
