@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SOAP-ENV:Envelope
+ xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
+ xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+ xmlns:jsdlposix="http://schemas.ggf.org/jsdl/2005/11/jsdl-posix"
+ xmlns:jsdl="http://schemas.ggf.org/jsdl/2005/11/jsdl"
+ xmlns:delegation1="http://www.gridsite.org/namespaces/delegation-1"
+ xmlns:delegationns="http://www.gridsite.org/namespaces/delegation-2"
+ xmlns:ns1="http://glite.org/wms/wmproxy">
+ <SOAP-ENV:Body>
+  <ns1:jobListMatchJSDL>
+   <jsdl id="3">
+    <JobDescription>
+     <JobIdentification>
+      <JobName></JobName>
+      <Description></Description>
+      <JobAnnotation></JobAnnotation>
+      <JobAnnotation></JobAnnotation>
+      <JobProject></JobProject>
+      <JobProject></JobProject>
+
+
+     </JobIdentification>
+     <Application>
+      <ApplicationName></ApplicationName>
+      <ApplicationVersion></ApplicationVersion>
+      <Description></Description>
+
+
+     </Application>
+     <Resources>
+      <CandidateHosts>
+       <HostName></HostName>
+       <HostName></HostName>
+      </CandidateHosts>
+      <FileSystem name="">
+       <FileSystemType>swap</FileSystemType>
+       <Description></Description>
+       <MountPoint></MountPoint>
+       <DiskSpace>
+        <UpperBoundedRange exclusiveBound="false">0.0</UpperBoundedRange>
+        <LowerBoundedRange exclusiveBound="false">0.0</LowerBoundedRange>
+        <Exact epsilon="0.0">0.0</Exact>
+        <Exact epsilon="0.0">0.0</Exact>
+        <Range>
+         <LowerBound exclusiveBound="false">0.0</LowerBound>
+         <UpperBound exclusiveBound="false">0.0</UpperBound>
+        </Range>
+        <Range>
+         <LowerBound exclusiveBound="false">0.0</LowerBound>
+         <UpperBound exclusiveBound="false">0.0</UpperBound>
+        </Range>
+       </DiskSpace>
+
+
+      </FileSystem>
+      <FileSystem name="">
+       <FileSystemType>swap</FileSystemType>
+       <Description></Description>
+       <MountPoint></MountPoint>
+       <DiskSpace>
+        <UpperBoundedRange exclusiveBound="false">0.0</UpperBoundedRange>
+        <LowerBoundedRange exclusiveBound="false">0.0</LowerBoundedRange>
+        <Exact epsilon="0.0">0.0</Exact>
+        <Exact epsilon="0.0">0.0</Exact>
+        <Range>
+         <LowerBound exclusiveBound="false">0.0</LowerBound>
+         <UpperBound exclusiveBound="false">0.0</UpperBound>
+        </Range>
+        <Range>
+         <LowerBound exclusiveBound="false">0.0</LowerBound>
+         <UpperBound exclusiveBound="false">0.0</UpperBound>
+        </Range>
+       </DiskSpace>
+
+
+      </FileSystem>
+      <ExclusiveExecution>false</ExclusiveExecution>
+      <OperatingSystem>
+       <OperatingSystemType>
+        <OperatingSystemName>Unknown</OperatingSystemName>
+
+
+       </OperatingSystemType>
+       <OperatingSystemVersion></OperatingSystemVersion>
+       <Description></Description>
+
+
+      </OperatingSystem>
+      <CPUArchitecture>
+       <CPUArchitectureName>sparc</CPUArchitectureName>
+
+
+      </CPUArchitecture>
+      <IndividualCPUSpeed>
+       <UpperBoundedRange exclusiveBound="false">0.0</UpperBoundedRange>
+       <LowerBoundedRange exclusiveBound="false">0.0</LowerBoundedRange>
+       <Exact epsilon="0.0">0.0</Exact>
+       <Exact epsilon="0.0">0.0</Exact>
+       <Range>
+        <LowerBound exclusiveBound="false">0.0</LowerBound>
+        <UpperBound exclusiveBound="false">0.0</UpperBound>
+       </Range>
+       <Range>
+        <LowerBound exclusiveBound="false">0.0</LowerBound>
+        <UpperBound exclusiveBound="false">0.0</UpperBound>
+       </Range>
+      </IndividualCPUSpeed>
+      <IndividualCPUTime>
+       <UpperBoundedRange exclusiveBound="false">0.0</UpperBoundedRange>
+       <LowerBoundedRange exclusiveBound="false">0.0</LowerBoundedRange>
+       <Exact epsilon="0.0">0.0</Exact>
+       <Exact epsilon="0.0">0.0</Exact>
+       <Range>
+        <LowerBound exclusiveBound="false">0.0</LowerBound>
+        <UpperBound exclusiveBound="false">0.0</UpperBound>
+       </Range>
+       <Range>
+        <LowerBound exclusiveBound="false">0.0</LowerBound>
+        <UpperBound exclusiveBound="false">0.0</UpperBound>
+       </Range>
+      </IndividualCPUTime>
+      <IndividualCPUCount>
+       <UpperBoundedRange exclusiveBound="false">0.0</UpperBoundedRange>
+       <LowerBoundedRange exclusiveBound="false">0.0</LowerBoundedRange>
+       <Exact epsilon="0.0">0.0</Exact>
+       <Exact epsilon="0.0">0.0</Exact>
+       <Range>
+        <LowerBound exclusiveBound="false">0.0</LowerBound>
+        <UpperBound exclusiveBound="false">0.0</UpperBound>
+       </Range>
+       <Range>
+        <LowerBound exclusiveBound="false">0.0</LowerBound>
+        <UpperBound exclusiveBound="false">0.0</UpperBound>
+       </Range>
+      </IndividualCPUCount>
+      <IndividualNetworkBandwidth>
+       <UpperBoundedRange exclusiveBound="false">0.0</UpperBoundedRange>
+       <LowerBoundedRange exclusiveBound="false">0.0</LowerBoundedRange>
+       <Exact epsilon="0.0">0.0</Exact>
+       <Exact epsilon="0.0">0.0</Exact>
+       <Range>
+        <LowerBound exclusiveBound="false">0.0</LowerBound>
+        <UpperBound exclusiveBound="false">0.0</UpperBound>
+       </Range>
+       <Range>
+        <LowerBound exclusiveBound="false">0.0</LowerBound>
+        <UpperBound exclusiveBound="false">0.0</UpperBound>
+       </Range>
+      </IndividualNetworkBandwidth>
+      <IndividualPhysicalMemory>
+       <UpperBoundedRange exclusiveBound="false">0.0</UpperBoundedRange>
+       <LowerBoundedRange exclusiveBound="false">0.0</LowerBoundedRange>
+       <Exact epsilon="0.0">0.0</Exact>
+       <Exact epsilon="0.0">0.0</Exact>
+       <Range>
+        <LowerBound exclusiveBound="false">0.0</LowerBound>
+        <UpperBound exclusiveBound="false">0.0</UpperBound>
+       </Range>
+       <Range>
+        <LowerBound exclusiveBound="false">0.0</LowerBound>
+        <UpperBound exclusiveBound="false">0.0</UpperBound>
+       </Range>
+      </IndividualPhysicalMemory>
+      <IndividualVirtualMemory>
+       <UpperBoundedRange exclusiveBound="false">0.0</UpperBoundedRange>
+       <LowerBoundedRange exclusiveBound="false">0.0</LowerBoundedRange>
+       <Exact epsilon="0.0">0.0</Exact>
+       <Exact epsilon="0.0">0.0</Exact>
+       <Range>
+        <LowerBound exclusiveBound="false">0.0</LowerBound>
+        <UpperBound exclusiveBound="false">0.0</UpperBound>
+       </Range>
+       <Range>
+        <LowerBound exclusiveBound="false">0.0</LowerBound>
+        <UpperBound exclusiveBound="false">0.0</UpperBound>
+       </Range>
+      </IndividualVirtualMemory>
+      <IndividualDiskSpace>
+       <UpperBoundedRange exclusiveBound="false">0.0</UpperBoundedRange>
+       <LowerBoundedRange exclusiveBound="false">0.0</LowerBoundedRange>
+       <Exact epsilon="0.0">0.0</Exact>
+       <Exact epsilon="0.0">0.0</Exact>
+       <Range>
+        <LowerBound exclusiveBound="false">0.0</LowerBound>
+        <UpperBound exclusiveBound="false">0.0</UpperBound>
+       </Range>
+       <Range>
+        <LowerBound exclusiveBound="false">0.0</LowerBound>
+        <UpperBound exclusiveBound="false">0.0</UpperBound>
+       </Range>
+      </IndividualDiskSpace>
+      <TotalCPUTime>
+       <UpperBoundedRange exclusiveBound="false">0.0</UpperBoundedRange>
+       <LowerBoundedRange exclusiveBound="false">0.0</LowerBoundedRange>
+       <Exact epsilon="0.0">0.0</Exact>
+       <Exact epsilon="0.0">0.0</Exact>
+       <Range>
+        <LowerBound exclusiveBound="false">0.0</LowerBound>
+        <UpperBound exclusiveBound="false">0.0</UpperBound>
+       </Range>
+       <Range>
+        <LowerBound exclusiveBound="false">0.0</LowerBound>
+        <UpperBound exclusiveBound="false">0.0</UpperBound>
+       </Range>
+      </TotalCPUTime>
+      <TotalCPUCount>
+       <UpperBoundedRange exclusiveBound="false">0.0</UpperBoundedRange>
+       <LowerBoundedRange exclusiveBound="false">0.0</LowerBoundedRange>
+       <Exact epsilon="0.0">0.0</Exact>
+       <Exact epsilon="0.0">0.0</Exact>
+       <Range>
+        <LowerBound exclusiveBound="false">0.0</LowerBound>
+        <UpperBound exclusiveBound="false">0.0</UpperBound>
+       </Range>
+       <Range>
+        <LowerBound exclusiveBound="false">0.0</LowerBound>
+        <UpperBound exclusiveBound="false">0.0</UpperBound>
+       </Range>
+      </TotalCPUCount>
+      <TotalPhysicalMemory>
+       <UpperBoundedRange exclusiveBound="false">0.0</UpperBoundedRange>
+       <LowerBoundedRange exclusiveBound="false">0.0</LowerBoundedRange>
+       <Exact epsilon="0.0">0.0</Exact>
+       <Exact epsilon="0.0">0.0</Exact>
+       <Range>
+        <LowerBound exclusiveBound="false">0.0</LowerBound>
+        <UpperBound exclusiveBound="false">0.0</UpperBound>
+       </Range>
+       <Range>
+        <LowerBound exclusiveBound="false">0.0</LowerBound>
+        <UpperBound exclusiveBound="false">0.0</UpperBound>
+       </Range>
+      </TotalPhysicalMemory>
+      <TotalVirtualMemory>
+       <UpperBoundedRange exclusiveBound="false">0.0</UpperBoundedRange>
+       <LowerBoundedRange exclusiveBound="false">0.0</LowerBoundedRange>
+       <Exact epsilon="0.0">0.0</Exact>
+       <Exact epsilon="0.0">0.0</Exact>
+       <Range>
+        <LowerBound exclusiveBound="false">0.0</LowerBound>
+        <UpperBound exclusiveBound="false">0.0</UpperBound>
+       </Range>
+       <Range>
+        <LowerBound exclusiveBound="false">0.0</LowerBound>
+        <UpperBound exclusiveBound="false">0.0</UpperBound>
+       </Range>
+      </TotalVirtualMemory>
+      <TotalDiskSpace>
+       <UpperBoundedRange exclusiveBound="false">0.0</UpperBoundedRange>
+       <LowerBoundedRange exclusiveBound="false">0.0</LowerBoundedRange>
+       <Exact epsilon="0.0">0.0</Exact>
+       <Exact epsilon="0.0">0.0</Exact>
+       <Range>
+        <LowerBound exclusiveBound="false">0.0</LowerBound>
+        <UpperBound exclusiveBound="false">0.0</UpperBound>
+       </Range>
+       <Range>
+        <LowerBound exclusiveBound="false">0.0</LowerBound>
+        <UpperBound exclusiveBound="false">0.0</UpperBound>
+       </Range>
+      </TotalDiskSpace>
+      <TotalResourceCount>
+       <UpperBoundedRange exclusiveBound="false">0.0</UpperBoundedRange>
+       <LowerBoundedRange exclusiveBound="false">0.0</LowerBoundedRange>
+       <Exact epsilon="0.0">0.0</Exact>
+       <Exact epsilon="0.0">0.0</Exact>
+       <Range>
+        <LowerBound exclusiveBound="false">0.0</LowerBound>
+        <UpperBound exclusiveBound="false">0.0</UpperBound>
+       </Range>
+       <Range>
+        <LowerBound exclusiveBound="false">0.0</LowerBound>
+        <UpperBound exclusiveBound="false">0.0</UpperBound>
+       </Range>
+      </TotalResourceCount>
+
+
+     </Resources>
+     <DataStaging name="">
+      <FileName></FileName>
+      <FilesystemName></FilesystemName>
+      <CreationFlag>overwrite</CreationFlag>
+      <DeleteOnTermination>false</DeleteOnTermination>
+      <Source>
+       <URI></URI>
+
+
+      </Source>
+      <Target>
+       <URI></URI>
+
+
+      </Target>
+
+
+     </DataStaging>
+     <DataStaging name="">
+      <FileName></FileName>
+      <FilesystemName></FilesystemName>
+      <CreationFlag>overwrite</CreationFlag>
+      <DeleteOnTermination>false</DeleteOnTermination>
+      <Source>
+       <URI></URI>
+
+
+      </Source>
+      <Target>
+       <URI></URI>
+
+
+      </Target>
+
+
+     </DataStaging>
+
+
+    </JobDescription>
+
+
+   </jsdl>
+   <delegationId></delegationId>
+  </ns1:jobListMatchJSDL>
+ </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>

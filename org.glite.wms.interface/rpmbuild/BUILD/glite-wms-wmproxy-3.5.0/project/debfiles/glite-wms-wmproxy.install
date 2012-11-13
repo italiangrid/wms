@@ -1,0 +1,9 @@
+etc/glite-wms/wmproxy*.template
+etc/lcmaps/lcmaps.db.template
+usr/sbin/glite_wms_wmproxy_load_monitor
+usr/bin/glite_wms_wmproxy_server
+usr/bin/glite-wms-wmproxy-purge-proxycache
+usr/lib/libglite_wms_wmproxy_*.so.0.0.0
+usr/lib/libglite_wms_wmproxy_*.so.0
+usr/lib/libglite_wms_wmproxy_*.so
+usr/libexec/glite_wms_wmproxy_dirmanager

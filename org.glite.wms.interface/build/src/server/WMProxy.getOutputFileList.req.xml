@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SOAP-ENV:Envelope
+ xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
+ xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+ xmlns:jsdlposix="http://schemas.ggf.org/jsdl/2005/11/jsdl-posix"
+ xmlns:jsdl="http://schemas.ggf.org/jsdl/2005/11/jsdl"
+ xmlns:delegation1="http://www.gridsite.org/namespaces/delegation-1"
+ xmlns:delegationns="http://www.gridsite.org/namespaces/delegation-2"
+ xmlns:ns1="http://glite.org/wms/wmproxy">
+ <SOAP-ENV:Body>
+  <ns1:getOutputFileList>
+   <jobId></jobId>
+   <protocol></protocol>
+  </ns1:getOutputFileList>
+ </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>

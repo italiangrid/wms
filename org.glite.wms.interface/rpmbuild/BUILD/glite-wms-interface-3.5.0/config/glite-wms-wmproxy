@@ -1,0 +1,107 @@
+#!/bin/sh
+
+#	Copyright (c) Members of the EGEE Collaboration. 2004.
+#	See http://www.eu-egee.org/partners/ for details on the copyright holders.
+#
+#	Licensed under the Apache License, Version 2.0 (the "License");
+#	you may not use this file except in compliance with the License.
+#	You may obtain a copy of the License at
+#
+#	    http://www.apache.org/licenses/LICENSE-2.0
+#
+#	Unless required by applicable law or agreed to in writing, software
+#	distributed under the License is distributed on an "AS IS" BASIS,
+#	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#	See the License for the specific language governing permissions and
+#	limitations under the License.
+
+# chkconfig: 345 95 06
+# description: startup script for the WMProxy process
+
+. /opt/glite/yaim/etc/grid-env-funcs.sh
+. /etc/profile.d/grid-env.sh 
+
+httpdpath=${GLITE_WMS_WMPROXY_HTTPD-/usr/sbin/httpd}
+wmp="$WMS_LOCATION_BIN/glite_wms_wmproxy_server"
+httpd=`basename $httpdpath`
+config=${GLITE_WMS_CONFIG_DIR}/glite_wms_wmproxy_httpd.conf
+port=${GLITE_WMS_WMPROXY_PORT-7443}
+RETVAL=0
+
+case "$1" in
+  status)
+    if ( netstat -lten | grep "^tcp .*:$port .*LISTEN" ) >/dev/null 2>&1; then
+      # even if in dynamic configurations there can be no running glite_wms_wmproxy_server
+      # processes, we know from $port in listen that the service is on
+      wmp_exe=`basename $wmp`
+      wmp_pids=`/sbin/pidof $wmp_exe`
+      if [ -z "$wmp_pids" ]; then
+        echo $wmp is running...
+      else
+        echo $wmp \(pid $wmp_pids\) is running...
+      fi
+    else
+      echo $wmp is not running
+    fi
+    ;;
+  start)
+    if ( netstat -lten | grep "^tcp .*:$port .*LISTEN" ) >/dev/null 2>&1; then
+      echo "$wmp already running"
+    else
+      echo -n "Starting $wmp... "
+      $httpdpath -k $@ -f $config > /dev/null 2>&1
+      RETVAL=$?
+      if [ $RETVAL -eq 0 ]; then
+        echo "ok"
+      else
+        echo "failure"
+      fi
+    fi
+    ;;
+  stop)
+    echo -n "Stopping $wmp... "
+    ps auxwww | awk '/^glite .*[_]wmproxy/ { print $2 }' | xargs -r kill -15 2>/dev/null
+    sleep 1
+    ps auxwww | awk '/^glite .*[_]wmproxy/ { print $2 }' | xargs -r kill -9 2>/dev/null 
+    $httpdpath -k $@ -f $config > /dev/null 2>&1
+    RETVAL=$?
+    sleep 3 # wait for the socket to be closed
+    if [ $RETVAL -eq 0 ]; then
+      echo "ok"
+    else
+      echo "failure"
+    fi
+    ;;
+  restart)
+    echo -n "Restarting $wmp... "
+    ps auxwww | awk '/^glite .*[_]wmproxy/ { print $2 }' | xargs -r kill -15 2>/dev/null
+    sleep 1
+    ps auxwww | awk '/^glite .*[_]wmproxy/ { print $2 }' | xargs -r kill -9 2>/dev/null 
+    $httpdpath -k $@ -f $config > /dev/null 2>&1
+    RETVAL=$?
+    if [ $RETVAL -eq 0 ]; then
+      echo "ok"
+    else
+      echo "failure"
+    fi
+    ;;
+  graceful)
+    echo -n "Gracefully restarting $httpd... "
+    $httpdpath -k $@ -f $config > /dev/null 2>&1
+    RETVAL=$?
+    if [ $RETVAL -eq 0 ]; then
+      echo "ok"
+    else
+      echo "failure"
+    fi
+    ;;
+  configtest)
+    $httpdpath -t -f $config > /dev/null 2>&1
+    RETVAL=$?
+    ;;
+  *)
+    echo $"Usage: glite-wms-wmproxy {start|stop|restart|status|help|configtest}"
+    exit 1
+esac
+exit $RETVAL
+

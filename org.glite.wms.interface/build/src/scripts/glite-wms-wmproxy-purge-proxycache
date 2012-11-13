@@ -1,0 +1,68 @@
+#!/bin/sh
+
+log() {
+  echo "`date`: $1"
+}
+
+if [ ! -e $1 ]; then
+  log "no such directory $1"
+  exit
+fi
+if [ ! -d $1 ]; then
+  log "the path $1 exists, but it is not a directory"
+  exit
+fi
+
+for openssl_command in "/usr/bin/openssl" "`which openssl 2>/dev/null`"; do
+  if [ -x "${openssl_command}" ]; then
+    break;
+  fi
+done
+
+tmp_file=`mktemp -q tmp.XXXXXXXXXX`
+find $1 -mindepth 1 -cmin +60 > $tmp_file
+valid_proxies=0
+removed_proxies=0
+not_removed_proxies=0
+while read i; do
+  log "processing file|directory: $i"
+  if [ -d "$i" ]; then
+    rmdir $i 2>/dev/null
+    if [ $? -eq 0 ]; then
+      log "removed empty directory: $i"
+      continue
+    fi
+  else
+    $openssl_command x509 -in $i -noout 2>/dev/null
+    if [ $? -eq 0 ]; then
+      expiry_date=`$openssl_command x509 -in $i -noout -enddate 2>/dev/null`
+      if [ -z "$expiry_date" ]; then
+        log "   couldn't remove (unable to get the proxy time left)"
+      fi
+      not_after=`echo $expiry_date|cut -d '=' -f 2`
+      not_after_epoch=`date +%s -d "$not_after"`
+      now_epoch=`date +%s`
+      if [ $now_epoch -gt $not_after_epoch ]; then
+        log "   expired proxy: removing proxy file..."
+        rm -f $i
+        if [ $? != 0 ]; then
+          log "   ...couldn't remove proxy file"
+          not_removed_proxies=`expr $not_removed_proxies + 1`
+        else
+          log "   ...proxy file has been removed"
+          removed_proxies=`expr $removed_proxies + 1`
+        fi
+        rmdir `dirname $i`
+      else
+        time_left=`expr $not_after_epoch - $now_epoch`
+        log "   the proxy is still valid ($time_left seconds left)"
+        valid_proxies=`expr $valid_proxies + 1`
+      fi
+    fi
+  fi
+done < $tmp_file
+log "Done purging directory $1:"
+log "   - $valid_proxies proxies are still valid"
+log "   - $removed_proxies removed"
+log "   - couldn't remove $not_removed_proxies"
+rm -f $tmp_file

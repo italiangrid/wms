@@ -106,7 +106,7 @@ ant_build()
    mkdir -p lib bin autogen doc/autogen src/autogen ${LOCAL_STAGE_DIR}/usr/share/doc/
    create_source_tarball ${PACKAGE_NAME} ${VERSION} ${AGE} ${PLATFORM}
    echo "dist.location=${LOCAL_STAGE_DIR}" > .configuration.properties
-   echo "org.glite.wms.wsdl.location=$BUILD_DIR/org.glite.wms/org.glite.wms.wmproxy/src/server" >> .configuration.properties
+   echo "org.glite.wms.wsdl.location=$BUILD_DIR/org.glite.wms/org.glite.wms.interface/src/server" >> .configuration.properties
    echo "module.version=${VERSION}" >> .configuration.properties
    ant
    if [ $? -ne 0 ]; then
@@ -271,9 +271,9 @@ CORES=`cat /proc/cpuinfo|grep processor|wc -l`
 RH_DEPS_LIST=( ant bouncycastle doxygen docbook-style-xsl libxslt-devel gcc gcc-c++ python-devel SOAPpy PyXML python-fpconst libtool automake swig yum-priorities pkgconfig mock rpm-build rpmlint git mod_fcgid fcgi-devel mod_ssl axis2 gridsite-devel httpd-devel zlib-devel boost-devel c-ares-devel gsoap-devel libtar-devel cmake openldap-devel python-ldap globus-ftp-client globus-ftp-client-devel log4cpp-devel log4cpp globus-gram-protocol-devel myproxy-devel )
 INT_DEPS_LIST=( glite-jobid-api-c glite-jobid-api-c-devel glite-jobid-api-cpp-devel glite-px-proxyrenewal-devel voms-devel voms-clients argus-pep-api-c-devel lcmaps-without-gsi-devel lcmaps-devel classads-devel glite-build-common-cpp glite-wms-utils-exception glite-wms-utils-classad glite-wms-utils-exception-devel glite-wms-utils-classad-devel chrpath cppunit-devel glite-jdl-api-cpp-devel glite-lb-client-devel glite-lbjp-common-gsoap-plugin-devel condor-emi glite-ce-cream-client-api-c glite-ce-cream-client-devel emi-trustmanager emi-trustmanager-axis )
 DEB_DEPS_LIST=( )
-COMPONENT=( org.glite.wms.configuration org.glite.wms.common org.glite.wms.ism org.glite.wms.helper org.glite.wms.purger org.glite.wms.jobsubmission org.glite.wms.manager org.glite.wms.wmproxy org.glite.wms.ice org.glite.wms.nagios org.glite.wms org.glite.wms.brokerinfo-access org.glite.wms.wmproxy-api-cpp org.glite.wms.wmproxy-api-java org.glite.wms.wmproxy-api-python org.glite.wms-ui.api-python org.glite.wms-ui.commands )
-BUILD_TYPE=( autotools autotools autotools autotools autotools autotools autotools autotools autotools null metapackage autotools autotools ant python autotools autotools )
-PACKAGE_NAME=( glite-wms-configuration glite-wms-common glite-wms-ism glite-wms-helper glite-wms-purger glite-wms-jobsubmission glite-wms-manager glite-wms-wmproxy glite-wms-ice emi-wms-nagios emi-wms glite-wms-brokerinfo-access glite-wms-wmproxy-api-cpp glite-wms-wmproxy-api-java glite-wms-wmproxy-api-python glite-wms-ui-api-python glite-wms-ui-commands )
+COMPONENT=( org.glite.wms.configuration org.glite.wms.common org.glite.wms.purger org.glite.wms.jobsubmission org.glite.wms.core org.glite.wms.interface org.glite.wms.ice org.glite.wms.nagios org.glite.wms org.glite.wms.brokerinfo-access org.glite.wms.wmproxy-api-cpp org.glite.wms.wmproxy-api-java org.glite.wms.wmproxy-api-python org.glite.wms-ui.api-python org.glite.wms-ui.commands )
+BUILD_TYPE=( autotools autotools autotools autotools autotools autotools autotools null metapackage autotools autotools ant python autotools autotools )
+PACKAGE_NAME=( glite-wms-configuration glite-wms-common glite-wms-purger glite-wms-jobsubmission glite-wms-core glite-wms-interface glite-wms-ice emi-wms-nagios emi-wms glite-wms-brokerinfo-access glite-wms-wmproxy-api-cpp glite-wms-wmproxy-api-java glite-wms-wmproxy-api-python glite-wms-ui-api-python glite-wms-ui-commands )
 VERSION=( 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 )
 AGE=( 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 )
 START=$9
@@ -369,6 +369,10 @@ if [ $7 -eq 1 ]; then
    rm -rf "$BUILD_DIR"/org.glite.wms/RPMS
    rm -rf "$BUILD_DIR"/org.glite.wms/SRPMS
 fi
+if [ $START -gt ${#COMPONENT[@]} ]; then
+   echo component indices out of range
+   exit
+fi
 for i in `seq $START $END`; do
    echo -e "\n*** building component ${COMPONENT[$i]} ***\n"
    
@@ -383,13 +387,13 @@ for i in `seq $START $END`; do
    fi
 
    # hack required to integrate not os provided gsoap
-   if [ ${COMPONENT[$i]} = "org.glite.wms.wmproxy" ]; then
+   if [ ${COMPONENT[$i]} = "org.glite.wms.interface" ]; then
       if [ $PLATFORM = "sl6" ]; then
-         ln -sf "$BUILD_DIR/org.glite.wms/org.glite.wms.wmproxy/src/server/stdsoap2-2_7_16.cpp" \
-            "$BUILD_DIR/org.glite.wms/org.glite.wms.wmproxy/src/server/stdsoap2.cpp"
+         ln -sf "$BUILD_DIR/org.glite.wms/org.glite.wms.interface/src/server/stdsoap2-2_7_16.cpp" \
+            "$BUILD_DIR/org.glite.wms/org.glite.wms.interface/src/server/stdsoap2.cpp"
       elif [ $PLATFORM = "sl5" ]; then 
-         ln -sf "$BUILD_DIR/org.glite.wms/org.glite.wms.wmproxy/src/server/stdsoap2-2_7_13.cpp" \
-            "$BUILD_DIR/org.glite.wms/org.glite.wms.wmproxy/src/server/stdsoap2.cpp"
+         ln -sf "$BUILD_DIR/org.glite.wms/org.glite.wms.interface/src/server/stdsoap2-2_7_13.cpp" \
+            "$BUILD_DIR/org.glite.wms/org.glite.wms.interface/src/server/stdsoap2.cpp"
       fi
    fi
 

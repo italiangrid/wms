@@ -1,0 +1,15 @@
+
+#include "soapH.h"
+SOAP_NMAC struct Namespace namespaces[] =
+{
+	{"SOAP-ENV", "http://schemas.xmlsoap.org/soap/envelope/", "http://www.w3.org/*/soap-envelope", NULL},
+	{"SOAP-ENC", "http://schemas.xmlsoap.org/soap/encoding/", "http://www.w3.org/*/soap-encoding", NULL},
+	{"xsi", "http://www.w3.org/2001/XMLSchema-instance", "http://www.w3.org/*/XMLSchema-instance", NULL},
+	{"xsd", "http://www.w3.org/2001/XMLSchema", "http://www.w3.org/*/XMLSchema", NULL},
+	{"jsdlposix", "http://schemas.ggf.org/jsdl/2005/11/jsdl-posix", NULL, NULL},
+	{"jsdl", "http://schemas.ggf.org/jsdl/2005/11/jsdl", NULL, NULL},
+	{"delegation1", "http://www.gridsite.org/namespaces/delegation-1", NULL, NULL},
+	{"delegationns", "http://www.gridsite.org/namespaces/delegation-2", NULL, NULL},
+	{"ns1", "http://glite.org/wms/wmproxy", NULL, NULL},
+	{NULL, NULL, NULL, NULL}
+};

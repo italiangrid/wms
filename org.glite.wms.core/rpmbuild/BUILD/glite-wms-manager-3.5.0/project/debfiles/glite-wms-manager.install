@@ -1,0 +1,5 @@
+usr/bin/glite-wms-workload_manager
+usr/bin/glite-wms-stats
+usr/bin/glite-wms-query-job-state-transitions
+usr/share/man/man1/glite-wms-*.1.gz
+
