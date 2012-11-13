@@ -45,7 +45,10 @@ if test "x%{extbuilddir}" == "x-" ; then
 else
   cp -R %{extbuilddir}/* %{buildroot}
 fi
+# removal of static libraries created by make install
 rm -f %{buildroot}%{_libdir}/libglite_wms_ism*.la
+rm -f %{buildroot}%{_libdir}/libglite_wms_helper*.la
+# stripping rpath and symbols
 chrpath --delete %{buildroot}%{_libdir}/libglite_wms_*.so.0.0.0
 chrpath --delete %{buildroot}/usr/bin/glite-wms-workload_manager
 strip -s %{buildroot}/usr/bin/glite-wms-workload_manager
