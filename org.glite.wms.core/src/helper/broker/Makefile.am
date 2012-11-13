@@ -51,13 +51,13 @@ libglite_wms_helper_broker_ism_la_LIBADD = \
 	$(GSOAP_LIBS) \
 	$(GSOAP_PLUGIN_LIBS)
 
-datalocationinterfaceClient.cpp datalocationinterfaceC.cpp : $(top_builddir)/src/helper/broker/datalocationinterface.h
-	$(GSOAP_LOCATION)/bin/soapcpp2 -I$(GSOAP_LOCATION)/include -I$(GSOAP_LOCATION)/share/gsoap/import \
-	-C -n -p datalocationinterface $(top_builddir)/src/helper/broker/datalocationinterface.h
-
 datalocationinterface.h : $(top_srcdir)/src/helper/broker/DataLocationInterface.wsdl
 	$(GSOAP_LOCATION)/bin/wsdl2h -t $(top_srcdir)/src/helper/broker/catalogs_typemap.dat \
 	-o datalocationinterface.h $(top_srcdir)/src/helper/broker/DataLocationInterface.wsdl
+
+datalocationinterfaceClient.cpp datalocationinterfaceC.cpp : datalocationinterface.h
+	$(GSOAP_LOCATION)/bin/soapcpp2 -I$(GSOAP_LOCATION)/include -I$(GSOAP_LOCATION)/share/gsoap/import \
+	-C -n -p datalocationinterface datalocationinterface.h
 
 AM_CPPFLAGS = \
 	-I$(top_srcdir)/interface \

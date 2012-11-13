@@ -18,7 +18,7 @@ BuildRequires: glite-lb-client-devel, glite-jobid-api-cpp-devel, libxslt
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 AutoReqProv: yes
 Source: %{name}-%{version}-%{release}.tar.gz
-Obsoletes: glite-wms-ism, glite-wms-helper, glite-wms-manager
+Provides: glite-wms-ism, glite-wms-helper, glite-wms-manager
 
 %global debug_package %{nil}
 
@@ -45,15 +45,14 @@ if test "x%{extbuilddir}" == "x-" ; then
 else
   cp -R %{extbuilddir}/* %{buildroot}
 fi
-# removal of static libraries created by make install
-rm -f %{buildroot}%{_libdir}/libglite_wms_ism*.la
-rm -f %{buildroot}%{_libdir}/libglite_wms_helper*.la
 # stripping rpath and symbols
+strip %{buildroot}%{_libdir}/libglite_wms_*.so.0.0.0
 chrpath --delete %{buildroot}%{_libdir}/libglite_wms_*.so.0.0.0
 chrpath --delete %{buildroot}/usr/bin/glite-wms-workload_manager
 strip -s %{buildroot}/usr/bin/glite-wms-workload_manager
 chrpath --delete %{buildroot}/usr/bin/glite-wms-query-job-state-transitions
 strip -s %{buildroot}/usr/bin/glite-wms-query-job-state-transitions
+chmod 0755 %{buildroot}/usr/bin/glite-wms-stats
 export QA_SKIP_BUILD_ROOT=yes
 
 %clean
@@ -61,6 +60,10 @@ rm -rf %{buildroot}
 
 %post
 /sbin/chkconfig --add glite-wms-wm 
+/sbin/ldconfig
+
+%postun -p /sbin/ldconfig
+
 
 %preun
 if [ $1 -eq 0 ] ; then
@@ -81,6 +84,32 @@ fi
 %dir /usr/share/doc/%{name}-%{version}/
 %doc /usr/share/doc/%{name}-%{version}/LICENSE
 %doc /usr/share/man/man1/glite-wms-*.1.gz
+
+%package devel
+Summary: Development files for the WMS information superkmarket
+Group: System Environment/Libraries
+Requires: %{name}%{?_isa} = %{version}-%{release}
+Requires: %{!?extbuilddir: glite-wms-common-devel, } glite-wms-utils-classad-devel
+Requires: boost-devel, classads-devel, openldap-devel
+Requires: glite-build-common-cpp
+
+%description devel
+Development files for the WMS core module
+
+%files devel
+%defattr(-,root,root)
+%dir /usr/include/glite/
+%dir /usr/include/glite/wms/
+%dir /usr/include/glite/wms/ism/
+%dir /usr/include/glite/wms/ism/purchaser/
+%dir /usr/include/glite/wms/helper/
+%dir /usr/include/glite/wms/helper/jobadapter
+/usr/include/glite/wms/ism/*.h
+/usr/include/glite/wms/ism/purchaser/*.h
+%dir /usr/include/glite/wms/helper/*.h
+%dir /usr/include/glite/wms/helper/jobadapter/*.h
+%{_libdir}/libglite_wms_*.so
+%{_libdir}/libglite_wms_*.la
 
 %changelog
 * %{extcdate} WMS group <wms-support@lists.infn.it> - %{extversion}-%{extage}.%{extdist}
