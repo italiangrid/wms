@@ -275,7 +275,7 @@ COMPONENT=( org.glite.wms.configuration org.glite.wms.common org.glite.wms.purge
 BUILD_TYPE=( autotools autotools autotools autotools autotools autotools autotools null metapackage autotools autotools ant python autotools autotools )
 PACKAGE_NAME=( glite-wms-configuration glite-wms-common glite-wms-purger glite-wms-jobsubmission glite-wms-core glite-wms-interface glite-wms-ice emi-wms-nagios emi-wms glite-wms-brokerinfo-access glite-wms-wmproxy-api-cpp glite-wms-wmproxy-api-java glite-wms-wmproxy-api-python glite-wms-ui-api-python glite-wms-ui-commands )
 VERSION=( 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 )
-AGE=( 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 )
+AGE=( 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 )
 START=$9
 END=${10}
 

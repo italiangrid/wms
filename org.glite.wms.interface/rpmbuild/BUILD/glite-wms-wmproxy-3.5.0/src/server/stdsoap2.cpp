@@ -1,1 +1,0 @@
-/home/mcecchi/wms35/org.glite.wms/org.glite.wms.wmproxy/src/server/stdsoap2-2_7_16.cpp

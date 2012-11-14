@@ -6,8 +6,8 @@ License: Apache Software License
 Vendor: EMI
 URL: http://glite.cern.ch/
 Group: Applications/Internet
-Obsoletes: glite-wms-wmproxy, glite-wms-wmproxy-interface
 BuildArch: %{_arch}
+Provides: glite-wms-wmproxy, glite-wms-wmproxy-interface
 Requires: mod_fcgid
 Requires: httpd
 Requires: mod_ssl
