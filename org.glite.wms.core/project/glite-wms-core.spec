@@ -2,7 +2,7 @@ Summary: Core logic for the Workload Management System
 Name: glite-wms-core
 Version: %{extversion}
 Release: %{extage}.%{extdist}
-License: Apache Software License
+License: ASL 2.0
 Vendor: EMI
 URL: http://glite.cern.ch/
 Group: Applications/Internet

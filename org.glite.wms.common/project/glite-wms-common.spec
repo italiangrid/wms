@@ -2,7 +2,7 @@ Summary: Common libraries for the Workload Management System
 Name: glite-wms-common
 Version: %{extversion}
 Release: %{extage}.%{extdist}
-License: Apache Software License
+License: ASL 2.0
 Vendor: EMI
 URL: http://glite.cern.ch/
 Group: System Environment/Libraries
