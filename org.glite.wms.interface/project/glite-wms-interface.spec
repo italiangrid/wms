@@ -7,6 +7,10 @@ Vendor: EMI
 URL: http://glite.cern.ch/
 Group: Applications/Internet
 BuildArch: %{_arch}
+Obsoletes: glite-wms-wmproxy <= 3.4.99
+Obsoletes: glite-wms-wmproxy-interface <= 3.4.99
+Conflicts: glite-wms-wmproxy <= 3.4.99
+Conflicts: glite-wms-wmproxy-interface <= 3.4.99
 Provides: glite-wms-wmproxy, glite-wms-wmproxy-interface
 Requires: mod_fcgid
 Requires: httpd
@@ -62,6 +66,7 @@ else
   cp -R %{extbuilddir}/* %{buildroot}
 fi
 rm %{buildroot}%{_libdir}/*.la
+strip %{buildroot}%{_libdir}/*.so.0.0.0
 chrpath --delete %{buildroot}%{_libdir}/*.so.0.0.0
 chrpath --delete %{buildroot}/usr/bin/glite_wms_wmproxy_server
 export QA_SKIP_BUILD_ROOT=yes

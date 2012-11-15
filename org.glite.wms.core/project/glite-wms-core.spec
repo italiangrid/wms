@@ -18,7 +18,10 @@ BuildRequires: glite-lb-client-devel, glite-jobid-api-cpp-devel, libxslt
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 AutoReqProv: yes
 Source: %{name}-%{version}-%{release}.tar.gz
-Provides: glite-wms-ism, glite-wms-helper, glite-wms-manager
+Obsoletes: glite-wms-ism <= 3.4.99
+Obsoletes: glite-wms-helper <= 3.4.99
+Obsoletes: glite-wms-manager <= 3.4.99
+Provides: glite-wms-ism-%{version}-%{release}, glite-wms-helper-%{version}-%{release}, glite-wms-manager-%{version}-%{release}
 
 %global debug_package %{nil}
 
@@ -30,8 +33,8 @@ Core logic for the Workload Management System
 %setup -c -q
 
 %build
-%{!?extbuilddir:%define extbuilddir "--"}
-if test "x%{extbuilddir}" == "x--" ; then
+%{!?extbuilddir:%define extbuilddir "-"}
+if test "x%{extbuilddir}" == "x-" ; then
   ./configure --prefix=%{buildroot}/usr --sysconfdir=%{buildroot}/etc --disable-static PVER=%{version}
   make
 fi
@@ -39,7 +42,6 @@ fi
 %install
 rm -rf %{buildroot}
 mkdir -p %{buildroot}
-%{!?extbuilddir:%define extbuilddir "-"}
 if test "x%{extbuilddir}" == "x-" ; then
   make install
 else
