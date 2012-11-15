@@ -46,6 +46,8 @@ fi
 sed 's|^prefix=.*|prefix=/usr|g' %{buildroot}%{_libdir}/pkgconfig/wms-purger.pc > %{buildroot}%{_libdir}/pkgconfig/wms-purger.pc.new
 mv %{buildroot}%{_libdir}/pkgconfig/wms-purger.pc.new %{buildroot}%{_libdir}/pkgconfig/wms-purger.pc
 rm %{buildroot}%{_libdir}/*.la
+strip -s %{buildroot}/usr/sbin/glite-wms-purgeStorage 
+strip -s %{buildroot}%{_libdir}/libglite_wms_*.so.0.0.0
 chrpath --delete %{buildroot}%{_libdir}/libglite_wms_*.so.0.0.0
 chrpath --delete %{buildroot}/usr/sbin/glite-wms-purgeStorage 
 export QA_SKIP_BUILD_ROOT=yes
