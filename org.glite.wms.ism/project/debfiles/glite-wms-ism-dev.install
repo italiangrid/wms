@@ -1,4 +1,0 @@
-usr/include/glite/wms/ism/*.h
-usr/include/glite/wms/ism/purchaser/*.h
-usr/lib/pkgconfig/*.pc
-usr/lib/libglite_wms_*.so
