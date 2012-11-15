@@ -53,10 +53,7 @@ rm -rf %{buildroot}
 %{python_sitelib}/*.py
 %{python_sitelib}/*.pyc
 %{python_sitelib}/*.pyo
-%if %{extdist} == "sl6"
 %{python_sitelib}/*.egg-info
-%endif
-
 
 %changelog
 * %{extcdate} WMS group <wms-support@lists.infn.it> - %{extversion}-%{extage}.%{extdist}
