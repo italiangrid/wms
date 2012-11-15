@@ -66,6 +66,10 @@ mv %{buildroot}%{_libdir}/pkgconfig/wms-common-conf.pc.new %{buildroot}%{_libdir
 sed 's|^prefix=.*|prefix=/usr|g' %{buildroot}%{_libdir}/pkgconfig/wms-common-quota.pc > %{buildroot}%{_libdir}/pkgconfig/wms-common-quota.pc.new
 mv %{buildroot}%{_libdir}/pkgconfig/wms-common-quota.pc.new %{buildroot}%{_libdir}/pkgconfig/wms-common-quota.pc
 rm %{buildroot}%{_libdir}/*.la
+strip -s %{buildroot}%{_libdir}/libglite_wms_*.so.0.0.0
+strip -s %{buildroot}/usr/sbin/glite-wms-quota-adjust
+strip -s %{buildroot}/usr/bin/glite-wms-get-configuration
+strip -s %{buildroot}/usr/libexec/glite-wms-eval_ad_expr
 chrpath --delete %{buildroot}%{_libdir}/libglite_wms_*.so.0.0.0
 chrpath --delete %{buildroot}/usr/sbin/glite-wms-quota-adjust
 chrpath --delete %{buildroot}/usr/bin/glite-wms-get-configuration
@@ -78,7 +82,6 @@ rm -rf %{buildroot}
 %post -p /sbin/ldconfig
 
 %postun -p /sbin/ldconfig
- 
 
 %files
 %defattr(-,root,root)
@@ -89,9 +92,6 @@ rm -rf %{buildroot}
 /usr/sbin/glite-wms-quota-adjust
 /usr/bin/glite-wms-get-configuration
 /usr/libexec/glite-wms-eval_ad_expr
-
-
-
 
 %package devel
 Summary: Development files for WMS common module
@@ -122,8 +122,6 @@ Development files for WMS common module
 /usr/include/glite/wms/common/process/*.h
 %{_libdir}/pkgconfig/wms-common*.pc
 %{_libdir}/libglite_wms_*.so
-
-
 
 %changelog
 * %{extcdate} WMS group <wms-support@lists.infn.it> - %{extversion}-%{extage}.%{extdist}
