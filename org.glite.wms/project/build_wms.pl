@@ -12,6 +12,10 @@ my $opt = "";
 my $F = "0";
 my $L = "14";
 my @components = ();
+my $command = "";
+my $me = "";
+
+$me = $0;
 
 # print "-o = $opts{o} . \n" if defined $opts{o};
 # print "-D = $opts{D} . \n" if defined $opts{D};
@@ -114,8 +118,12 @@ if($F <0 or $L>@components-1) {
   die "\n*** First or last package numbers are out of range (0-$showlast). Stop!\n\n";
 }
 
-# print "Other things found on the command line:\n" if $ARGV[0];
-# foreach (@ARGV)
-# {
-#   print "$_\n";
-# }
+print "\n...Launching core build script with options:\n\n";
+#print "build_wms.sh $tag $dir $emirel $platform $want_ext_deps $want_checkout $want_cleanup $want_mock $F $L\n\n";
+
+$me =~ s/\.pl/\.sh/;
+
+$command = "$me $tag $dir $emirel $platform $want_ext_deps $want_checkout $want_cleanup $want_mock $F $L\n\n";
+
+print "$command\n\n";
+exec($command)
