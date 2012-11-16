@@ -1,4 +1,0 @@
-
-chown root.root /usr/libexec/glite_wms_wmproxy_dirmanager
-chmod u+s /usr/libexec/glite_wms_wmproxy_dirmanager
-
