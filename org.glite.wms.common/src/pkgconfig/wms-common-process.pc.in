@@ -1,7 +1,7 @@
-prefix=@OFFICIAL_INSTALL_PREFIX@
-exec_prefix=@OFFICIAL_INSTALL_PREFIX@
-libdir=@OFFICIAL_INSTALL_PREFIX@/@LIBDIR@
-includedir=@OFFICIAL_INSTALL_PREFIX@/include
+prefix=@PKG_INSTALL_PREFIX@
+exec_prefix=${prefix}
+libdir=${prefix}/@LIBDIR@
+includedir=${prefix}/include
 
 Name: wms common process api
 Description: WMS common process C/C++ APIs
