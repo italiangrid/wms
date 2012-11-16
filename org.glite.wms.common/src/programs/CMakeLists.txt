@@ -5,12 +5,12 @@ include_directories(${CLASSAD_INCLUDE_DIRS}
 
 
 
-link_directories(${CMAKE_INSTALL_PREFIX}/${LIBDIR})
+link_directories(${PREFIX}/${LIBDIR})
 
 add_executable(glite-wms-get-configuration get_configuration.cpp)
 
 install(TARGETS glite-wms-get-configuration
-        DESTINATION ${CMAKE_INSTALL_PREFIX}/${BINDIR})
+        DESTINATION ${PREFIX}/${BINDIR})
 
 #link_directories( ${PROJECT_SOURCE_DIR}/src/configuration 
 #                  ${CMAKE_INSTALL_PREFIX}/${LIBDIR})

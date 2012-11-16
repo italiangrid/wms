@@ -1,12 +1,12 @@
 
 include_directories(${CLASSAD_INCLUDE_DIRS}
                     ${PROJECT_SOURCE_DIR}/interface
-		    ${CMAKE_INSTALL_PREFIX}/include
+		    ${PREFIX}/include
 		    ${WMSUTILS_CLASSADS_ALT_INCLUDE_DIRS}
 		    ${WMSUTILS_CLASSADS_INCLUDE_DIRS}
 		    ${PROJECT_SOURCE_DIR}/src)
 
-link_directories(${CMAKE_INSTALL_PREFIX}/${LIBDIR})
+link_directories(${PREFIX}/${LIBDIR})
 
 add_custom_target(UTILITIES 
   DEPENDS 
@@ -55,7 +55,7 @@ set_target_properties(glite_wms_util PROPERTIES VERSION 0.0.0 SOVERSION 0)
 
 add_executable(glite-wms-quota-adjust glite_wms_quota_adjust.cpp)
 install(TARGETS glite-wms-quota-adjust
-        DESTINATION ${CMAKE_INSTALL_PREFIX}/${SBINDIR})
+        DESTINATION ${PREFIX}/${SBINDIR})
 
 target_link_libraries(glite-wms-quota-adjust 
   ${WMSUTILS_CLASSADS_ALT_LIBRARIES}
@@ -71,7 +71,7 @@ target_link_libraries(glite-wms-quota-adjust
 add_executable(glite-wms-eval_ad_expr glite-wms-eval_ad_expr.cpp)
 
 install(TARGETS glite-wms-eval_ad_expr
-        DESTINATION ${CMAKE_INSTALL_PREFIX}/${LIBEXEC})
+        DESTINATION ${PREFIX}/${LIBEXEC})
 
 
 target_link_libraries(glite-wms-eval_ad_expr
@@ -86,27 +86,27 @@ target_link_libraries(glite-wms-eval_ad_expr
   )
 
 install(TARGETS glite_wms_util
-        LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/${LIBDIR})
+        LIBRARY DESTINATION ${PREFIX}/${LIBDIR})
 
 
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/manipulation.h
   ${CMAKE_CURRENT_SOURCE_DIR}/boost_fs_add.h
   DESTINATION
-  ${CMAKE_INSTALL_PREFIX}/include/glite/wms/common/utilities)
+  ${PREFIX}/include/glite/wms/common/utilities)
 
 
 
 
-if(DEFINED INSTALL_BUILD_DEV)
-  install(TARGETS glite_wms_util
-    LIBRARY DESTINATION ${INSTALL_BUILD_DEV}/${LIBDIR})
-  
-  install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/manipulation.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/boost_fs_add.h
-    DESTINATION
-    ${INSTALL_BUILD_DEV}/include/glite/wms/common/utilities)
-  
-endif(DEFINED INSTALL_BUILD_DEV)
+#if(DEFINED INSTALL_BUILD_DEV)
+#  install(TARGETS glite_wms_util
+#    LIBRARY DESTINATION ${INSTALL_BUILD_DEV}/${LIBDIR})
+#  
+#  install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/manipulation.h
+#    ${CMAKE_CURRENT_SOURCE_DIR}/boost_fs_add.h
+#    DESTINATION
+#    ${INSTALL_BUILD_DEV}/include/glite/wms/common/utilities)
+#  
+#endif(DEFINED INSTALL_BUILD_DEV)
 
 
 
