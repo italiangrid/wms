@@ -65,12 +65,12 @@ pkg_check_modules(LOG4CPP log4cpp)
 
 if(DEFINED BUILD_DBG)
   
-  add_definitions( -pipe -g -O0 -Wall -DWITH_OPENSSL -DWITH_DOM -DWITH_GZIP -DHAVE_CONFIG_H -DWITH_IPV6 -DUSE_GSOAP_PARSER -DWITH_COOKIES -DGSOAP_VERSION_NUM=20716 -DWITH_GZIP -I/usr/include)
+  add_definitions( -pipe -g -O0 -Wall ${CLASSAD_CFLAGS})
   
   
 else(DEFINED BUILD_DBG)
   
-  add_definitions( -pipe -O2 -Wall -DWITH_OPENSSL -DWITH_DOM -DWITH_GZIP -DHAVE_CONFIG_H -DWITH_IPV6 -DUSE_GSOAP_PARSER -DWITH_COOKIES -DWITH_GZIP -DGSOAP_VERSION_NUM=20716 -I/usr/include)      
+  add_definitions( -pipe -O2 -Wall ${CLASSAD_CFLAGS})
   
 endif(DEFINED BUILD_DBG)
 

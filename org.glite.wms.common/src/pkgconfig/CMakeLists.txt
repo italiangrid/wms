@@ -29,7 +29,7 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/wms-common-util.pc.in
 
 
 install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/
-        DESTINATION ${CMAKE_INSTALL_PREFIX}/${LIBDIR}/pkgconfig
+        DESTINATION ${PREFIX}/${LIBDIR}/pkgconfig
         FILES_MATCHING PATTERN "*.pc"
         PATTERN "CMakeFiles" EXCLUDE)
 
