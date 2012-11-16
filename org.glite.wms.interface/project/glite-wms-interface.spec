@@ -66,9 +66,12 @@ else
   cp -R %{extbuilddir}/* %{buildroot}
 fi
 rm %{buildroot}%{_libdir}/*.la
-strip %{buildroot}%{_libdir}/*.so.0.0.0
+strip -s %{buildroot}%{_libdir}/*.so.0.0.0
+strip -s %{buildroot}/usr/bin/glite_wms_wmproxy_server
+strip -s %{buildroot}/usr/libexec/glite_wms_wmproxy_dirmanager
 chrpath --delete %{buildroot}%{_libdir}/*.so.0.0.0
 chrpath --delete %{buildroot}/usr/bin/glite_wms_wmproxy_server
+chrpath --delete %{buildroot}/usr/libexec/glite_wms_wmproxy_dirmanager
 export QA_SKIP_BUILD_ROOT=yes
 
 %clean
