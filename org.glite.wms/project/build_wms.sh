@@ -163,7 +163,7 @@ mp_build()
    fi
    eval "sed -e 's/__version__/$VERSION/g' -e 's/__release__/$AGE/g' \
       < project/$PACKAGE_NAME.spec.in > project/$PACKAGE_NAME.spec"
-   rpmbuild -bb --target noarch --define "_topdir $BUILD_DIR/org.glite.wms/$COMPONENT/rpmbuild" \
+   rpmbuild -ba --target noarch --define "_topdir $BUILD_DIR/org.glite.wms/$COMPONENT/rpmbuild" \
       project/$PACKAGE_NAME.spec
    if [ $? -ne 0 ]; then
      echo ERROR
