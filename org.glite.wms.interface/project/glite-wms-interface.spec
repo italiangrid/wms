@@ -11,7 +11,7 @@ Obsoletes: glite-wms-wmproxy < 3.5.0
 Obsoletes: glite-wms-wmproxy-interface < 3.5.0
 Conflicts: glite-wms-wmproxy < 3.5.0
 Conflicts: glite-wms-wmproxy-interface < 3.5.0
-Provides: glite-wms-wmproxy >= 3.5.0, glite-wms-wmproxy-interface >= 3.5.0
+Provides: glite-wms-wmproxy = 3.5.0, glite-wms-wmproxy-interface = 3.5.0
 Requires: mod_fcgid
 Requires: httpd
 Requires: mod_ssl

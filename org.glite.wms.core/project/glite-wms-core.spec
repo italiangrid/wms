@@ -18,10 +18,15 @@ BuildRequires: glite-lb-client-devel, glite-jobid-api-cpp-devel, libxslt
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 AutoReqProv: yes
 Source: %{name}-%{version}-%{release}.tar.gz
-Obsoletes: glite-wms-ism <= 3.4.99
-Obsoletes: glite-wms-helper <= 3.4.99
-Obsoletes: glite-wms-manager <= 3.4.99
-Provides: glite-wms-ism-%{version}-%{release}, glite-wms-helper-%{version}-%{release}, glite-wms-manager-%{version}-%{release}
+Obsoletes: glite-wms-ism < 3.5.0
+Obsoletes: glite-wms-helper < 3.5.0
+Obsoletes: glite-wms-manager < 3.5.0
+Conflicts: glite-wms-ism < 3.5.0
+Conflicts: glite-wms-helper < 3.5.0
+Conflicts: glite-wms-manager < 3.5.0
+Provides: glite-wms-ism = 3.5.0
+Provides: glite-wms-helper = 3.5.0
+Provides: glite-wms-manager = 3.5.0
 
 %global debug_package %{nil}
 
