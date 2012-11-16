@@ -69,12 +69,9 @@ cmake_build()
 
    cd $COMPONENT
    create_source_tarball ${PACKAGE_NAME} ${VERSION} ${AGE} ${PLATFORM}
-   cmake . -DCMAKE_INSTALL_PREFIX=$LOCAL_STAGE_DIR \
-      -DPREFIX=$LOCAL_STAGE_DIR/usr \
-      -DEXEC_PREFIX=$LOCAL_STAGE_DIR/usr \
-      -DLIBDIR=$LOCAL_STAGE_DIR/usr/lib64 \
-      -DINCLUDEDIR=$LOCAL_STAGE_DIR/usr/include \
-      -DPVER=$VERSION
+
+   cmake -DPREFIX:string=$LOCAL_STAGE_DIR/usr -DPVER:string=$VERSION .
+
    if [ $? -ne 0 ]; then
       echo ERROR
       exit
@@ -272,7 +269,7 @@ RH_DEPS_LIST=( ant bouncycastle doxygen docbook-style-xsl libxslt-devel gcc gcc-
 INT_DEPS_LIST=( glite-jobid-api-c glite-jobid-api-c-devel glite-jobid-api-cpp-devel glite-px-proxyrenewal-devel voms-devel voms-clients argus-pep-api-c-devel lcmaps-without-gsi-devel lcmaps-devel classads-devel glite-build-common-cpp glite-wms-utils-exception glite-wms-utils-classad glite-wms-utils-exception-devel glite-wms-utils-classad-devel chrpath cppunit-devel glite-jdl-api-cpp-devel glite-lb-client-devel glite-lbjp-common-gsoap-plugin-devel condor-emi glite-ce-cream-client-api-c glite-ce-cream-client-devel emi-trustmanager emi-trustmanager-axis )
 DEB_DEPS_LIST=( )
 COMPONENT=( org.glite.wms.configuration org.glite.wms.common org.glite.wms.purger org.glite.wms.jobsubmission org.glite.wms.core org.glite.wms.interface org.glite.wms.ice org.glite.wms.nagios org.glite.wms org.glite.wms.brokerinfo-access org.glite.wms.wmproxy-api-cpp org.glite.wms.wmproxy-api-java org.glite.wms.wmproxy-api-python org.glite.wms-ui.api-python org.glite.wms-ui.commands )
-BUILD_TYPE=( autotools autotools autotools autotools autotools autotools autotools null metapackage autotools autotools ant python autotools autotools )
+BUILD_TYPE=( autotools autotools autotools autotools autotools autotools autotools null metapackage cmake cmake ant python cmake cmake )
 PACKAGE_NAME=( glite-wms-configuration glite-wms-common glite-wms-purger glite-wms-jobsubmission glite-wms-core glite-wms-interface glite-wms-ice emi-wms-nagios emi-wms glite-wms-brokerinfo-access glite-wms-wmproxy-api-cpp glite-wms-wmproxy-api-java glite-wms-wmproxy-api-python glite-wms-ui-api-python glite-wms-ui-commands )
 VERSION=( 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 )
 AGE=( 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 )
