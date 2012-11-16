@@ -16,18 +16,18 @@ install(TARGETS glite-wms-get-configuration
 #                  ${CMAKE_INSTALL_PREFIX}/${LIBDIR})
 
 target_link_libraries(glite-wms-get-configuration 
-						glite_wms_conf 
-						glite_wms_util 
-						glite_jobid
-						boost_regex 
-						boost_filesystem
-						boost_date_time
-						${WMSUTILS_CLASSADS_ALT_LIBRARIES}
-						${WMSUTILS_CLASSADS_LIBRARIES}
-						)
+  glite_wms_conf 
+  glite_wms_util 
+  glite_jobid
+  boost_regex 
+  boost_filesystem
+  boost_date_time
+  ${WMSUTILS_CLASSADS_ALT_LIBRARIES}
+  ${WMSUTILS_CLASSADS_LIBRARIES}
+  )
 
-if(DEFINED INSTALL_BUILD)
-  install(TARGETS glite-wms-get-configuration
-    DESTINATION ${INSTALL_BUILD}/${BINDIR})
-endif(DEFINED INSTALL_BUILD)
+#if(DEFINED INSTALL_BUILD)
+#  install(TARGETS glite-wms-get-configuration
+#    DESTINATION ${INSTALL_BUILD}/${BINDIR})
+#endif(DEFINED INSTALL_BUILD)
 

@@ -29,7 +29,9 @@ add_custom_target(GENCONF ALL DEPENDS ${PROJECT_SOURCE_DIR}/src/configuration/Co
 				      ${PROJECT_SOURCE_DIR}/src/configuration/WMConfiguration.h 
 				      ${PROJECT_SOURCE_DIR}/src/configuration/WMPConfiguration.h)
 
+
 link_directories(${CMAKE_INSTALL_PREFIX}/${LIBDIR})
+
 
 include_directories(${CLASSAD_INCLUDE_DIRS}
                     ${PROJECT_SOURCE_DIR}/interface
@@ -39,42 +41,51 @@ include_directories(${CLASSAD_INCLUDE_DIRS}
 		    ${PROJECT_SOURCE_DIR}/interface/glite/wms/common
                     ${PROJECT_SOURCE_DIR}/src)
 
+
 add_custom_target(CONF DEPENDS 
-			    	    CommonConfiguration.cpp
-				    confbase.cpp
-				    Configuration.cpp
-				    cwrapper.cpp
-				    exceptions.cpp
-				    ICEConfiguration.cpp
-				    initializer.cpp
-				    JCConfiguration.cpp
-				    LMConfiguration.cpp
-				    ModuleType.cpp
-				    NSConfiguration.cpp
-				    WMCConfiguration.cpp
-				    WMConfiguration.cpp
-				    WMPConfiguration.cpp)
+  CommonConfiguration.cpp
+  confbase.cpp
+  Configuration.cpp
+  cwrapper.cpp
+  exceptions.cpp
+  ICEConfiguration.cpp
+  initializer.cpp
+  JCConfiguration.cpp
+  LMConfiguration.cpp
+  ModuleType.cpp
+  NSConfiguration.cpp
+  WMCConfiguration.cpp
+  WMConfiguration.cpp
+  WMPConfiguration.cpp
+)
+
 
 add_library(glite_wms_conf SHARED 
-			   	  CommonConfiguration.cpp
-				  confbase.cpp
-				  Configuration.cpp
-				  cwrapper.cpp
-				  exceptions.cpp
-				  ICEConfiguration.cpp
-				  initializer.cpp
-				  JCConfiguration.cpp
-				  LMConfiguration.cpp
-				  ModuleType.cpp
-				  NSConfiguration.cpp
-				  WMCConfiguration.cpp
-				  WMConfiguration.cpp
-				  WMPConfiguration.cpp)
+  CommonConfiguration.cpp
+  confbase.cpp
+  Configuration.cpp
+  cwrapper.cpp
+  exceptions.cpp
+  ICEConfiguration.cpp
+  initializer.cpp
+  JCConfiguration.cpp
+  LMConfiguration.cpp
+  ModuleType.cpp
+  NSConfiguration.cpp
+  WMCConfiguration.cpp
+  WMConfiguration.cpp
+  WMPConfiguration.cpp)
+
+
 
 set_target_properties(glite_wms_conf PROPERTIES VERSION 0.0.0 SOVERSION 0)
 
+
+
 install(TARGETS glite_wms_conf 
         LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/${LIBDIR})
+
+
 
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/
         DESTINATION
@@ -85,21 +96,22 @@ install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/
 
 
 
-if(DEFINED INSTALL_BUILD_DEV)
-  install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/
-    DESTINATION
-    ${INSTALL_BUILD_DEV}/include/glite/wms/common/configuration
-    FILES_MATCHING PATTERN "*.h"
-    PATTERN "CMakeFiles" EXCLUDE)
-  install(TARGETS glite_wms_conf 
-    LIBRARY DESTINATION ${INSTALL_BUILD_DEV}/${LIBDIR})
-endif(DEFINED INSTALL_BUILD_DEV)
+#if(DEFINED INSTALL_BUILD_DEV)
+#  install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/
+#    DESTINATION
+#    ${INSTALL_BUILD_DEV}/include/glite/wms/common/configuration
+#    FILES_MATCHING PATTERN "*.h"
+#    PATTERN "CMakeFiles" EXCLUDE)
+#  install(TARGETS glite_wms_conf 
+#    LIBRARY DESTINATION ${INSTALL_BUILD_DEV}/${LIBDIR})
+#endif(DEFINED INSTALL_BUILD_DEV)
 
 
 
 
 
-if(DEFINED INSTALL_BUILD)
-  install(TARGETS glite_wms_conf 
-    LIBRARY DESTINATION ${INSTALL_BUILD}/${LIBDIR})
-endif(DEFINED INSTALL_BUILD)
+install(TARGETS glite_wms_conf 
+  LIBRARY 
+  DESTINATION 
+  ${INSTALL_BUILD}/${LIBDIR}
+  )

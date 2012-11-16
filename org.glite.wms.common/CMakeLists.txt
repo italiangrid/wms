@@ -1,10 +1,11 @@
 project(wms-common CXX)
 cmake_minimum_required(VERSION 2.6)
 
+
 if(NOT DEFINED PVER)
-    message(WARNING " Undefined version number, selected 9.9.9. Please use
+    message(WARNING " Undefined version number, selected 0.0.0. Please use
 -DPVER=<version> to customize")
-    set(PVER "9.9.9")
+    set(PVER "0.0.0")
 endif(NOT DEFINED PVER)
 
 if(NOT DEFINED PREFIX)
@@ -12,9 +13,9 @@ if(NOT DEFINED PREFIX)
     set(PREFIX "/usr/local")
 endif(NOT DEFINED PREFIX)
 
-if(NOT DEFINED OFFICIAL_INSTALL_PREFIX)
-    set(OFFICIAL_INSTALL_PREFIX ${PREFIX})
-endif(NOT DEFINED OFFICIAL_INSTALL_PREFIX)
+if(NOT DEFINED PKG_INSTALL_PREFIX)
+    set(PKG_INSTALL_PREFIX ${PREFIX})
+endif(NOT DEFINED PKG_INSTALL_PREFIX)
 
 if( ${CMAKE_VERSION} VERSION_LESS "2.8.2" )
     if( IS_DIRECTORY "/usr/lib64" )
@@ -32,11 +33,8 @@ endif( ${CMAKE_VERSION} VERSION_LESS "2.8.2" )
 
 set(BINDIR "bin")
 
-set(SBINDIR "sbin")
-
 set(LIBEXEC "libexec")
 
-set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Wall")
 
 
 set(ENV{PKG_CONFIG_PATH}
@@ -46,6 +44,8 @@ if(DEFINED ADDITIONAL_PKG_CONFIG_PATH)
   set(ENV{PKG_CONFIG_PATH}
 "${ADDITIONAL_PKG_CONFIG_PATH}:$ENV{PKG_CONFIG_PATH}")
 endif(DEFINED ADDITIONAL_PKG_CONFIG_PATH)
+
+
 
 find_package(PkgConfig REQUIRED)
 find_package(Perl REQUIRED)
@@ -61,14 +61,19 @@ pkg_check_modules(GLOBUS_GSS_ASSIST globus-gss-assist)
 pkg_check_modules(GLOBUS_IO globus-io)
 pkg_check_modules(LOG4CPP log4cpp)
 
-set(CMAKE_INSTALL_PREFIX ${PREFIX})
-add_definitions( -pipe -DWANT_NAMESPACES -DWANT_CLASSAD_NAMESPACE )
 
-#message("\nPREFIX=${PREFIX}\nCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}\nLIBDIR=${LIBDIR}\nBINDIR=${BINDIR}\n")
 
-install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE
-    DESTINATION
-    ${CMAKE_INSTALL_PREFIX}/share/doc)
+if(DEFINED BUILD_DBG)
+  
+  add_definitions( -pipe -g -O0 -Wall -DWITH_OPENSSL -DWITH_DOM -DWITH_GZIP -DHAVE_CONFIG_H -DWITH_IPV6 -DUSE_GSOAP_PARSER -DWITH_COOKIES -DGSOAP_VERSION_NUM=20716 -DWITH_GZIP -I/usr/include)
+  
+  
+else(DEFINED BUILD_DBG)
+  
+  add_definitions( -pipe -O2 -Wall -DWITH_OPENSSL -DWITH_DOM -DWITH_GZIP -DHAVE_CONFIG_H -DWITH_IPV6 -DUSE_GSOAP_PARSER -DWITH_COOKIES -DWITH_GZIP -DGSOAP_VERSION_NUM=20716 -I/usr/include)      
+  
+endif(DEFINED BUILD_DBG)
+
 
 add_subdirectory(src)
 add_subdirectory(interface)
