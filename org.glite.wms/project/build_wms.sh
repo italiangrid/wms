@@ -163,14 +163,14 @@ mp_build()
    fi
    eval "sed -e 's/__version__/$VERSION/g' -e 's/__release__/$AGE/g' \
       < project/$PACKAGE_NAME.spec.in > project/$PACKAGE_NAME.spec"
-   rpmbuild -ba --target noarch --define "_topdir $BUILD_DIR/org.glite.wms/$COMPONENT/rpmbuild" \
-      project/$PACKAGE_NAME.spec
+   rpmbuild -ba --define "_topdir $BUILD_DIR/org.glite.wms/$COMPONENT/rpmbuild" project/$PACKAGE_NAME.spec
    if [ $? -ne 0 ]; then
      echo ERROR
      exit
    fi
    mv rpmbuild/SOURCES/${PACKAGE_NAME}-${VERSION}-${AGE}.noarch.tar.gz "$BUILD_DIR"/org.glite.wms/tgz
    mv rpmbuild/RPMS/noarch/* "$BUILD_DIR"/org.glite.wms/RPMS
+   mv rpmbuild/SRPMS/* "$BUILD_DIR"/org.glite.wms/SRPMS
    cd $BUILD_DIR/org.glite.wms
 }
 
