@@ -60,7 +60,13 @@ sed 's|^prefix=.*|prefix=/usr|g' %{buildroot}%{_libdir}/pkgconfig/wms-jss-common
 mv %{buildroot}%{_libdir}/pkgconfig/wms-jss-common.pc.new %{buildroot}%{_libdir}/pkgconfig/wms-jss-common.pc
 rm %{buildroot}%{_libdir}/*.la
 chrpath --delete %{buildroot}%{_libdir}/libglite_wms_jss_*.so.0.0.0
+chrpath --delete %{buildroot}/usr/bin/glite-wms-log_monitor
+chrpath --delete %{buildroot}/usr/libexec/glite-wms-lm-job_status
+chrpath --delete %{buildroot}/usr/bin/glite-wms-job_controller
 strip -s %{buildroot}%{_libdir}/libglite_wms_jss_*.so.0.0.0
+strip -s %{buildroot}/usr/bin/glite-wms-job_controller
+strip -s %{buildroot}/usr/bin/glite-wms-log_monitor
+strip -s %{buildroot}/usr/libexec/glite-wms-lm-job_status
 export QA_SKIP_BUILD_ROOT=yes
 
 %clean
