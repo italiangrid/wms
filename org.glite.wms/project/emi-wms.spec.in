@@ -8,7 +8,6 @@ Buildarch: noarch
 Group: System Environment/Libraries
 Requires: lcmaps-plugins-voms
 Requires: emi-version
-Requires: glite-wms-ice
 Requires: emi-lb
 Requires: jemalloc
 Requires: bdii
@@ -18,17 +17,19 @@ Requires: lcas-plugins-voms
 Requires: fetch-crl
 Requires: mysql-server
 Requires: lcas-plugins-basic
-Requires: glite-yaim-wms
-Requires: condor-emi
-Requires: glite-wms-manager
 Requires: globus-proxy-utils
-Requires: glite-wms-wmproxy
 Requires: glite-info-provider-service
 Requires: lcas-lcmaps-gt4-interface
 Requires: glue-schema
-Requires: kill-stale-ftp
 Requires: glite-wms-jobsubmission
 Requires: glite-initscript-globus-gridftp
+Requires: condor-emi
+Requires: kill-stale-ftp
+Requires: glite-wms-configuration
+Requires: glite-wms-interface
+Requires: glite-wms-ice
+Requires: glite-wms-jobsubmission
+Requires: glite-wms-core
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 AutoReqProv: yes
 Source: emi-wms-%{version}-%{release}.noarch.tar.gz
@@ -42,12 +43,10 @@ Meta-package to install the WMS service
 %install
 rm -rf %{buildroot}
 mkdir -p %{buildroot}
-cp ./LICENSE %{buildroot}
 
 %clean
 
 %files
 %defattr(-,root,root)
-/LICENSE
 
 %changelog
