@@ -337,7 +337,7 @@ if [ $6 -ne 0 ]; then
    mkdir -p "$BUILD_DIR"
    cd "$BUILD_DIR"
    echo -e "\n*** checking out the WMS project ***\n"
-   git clone --progress -v git@github.com:MarcoCecchi/org.glite.wms.git
+   git clone --progress -v git@github.com:italiangrid/org.glite.wms.git
    if [ $? -ne 0 ]; then
       echo ERROR
       exit
