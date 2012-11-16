@@ -33,6 +33,8 @@ endif( ${CMAKE_VERSION} VERSION_LESS "2.8.2" )
 
 set(BINDIR "bin")
 
+set(SBINDIR "sbin")
+
 set(LIBEXEC "libexec")
 
 
