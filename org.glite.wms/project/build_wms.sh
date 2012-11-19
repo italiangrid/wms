@@ -3,8 +3,9 @@
 create_source_tarball()
 {
    mkdir -p rpmbuild/SOURCES 2>/dev/null
-   tar --exclude reports --exclude rpmbuild --exclude build --exclude bin --exclude tools -zcf \
-      ./rpmbuild/SOURCES/$1-$2-$3.$4.tar.gz .
+   tar --exclude reports --exclude rpmbuild --exclude build --exclude bin \
+     --exclude tools --exclude CMakeFiles --exclude CMakeCache.txt \
+     --exclude cmake_install.cmake -zcf ./rpmbuild/SOURCES/$1-$2-$3.$4.tar.gz .
    if [ $? -ne 0 ]; then
      echo ERROR creating tarball
      exit
