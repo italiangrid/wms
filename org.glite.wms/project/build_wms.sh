@@ -153,11 +153,11 @@ mp_build()
    VERSION=$2
    AGE=$3
    PACKAGE_NAME=$4
+   PLATFORM=noarch
 
    cd $COMPONENT
    mkdir -p rpmbuild/SOURCES rpmbuild/BUILD 2>/dev/null rpmbuild/SPECS rpmbuild/SRPMS rpmbuild/BUILD rpmbuild/RPMS 2>/dev/null
-   tar --exclude reports --exclude rpmbuild --exclude build --exclude bin --exclude tools -zcf \
-      ./rpmbuild/SOURCES/$PACKAGE_NAME-$VERSION-$AGE.noarch.tar.gz .
+   create_source_tarball ${PACKAGE_NAME} ${VERSION} ${AGE} ${PLATFORM}
    if [ $? -ne 0 ]; then
      echo ERROR creating tarball
      exit
@@ -298,16 +298,16 @@ if [ $8 -eq 1 ]; then
 
    rm -f /var/lib/mock/emi${EMI_RELEASE}-$PLATFORM-$ARCH/result/build.log 
    for i in `seq $START $END`; do
-      mock -r emi${EMI_RELEASE}-$PLATFORM-$ARCH --no-clean --rebuild \
-         "$BUILD_DIR/org.glite.wms/SRPMS/${PACKAGE_NAME[$i]}-${VERSION}-${AGE}.${PLATFORM}.src.rpm"
-      if [ $? -ne 0 ]; then
-         echo ERROR
-         exit
-      fi
       if [ `expr match "${PACKAGE_NAME[$i]}" '.*java.*'` -gt 0 ]; then
          ARTEFACT_ARCH=noarch
       else
          ARTEFACT_ARCH=$ARCH
+      fi
+      mock -r emi${EMI_RELEASE}-$PLATFORM-$ARCH --no-clean --rebuild \
+         "$BUILD_DIR/org.glite.wms/SRPMS/${PACKAGE_NAME[$i]}-${VERSION}-${AGE}.${ARTEFACT_ARCH}.src.rpm"
+      if [ $? -ne 0 ]; then
+         echo ERROR
+         exit
       fi
       # install the generated package(s)
       if [ -r /var/lib/mock/emi${EMI_RELEASE}-$PLATFORM-$ARCH/result/${PACKAGE_NAME[$i]}-lib-$VERSION-$AGE.$PLATFORM.$ARTEFACT_ARCH.rpm ]; then
