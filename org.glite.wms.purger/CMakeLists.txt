@@ -1,4 +1,4 @@
-project(wms-common CXX)
+project(wms-purger CXX)
 cmake_minimum_required(VERSION 2.6)
 
 
@@ -52,18 +52,22 @@ endif(DEFINED ADDITIONAL_PKG_CONFIG_PATH)
 find_package(PkgConfig REQUIRED)
 find_package(Perl REQUIRED)
 find_program(Make REQUIRED)
-pkg_check_modules(CLASSAD emi-classad-ns)
-pkg_check_modules(BOOST emi-boost-thread)
-pkg_check_modules(JOBID emi-jobid)
-pkg_check_modules(WMSUTILS_CLASSADS classad-utils)
-pkg_check_modules(WMSUTILS_JOBMAN_EXCEPTION jobman-exception)
-pkg_check_modules(GLOBUS_COMMON globus-common)
-pkg_check_modules(GLOBUS_FTP_CLIENT globus-ftp-client)
-pkg_check_modules(GLOBUS_GSS_ASSIST globus-gss-assist)
-pkg_check_modules(GLOBUS_IO globus-io)
-pkg_check_modules(LOG4CPP log4cpp)
-
-
+pkg_check_modules(WMS_COMMON_UTIL REQUIRED wms-common-util)
+pkg_check_modules(WMS_COMMON_QUOTA REQUIRED wms-common-quota)
+pkg_check_modules(WMS_COMMON_PROCESS REQUIRED wms-common-process)
+pkg_check_modules(WMS_COMMON REQUIRED wms-common)
+pkg_check_modules(WMS_COMMON_LOGGER REQUIRED wms-common-logger)
+pkg_check_modules(WMS_COMMON_II REQUIRED wms-common-ii)
+pkg_check_modules(WMS_COMMON_CONF REQUIRED wms-common-conf)
+pkg_check_modules(WMSUTILS_CLASSADS REQUIRED classad-utils)
+pkg_check_modules(GLOBUS_GSS_ASSIST REQUIRED globus-gss-assist)
+pkg_check_modules(LB_CLIENT REQUIRED emi-lb-client)
+pkg_check_modules(JOBID REQUIRED emi-jobid)
+pkg_check_modules(CLASSAD REQUIRED emi-classad-ns)
+pkg_check_modules(CARES REQUIRED libcares)
+pkg_check_modules(BOOST_FILESYSTEM REQUIRED emi-boost-filesystem)
+pkg_check_modules(BOOST_OPTIONS REQUIRED emi-boost-options)
+pkg_check_modules(WMSUTILS_JOBMAN_EXCEPTION REQUIRED jobman-exception)
 
 if(DEFINED BUILD_DBG)
   
@@ -76,6 +80,4 @@ else(DEFINED BUILD_DBG)
   
 endif(DEFINED BUILD_DBG)
 
-
-add_subdirectory(src)
-add_subdirectory(interface)
+#add_subdirectory(src)
