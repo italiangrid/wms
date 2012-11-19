@@ -118,7 +118,7 @@ if(not defined $ARGV[0] and not defined $ARGV[1]) {
 $F = $ARGV[0];
 $L = $ARGV[1];
 
-if($F>=$L) {
+if($F>$L) {
   die "\n*** First package number to build must less than last. Stop!\n\n";
 }
 my $showlast = @components;
