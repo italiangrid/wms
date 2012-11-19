@@ -300,11 +300,13 @@ if [ $8 -eq 1 ]; then
    for i in `seq $START $END`; do
       if [ `expr match "${PACKAGE_NAME[$i]}" '.*java.*'` -gt 0 ]; then
          ARTEFACT_ARCH=noarch
+         mock -r emi${EMI_RELEASE}-$PLATFORM-$ARCH --no-clean --rebuild \
+            "$BUILD_DIR/org.glite.wms/SRPMS/${PACKAGE_NAME[$i]}-${VERSION}-${AGE}.${ARTEFACT_ARCH}.src.rpm"
       else
          ARTEFACT_ARCH=$ARCH
+         mock -r emi${EMI_RELEASE}-$PLATFORM-$ARCH --no-clean --rebuild \
+            "$BUILD_DIR/org.glite.wms/SRPMS/${PACKAGE_NAME[$i]}-${VERSION}-${AGE}.${PLATFORM}.src.rpm"
       fi
-      mock -r emi${EMI_RELEASE}-$PLATFORM-$ARCH --no-clean --rebuild \
-         "$BUILD_DIR/org.glite.wms/SRPMS/${PACKAGE_NAME[$i]}-${VERSION}-${AGE}.${ARTEFACT_ARCH}.src.rpm"
       if [ $? -ne 0 ]; then
          echo ERROR
          exit
