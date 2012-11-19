@@ -30,7 +30,7 @@ Python libraries for the WM Proxy service
 %{!?extbuilddir:%define extbuilddir "--"}
 if test "x%{extbuilddir}" == "x--" ; then
   printf "[global]
-pkgversion=%{version}" > setup.cfg
+  pkgversion=%{version}" > setup.cfg
 fi
 
 %install
