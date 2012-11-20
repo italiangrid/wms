@@ -69,7 +69,7 @@ cmake_build()
    create_source_tarball ${PACKAGE_NAME} ${VERSION} ${AGE} ${PLATFORM}
 
    cmake -DPREFIX:string=$LOCAL_STAGE_DIR/usr -DPVER:string=$VERSION .
-
+   make VERBOSE=1
    if [ $? -ne 0 ]; then
       echo ERROR
       exit
