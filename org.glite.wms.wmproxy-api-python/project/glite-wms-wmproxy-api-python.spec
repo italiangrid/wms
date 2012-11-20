@@ -2,7 +2,7 @@ Summary: Python libraries for the WM Proxy service
 Name: glite-wms-wmproxy-api-python
 Version: %{extversion}
 Release: %{extage}.%{extdist}
-License: Apache Software License
+License: ASL 2.0
 Vendor: EMI
 URL: http://glite.cern.ch/
 Group: System Environment/Libraries
@@ -30,7 +30,7 @@ Python libraries for the WM Proxy service
 %{!?extbuilddir:%define extbuilddir "--"}
 if test "x%{extbuilddir}" == "x--" ; then
   printf "[global]
-pkgversion=%{version}" > setup.cfg
+  pkgversion=%{version}" > setup.cfg
 fi
 
 %install
