@@ -22,22 +22,19 @@ Source: %{name}-%{version}-%{release}.tar.gz
 Python libraries for the WM Proxy service
 
 %prep
- 
-
+%{!?extbuilddir:%define extbuilddir "-"}
 %setup -c -q
 
 %build
-%{!?extbuilddir:%define extbuilddir "--"}
-if test "x%{extbuilddir}" == "x--" ; then
+if test "x%{extbuilddir}" == "x-" ; then
   printf "[global]
-  pkgversion=%{version}" > setup.cfg
+pkgversion=%{version}" > setup.cfg
 fi
 
 %install
 rm -rf %{buildroot}
 mkdir -p %{buildroot}
-%{!?extbuilddir:%define extbuilddir "--"}
-if test "x%{extbuilddir}" == "x--" ; then
+if test "x%{extbuilddir}" == "x-" ; then
   python setup.py install -O1 --prefix %{buildroot}/usr --install-data %{buildroot}
 else
   cp -pR %{extbuilddir}/* %{buildroot}
@@ -60,4 +57,3 @@ rm -rf %{buildroot}
 %changelog
 * %{extcdate} WMS group <wms-support@lists.infn.it> - %{extversion}-%{extage}.%{extdist}
 - %{extclog}
- 
