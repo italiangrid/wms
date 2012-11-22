@@ -50,7 +50,12 @@ add_library(glite_wms_util
   jobdir_reader.cpp 
   manipulation.cpp)
 
+add_library(glite_wms_quota
+  SHARED 
+  quota.cpp)
+
 set_target_properties(glite_wms_util PROPERTIES VERSION 0.0.0 SOVERSION 0)
+set_target_properties(glite_wms_quota PROPERTIES VERSION 0.0.0 SOVERSION 0)
 
 
 add_executable(glite-wms-quota-adjust glite_wms_quota_adjust.cpp)
@@ -69,7 +74,6 @@ target_link_libraries(glite-wms-quota-adjust
   )
 
 add_executable(glite-wms-eval_ad_expr glite-wms-eval_ad_expr.cpp)
-
 install(TARGETS glite-wms-eval_ad_expr
         DESTINATION ${PREFIX}/${LIBEXEC})
 
@@ -85,12 +89,17 @@ target_link_libraries(glite-wms-eval_ad_expr
   boost_date_time
   )
 
-install(TARGETS glite_wms_util
+install(TARGETS glite_wms_util glite_wms_quota
         LIBRARY DESTINATION ${PREFIX}/${LIBDIR})
 
 
-install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/manipulation.h
+install(FILES 
+  ${CMAKE_CURRENT_SOURCE_DIR}/manipulation.h
   ${CMAKE_CURRENT_SOURCE_DIR}/boost_fs_add.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/streamdescriptor.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/LineParserExceptions.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/quota.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/triple.h
   DESTINATION
   ${PREFIX}/include/glite/wms/common/utilities)
 

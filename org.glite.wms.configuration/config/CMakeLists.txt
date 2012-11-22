@@ -34,10 +34,6 @@ install(DIRECTORY
   PATTERN "CMakeFiles" EXCLUDE
 )
 
-#install(FILES
-#  ${CMAKE_CURRENT_SOURCE_DIR}/man/glite-WMS.1
-#  DESTINATION ${PREFIX}/../opt/glite/share/man/man1
-#)
 
 install(DIRECTORY
   ${CMAKE_CURRENT_SOURCE_DIR}/services
@@ -59,6 +55,7 @@ add_custom_command(OUTPUT
   ${PREFIX}/${LIBEXEC}/glite-wms-check-daemons.sh
   ${PREFIX}/${LIBEXEC}/glite-wms-services-certs.sh
   ${PREFIX}/${LIBEXEC}/glite-wms-parse-configuration.sh
+  ${PREFIX}/../etc/wms.conf.template
   COMMAND
   mkdir -p ${PREFIX}/${LIBEXEC}
   COMMAND
@@ -73,6 +70,10 @@ add_custom_command(OUTPUT
   chmod 755 ${PREFIX}/${LIBEXEC}/glite-wms-services-certs.sh 
   COMMAND
   chmod 755 ${PREFIX}/${LIBEXEC}/glite-wms-parse-configuration.sh
+  COMMAND 
+  mkdir -p ${PREFIX}/../etc/
+  COMMAND
+  cp -f glite_wms.conf ${PREFIX}/../etc/wms.conf.template
 )
 
 add_custom_target(MAKEEXESCRIPTS ALL DEPENDS 
@@ -80,3 +81,4 @@ add_custom_target(MAKEEXESCRIPTS ALL DEPENDS
   ${PREFIX}/${LIBEXEC}/glite-wms-services-certs.sh
   ${PREFIX}/${LIBEXEC}/glite-wms-parse-configuration.sh
   )
+

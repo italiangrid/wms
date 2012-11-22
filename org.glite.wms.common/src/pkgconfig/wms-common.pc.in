@@ -7,7 +7,7 @@ Name: wms common api
 Description: WMS common C/C++ APIs
 Version: @VERSION@
 Requires: classad-utils, jobman-exception
-Libs: -L${libdir} -lglite_wms_LDIF2ClassAd -lglite_wms_conf -lglite_wms_iiattrutil \
+Libs: -L${libdir} -lglite_wms_conf -lglite_wms_iiattrutil \
                   -lglite_wms_logger -lglite_wms_process -lglite_wms_quota -lglite_wms_util
 Cflags: -I${includedir}
 
