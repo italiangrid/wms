@@ -89,7 +89,7 @@ endif(DEFINED BUILD_DBG)
 
 install(FILES
         LICENSE
-        DESTINATION ${PREFIX}/share/doc/glite-wms-common-${PVER}/
+        DESTINATION ${PREFIX}/share/doc/glite-wms-purger-${PVER}/
 )
 
 add_subdirectory(src)

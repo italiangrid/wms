@@ -21,8 +21,6 @@ add_library(glite_wms_purger
 
 set_target_properties(glite_wms_purger PROPERTIES VERSION 0.0.0 SOVERSION 0)
 
-#target_link_libraries(glite_wms_purger ${CLASSAD_LIBRARIES})
-
 add_executable(glite-wms-purgeStorage glite-wms-purgeStorage.cpp)
 target_link_libraries(glite-wms-purgeStorage
   glite_wms_purger
@@ -61,3 +59,16 @@ install(TARGETS
 )
 
 add_subdirectory(pkgconfig)
+
+add_custom_command(OUTPUT
+  ${PREFIX}/include/glite/wms/purger/purger.h
+  COMMAND
+  mkdir -p ${PREFIX}/include/glite/wms/purger/
+  COMMAND
+  cp -f purger.h ${PREFIX}/include/glite/wms/purger/
+)
+
+add_custom_target(PURGERHFILE ALL
+  DEPENDS
+  ${PREFIX}/include/glite/wms/purger/purger.h
+)
