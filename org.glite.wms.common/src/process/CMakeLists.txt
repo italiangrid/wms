@@ -24,6 +24,14 @@ install(TARGETS glite_wms_process
 	DESTINATION 
 	${PREFIX}/${LIBDIR})
 
+install(FILES
+          ${CMAKE_CURRENT_SOURCE_DIR}/process.h
+          ${CMAKE_CURRENT_SOURCE_DIR}/subprocess.h
+          ${CMAKE_CURRENT_SOURCE_DIR}/user.h
+	  DESTINATION
+	  ${PREFIX}/include/glite/wms/common/process
+)
+
 #if(DEFINED INSTALL_BUILD_DEV)
 #install(TARGETS glite_wms_process
 #        LIBRARY DESTINATION ${INSTALL_BUILD_DEV}/${LIBDIR})
