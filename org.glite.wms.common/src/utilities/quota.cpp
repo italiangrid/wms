@@ -28,6 +28,7 @@ limitations under the License.
 #include <cstring>
 #include <cstdio>
 #include <string>
+#include <cstdlib>
 
 #ifdef B_THREAD_SAFE
 #include <boost/thread/mutex.hpp>
