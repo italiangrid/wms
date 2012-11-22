@@ -76,6 +76,11 @@ else(DEFINED BUILD_DBG)
   
 endif(DEFINED BUILD_DBG)
 
+install(FILES
+        LICENSE
+        DESTINATION ${PREFIX}/share/doc/glite-wms-common-${PVER}/
+)
+
 
 add_subdirectory(src)
 add_subdirectory(interface)
