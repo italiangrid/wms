@@ -61,14 +61,21 @@ pkg_check_modules(WMS_COMMON_II REQUIRED wms-common-ii)
 pkg_check_modules(WMS_COMMON_CONF REQUIRED wms-common-conf)
 pkg_check_modules(WMSUTILS_CLASSADS REQUIRED classad-utils)
 pkg_check_modules(GLOBUS_GSS_ASSIST REQUIRED globus-gss-assist)
+pkg_check_modules(GLOBUS_OPENSSL REQUIRED globus-openssl-module)
+pkg_check_modules(GLOBUS_COMMON REQUIRED globus-common)
 pkg_check_modules(LB_CLIENT REQUIRED emi-lb-client)
+pkg_check_modules(LB_CLIENTPP REQUIRED emi-lb-clientpp)
+pkg_check_modules(LB_COMMON REQUIRED emi-lb-common)
 pkg_check_modules(JOBID REQUIRED emi-jobid)
 pkg_check_modules(CLASSAD REQUIRED emi-classad-ns)
 pkg_check_modules(CARES REQUIRED libcares)
 pkg_check_modules(BOOST_FILESYSTEM REQUIRED emi-boost-filesystem)
 pkg_check_modules(BOOST_OPTIONS REQUIRED emi-boost-options)
+pkg_check_modules(BOOST_REGEX REQUIRED emi-boost-regex)
+pkg_check_modules(BOOST_THREAD REQUIRED emi-boost-thread)
 pkg_check_modules(WMSUTILS_JOBMAN_EXCEPTION REQUIRED jobman-exception)
-
+pkg_check_modules(RENEWAL REQUIRED emi-proxyrenew)
+pkg_check_modules(LOG4CPP REQUIRED log4cpp)
 if(DEFINED BUILD_DBG)
   
   add_definitions( -pipe -g -O0 -Wall ${CLASSAD_CFLAGS})
@@ -80,4 +87,10 @@ else(DEFINED BUILD_DBG)
   
 endif(DEFINED BUILD_DBG)
 
-#add_subdirectory(src)
+install(FILES
+        LICENSE
+        DESTINATION ${PREFIX}/share/doc/glite-wms-common-${PVER}/
+)
+
+add_subdirectory(src)
+add_subdirectory(config)

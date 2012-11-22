@@ -71,14 +71,15 @@ add_custom_command(OUTPUT
   COMMAND
   chmod 755 ${PREFIX}/${LIBEXEC}/glite-wms-parse-configuration.sh
   COMMAND 
-  mkdir -p ${PREFIX}/../etc/
+  mkdir -p ${PREFIX}/../etc/glite-wms
   COMMAND
-  cp -f glite_wms.conf ${PREFIX}/../etc/wms.conf.template
+  cp -f glite_wms.conf ${PREFIX}/../etc/glite-wms/wms.conf.template
 )
 
 add_custom_target(MAKEEXESCRIPTS ALL DEPENDS 
   ${PREFIX}/${LIBEXEC}/glite-wms-check-daemons.sh
   ${PREFIX}/${LIBEXEC}/glite-wms-services-certs.sh
   ${PREFIX}/${LIBEXEC}/glite-wms-parse-configuration.sh
+  ${PREFIX}/../etc/glite-wms/wms.conf.template
   )
 
