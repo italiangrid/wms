@@ -57,7 +57,7 @@ install(TARGETS
 install(TARGETS 
   glite-wms-purgeStorage
   DESTINATION
-  ${PREFIX}/${BINDIR}
+  ${PREFIX}/${SBINDIR}
 )
 
 add_subdirectory(pkgconfig)
