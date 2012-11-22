@@ -93,3 +93,4 @@ install(FILES
 )
 
 add_subdirectory(src)
+add_subdirectory(config)

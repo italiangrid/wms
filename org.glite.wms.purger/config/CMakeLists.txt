@@ -1,0 +1,7 @@
+install(FILES 
+  glite-wms-purgeStorage.sh
+  glite-wms-create-proxy.sh
+  DESTINATION 
+  ${PREFIX}/${SBINDIR}
+  PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
+  )

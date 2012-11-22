@@ -59,3 +59,5 @@ install(TARGETS
   DESTINATION
   ${PREFIX}/${BINDIR}
 )
+
+add_subdirectory(pkgconfig)
