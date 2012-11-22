@@ -80,5 +80,6 @@ add_custom_target(MAKEEXESCRIPTS ALL DEPENDS
   ${PREFIX}/${LIBEXEC}/glite-wms-check-daemons.sh
   ${PREFIX}/${LIBEXEC}/glite-wms-services-certs.sh
   ${PREFIX}/${LIBEXEC}/glite-wms-parse-configuration.sh
+  ${PREFIX}/../etc/wms.conf.template
   )
 
