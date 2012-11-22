@@ -37,4 +37,9 @@ set(SBINDIR "sbin")
 
 set(LIBEXEC "libexec")
 
+install(FILES
+  LICENSE
+  DESTINATION ${PREFIX}/share/doc/glite-wms-configuration-${PVER}
+)
+
 add_subdirectory(config)
