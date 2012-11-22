@@ -7,10 +7,13 @@ Vendor: EMI
 URL: http://glite.cern.ch/
 Group: Applications/Internet
 BuildArch: %{_arch}
-Obsoletes: glite-wms-wmproxy < 3.5.0
-Obsoletes: glite-wms-wmproxy-interface < 3.5.0
-Conflicts: glite-wms-wmproxy < 3.5.0
-Conflicts: glite-wms-wmproxy-interface < 3.5.0
+#Obsoletes: glite-wms-wmproxy < 3.5.0
+#Obsoletes: glite-wms-wmproxy-interface < 3.5.0
+Obsoletes: glite-wms-wmproxy
+Obsoletes: glite-wms-wmproxy-interface
+Provides: glite-wms-wmproxy glite-wms-wmproxy-interface
+#Conflicts: glite-wms-wmproxy >= 3.5.0
+#Conflicts: glite-wms-wmproxy-interface >= 3.5.0
 Provides: glite-wms-wmproxy = 3.5.0, glite-wms-wmproxy-interface = 3.5.0
 Requires: mod_fcgid
 Requires: httpd
