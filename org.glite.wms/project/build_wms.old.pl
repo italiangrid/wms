@@ -16,50 +16,6 @@ my $command = "";
 my $me = "";
 
 $me = $0;
-my @rel = ();
-my @pieces = ();
-my $SL = 0;
-my $SLVER = "";
-my $DEB = 0;
-my $slver = "";
-
-if (-e "/etc/redhat-release") {
-#  print "Detected RehHat-like Linux release...\n";
-  @rel = `/bin/cat /etc/redhat-release`;
-
-#  print "rel=$rel[0]\n";
-
-  @pieces = split(/\s+/, $rel[0]);
-  
-  if($pieces[0] =~ m/^scientific.*/i)
-  {
-#    print "Detected Scientific Linux release...\n";
-  } else {
-    die "Invalid Linux release $pieces[0]. Stop.\n\n";
-  }
-  $slver = $pieces[$#pieces-1];
-#  print "$slver\n\n";
-  if($slver !~ m/^6.*/ && $slver !~ m/^5.*/) {
-    die "Found Scientific Linux Version $SLVER but only 6.x and 5.x are supported. Stop.\n\n"
-  }
-  $SLVER = (split(/\./, $slver))[0];
-  $SL=1;
-  print "\nDetected Scientific Linux $SLVER ...\n\n";
-}
-
-if(-e "/etc/debian_version") {
-  @rel = `/bin/cat /etc/debian_version`;
-  @pieces = split(/\./, $rel[0]);
-  if($pieces[0] ne "6") {
-    die "At the moment a Debian version different than 6.x.x is not supported. Stop.\n\n"
-  }
-  $DEB = 1;
-  print "\nDetected Debian Linux release 6...\n";
-}
-
-if($DEB==0 && $SL==0) {
-  die "Detected a platform that is not Scientific Linux or Debian. Stop";
-}
 
 @components = (
 	       "glite-wms-configuration",
@@ -93,7 +49,7 @@ if( defined $opts{h}) {
   print "  -t\t<tag>: specify the tag to build (default=master)\n";
   print "  -d\t<build-dir>: specify the build directory (default=$ENV{HOME})\n";
   print "  -r\t<emi release number>: specifiy the EMI release number (1, 2, 3, default=2)\n";
-  print "  -p\t<platform name>: specify the build platform (sl5,sl6,deb6, default=autodetect)\n";
+  print "  -p\t<platform name>: specify the build platform (sl5,sl6,deb6, default=sl6)\n";
   print "  -D\tspecify if download and install external dependencies (default=NO)\n";
   print "  -C\tspecify if checkout from GIT must be done before start build (default=NO)\n";
   print "  -c\tspecify if a previous cleanup must be done before start build (default=NO)\n";
@@ -121,19 +77,7 @@ if(defined $opts{r}) {
   $emirel = $opts{r};
 }
 
-my $platform = "";#"sl6";
-if($SL) {
-  if($SLVER eq "6") {
-    $platform = "sl6";
-  } else {
-    $platform = "sl5"
-  }
-}
-
-if($DEB) {
-  $platform = "deb6";
-}
-
+my $platform = "sl6";
 if(defined $opts{p}) {
   $platform = $opts{p};
 }
