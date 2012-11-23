@@ -73,12 +73,12 @@ cat << EOF > /etc/cron.d/glite-wms-wmproxy-purge-proxycache.cron
 HOME=/
 MAILTO=$SITE_EMAIL
 
-0 */2 * * * root . ${GRID_ENV_LOCATION}/grid-env.sh ; ${WMS_LOCATION_BIN}/glite-wms-wmproxy-purge-proxycache ${WMS_LOCATION_VAR}/proxycache > ${WMS_LOCATION_LOG}/glite-wms-wmproxy-purge-proxycache.log 2>&1
+0 */2 * * * root . ${GRID_ENV_LOCATION}/grid-env.sh ; ${WMS_LOCATION_BIN}/glite-wms-wmproxy-purge-proxycache ${WMS_LOCATION_VAR}/proxycache >> ${WMS_LOCATION_LOG}/glite-wms-wmproxy-purge-proxycache.log 2>&1
 EOF
 
   # glite-wms-wmproxy-purge-proxycache_keys.cron
 cat << EOF > /etc/cron.d/glite-wms-wmproxy-purge-proxycache_keys.cron
-0 */2 * * * root sh ${WMS_LOCATION_BIN}/glite-wms-wmproxy-purge-proxycache_keys
+0 */2 * * * root sh ${WMS_LOCATION_BIN}/glite-wms-wmproxy-purge-proxycache_keys >> ${WMS_LOCATION_LOG}/glite-wms-wmproxy-purge-proxycache-keys.log 2>&1 < /dev/null
 EOF
 
   # glite-wms-check-daemons.cron
@@ -114,7 +114,6 @@ ${WMS_LOCATION_LOG}/httpd-wmproxy-access.log  ${WMS_LOCATION_LOG}/httpd-wmproxy-
 
 }
 EOF
-
 
 cat << EOF > /etc/logrotate.d/glite-wms-purger
 ${WMS_LOCATION_LOG}/glite-wms-purgeStorage.log {
