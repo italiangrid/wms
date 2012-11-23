@@ -78,6 +78,7 @@ pkg_check_modules(LB_CLIENTPP REQUIRED emi-lb-clientpp)
 pkg_check_modules(PROXYRENEW REQUIRED emi-proxyrenew)
 pkg_check_modules(PURGER REQUIRED wms-purger)
 pkg_check_modules(JOBID emi-jobid)
+pkg_check_modules(GLOBUS_GSSAPI globus-gssapi-gsi)
 
 if(DEFINED BUILD_DBG)
   
