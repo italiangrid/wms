@@ -77,6 +77,7 @@ MAILTO=$SITE_EMAIL
 EOF
 
   # glite-wms-wmproxy-purge-proxycache_keys.cron
+cat << EOF > /etc/cron.d/glite-wms-wmproxy-purge-proxycache_keys.cron
 0 */2 * * * root sh ${WMS_LOCATION_BIN}/glite-wms-wmproxy-purge-proxycache_keys
 EOF
 
