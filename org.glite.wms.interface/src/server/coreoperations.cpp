@@ -1918,6 +1918,7 @@ jobStart(jobStartResponse& jobStart_response, const string& job_id, struct soap 
    tempad.fromFile(jdlpath);
    std::string a(tempad.toString());
    submit(tempad.toString(), jid.get(), ai.uid_, ai.gid_, wmplogger);
+   unlink(delegatedproxy.c_str());
 
    GLITE_STACK_CATCH();
 }
@@ -2025,6 +2026,7 @@ jobSubmit(struct ns1__jobSubmitResponse& response,
 
    edglog(debug)<<"UID GID:"<< ai.uid_<< endl;
    submit(reginfo.second, jid.get(), ai.uid_, ai.gid_, wmplogger, true);
+   unlink(delegatedproxy.c_str()); // what if proxyrenewal
    GLITE_STACK_CATCH();
 }
 
