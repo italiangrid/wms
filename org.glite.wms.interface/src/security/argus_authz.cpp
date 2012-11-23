@@ -465,26 +465,26 @@ argus_authZ(
 
    xacml_subject_t* subject = xacml_subject_create();
    // subject-id, cert-chain and VOMS FQANs are all one Subject
-   xacml_subject_t* subject_id = create_xacml_subjectid(dn);
-   if (!subject_id || !merge_xacml_subject_attrs_into(subject_id, subject)) {
-      pep_destroy(pep);
-      return error;
-   }
+   //xacml_subject_t* subject_id = create_xacml_subjectid(dn);
+   //if (!subject_id || !merge_xacml_subject_attrs_into(subject_id, subject)) {
+   //   pep_destroy(pep);
+   //   return error;
+   //}
    std::string certchain(read_certchain(userproxypath));
    xacml_subject_t* subject_certchain = create_xacml_subject_certchain(certchain);
    if (!merge_xacml_subject_attrs_into(subject_certchain, subject)) {
       pep_destroy(pep);
       return error;
    }
-   xacml_subject_t* subject_voms_fqan = create_xacml_subject_voms_fqans(fqans);
-   if (!subject_voms_fqan) {
-      pep_destroy(pep);
-      return error;
-   }
-   if (!merge_xacml_subject_attrs_into(subject_voms_fqan, subject)) {
-      pep_destroy(pep);
-      return error;
-   }
+   //xacml_subject_t* subject_voms_fqan = create_xacml_subject_voms_fqans(fqans);
+   //if (!subject_voms_fqan) {
+   //   pep_destroy(pep);
+   //   return error;
+   //}
+   //if (!merge_xacml_subject_attrs_into(subject_voms_fqan, subject)) {
+   //   pep_destroy(pep);
+   //   return error;
+   //}
 
    // resource-id and action-id
    xacml_resource_t* resource = create_xacml_resourceid(resourceid);
