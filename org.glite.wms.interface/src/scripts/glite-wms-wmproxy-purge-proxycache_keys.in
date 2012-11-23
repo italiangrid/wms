@@ -1,7 +1,5 @@
 #!/bin/sh
 
-exec >> /var/log/proxycache-cleanup.log 2>&1 < /dev/null
-
 log() {
   echo "`date`: $1"
 }
