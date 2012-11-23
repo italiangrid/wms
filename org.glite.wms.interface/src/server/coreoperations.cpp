@@ -2395,6 +2395,7 @@ listmatch(jobListMatchResponse& jobListMatch_response, const string& jdl,
              &jobListMatch_response);
 
       result = jobListMatch_response.CEIdAndRankList->file->size();
+      unlink(delegatedproxy.c_str());
    } else {
       edglog(error)<<"Operation permitted only for normal job"<<endl;
       throw JobOperationException(__FILE__, __LINE__,
