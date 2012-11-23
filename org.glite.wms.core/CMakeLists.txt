@@ -61,6 +61,7 @@ pkg_check_modules(GSOAP_PLUGIN REQUIRED emi-gsoap-plugin)
 pkg_check_modules(BOOST_REGEX REQUIRED emi-boost-regex)
 pkg_check_modules(BOOST_FILESYSTEM REQUIRED emi-boost-filesystem)
 pkg_check_modules(BOOST_THREAD REQUIRED REQUIRED emi-boost-thread)
+pkg_check_modules(BOOST_OPTIONS REQUIRED emi-boost-options)
 pkg_check_modules(CLASSAD REQUIRED emi-classad-ns)
 pkg_check_modules(WMSUTILS_CLASSADS REQUIRED classad-utils)
 pkg_check_modules(WMSUTILS_JOBMAN_EXCEPTION REQUIRED jobman-exception)
@@ -80,12 +81,12 @@ pkg_check_modules(JOBID emi-jobid)
 
 if(DEFINED BUILD_DBG)
   
-  add_definitions( -pipe -g -O0 -Wall ${CLASSAD_CFLAGS})
+  add_definitions( -pipe -g -O0 -Wall ${CLASSAD_CFLAGS} -DLDAP_DEPRECATED)
   
   
 else(DEFINED BUILD_DBG)
   
-  add_definitions( -pipe -O2 -Wall ${CLASSAD_CFLAGS})
+  add_definitions( -pipe -O2 -Wall ${CLASSAD_CFLAGS} -DLDAP_DEPRECATED)
   
 endif(DEFINED BUILD_DBG)
 
@@ -95,5 +96,6 @@ install(FILES
 )
 
 
-add_subdirectory(src)
+#add_subdirectory(src)
+add_subdirectory(src/ism)
 add_subdirectory(interface)
