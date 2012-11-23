@@ -51,7 +51,7 @@ cat << EOF > /etc/cron.d/glite-wms-create-host-proxy.cron
 HOME=/
 MAILTO=$SITE_EMAIL
 
-0 */2 * * * glite . ${GRID_ENV_LOCATION}/grid-env.sh ; ${WMS_LOCATION_SBIN}/glite-wms-create-proxy.sh ${WMS_LOCATION_VAR}/glite/wms.proxy ${WMS_LOCATION_LOG}/create_proxy.log
+0 */6 * * * glite . ${GRID_ENV_LOCATION}/grid-env.sh ; ${WMS_LOCATION_SBIN}/glite-wms-create-proxy.sh ${WMS_LOCATION_VAR}/glite/wms.proxy ${WMS_LOCATION_LOG}/create_proxy.log
 EOF
 
   # cron (need to expand cron_job to add MAILTO)
@@ -73,7 +73,7 @@ cat << EOF > /etc/cron.d/glite-wms-wmproxy-purge-proxycache.cron
 HOME=/
 MAILTO=$SITE_EMAIL
 
-0 */6 * * * root . ${GRID_ENV_LOCATION}/grid-env.sh ; ${WMS_LOCATION_BIN}/glite-wms-wmproxy-purge-proxycache ${WMS_LOCATION_VAR}/proxycache > ${WMS_LOCATION_LOG}/glite-wms-wmproxy-purge-proxycache.log 2>&1
+0 */2 * * * root . ${GRID_ENV_LOCATION}/grid-env.sh ; ${WMS_LOCATION_BIN}/glite-wms-wmproxy-purge-proxycache ${WMS_LOCATION_VAR}/proxycache > ${WMS_LOCATION_LOG}/glite-wms-wmproxy-purge-proxycache.log 2>&1
 EOF
 
 
