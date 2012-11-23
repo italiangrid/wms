@@ -196,23 +196,25 @@ rpm_package()
 
 deb_package()
 {
-   VERSION=$1
-   AGE=$2
-   PLATFORM=$3
-   PACKAGE_NAME=$4
-   COMPONENT=$5
-   LOCAL_STAGE_DIR=$6
+# This procedure needs to be rewritten
+
+#   VERSION=$1
+#   AGE=$2
+#   PLATFORM=$3
+#   PACKAGE_NAME=$4
+#   COMPONENT=$5
+#   LOCAL_STAGE_DIR=$6
 
    # TODO to be tested
    # TODO generation of src-deb missing
-   mkdir -p debian/nodev/ 2>/dev/null
-   cp debian/deb-control-file.txt debian/build_nodev/debian/control
-   cp debian/lib$PACKAGE_NAME.install debian/nodev/debian
-   mkdir -p debian/build_dev/org.glite.wms.common/debian
-   cp debian/deb-control-file-dev.txt debian/dev/debian/control
-   cp debian/libglite-wms-common-dev.install debian/de/debian
-   dpkg -b debian/nodev/ debian/nodev/$PACKAGE_NAME-$VERSION.deb
-   dpkg -b debian/dev/ debian/dev/$PACKAGE_NAME-dev-$VERSION.deb
+#   mkdir -p debian/nodev/ 2>/dev/null
+#   cp debian/deb-control-file.txt debian/build_nodev/debian/control
+#   cp debian/lib$PACKAGE_NAME.install debian/nodev/debian
+#   mkdir -p debian/build_dev/org.glite.wms.common/debian
+#   cp debian/deb-control-file-dev.txt debian/dev/debian/control
+#   cp debian/libglite-wms-common-dev.install debian/de/debian
+#   dpkg -b debian/nodev/ debian/nodev/$PACKAGE_NAME-$VERSION.deb
+#   dpkg -b debian/dev/ debian/dev/$PACKAGE_NAME-dev-$VERSION.deb
 }
 
 get_external_deps()
