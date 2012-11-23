@@ -1,4 +1,4 @@
-project(wms-common CXX)
+project(wms-core CXX)
 cmake_minimum_required(VERSION 2.6)
 
 
@@ -52,30 +52,42 @@ endif(DEFINED ADDITIONAL_PKG_CONFIG_PATH)
 find_package(PkgConfig REQUIRED)
 find_package(Perl REQUIRED)
 find_program(Make REQUIRED)
-pkg_check_modules(CLASSAD REQUIRED emi-classad-ns)
-#pkg_check_modules(BOOST REQUIRED emi-boost-thread)
+pkg_check_modules(CARES libcares)
+pkg_check_modules(GSOAP REQUIRED gsoap)
+pkg_check_modules(GSOAP_PLUSPLUS REQUIRED gsoap++)
+pkg_check_modules(GSOAP_SSL REQUIRED gsoapssl)
+pkg_check_modules(GSOAP_SSL_PLUSPLUS REQUIRED gsoapssl++)
+pkg_check_modules(GSOAP_PLUGIN REQUIRED emi-gsoap-plugin)
 pkg_check_modules(BOOST_REGEX REQUIRED emi-boost-regex)
 pkg_check_modules(BOOST_FILESYSTEM REQUIRED emi-boost-filesystem)
-pkg_check_modules(BOOST_DATE_TIME REQUIRED emi-boost-date)
-pkg_check_modules(JOBID REQUIRED emi-jobid)
+pkg_check_modules(BOOST_THREAD REQUIRED REQUIRED emi-boost-thread)
+pkg_check_modules(BOOST_OPTIONS REQUIRED emi-boost-options)
+pkg_check_modules(CLASSAD REQUIRED emi-classad-ns)
 pkg_check_modules(WMSUTILS_CLASSADS REQUIRED classad-utils)
 pkg_check_modules(WMSUTILS_JOBMAN_EXCEPTION REQUIRED jobman-exception)
-pkg_check_modules(GLOBUS_COMMON REQUIRED globus-common)
-pkg_check_modules(GLOBUS_FTP_CLIENT REQUIRED globus-ftp-client)
-pkg_check_modules(GLOBUS_GSS_ASSIST REQUIRED globus-gss-assist)
-pkg_check_modules(GLOBUS_IO REQUIRED globus-io)
-pkg_check_modules(LOG4CPP REQUIRED log4cpp)
-
-
+pkg_check_modules(JDL_API_CPP REQUIRED jdl-api-cpp)
+pkg_check_modules(WMS_COMMON_CONF REQUIRED wms-common-conf)
+pkg_check_modules(WMS_COMMON_LOGGER REQUIRED wms-common-logger)
+pkg_check_modules(WMS_COMMON_PROCESS REQUIRED wms-common-process)
+pkg_check_modules(WMS_COMMON_UTIL REQUIRED wms-common-util)
+pkg_check_modules(WMS_COMMON_II REQUIRED wms-common-ii)
+pkg_check_modules(WMS_COMMON_QUOTA REQUIRED wms-common-quota)
+pkg_check_modules(LB_COMMON REQUIRED emi-lb-common)
+pkg_check_modules(LB_CLIENT REQUIRED emi-lb-client)
+pkg_check_modules(LB_CLIENTPP REQUIRED emi-lb-clientpp)
+pkg_check_modules(PROXYRENEW REQUIRED emi-proxyrenew)
+pkg_check_modules(PURGER REQUIRED wms-purger)
+pkg_check_modules(JOBID emi-jobid)
+pkg_check_modules(GLOBUS_GSSAPI globus-gssapi-gsi)
 
 if(DEFINED BUILD_DBG)
   
-  add_definitions( -pipe -g -O0 -Wall ${CLASSAD_CFLAGS})
+  add_definitions( -pipe -g -O0 -Wall ${CLASSAD_CFLAGS} -DLDAP_DEPRECATED)
   
   
 else(DEFINED BUILD_DBG)
   
-  add_definitions( -pipe -O2 -Wall ${CLASSAD_CFLAGS})
+  add_definitions( -pipe -O2 -Wall ${CLASSAD_CFLAGS} -DLDAP_DEPRECATED)
   
 endif(DEFINED BUILD_DBG)
 
@@ -85,5 +97,8 @@ install(FILES
 )
 
 
-add_subdirectory(src)
+#add_subdirectory(src)
+add_subdirectory(src/ism)
+add_subdirectory(src/helper/jobadapter)
+add_subdirectory(src/helper/broker)
 add_subdirectory(interface)

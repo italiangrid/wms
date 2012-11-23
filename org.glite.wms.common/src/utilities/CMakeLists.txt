@@ -67,10 +67,14 @@ target_link_libraries(glite-wms-quota-adjust
   ${WMSUTILS_CLASSADS_LIBRARIES}
   glite_wms_conf 
   glite_wms_util 
-  glite_jobid
-  boost_regex 
-  boost_filesystem
-  boost_date_time
+  ${JOBID_LIBRARIES}
+  ${BOOST_REGEX_LIBRARIES}
+  ${BOOST_FILESYSTEM_LIBRARIES}
+  ${BOOST_DATE_TIME_LIBRARIES}
+#  glite_jobid
+#  boost_regex 
+#  boost_filesystem
+#  boost_date_time
   )
 
 add_executable(glite-wms-eval_ad_expr glite-wms-eval_ad_expr.cpp)
@@ -83,10 +87,14 @@ target_link_libraries(glite-wms-eval_ad_expr
   ${WMSUTILS_CLASSADS_LIBRARIES}
   glite_wms_conf 
   glite_wms_util 
-  glite_jobid
-  boost_regex 
-  boost_filesystem
-  boost_date_time
+  ${JOBID_LIBRARIES}
+  ${BOOST_REGEX_LIBRARIES}
+  ${BOOST_FILESYSTEM_LIBRARIES}
+  ${BOOST_DATE_TIME_LIBRARIES}
+#  glite_jobid
+#  boost_regex 
+#  boost_filesystem
+ # boost_date_time
   )
 
 install(TARGETS glite_wms_util glite_wms_quota

@@ -18,10 +18,10 @@ install(TARGETS glite-wms-get-configuration
 target_link_libraries(glite-wms-get-configuration 
   glite_wms_conf 
   glite_wms_util 
-  glite_jobid
-  boost_regex 
-  boost_filesystem
-  boost_date_time
+  ${JOBID_LIBRARIES}
+  ${BOOST_REGEX_LIBRARIES}
+  ${BOOST_FILESYSTEM_LIBRARIES}
+  ${BOOST_DATE_TIME_LIBRARIES}
   ${WMSUTILS_CLASSADS_ALT_LIBRARIES}
   ${WMSUTILS_CLASSADS_LIBRARIES}
   )
