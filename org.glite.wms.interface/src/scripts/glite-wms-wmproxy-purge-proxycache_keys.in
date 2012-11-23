@@ -1,0 +1,29 @@
+#!/bin/sh
+
+exec >> /var/log/proxycache-cleanup.log 2>&1 < /dev/null
+
+log() {
+  echo "`date`: $1"
+}
+
+log "proxy cache leftover private keys cleaner started"
+
+cd /var/proxycache/cache || exit
+
+for i in *
+do
+(
+test -d "$i" && cd "$i" || exit
+
+echo "=== $i"
+
+find . -maxdepth 1 -mindepth 1 -type d -mmin +5 -ls -exec \
+sh -c '
+k=$0/userkey.pem
+[ -e "$k" ] && ls -l "$k" && rm "$k"
+rmdir "$0"
+' {} \;
+)
+done
+
+log "finished cleaning keys"
