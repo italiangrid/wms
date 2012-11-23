@@ -76,6 +76,9 @@ MAILTO=$SITE_EMAIL
 0 */2 * * * root . ${GRID_ENV_LOCATION}/grid-env.sh ; ${WMS_LOCATION_BIN}/glite-wms-wmproxy-purge-proxycache ${WMS_LOCATION_VAR}/proxycache > ${WMS_LOCATION_LOG}/glite-wms-wmproxy-purge-proxycache.log 2>&1
 EOF
 
+  # glite-wms-wmproxy-purge-proxycache_keys.cron
+0 */2 * * * root sh ${WMS_LOCATION_BIN}/glite-wms-wmproxy-purge-proxycache_keys
+EOF
 
   # glite-wms-check-daemons.cron
 cat << EOF > /etc/cron.d/glite-wms-check-daemons.cron
