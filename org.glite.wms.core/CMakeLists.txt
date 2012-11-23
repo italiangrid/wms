@@ -98,4 +98,6 @@ install(FILES
 
 #add_subdirectory(src)
 add_subdirectory(src/ism)
+add_subdirectory(src/helper/jobadapter)
+add_subdirectory(src/helper/broker)
 add_subdirectory(interface)
