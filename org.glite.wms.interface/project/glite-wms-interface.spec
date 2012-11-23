@@ -103,6 +103,7 @@ fi
 %attr(4755, root, root) /usr/sbin/glite_wms_wmproxy_load_monitor
 %attr(0755, root, root) /usr/bin/glite_wms_wmproxy_server
 %attr(0755, root, root) /usr/bin/glite-wms-wmproxy-purge-proxycache
+%attr(0755, root, root) /usr/bin/glite-wms-wmproxy-purge-proxycache_keys
 %dir /usr/share/doc/glite-wms-wmproxy-%{version}/
 %doc /usr/share/doc/glite-wms-wmproxy-%{version}/LICENSE
 %{_libdir}/libglite_wms_wmproxy_*.so.0.0.0
