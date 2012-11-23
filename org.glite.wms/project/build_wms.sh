@@ -198,7 +198,7 @@ deb_package()
 {
 # This procedure needs to be rewritten
 
-#   VERSION=$1
+   VERSION=$1
 #   AGE=$2
 #   PLATFORM=$3
 #   PACKAGE_NAME=$4

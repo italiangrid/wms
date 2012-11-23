@@ -76,6 +76,7 @@ pkg_check_modules(LB_CLIENT REQUIRED emi-lb-client)
 pkg_check_modules(LB_CLIENTPP REQUIRED emi-lb-clientpp)
 pkg_check_modules(PROXYRENEW REQUIRED emi-proxyrenew)
 pkg_check_modules(PURGER REQUIRED wms-purger)
+pkg_check_modules(JOBID emi-jobid)
 
 if(DEFINED BUILD_DBG)
   
@@ -94,5 +95,5 @@ install(FILES
 )
 
 
-#add_subdirectory(src)
+add_subdirectory(src)
 add_subdirectory(interface)
