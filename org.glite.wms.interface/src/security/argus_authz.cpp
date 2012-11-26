@@ -37,7 +37,8 @@ namespace security {
 
 namespace {
 
-std::string const XACML_COMMON_PROFILE_VERSION("http://dci-sec.org/xacml/profile/common-authz/1.1");
+//TODO std::string const XACML_COMMON_PROFILE_VERSION("http://dci-sec.org/xacml/profile/common-authz/1.1");
+std::string const XACML_COMMON_PROFILE_VERSION("http://glite.org/xacml/profile/grid-ce/1.0");
 
 // Reads the certificate file and returns the public part as a string
 std::string read_certchain(std::string filename)
@@ -62,7 +63,7 @@ std::string read_certchain(std::string filename)
          cert_part = true;
       }
       if (cert_part) {
-         cert += line;
+         cert += line + '\n';
       }
       if (CERT_END == line) {
          cert_part = false; // more certs can be interleaved with the private key in the middle
@@ -111,11 +112,12 @@ create_xacml_subject_certchain(std::string const& certchain)
       edglog(error) << "can not allocate XACML Subject" << std::endl;
       return 0;
    }
+// XACML_AUTHZINTEROP_SUBJECT_CERTCHAIN // http://authz-interop.org/xacml/subject/cert-chain
    xacml_attribute_t* subject_attr_id = xacml_attribute_create(
-      XACML_AUTHZINTEROP_SUBJECT_CERTCHAIN);
+      XACML_SUBJECT_KEY_INFO);
    if (!subject_attr_id) {
       edglog(error) << "can not allocate XACML Subject/Attribute: "
-        << XACML_AUTHZINTEROP_SUBJECT_CERTCHAIN << std::endl;
+        << XACML_SUBJECT_KEY_INFO << std::endl;
       xacml_subject_delete(subject);
       return 0;
    }
@@ -186,7 +188,8 @@ create_xacml_environment_profile_id(std::string profile) {
         return 0;
     }
     static std::string const XACML_DCISEC_ATTRIBUTE_PROFILE_ID(
-       "http://dci-sec.org/xacml/attribute/profile-id");
+"http://glite.org/xacml/attribute/profile-id");
+//TODO     "http://dci-sec.org/xacml/attribute/profile-id");
     xacml_attribute_t* env_attr = xacml_attribute_create(
        XACML_DCISEC_ATTRIBUTE_PROFILE_ID.c_str());
     if (!env_attr) {
@@ -312,7 +315,7 @@ xacml_request_t* create_xacml_request(
       xacml_request_setaction(request, action);
    }
    xacml_environment_t* environment = create_xacml_environment_profile_id(
-      XACML_COMMON_PROFILE_VERSION);
+      XACML_COMMON_PROFILE_VERSION.c_str());
    if (environment) {
       xacml_request_setenvironment(request, environment);
    }
