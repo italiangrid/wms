@@ -366,7 +366,7 @@ get_response(xacml_response_t* response, std::string const& resourceid)
          edglog(debug) << "argus: status " << status_value << std::endl;
          char const* const status_message = xacml_status_getmessage(status);
          if (status_message) {
-            edglog(debug) << "argus: status message " << status_message << std::endl;
+           edglog(debug) << "argus: status message " << status_message << std::endl;
          }
       }
       size_t obligations_l = xacml_result_obligations_length(result);
