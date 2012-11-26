@@ -606,7 +606,7 @@ WMPAuthorizer::authorize()
                   // set the mapping
                   uid_ = ans.get<2>();
                   gid_ = ans.get<3>();
-                  edglog(debug) << "Argus returned XACML_DECISION_PERMIT"
+                  edglog(info) << "Argus returned PERMIT"
                    " with mapping uid: " << uid_ << ", gid: " << gid_ << endl;
                   return;
                } else {

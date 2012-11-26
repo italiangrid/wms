@@ -22,6 +22,10 @@
 #include <iostream>
 #include <fstream>
 
+#include <sys/types.h>
+#include <pwd.h>
+#include <grp.h>
+
 #include "glite/wms/common/logger/logger_utils.h"
 #include "glite/wms/common/logger/edglog.h"
 #include "utilities/logging.h"
@@ -329,7 +333,6 @@ get_response(xacml_response_t* response, std::string const& resourceid)
    edglog_fn("argus_autZ::get_response");
 
    // special ObligationId: x-posix-account-map
-   static const char X_POSIX_ACCOUNT_MAP[]= "x-posix-account-map";
    static std::string decision_str[] = {
       "deny",
       "permit",
@@ -354,16 +357,16 @@ get_response(xacml_response_t* response, std::string const& resourceid)
       }
       xacml_decision_t decision = xacml_result_getdecision(result);
       ret.get<0>() = decision;
-      edglog(debug) << "decision: " << decision_str[decision] << std::endl;
+      edglog(debug) << "argus: decision " << decision_str[decision] << std::endl;
       xacml_status_t* status = xacml_result_getstatus(result);
       xacml_statuscode_t* statuscode= xacml_status_getcode(status);
       char const * const status_value = xacml_statuscode_getvalue(statuscode);
       // show status value and message only if not OK
       if (::strcmp(XACML_STATUSCODE_OK, status_value)) {
-         edglog(debug) << "status: " << status_value << std::endl;
+         edglog(debug) << "argus: status " << status_value << std::endl;
          char const* const status_message = xacml_status_getmessage(status);
          if (status_message) {
-            edglog(debug) << "status message: " << status_message << std::endl;
+            edglog(debug) << "argus: status message " << status_message << std::endl;
          }
       }
       size_t obligations_l = xacml_result_obligations_length(result);
@@ -377,45 +380,39 @@ get_response(xacml_response_t* response, std::string const& resourceid)
          //xacml_fulfillon_t fulfillon = xacml_obligation_getfulfillon(obligation);
          //        XACML_FULFILLON_DENY = 0, /* Fulfill the Obligation on Deny decision */
          //        XACML_FULFILLON_PERMIT
-         //if (fulfillon == decision) {
-         char const* const obligationid = xacml_obligation_getid(obligation);
          size_t attrs_l = xacml_obligation_attributeassignments_length(obligation);
-         if (!::strcmp(XACML_AUTHZINTEROP_OBLIGATION_SECONDARY_GIDS, obligationid) && attrs_l > 0) {
-            edglog(debug) << "secondary GIDs=";
-         } else if (!strcmp(X_POSIX_ACCOUNT_MAP, obligationid)) {
-            edglog(debug) << "obligation("
-                          << X_POSIX_ACCOUNT_MAP
-                          << "): Application should do the POSIX account mapping";
-         }
          for (size_t k = 0; k < attrs_l; ++k) {
             xacml_attributeassignment_t* attr = xacml_obligation_getattributeassignment(obligation, k);
-            char const* const attrid = xacml_attributeassignment_getid(attr);
-            size_t values_l = xacml_attributeassignment_values_length(attr);
+            std::string attrid(xacml_attributeassignment_getid(attr));
+            size_t values_l(xacml_attributeassignment_values_length(attr));
             for (size_t l = 0; l < values_l; ++l) {
                char const* const value = xacml_attributeassignment_getvalue(attr, l);
-               if (!::strcmp(XACML_AUTHZINTEROP_OBLIGATION_UIDGID, obligationid)) {
-                  if (!strcmp(XACML_AUTHZINTEROP_OBLIGATION_ATTR_POSIX_UID, attrid)) {
-                     ret.get<1>() = atoi(value);
-                     edglog(debug) << "UID =" << value;
-                  } else if (!strcmp(XACML_AUTHZINTEROP_OBLIGATION_ATTR_POSIX_GID, attrid)) {
-                     ret.get<2>() = atoi(value);
-                     edglog(debug) << "GID =" << value;
+               if (std::string("http://glite.org/xacml/attribute/group-id/primary") == attrid) { // primary group
+                  edglog(debug) << "GID = " << value << std::endl;
+                  // TODO use reentrant versions for getgrnam and getpwnam
+                  struct group* group_info = getgrnam(value);
+                  if (group_info) {
+                     ret.get<2>() = group_info->gr_gid;
+                  } else {
+                     edglog(error) << "group " << value << " not found" << std::endl;
                   }
-               } else if (!strcmp(XACML_AUTHZINTEROP_OBLIGATION_SECONDARY_GIDS, obligationid)) {
-                  if (!strcmp(XACML_AUTHZINTEROP_OBLIGATION_ATTR_POSIX_GID, attrid)) {
-                     edglog(debug) << value;
-                  }
-               } else if (!strcmp(XACML_AUTHZINTEROP_OBLIGATION_USERNAME, obligationid)) {
-                  if (!strcmp(XACML_AUTHZINTEROP_OBLIGATION_ATTR_USERNAME, attrid)) {
-                     edglog(debug) << "username = " << value;
+               } else if (std::string("http://glite.org/xacml/attribute/group-id") == attrid) { // secondary Gids
+                  edglog(debug) << value;
+               } else if (std::string("http://glite.org/xacml/attribute/user-id") == attrid) { // http://authz-interop.org/xacml/attribute/username
+                  edglog(debug) << "UID = " << value << std::endl;
+                  struct passwd* user_info = getpwnam(value);
+                  if (user_info) {
+                     ret.get<1>() = user_info->pw_uid;
+                  } else {
+                     edglog(error) << "user " << value << " not found" << std::endl;
                   }
                } else {
-                  edglog(debug) << "obligation(" << obligationid << "): " << attrid << '=' << value;
+                  edglog(debug) << "argus obligation(" << xacml_obligation_getid(obligation) << "): "
+                    << attrid << " = " << value << std::endl;
                }
             }
          }
          edglog(debug) << std::endl;
-         //}
       }
 
       return ret; // returns right after the first item
