@@ -37,6 +37,8 @@ namespace security {
 
 namespace {
 
+std::string const XACML_COMMON_PROFILE_VERSION("http://dci-sec.org/xacml/profile/common-authz/1.1");
+
 // Reads the certificate file and returns the public part as a string
 std::string read_certchain(std::string filename)
 {
@@ -176,6 +178,31 @@ create_xacml_subject_voms_fqans(std::vector<std::string> const& fqans)
    return subject;
 }
 
+xacml_environment_t*
+create_xacml_environment_profile_id(std::string profile) {
+    xacml_environment_t* env = xacml_environment_create();
+    if (!env) {
+        edglog(error) << "can not allocate XACML environment" << std::endl;
+        return 0;
+    }
+    static std::string const XACML_DCISEC_ATTRIBUTE_PROFILE_ID(
+       "http://dci-sec.org/xacml/attribute/profile-id");
+    xacml_attribute_t* env_attr = xacml_attribute_create(
+       XACML_DCISEC_ATTRIBUTE_PROFILE_ID.c_str());
+    if (!env_attr) {
+        edglog(error) << "can not allocate XACML environment attribute:"
+           << XACML_DCISEC_ATTRIBUTE_PROFILE_ID << std::endl;
+        xacml_environment_delete(env);
+        return 0;
+    }
+
+    xacml_attribute_addvalue(env_attr, profile.c_str());
+    xacml_attribute_setdatatype(env_attr, XACML_DATATYPE_ANYURI);
+    xacml_environment_addattribute(env, env_attr);
+
+    return env;
+}
+
 /**
  * Merges the attributes of the first XACML Subject into the second Subject.
  * WARNING: the attributes values are not copied, only the attributes pointers.
@@ -283,6 +310,11 @@ xacml_request_t* create_xacml_request(
    }
    if (action) {
       xacml_request_setaction(request, action);
+   }
+   xacml_environment_t* environment = create_xacml_environment_profile_id(
+      XACML_COMMON_PROFILE_VERSION);
+   if (environment) {
+      xacml_request_setenvironment(request, environment);
    }
 
    return request;
