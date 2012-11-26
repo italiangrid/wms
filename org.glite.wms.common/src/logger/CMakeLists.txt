@@ -35,7 +35,7 @@ add_library(glite_wms_logger
 
 set_target_properties(glite_wms_logger PROPERTIES VERSION 0.0.0 SOVERSION 0)
 
-target_link_libraries(glite_wms_logger ${CLASSAD_LIBRARIES})
+target_link_libraries(glite_wms_logger ${CLASSAD_LIBRARIES} ${LOG4CPP_LIBRARIES})
 
 
 install(TARGETS glite_wms_logger
