@@ -349,7 +349,7 @@ get_response(xacml_response_t* response, std::string const& resourceid)
    };
 
    boost::tuple<xacml_decision_t, uid_t, gid_t> error(
-      XACML_DECISION_INDETERMINATE, 0, 0);
+      XACML_DECISION_INDETERMINATE, -1, -1);
    boost::tuple<xacml_decision_t, uid_t, gid_t> ret(error);
    if (!response) {
       edglog(error) << "argus response is NULL" << std::endl;
