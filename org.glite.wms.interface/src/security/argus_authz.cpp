@@ -352,7 +352,7 @@ get_response(xacml_response_t* response, std::string const& resourceid)
       XACML_DECISION_INDETERMINATE, 0, 0);
    boost::tuple<xacml_decision_t, uid_t, gid_t> ret(error);
    if (!response) {
-      edglog(error) << "argus: response is NULL" << std::endl;
+      edglog(error) << "argus response is NULL" << std::endl;
       return error;
    }
    size_t results_l = xacml_response_results_length(response);
@@ -364,21 +364,21 @@ get_response(xacml_response_t* response, std::string const& resourceid)
       }
       xacml_decision_t decision = xacml_result_getdecision(result);
       ret.get<0>() = decision;
-      edglog(debug) << "argus: decision " << decision_str[decision] << std::endl;
+      edglog(debug) << "argus decision " << decision_str[decision] << std::endl;
       xacml_status_t* status = xacml_result_getstatus(result);
       xacml_statuscode_t* statuscode= xacml_status_getcode(status);
       char const * const status_value = xacml_statuscode_getvalue(statuscode);
       // show status value and message only if not OK
       if (::strcmp(XACML_STATUSCODE_OK, status_value)) {
-         edglog(debug) << "argus: status " << status_value << std::endl;
+         edglog(debug) << "argus status " << status_value << std::endl;
          char const* const status_message = xacml_status_getmessage(status);
          if (status_message) {
-           edglog(debug) << "argus: status message " << status_message << std::endl;
+           edglog(debug) << "argus status message " << status_message << std::endl;
          }
       }
       size_t obligations_l = xacml_result_obligations_length(result);
       if (obligations_l == 0 && decision == XACML_DECISION_PERMIT) {
-         edglog(error) << "argus: no Obligation received, cannot map user" << std::endl;
+         edglog(error) << "argus no Obligation received, cannot map user" << std::endl;
          return error;
       }
 
