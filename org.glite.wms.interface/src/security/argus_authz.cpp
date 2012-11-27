@@ -41,8 +41,18 @@ namespace security {
 
 namespace {
 
-//TODO std::string const XACML_COMMON_PROFILE_VERSION("http://dci-sec.org/xacml/profile/common-authz/1.1");
-std::string const XACML_COMMON_PROFILE_VERSION("http://glite.org/xacml/profile/grid-ce/1.0");
+char const XACML_COMMONAUTHZ_PROFILE_1_1[] = "http://glite.org/xacml/profile/grid-ce/1.0"; // TODO comment, this is an override
+char const XACML_DCISEC_ATTRIBUTE_PROFILE_ID[] = // TODO comment, this is an override
+"http://glite.org/xacml/attribute/profile-id"; // TODO XACML_DCISEC_ATTRIBUTE_PROFILE_ID = "http://dci-sec.org/xacml/attribute/profile-id");
+
+// XACML_DCISEC_ATTRIBUTE_USER_ID (XACML_DCISEC_OBLIGATION_MAP_POSIX_USER)
+std::string XACML_DCISEC_ATTRIBUTE_USER_ID("http://glite.org/xacml/attribute/user-id"); // TODO comment, this is an override
+// XACML_DCISEC_ATTRIBUTE_GROUP_ID (XACML_DCISEC_OBLIGATION_MAP_POSIX_USER)
+std::string XACML_DCISEC_ATTRIBUTE_GROUP_ID("http://glite.org/xacml/attribute/group-id"); // TODO comment, this is an override
+//  XACML_DCISEC_ATTRIBUTE_GROUP_ID_PRIMARY (XACML_DCISEC_OBLIGATION_MAP_POSIX_USER)
+std::string XACML_DCISEC_ATTRIBUTE_GROUP_ID_PRIMARY("http://glite.org/xacml/attribute/group-id/primary"); // TODO comment, this is an override
+/*
+*/
 
 // Reads the certificate file and returns the public part as a string
 std::string read_certchain(std::string filename)
@@ -185,17 +195,14 @@ create_xacml_subject_voms_fqans(std::vector<std::string> const& fqans)
 }
 
 xacml_environment_t*
-create_xacml_environment_profile_id(std::string profile) {
+create_xacml_environment_profile_id(char const* const profile) {
     xacml_environment_t* env = xacml_environment_create();
     if (!env) {
         edglog(error) << "can not allocate XACML environment" << std::endl;
         return 0;
     }
-    static std::string const XACML_DCISEC_ATTRIBUTE_PROFILE_ID(
-"http://glite.org/xacml/attribute/profile-id");
-//TODO     "http://dci-sec.org/xacml/attribute/profile-id");
     xacml_attribute_t* env_attr = xacml_attribute_create(
-       XACML_DCISEC_ATTRIBUTE_PROFILE_ID.c_str());
+       XACML_DCISEC_ATTRIBUTE_PROFILE_ID);
     if (!env_attr) {
         edglog(error) << "can not allocate XACML environment attribute:"
            << XACML_DCISEC_ATTRIBUTE_PROFILE_ID << std::endl;
@@ -203,7 +210,7 @@ create_xacml_environment_profile_id(std::string profile) {
         return 0;
     }
 
-    xacml_attribute_addvalue(env_attr, profile.c_str());
+    xacml_attribute_addvalue(env_attr, profile);
     xacml_attribute_setdatatype(env_attr, XACML_DATATYPE_ANYURI);
     xacml_environment_addattribute(env, env_attr);
 
@@ -319,7 +326,7 @@ xacml_request_t* create_xacml_request(
       xacml_request_setaction(request, action);
    }
    xacml_environment_t* environment = create_xacml_environment_profile_id(
-      XACML_COMMON_PROFILE_VERSION.c_str());
+      XACML_COMMONAUTHZ_PROFILE_1_1);
    if (environment) {
       xacml_request_setenvironment(request, environment);
    }
@@ -387,7 +394,7 @@ get_response(xacml_response_t* response, std::string const& resourceid)
             size_t values_l(xacml_attributeassignment_values_length(attr));
             for (size_t l = 0; l < values_l; ++l) {
                char const* const value = xacml_attributeassignment_getvalue(attr, l);
-               if (std::string("http://glite.org/xacml/attribute/group-id/primary") == attrid) { // primary group
+               if (XACML_DCISEC_ATTRIBUTE_GROUP_ID_PRIMARY == attrid) { // primary group
                   edglog(debug) << "GID = " << value << std::endl;
                   // TODO use reentrant versions for getgrnam and getpwnam
                   struct group* group_info = getgrnam(value);
@@ -396,9 +403,9 @@ get_response(xacml_response_t* response, std::string const& resourceid)
                   } else {
                      edglog(error) << "group " << value << " not found" << std::endl;
                   }
-               } else if (std::string("http://glite.org/xacml/attribute/group-id") == attrid) { // secondary Gids
+               } else if (XACML_DCISEC_ATTRIBUTE_GROUP_ID == attrid) { // secondary Gids
                   edglog(debug) << value;
-               } else if (std::string("http://glite.org/xacml/attribute/user-id") == attrid) { // http://authz-interop.org/xacml/attribute/username
+               } else if (XACML_DCISEC_ATTRIBUTE_USER_ID == attrid) { // http://authz-interop.org/xacml/attribute/username
                   edglog(debug) << "UID = " << value << std::endl;
                   struct passwd* user_info = getpwnam(value);
                   if (user_info) {
