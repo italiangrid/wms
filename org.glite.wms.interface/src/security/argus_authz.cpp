@@ -406,6 +406,7 @@ get_response(xacml_response_t* response, std::string const& resourceid)
                      ret.get<2>() = group_info_ptr->gr_gid;
                   } else {
                      edglog(error) << "group " << value << " not found" << std::endl;
+                     return error;
                   }
                } else if (XACML_DCISEC_ATTRIBUTE_GROUP_ID == attrid) { // secondary Gids
                   // edglog(debug) << value;
@@ -418,6 +419,7 @@ get_response(xacml_response_t* response, std::string const& resourceid)
                      ret.get<1>() = user_info_ptr->pw_uid;
                   } else {
                      edglog(error) << "user " << value << " not found" << std::endl;
+                     return error;
                   }
                } else {
                   edglog(debug) << "argus obligation " << xacml_obligation_getid(obligation) << ": "
