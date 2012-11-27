@@ -42,8 +42,8 @@ namespace security {
 namespace {
 
 char const XACML_COMMONAUTHZ_PROFILE_1_1[] = "http://glite.org/xacml/profile/grid-ce/1.0"; // TODO comment, this is an override
-char const XACML_DCISEC_ATTRIBUTE_PROFILE_ID[] = // TODO comment, this is an override
-"http://glite.org/xacml/attribute/profile-id"; // TODO XACML_DCISEC_ATTRIBUTE_PROFILE_ID = "http://dci-sec.org/xacml/attribute/profile-id");
+char const XACML_DCISEC_ATTRIBUTE_PROFILE_ID[] = "http://glite.org/xacml/attribute/profile-id"; // TODO comment, this is an override
+// should be XACML_DCISEC_ATTRIBUTE_PROFILE_ID = "http://dci-sec.org/xacml/attribute/profile-id";
 
 // XACML_DCISEC_ATTRIBUTE_USER_ID (XACML_DCISEC_OBLIGATION_MAP_POSIX_USER)
 std::string XACML_DCISEC_ATTRIBUTE_USER_ID("http://glite.org/xacml/attribute/user-id"); // TODO comment, this is an override
@@ -392,29 +392,35 @@ get_response(xacml_response_t* response, std::string const& resourceid)
             xacml_attributeassignment_t* attr = xacml_obligation_getattributeassignment(obligation, k);
             std::string attrid(xacml_attributeassignment_getid(attr));
             size_t values_l(xacml_attributeassignment_values_length(attr));
+            char buf[1024];
             for (size_t l = 0; l < values_l; ++l) {
                char const* const value = xacml_attributeassignment_getvalue(attr, l);
                if (XACML_DCISEC_ATTRIBUTE_GROUP_ID_PRIMARY == attrid) { // primary group
-                  edglog(debug) << "GID = " << value << std::endl;
-                  // TODO use reentrant versions for getgrnam and getpwnam
-                  struct group* group_info = getgrnam(value);
-                  if (group_info) {
-                     ret.get<2>() = group_info->gr_gid;
+                  edglog(debug) << "argus mapped group = " << value << std::endl;
+                  //TODO
+                  //struct group group_info;
+                  //struct group* group_info_ptr = 0;
+                  //getgrnam_r(value, &group_info, buf, sizeof(buf), &group_info_ptr);
+                  struct group* group_info_ptr = getgrnam(value);
+                  if (group_info_ptr) {
+                     ret.get<2>() = group_info_ptr->gr_gid;
                   } else {
                      edglog(error) << "group " << value << " not found" << std::endl;
                   }
                } else if (XACML_DCISEC_ATTRIBUTE_GROUP_ID == attrid) { // secondary Gids
-                  edglog(debug) << value;
+                  // edglog(debug) << value;
                } else if (XACML_DCISEC_ATTRIBUTE_USER_ID == attrid) { // http://authz-interop.org/xacml/attribute/username
-                  edglog(debug) << "UID = " << value << std::endl;
-                  struct passwd* user_info = getpwnam(value);
-                  if (user_info) {
-                     ret.get<1>() = user_info->pw_uid;
+                  edglog(debug) << "argus mapped user = " << value << std::endl;
+                  struct passwd user_info;
+                  struct passwd* user_info_ptr = 0;
+                  getpwnam_r(value, &user_info, buf, sizeof(buf), &user_info_ptr);
+                  if (user_info_ptr) {
+                     ret.get<1>() = user_info_ptr->pw_uid;
                   } else {
                      edglog(error) << "user " << value << " not found" << std::endl;
                   }
                } else {
-                  edglog(debug) << "argus obligation(" << xacml_obligation_getid(obligation) << "): "
+                  edglog(debug) << "argus obligation " << xacml_obligation_getid(obligation) << ": "
                     << attrid << " = " << value << std::endl;
                }
             }
