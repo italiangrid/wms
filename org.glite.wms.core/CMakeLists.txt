@@ -108,7 +108,7 @@ endif(DEFINED BUILD_DBG)
 
 install(FILES
         LICENSE
-        DESTINATION ${PREFIX}/share/doc/glite-wms-common-${PVER}/
+        DESTINATION ${PREFIX}/share/doc/glite-wms-core-${PVER}/
 )
 
 
@@ -116,3 +116,4 @@ install(FILES
 add_subdirectory(src)
 add_subdirectory(interface)
 add_subdirectory(doc)
+add_subdirectory(config)
