@@ -255,14 +255,16 @@ elif [ ${PLATFORM:0:2} = "sl" ]; then
    PACKAGER=rpm
 fi
 M4_LOCATION=/usr/share/emi/build/m4
-ARCH=`uname -i`
+#ARCH=`uname -i`
+# uname -i returns 'unknown' on Debian. Option -m seems more "portable"
+ARCH=`uname -m`
 #CORES=`cat /proc/cpuinfo|grep processor|wc -l`
 
 RH_DEPS_LIST=( ant bouncycastle doxygen docbook-style-xsl libxslt-devel gcc gcc-c++ python-devel SOAPpy PyXML python-fpconst libtool automake swig yum-priorities pkgconfig mock rpm-build rpmlint git mod_fcgid fcgi-devel mod_ssl axis2 gridsite-devel httpd-devel zlib-devel boost-devel c-ares-devel gsoap-devel libtar-devel cmake openldap-devel python-ldap globus-ftp-client globus-ftp-client-devel log4cpp-devel log4cpp globus-gram-protocol-devel myproxy-devel expat expat-devel fcgi-devel fcgi libtar libtar-devel httpd-devel myproxy-devel cmake ant axis2 bouncycastle.noarch python-fpconst PyXML SOAPpy )
 INT_DEPS_LIST=( glite-jobid-api-c glite-jobid-api-c-devel glite-jobid-api-cpp-devel glite-px-proxyrenewal-devel voms-devel voms-clients argus-pep-api-c-devel lcmaps-without-gsi-devel lcmaps-devel classads-devel glite-build-common-cpp glite-wms-utils-exception glite-wms-utils-classad glite-wms-utils-exception-devel glite-wms-utils-classad-devel chrpath cppunit-devel glite-jdl-api-cpp-devel glite-lb-client-devel glite-lbjp-common-gsoap-plugin-devel condor-emi glite-ce-cream-client-api-c glite-ce-cream-client-devel emi-trustmanager emi-trustmanager-axis )
 DEB_DEPS_LIST=( )
 COMPONENT=( org.glite.wms.configuration org.glite.wms.common org.glite.wms.purger org.glite.wms.core org.glite.wms.jobsubmission org.glite.wms.interface org.glite.wms.ice org.glite.wms.nagios org.glite.wms org.glite.wms.brokerinfo-access org.glite.wms.wmproxy-api-cpp org.glite.wms.wmproxy-api-java org.glite.wms.wmproxy-api-python org.glite.wms-ui.api-python org.glite.wms-ui.commands )
-BUILD_TYPE=( cmake cmake cmake autotools autotools autotools autotools null metapackage cmake cmake ant python cmake cmake )
+BUILD_TYPE=( cmake cmake cmake autotools cmake autotools autotools null metapackage cmake cmake ant python cmake cmake )
 PACKAGE_NAME=( glite-wms-configuration glite-wms-common glite-wms-purger glite-wms-core glite-wms-jobsubmission glite-wms-interface glite-wms-ice emi-wms-nagios emi-wms glite-wms-brokerinfo-access glite-wms-wmproxy-api-cpp glite-wms-wmproxy-api-java glite-wms-wmproxy-api-python glite-wms-ui-api-python glite-wms-ui-commands )
 VERSION=( 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 )
 AGE=( 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 )
@@ -348,15 +350,27 @@ mkdir tgz RPMS SRPMS 2>/dev/null
 echo -e "\n*** starting build ***\n"
 
 export PKG_CONFIG_PATH=$BUILD_DIR/org.glite.wms/org.glite.wms.jobsubmission/project/ # for emi-condorg.pc
-if [ -d /usr/lib64 ]; then
-   LOCAL_PKGCFG_LIB=usr/lib64/pkgconfig/
-else
-   LOCAL_PKGCFG_LIB=usr/lib/pkgconfig/
-fi
+#if [ -d /usr/lib64 ]; then
+#   LOCAL_PKGCFG_LIB=usr/lib64/pkgconfig/
+#else
+#   LOCAL_PKGCFG_LIB=usr/lib/pkgconfig/
+#fi
+
+# @Marco in my opinion it is better to include both lib and lib64 in the PKG_CONFIG_PATH
+# because also in Debian6_2 some package creates the /usr/lib64 directory, even if it is not
+# the debian's standard. Having both paths in the PKG_... doesn't hurt.
+
 for i in `seq 0 $((START - 1))`; do
    STAGE="$BUILD_DIR/org.glite.wms/${COMPONENT[$i]}/stage"
-   export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$STAGE/$LOCAL_PKGCFG_LIB
+#   export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$STAGE/$LOCAL_PKGCFG_LIB
+   export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$STAGE/usr/lib/pkgconfig:$STAGE/usr/lib64/pkgconfig
 done
+
+echo "\n\n"
+echo "***********"
+echo $PKG_CONFIG_PATH
+echo "\n\n"
+
 if [ $START -gt ${#COMPONENT[@]} ]; then
    echo component indices out of range
    exit
@@ -411,7 +425,7 @@ for i in `seq $START $END`; do
 
    # the rpm cannot be created from a common stage dir, so why
    # should we have one at all? each 'tmp' dir can be a stage
-   export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$STAGE/$LOCAL_PKGCFG_LIB
+   export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$STAGE/usr/lib/pkgconfig:$STAGE/usr/lib64/pkgconfig
 done
 
 echo -e "\n*** native build completed ***\n"
