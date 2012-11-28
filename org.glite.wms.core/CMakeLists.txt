@@ -111,6 +111,10 @@ install(FILES
         DESTINATION ${PREFIX}/share/doc/glite-wms-core-${PVER}/
 )
 
+if(NOT DEFINED SYSCONFIGDIR)
+    set(SYSCONFIGDIR "etc/")
+endif(NOT DEFINED SYSCONFIGDIR)
+
 
 #add_subdirectory(src)
 add_subdirectory(src)
