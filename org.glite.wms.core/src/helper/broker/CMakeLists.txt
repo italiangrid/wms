@@ -20,6 +20,7 @@ include_directories(${CLASSAD_INCLUDE_DIRS}
 		    ${PROJECT_SOURCE_DIR}/src
 		    ${PROJECT_SOURCE_DIR}/src/helper/broker
 		    ${WMS_COMMON_CONF_INCLUDE_DIRS}
+		    ${GLOBUS_GSSAPI_INCLUDE_DIRS}
 		    /usr/include)
 
 add_custom_target(BROKER

@@ -1,6 +1,6 @@
 
 add_subdirectory(ism)
-#add_subdirectory(helper)
+add_subdirectory(helper)
 
 
 include_directories(${CLASSAD_INCLUDE_DIRS}
