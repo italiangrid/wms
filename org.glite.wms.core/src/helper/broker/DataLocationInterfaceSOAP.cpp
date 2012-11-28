@@ -184,7 +184,11 @@ dli::DataLocationInterfaceSOAP::listReplicas(std::string inputDataType,
    }
 
    for (int i = 0; i < (theList.urlList)->__size; i++)  {
-      std::string *thisS = theList.urlList->__ptritem;
+#ifdef GSOAP_279_TRICK
+      std::string *thisS = *(theList.urlList->__ptritem);
+#else
+      std::string *thisS = (theList.urlList->__ptritem);
+#endif
       //std::string str( ((theList.urlList)->__ptritem)[i] );
       std::string str( *(thisS + i) );
       urlVector.push_back( str );

@@ -80,6 +80,21 @@ pkg_check_modules(PURGER REQUIRED wms-purger)
 pkg_check_modules(JOBID emi-jobid)
 pkg_check_modules(GLOBUS_GSSAPI globus-gssapi-gsi)
 
+if(EXISTS "/etc/debian_version")
+  set(ONDEB "1")
+endif(EXISTS "/etc/debian_version")
+
+
+
+if(EXISTS "/etc/redhat-release")
+  set(ONRH "1")
+endif(EXISTS "/etc/redhat-release")
+
+
+if(DEFINED ONDEB)
+  add_definitions( -DGSOAP_279_TRICK )
+endif(DEFINED ONDEB)
+
 if(DEFINED BUILD_DBG)
   
   add_definitions( -pipe -g -O0 -Wall ${CLASSAD_CFLAGS} -DLDAP_DEPRECATED)
