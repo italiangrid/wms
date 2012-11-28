@@ -14,6 +14,10 @@ include_directories(${CLASSAD_INCLUDE_DIRS}
 
 link_directories(${PREFIX}/${LIBDIR})
 
+add_executable(glite-wms-query-job-state-transitions
+  glite-wms-query-job-state-transitions.cpp
+)
+
 add_executable(glite-wms-workload_manager 
   main.cpp 
   ism_utils.cpp 
@@ -49,8 +53,29 @@ add_executable(glite-wms-workload_manager
   submission_utils.cpp 
   replanner.cpp)
 
-install(TARGETS glite-wms-workload_manager
-        DESTINATION ${PREFIX}/${BINDIR})
+install(TARGETS 
+  glite-wms-workload_manager
+  glite-wms-query-job-state-transitions
+  DESTINATION 
+  ${PREFIX}/${BINDIR}
+)
+
+target_link_libraries(glite-wms-query-job-state-transitions
+  ${BOOST_REGEX_LDFLAGS}
+  ${BOOST_FILESYSTEM_LDFLAGS}
+  ${BOOST_DATE_TIME_LDFLAGS}
+  ${BOOST_OPTIONS_LDFLAGS}
+  ${BOOST_THREAD_LDFLAGS}
+  ${CARES_LIBRARIES}
+  ${WMSUTILS_CLASSADS_LIBRARIES}
+  ${WMSUTILS_JOBMAN_EXCEPTION_LIBRARIES}
+  ${WMS_COMMON_CONF_LDFLAGS}
+  ${WMS_COMMON_CONF_LIBRARIES}
+  ${WMS_COMMON_UTIL_LIBRARIES}
+  ${LB_COMMON_LDFLAGS}
+  ${LB_CLIENT_LDFLAGS}
+  ${LB_CLIENTPP_LDFLAGS}
+)
 
 target_link_libraries(glite-wms-workload_manager
   glite_wms_ism
@@ -78,7 +103,13 @@ target_link_libraries(glite-wms-workload_manager
   )
 
 
-
+add_custom_target(SYMLINKS ALL DEPENDS
+  glite-wms-stats.py
+  COMMAND
+  cp -f glite-wms-stats.py ${PREFIX}/${BINDIR}/glite-wms-stats
+  COMMAND
+  chmod 755 ${PREFIX}/${BINDIR}/glite-wms-stats
+)
 
 #install(FILES 
 #  ${CMAKE_CURRENT_SOURCE_DIR}/manipulation.h

@@ -115,3 +115,4 @@ install(FILES
 #add_subdirectory(src)
 add_subdirectory(src)
 add_subdirectory(interface)
+add_subdirectory(doc)
