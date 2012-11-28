@@ -113,6 +113,5 @@ install(FILES
 
 
 #add_subdirectory(src)
-add_subdirectory(src/ism)
-add_subdirectory(src/helper)
+add_subdirectory(src)
 add_subdirectory(interface)
