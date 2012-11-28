@@ -60,29 +60,23 @@ if(-e "/etc/debian_version") {
 if($DEB==0 && $SL==0) {
   die "Detected a platform that is not Scientific Linux or Debian. Stop";
 }
-
 @components = (
-	       "glite-wms-configuration",
-	       "glite-wms-common",
-	       "glite-wms-purger",
-	       "glite-wms-jobsubmission",
-	       "glite-wms-core",
-	       "glite-wms-interface",
-	       "glite-wms-ice",
-	       "emi-wms-nagios",
-	       "emi-wms",
-	       "glite-wms-brokerinfo-access",
-	       "glite-wms-wmproxy-api-cpp",
-	       "glite-wms-wmproxy-api-java",
-	       "glite-wms-wmproxy-api-python",
-	       "glite-wms-ui-api-python",
-	       "glite-wms-ui-commands"
-	      );
-
-# print "-o = $opts{o} . \n" if defined $opts{o};
-# print "-D = $opts{D} . \n" if defined $opts{D};
-# print "-I = $opts{I} . \n" if defined $opts{I};
-# print "-f = $opts{f} . \n" if defined $opts{f};
+"org.glite.wms.configuration",
+"org.glite.wms.common",
+"org.glite.wms.purger",
+"org.glite.wms.core",
+"org.glite.wms.jobsubmission",
+"org.glite.wms.interface",
+"org.glite.wms.ice",
+"org.glite.wms.nagios",
+"org.glite.wms",
+"org.glite.wms.brokerinfo-access",
+"org.glite.wms.wmproxy-api-cpp",
+"org.glite.wms.wmproxy-api-java",
+"org.glite.wms.wmproxy-api-python",
+"org.glite.wms-ui.api-python",
+"org.glite.wms-ui.commands"
+);
 
 my $i = 0;
 
