@@ -264,7 +264,7 @@ RH_DEPS_LIST=( ant bouncycastle doxygen docbook-style-xsl libxslt-devel gcc gcc-
 INT_DEPS_LIST=( glite-jobid-api-c glite-jobid-api-c-devel glite-jobid-api-cpp-devel glite-px-proxyrenewal-devel voms-devel voms-clients argus-pep-api-c-devel lcmaps-without-gsi-devel lcmaps-devel classads-devel glite-build-common-cpp glite-wms-utils-exception glite-wms-utils-classad glite-wms-utils-exception-devel glite-wms-utils-classad-devel chrpath cppunit-devel glite-jdl-api-cpp-devel glite-lb-client-devel glite-lbjp-common-gsoap-plugin-devel condor-emi glite-ce-cream-client-api-c glite-ce-cream-client-devel emi-trustmanager emi-trustmanager-axis )
 DEB_DEPS_LIST=( )
 COMPONENT=( org.glite.wms.configuration org.glite.wms.common org.glite.wms.purger org.glite.wms.core org.glite.wms.jobsubmission org.glite.wms.interface org.glite.wms.ice org.glite.wms.nagios org.glite.wms org.glite.wms.brokerinfo-access org.glite.wms.wmproxy-api-cpp org.glite.wms.wmproxy-api-java org.glite.wms.wmproxy-api-python org.glite.wms-ui.api-python org.glite.wms-ui.commands )
-BUILD_TYPE=( cmake cmake cmake cmake cmake autotools autotools null metapackage cmake cmake ant python cmake cmake )
+BUILD_TYPE=( cmake cmake cmake cmake autotools autotools autotools null metapackage cmake cmake ant python cmake cmake )
 PACKAGE_NAME=( glite-wms-configuration glite-wms-common glite-wms-purger glite-wms-core glite-wms-jobsubmission glite-wms-interface glite-wms-ice emi-wms-nagios emi-wms glite-wms-brokerinfo-access glite-wms-wmproxy-api-cpp glite-wms-wmproxy-api-java glite-wms-wmproxy-api-python glite-wms-ui-api-python glite-wms-ui-commands )
 VERSION=( 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 )
 AGE=( 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 )
@@ -365,11 +365,6 @@ for i in `seq 0 $((START - 1))`; do
 #   export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$STAGE/$LOCAL_PKGCFG_LIB
    export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$STAGE/usr/lib/pkgconfig:$STAGE/usr/lib64/pkgconfig
 done
-
-echo "\n\n"
-echo "***********"
-echo $PKG_CONFIG_PATH
-echo "\n\n"
 
 if [ $START -gt ${#COMPONENT[@]} ]; then
    echo component indices out of range
