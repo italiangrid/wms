@@ -116,7 +116,7 @@ Development files for the WMS core module
 %dir /usr/include/glite/wms/helper/*.h
 %dir /usr/include/glite/wms/helper/jobadapter/*.h
 %{_libdir}/libglite_wms_*.so
-%{_libdir}/libglite_wms_*.la
+#%{_libdir}/libglite_wms_*.la
 
 %changelog
 * %{extcdate} WMS group <wms-support@lists.infn.it> - %{extversion}-%{extage}.%{extdist}
