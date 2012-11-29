@@ -65,7 +65,9 @@ cmake_build()
    AGE=$3
    PACKAGE_NAME=$4
    LOCAL_STAGE_DIR=$5
+   build_root=$6
 
+if [ $PACKAGER = "rpm" ]; then
    create_source_tarball ${PACKAGE_NAME} ${VERSION} ${AGE} ${PLATFORM}
 
    cmake -DPREFIX:string=$LOCAL_STAGE_DIR/usr -DPVER:string=$VERSION .
@@ -79,12 +81,16 @@ cmake_build()
       echo ERROR
       exit
    fi
-   if [ $PACKAGER = "rpm" ]; then
+#   if [ $PACKAGER = "rpm" ]; then
       rpm_package $VERSION $AGE $PLATFORM $PACKAGE_NAME $COMPONENT $LOCAL_STAGE_DIR
-   elif [ $PACKAGER = "deb" ]; then
-      deb_package $VERSION $AGE $PLATFORM $PACKAGE_NAME $COMPONENT $LOCAL_STAGE_DIR
-   fi
+#   elif [ $PACKAGER = "deb" ]; then
+#      deb_package $VERSION $AGE $PLATFORM $PACKAGE_NAME $COMPONENT $LOCAL_STAGE_DIR
+#   fi
    mv ./rpmbuild/SOURCES/${PACKAGE_NAME}-${VERSION}-${AGE}.${PLATFORM}.tar.gz "$BUILD_DIR"/org.glite.wms/tgz
+elif [ $PACKAGER = "deb" ]; then
+    # the build "IS" the packaging procedure. A self-contained script must be ran from the build_root path
+    deb_package $COMPONENT $VERSION $AGE $build_root
+fi
 }
 
 ant_build()
@@ -197,24 +203,14 @@ rpm_package()
 deb_package()
 {
 # This procedure needs to be rewritten
-
-   VERSION=$1
-#   AGE=$2
-#   PLATFORM=$3
-#   PACKAGE_NAME=$4
-#   COMPONENT=$5
-#   LOCAL_STAGE_DIR=$6
-
-   # TODO to be tested
-   # TODO generation of src-deb missing
-#   mkdir -p debian/nodev/ 2>/dev/null
-#   cp debian/deb-control-file.txt debian/build_nodev/debian/control
-#   cp debian/lib$PACKAGE_NAME.install debian/nodev/debian
-#   mkdir -p debian/build_dev/org.glite.wms.common/debian
-#   cp debian/deb-control-file-dev.txt debian/dev/debian/control
-#   cp debian/libglite-wms-common-dev.install debian/de/debian
-#   dpkg -b debian/nodev/ debian/nodev/$PACKAGE_NAME-$VERSION.deb
-#   dpkg -b debian/dev/ debian/dev/$PACKAGE_NAME-dev-$VERSION.deb
+  
+   COMP_TO_BUILD=$1
+   VERSION=$2
+   AGE=$3
+   ROOT=$4
+   cd $ROOT
+   org.glite.wms/$COMP_TO_BUILD/build_deb.sh -s
+   cd -
 }
 
 get_external_deps()
@@ -426,7 +422,7 @@ for i in `seq $START $END`; do
          autotools_build ${COMPONENT[$i]} ${VERSION[$i]} ${AGE[$i]} ${PACKAGE_NAME[$i]} $STAGE
          ;;
      "cmake" )
-         cmake_build ${COMPONENT[$i]} ${VERSION[$i]} ${AGE[$i]} ${PACKAGE_NAME[$i]} $STAGE
+         cmake_build ${COMPONENT[$i]} ${VERSION[$i]} ${AGE[$i]} ${PACKAGE_NAME[$i]} $STAGE $BUILD_DIR
          ;;
      "ant" )
          ant_build ${COMPONENT[$i]} ${VERSION[$i]} ${AGE[$i]} ${PACKAGE_NAME[$i]} $STAGE
