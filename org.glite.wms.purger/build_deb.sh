@@ -121,7 +121,10 @@ binary-arch: build install
 	dh_fixperms
 	dh_installdeb
 	dh_makeshlibs
-	dh_shlibdeps
+
+        # temporary disable untill proxyrenewal will be disable
+        # otherwise this command will fail on the self built proxyrenewal library (built by us by hand)
+	#dh_shlibdeps
 	dh_gencontrol
 	dh_md5sums
 	dh_builddeb --destdir=${PWD}/BINARIES

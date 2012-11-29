@@ -22,6 +22,7 @@ add_library(glite_wms_purger
 set_target_properties(glite_wms_purger PROPERTIES VERSION 0.0.0 SOVERSION 0)
 
 add_executable(glite-wms-purgeStorage glite-wms-purgeStorage.cpp)
+
 target_link_libraries(glite-wms-purgeStorage
   glite_wms_purger
   ${WMSUTILS_JOBMAN_EXCEPTION_LDFLAGS}
