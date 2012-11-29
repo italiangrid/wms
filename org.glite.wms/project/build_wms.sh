@@ -283,17 +283,17 @@ RH_DEPS_LIST=( ant bouncycastle doxygen docbook-style-xsl libxslt-devel gcc gcc-
 
 INT_DEPS_LIST=( glite-jobid-api-c glite-jobid-api-c-devel glite-jobid-api-cpp-devel glite-px-proxyrenewal-devel voms-devel voms-clients argus-pep-api-c-devel lcmaps-without-gsi-devel lcmaps-devel classads-devel glite-build-common-cpp glite-wms-utils-exception glite-wms-utils-classad glite-wms-utils-exception-devel glite-wms-utils-classad-devel chrpath cppunit-devel glite-jdl-api-cpp-devel glite-lb-client-devel glite-lbjp-common-gsoap-plugin-devel condor-emi glite-ce-cream-client-api-c glite-ce-cream-client-devel emi-trustmanager emi-trustmanager-axis )
 
-DEB_DEPS_LIST=( libglite-jobid-api-c-dev libglite-jobid-api-cpp-dev libglite-jobid2 libclassad0-dev liblog4cpp5-dev libglobus-io-dev libglobus-gss-assist-dev libglobus-ftp-client-dev libglobus-common-dev libboost-regex-dev libboost-filesystem-dev libboost-date-time-dev libldap2-dev gsoap libgridsite-dev swig libgridsite1.7 libxml2-dev doxygen debhelper pkg-config cmake autoconf expat libexpat1-dev libglite-lb-client-dev python-dev docbook docbook-xsl libxslt1-dev globus-gass-copy-progs xsltproc valgrind voms-dev voms-clients build-essential autoconf automake autotools-dev dh-make debhelper devscripts fakeroot xutils lintian pbuilder cmake dpkg-dev pkg-config ant )
+DEB_DEPS_LIST=( libglite-jobid-api-c-dev libglite-jobid-api-cpp-dev libglite-jobid2 libclassad0-dev liblog4cpp5-dev libglobus-io-dev libglobus-gss-assist-dev libglobus-ftp-client-dev libglobus-common-dev libboost-regex-dev libboost-filesystem-dev libboost-date-time-dev libldap2-dev gsoap libgridsite-dev swig libgridsite1.7 libxml2-dev doxygen debhelper pkg-config cmake autoconf expat libexpat1-dev libglite-lb-client-dev python-dev docbook docbook-xsl libxslt1-dev globus-gass-copy-progs xsltproc valgrind voms-dev voms-clients build-essential autoconf automake autotools-dev dh-make debhelper devscripts fakeroot xutils lintian pbuilder cmake dpkg-dev pkg-config )
 
-COMPONENT=( org.glite.wms.configuration org.glite.wms.common org.glite.wms.purger org.glite.wms.core org.glite.wms.jobsubmission org.glite.wms.interface org.glite.wms.ice org.glite.wms.nagios org.glite.wms org.glite.wms.brokerinfo-access org.glite.wms.wmproxy-api-cpp org.glite.wms.wmproxy-api-java org.glite.wms.wmproxy-api-python org.glite.wms-ui.api-python org.glite.wms-ui.commands )
+COMPONENT=( org.glite.wms.configuration org.glite.wms.common org.glite.wms.purger org.glite.wms.core org.glite.wms.jobsubmission org.glite.wms.interface org.glite.wms.ice org.glite.wms.nagios org.glite.wms org.glite.wms.brokerinfo-access org.glite.wms.wmproxy-api-cpp org.glite.wms.wmproxy-api-python org.glite.wms-ui.api-python org.glite.wms-ui.commands )
 
-BUILD_TYPE=( cmake cmake cmake cmake autotools autotools autotools null metapackage cmake cmake ant python cmake cmake )
+BUILD_TYPE=( cmake cmake cmake cmake autotools autotools autotools null metapackage cmake cmake python cmake cmake )
 
-PACKAGE_NAME=( glite-wms-configuration glite-wms-common glite-wms-purger glite-wms-core glite-wms-jobsubmission glite-wms-interface glite-wms-ice emi-wms-nagios emi-wms glite-wms-brokerinfo-access glite-wms-wmproxy-api-cpp glite-wms-wmproxy-api-java glite-wms-wmproxy-api-python glite-wms-ui-api-python glite-wms-ui-commands )
+PACKAGE_NAME=( glite-wms-configuration glite-wms-common glite-wms-purger glite-wms-core glite-wms-jobsubmission glite-wms-interface glite-wms-ice emi-wms-nagios emi-wms glite-wms-brokerinfo-access glite-wms-wmproxy-api-cpp glite-wms-wmproxy-api-python glite-wms-ui-api-python glite-wms-ui-commands )
 
-VERSION=( 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 )
+VERSION=( 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 )
 
-AGE=( 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 )
+AGE=( 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 )
 
 START=$9
 

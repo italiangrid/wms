@@ -10,7 +10,7 @@ getopts('ht:d:r:p:DCcM', \%opts);
 
 my $opt = "";
 my $F = "0";
-my $L = "14";
+my $L = "13";
 my @components = ();
 my $command = "";
 my $me = "";
@@ -72,7 +72,6 @@ if($DEB==0 && $SL==0) {
 "org.glite.wms",
 "org.glite.wms.brokerinfo-access",
 "org.glite.wms.wmproxy-api-cpp",
-"org.glite.wms.wmproxy-api-java",
 "org.glite.wms.wmproxy-api-python",
 "org.glite.wms-ui.api-python",
 "org.glite.wms-ui.commands"
