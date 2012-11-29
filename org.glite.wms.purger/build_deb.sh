@@ -2,9 +2,9 @@
 
 PKGVERSION=3.5.0
 PKGAGE=1
-PKGNAME=libglite-wms-configuration
+PKGNAME=libglite-wms-purger
 
-PRJNAME=org.glite.wms.configuration
+PRJNAME=org.glite.wms.purger
 
 set -e
 
@@ -32,7 +32,7 @@ Homepage: http://glite.cern.ch/
 Package:  ${PKGNAME}
 Architecture: any
 Depends: \${shlibs:Depends}, \${misc:Depends}
-Description:  WMS Configuration scripts and yaim config files
+Description:  WMS purger
 
 EOF
 
@@ -64,12 +64,12 @@ EOF
 #
 ###########################################################################
 cat << EOF > org.glite.wms/${PRJNAME}/debian/${PKGNAME}.install
-opt/glite/yaim/functions/config_*
-opt/glite/yaim/node-info.d/glite-*
-opt/glite/yaim/defaults/glite-*
-opt/glite/yaim/services/glite-wms
-opt/glite/share/man/man1/glite-WMS.1.gz
-usr/libexec/*	
+usr/share/doc/glite-wms-purger-3.5.0/LICENSE
+usr/lib/libglite_wms_purger*
+usr/sbin/glite-wms-purgeStorage
+usr/lib/pkgconfig/wms-purger.pc
+usr/sbin/glite-wms-purgeStorage.sh
+usr/sbin/glite-wms-create-proxy.sh
 EOF
 
 ###########################################################################
