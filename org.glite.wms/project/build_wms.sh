@@ -233,7 +233,26 @@ get_external_deps()
       sudo yum -y install ${RH_DEPS_LIST[@]}
    elif [ $PACKAGER = "deb" ]; then
       # TODO: get extra O.S. and EMI repositories
-      sudo apt-get -y install ${DEB_DEPS_LIST[@]}
+       set +e
+       curl http://emisoft.web.cern.ch/emisoft/dist/EMI/2/debian/dists/squeeze/main/binary-amd64/emi-release_2.0.0-1.deb6.1_all.deb -o /tmp/emi-release_2.0.0-1.deb6.1_all.deb
+       sudo dpkg -i /tmp/emi-release_2.0.0-1.deb6.1_all.deb
+       sudo curl http://eticssoft.web.cern.ch/eticssoft/pbuilder/emi-2-deb6-test-x86_64.list -o /etc/apt/sources.list.d/emi-2-deb6-test-x86_64.list
+       sudo apt-get update
+       curl http://devel12.cnaf.infn.it:7444/pub/emi/debian/deb6/emi-pkgconfig-compat_1.0.1-1_all.deb -o /tmp/emi-pkgconfig-compat_1.0.1-1_all.deb
+       sudo dpkg -i /tmp/emi-pkgconfig-compat_1.0.1-1_all.deb
+       sudo wget -q -O - https://dist.eugridpma.info/distribution/igtf/current/GPG-KEY-EUGridPMA-RPM-3  | apt-key add -
+       sudo apt-get -y --force-yes install ${DEB_DEPS_LIST[@]}
+
+       curl -o deb-jdl-api-cpp-head http://devel12.cnaf.infn.it:7444/pub/emi/packaging/deb/jdl-api-cpp/deb-jdl-api-cpp-head
+       curl -o deb-jobman-exception-head http://devel12.cnaf.infn.it:7444/pub/emi/packaging/deb/jobman-exception/deb-jobman-exception-head
+       curl -o deb-classad-utils-head http://devel12.cnaf.infn.it:7444/pub/emi/packaging/deb/classad-utils/deb-classad-utils-head
+       chmod +x deb-jdl-api-cpp-head deb-jobman-exception-head deb-classad-utils-head
+       ./deb-jobman-exception-head
+       sudo dpkg -i BINARIES/libglite-wms-utils-exception*
+       ./deb-classad-utils-head
+       sudo dpkg -i BINARIES/libglite-wms-utils-classad*
+       ./deb-jdl-api-cpp-head 
+       sudo dpkg -i BINARIES/libglite-jdl*
    fi
    sudo yum -y install ${INT_DEPS_LIST[@]}
 }
@@ -261,14 +280,23 @@ ARCH=`uname -m`
 #CORES=`cat /proc/cpuinfo|grep processor|wc -l`
 
 RH_DEPS_LIST=( ant bouncycastle doxygen docbook-style-xsl libxslt-devel gcc gcc-c++ python-devel SOAPpy PyXML python-fpconst libtool automake swig yum-priorities pkgconfig mock rpm-build rpmlint git mod_fcgid fcgi-devel mod_ssl axis2 gridsite-devel httpd-devel zlib-devel boost-devel c-ares-devel gsoap-devel libtar-devel cmake openldap-devel python-ldap globus-ftp-client globus-ftp-client-devel log4cpp-devel log4cpp globus-gram-protocol-devel myproxy-devel expat expat-devel fcgi-devel fcgi libtar libtar-devel httpd-devel myproxy-devel cmake ant axis2 bouncycastle.noarch python-fpconst PyXML SOAPpy )
+
 INT_DEPS_LIST=( glite-jobid-api-c glite-jobid-api-c-devel glite-jobid-api-cpp-devel glite-px-proxyrenewal-devel voms-devel voms-clients argus-pep-api-c-devel lcmaps-without-gsi-devel lcmaps-devel classads-devel glite-build-common-cpp glite-wms-utils-exception glite-wms-utils-classad glite-wms-utils-exception-devel glite-wms-utils-classad-devel chrpath cppunit-devel glite-jdl-api-cpp-devel glite-lb-client-devel glite-lbjp-common-gsoap-plugin-devel condor-emi glite-ce-cream-client-api-c glite-ce-cream-client-devel emi-trustmanager emi-trustmanager-axis )
-DEB_DEPS_LIST=( )
+
+DEB_DEPS_LIST=( libglite-jobid-api-c-dev libglite-jobid-api-cpp-dev libglite-jobid2 libclassad0-dev liblog4cpp5-dev libglobus-io-dev libglobus-gss-assist-dev libglobus-ftp-client-dev libglobus-common-dev libboost-regex-dev libboost-filesystem-dev libboost-date-time-dev libldap2-dev gsoap libgridsite-dev swig libgridsite1.7 libxml2-dev doxygen debhelper pkg-config cmake autoconf expat libexpat1-dev libglite-lb-client-dev python-dev docbook docbook-xsl libxslt1-dev globus-gass-copy-progs xsltproc valgrind voms-dev voms-clients build-essential autoconf automake autotools-dev dh-make debhelper devscripts fakeroot xutils lintian pbuilder cmake dpkg-dev pkg-config )
+
 COMPONENT=( org.glite.wms.configuration org.glite.wms.common org.glite.wms.purger org.glite.wms.core org.glite.wms.jobsubmission org.glite.wms.interface org.glite.wms.ice org.glite.wms.nagios org.glite.wms org.glite.wms.brokerinfo-access org.glite.wms.wmproxy-api-cpp org.glite.wms.wmproxy-api-java org.glite.wms.wmproxy-api-python org.glite.wms-ui.api-python org.glite.wms-ui.commands )
+
 BUILD_TYPE=( cmake cmake cmake cmake autotools autotools autotools null metapackage cmake cmake ant python cmake cmake )
+
 PACKAGE_NAME=( glite-wms-configuration glite-wms-common glite-wms-purger glite-wms-core glite-wms-jobsubmission glite-wms-interface glite-wms-ice emi-wms-nagios emi-wms glite-wms-brokerinfo-access glite-wms-wmproxy-api-cpp glite-wms-wmproxy-api-java glite-wms-wmproxy-api-python glite-wms-ui-api-python glite-wms-ui-commands )
+
 VERSION=( 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 )
+
 AGE=( 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 )
+
 START=$9
+
 END=${10}
 
 # mock build
@@ -350,6 +378,7 @@ mkdir tgz RPMS SRPMS 2>/dev/null
 echo -e "\n*** starting build ***\n"
 
 export PKG_CONFIG_PATH=$BUILD_DIR/org.glite.wms/org.glite.wms.jobsubmission/project/ # for emi-condorg.pc
+
 #if [ -d /usr/lib64 ]; then
 #   LOCAL_PKGCFG_LIB=usr/lib64/pkgconfig/
 #else
