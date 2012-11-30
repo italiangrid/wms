@@ -76,15 +76,48 @@ pkg_check_modules(BOOST_THREAD REQUIRED emi-boost-thread)
 pkg_check_modules(WMSUTILS_JOBMAN_EXCEPTION REQUIRED jobman-exception)
 pkg_check_modules(RENEWAL REQUIRED emi-proxyrenew)
 pkg_check_modules(LOG4CPP REQUIRED log4cpp)
+
+if(EXISTS "/etc/debian_version")
+  set(ONDEB "1")
+endif(EXISTS "/etc/debian_version")
+
+
+
+if(EXISTS "/etc/redhat-release")
+  set(ONRH "1")
+endif(EXISTS "/etc/redhat-release")
+
+
+
+if(DEFINED ONDEB)
+EXEC_PROGRAM(cat
+  ARGS /etc/debian_version | /usr/bin/awk -F"." '{print $1}'
+  OUTPUT_VARIABLE DEB_VER)
+endif(DEFINED ONDEB)
+
+
+
+if(DEFINED ONRH)
+EXEC_PROGRAM(cat
+  ARGS  /etc/redhat-release | /usr/bin/awk '{print $(NF-1)}' | /usr/bin/awk -F"." '{print $1}'
+  OUTPUT_VARIABLE RH_VER)
+endif(DEFINED ONRH)
+
+# this is an hack: emi-boost-thread provides ldflag -lboost_thread; SL5 has libboost_thread.so, but SL6 has libboost_thread-mt (v. 1.41 instead of 1.33)
+set(BOOST_THREAD_HACK_LDFLAGS "-lboost_thread-mt")
+if("${RH_VER}" STREQUAL "5") 
+	set(BOOST_THREAD_HACK_LDFLAGS "-lboost_thread")
+endif("${RH_VER}" STREQUAL "5") 
+
 if(DEFINED BUILD_DBG)
-  
+
   add_definitions( -pipe -g -O0 -Wall ${CLASSAD_CFLAGS})
-  
-  
+
+
 else(DEFINED BUILD_DBG)
-  
+
   add_definitions( -pipe -O2 -Wall ${CLASSAD_CFLAGS})
-  
+
 endif(DEFINED BUILD_DBG)
 
 install(FILES

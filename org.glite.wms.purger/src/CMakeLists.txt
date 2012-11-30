@@ -43,8 +43,8 @@ target_link_libraries(glite-wms-purgeStorage
   ${BOOST_FILESYSTEM_LDFLAGS}
   ${BOOST_REGEX_LDFLAGS}
   ${BOOST_OPTIONS_LDFLAGS}
+  ${BOOST_THREAD_HACK_LDFLAGS}
   ${LOG4CPP_LDFLAGS}
-  ${BOOST_THREAD_LDFLAGS}
 )
 
 install(TARGETS 
