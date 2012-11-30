@@ -405,6 +405,7 @@ for i in `seq $START $END`; do
    ant clean 2>/dev/null
    python setup.py clean --all 2>/dev/null
    rm -rf rpmbuild RPMS stage 2>/dev/null
+   find -iname '*cmake*' -not -name CMakeLists.txt -exec rm -rf {} \+
 
    # hack required to integrate not os provided gsoap
    if [ ${COMPONENT[$i]} = "org.glite.wms.interface" ]; then
