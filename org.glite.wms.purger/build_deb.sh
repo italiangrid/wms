@@ -1,5 +1,7 @@
 #!/bin/bash
 
+INITIALPWD=${PWD}
+
 PKGVERSION=3.5.0
 PKGAGE=1
 PKGNAME=libglite-wms-purger
@@ -98,14 +100,18 @@ clean:
 	rm -rf configure-stamp
 	rm -rf \$(INSTALLDIR)
 	dh_clean
-	
+	find -iname '*cmake*' -not -name CMakeLists.txt -exec rm -rf {} \+
+
 install: build
 	dh_testdir
 	dh_testroot
 	dh_prep
 	dh_installdirs
 	make install
-	
+	cmake -DPREFIX:string=${INITIALPWD}/STAGE/usr -DPVER:string=${PKGVERSION} \$(CURDIR)
+	make install
+
+
 binary-indep: build install
 
 binary-arch: build install

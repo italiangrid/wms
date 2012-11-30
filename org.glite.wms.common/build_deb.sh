@@ -123,6 +123,8 @@ install: build
 	dh_prep
 	dh_installdirs
 	make install
+	cmake -DPREFIX:string=${INITIALPWD}/STAGE/usr -DPVER:string=${PKGVERSION} \$(CURDIR)
+        make install
 	sed 's|^prefix=.*|prefix=/usr|g' \$(INSTALLDIR)/usr/lib/pkgconfig/wms-common-util.pc > \$(INSTALLDIR)/usr/lib/pkgconfig/wms-common-util.pc.new
 	mv \$(INSTALLDIR)/usr/lib/pkgconfig/wms-common-util.pc.new \$(INSTALLDIR)/usr/lib/pkgconfig/wms-common-util.pc
 	sed 's|^prefix=.*|prefix=/usr|g' \$(INSTALLDIR)/usr/lib/pkgconfig/wms-common-quota.pc > \$(INSTALLDIR)/usr/lib/pkgconfig/wms-common-quota.pc.new
@@ -195,7 +197,3 @@ cd org.glite.wms/${PRJNAME}
 fakeroot make -f debian/rules binary
 rm -rf build debian build-stamp
 cd -
-
-#sudo dpkg -i BINARIES/libglite-wms-common-dev_3.5.0-1_amd64.deb BINARIES/libglite-wms-common_3.5.0-1_amd64.deb
-
-

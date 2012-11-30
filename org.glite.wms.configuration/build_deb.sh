@@ -1,5 +1,6 @@
 #!/bin/bash
 
+INITIALPWD=${PWD}
 PKGVERSION=3.5.0
 PKGAGE=1
 PKGNAME=libglite-wms-configuration
@@ -105,7 +106,9 @@ install: build
 	dh_prep
 	dh_installdirs
 	make install
-	
+	cmake -DPREFIX:string=${INITIALPWD}/STAGE/usr -DPVER:string=${PKGVERSION} \$(CURDIR)
+	make install
+
 binary-indep: build install
 
 binary-arch: build install
