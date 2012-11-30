@@ -8,12 +8,12 @@ URL: http://glite.cern.ch/
 Group: System Environment/Libraries
 BuildArch: %{_arch}
 BuildRequires: %{!?extbuilddir: glite-jobid-api-c-devel,} chrpath
-BuildRequires: %{!?extbuilddir: glite-jobid-api-cpp-devel,} libtool, gcc, gcc-c++
+BuildRequires: %{!?extbuilddir: glite-jobid-api-cpp-devel,} libtool, gcc, gcc-c++, cmake
 BuildRequires: %{!?extbuilddir: glite-wms-utils-exception-devel,} boost-devel
 BuildRequires: %{!?extbuilddir: glite-wms-utils-classad-devel,} classads-devel
 BuildRequires: globus-common-devel, globus-ftp-client-devel
 BuildRequires: globus-gss-assist-devel, globus-io-devel
-BuildRequires: %{!?extbuilddir: glite-build-common-cpp, } cppunit-devel, openldap-devel
+BuildRequires: %{!?extbuilddir: glite-build-common-cpp, } cppunit-devel, openldap-devel, log4cpp, log4cpp-devel
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 AutoReqProv: yes
 Source: %{name}-%{version}-%{release}.tar.gz
@@ -31,14 +31,15 @@ Common libraries for the Workload Management System
 %build
 %{!?extbuilddir:%define extbuilddir "--"}
 if test "x%{extbuilddir}" == "x--" ; then
-  ./configure --srcdir=$PWD --prefix=%{buildroot}/usr --disable-static PVER=%{version}
-  chmod u+x $PWD/src/scripts/generator.pl
-  for hfile in `ls $PWD/src/configuration/*.h.G`; do
-    $PWD/src/scripts/generator.pl $PWD/src/configuration/Configuration.def -H $hfile
-  done
-  for cfile in `ls $PWD/src/configuration/*.cpp.G`; do
-    $PWD/src/scripts/generator.pl $PWD/src/configuration/Configuration.def -c $cfile
-  done
+  #./configure --srcdir=$PWD --prefix=%{buildroot}/usr --disable-static PVER=%{version}
+  #chmod u+x $PWD/src/scripts/generator.pl
+  #for hfile in `ls $PWD/src/configuration/*.h.G`; do
+  #  $PWD/src/scripts/generator.pl $PWD/src/configuration/Configuration.def -H $hfile
+  #done
+  #for cfile in `ls $PWD/src/configuration/*.cpp.G`; do
+  #  $PWD/src/scripts/generator.pl $PWD/src/configuration/Configuration.def -c $cfile
+  #done
+  cmake -DPREFIX:string=%{buildroot}/usr -DPVER:string=%{version} .
   make
 fi
 
