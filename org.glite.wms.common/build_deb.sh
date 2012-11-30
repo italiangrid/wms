@@ -196,6 +196,6 @@ fakeroot make -f debian/rules binary
 rm -rf build debian build-stamp
 cd -
 
-sudo dpkg -i BINARIES/libglite-wms-common-dev_3.5.0-1_amd64.deb BINARIES/libglite-wms-common_3.5.0-1_amd64.deb
+#sudo dpkg -i BINARIES/libglite-wms-common-dev_3.5.0-1_amd64.deb BINARIES/libglite-wms-common_3.5.0-1_amd64.deb
 
 
