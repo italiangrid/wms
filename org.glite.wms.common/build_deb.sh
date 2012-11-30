@@ -1,5 +1,7 @@
 #!/bin/bash
 
+INITIALPWD=${PWD}
+
 PKGVERSION=3.5.0
 PKGAGE=1
 PKGNAME=libglite-wms-common
@@ -116,7 +118,8 @@ clean:
 	rm -rf configure-stamp
 	rm -rf \$(INSTALLDIR)
 	dh_clean
-	
+	find -iname '*cmake*' -not -name CMakeLists.txt -exec rm -rf {} \+
+
 install: build
 	dh_testdir
 	dh_testroot
@@ -124,7 +127,7 @@ install: build
 	dh_installdirs
 	make install
 	cmake -DPREFIX:string=${INITIALPWD}/STAGE/usr -DPVER:string=${PKGVERSION} \$(CURDIR)
-        make install
+	make install
 	sed 's|^prefix=.*|prefix=/usr|g' \$(INSTALLDIR)/usr/lib/pkgconfig/wms-common-util.pc > \$(INSTALLDIR)/usr/lib/pkgconfig/wms-common-util.pc.new
 	mv \$(INSTALLDIR)/usr/lib/pkgconfig/wms-common-util.pc.new \$(INSTALLDIR)/usr/lib/pkgconfig/wms-common-util.pc
 	sed 's|^prefix=.*|prefix=/usr|g' \$(INSTALLDIR)/usr/lib/pkgconfig/wms-common-quota.pc > \$(INSTALLDIR)/usr/lib/pkgconfig/wms-common-quota.pc.new
