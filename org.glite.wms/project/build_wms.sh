@@ -447,7 +447,11 @@ for i in `seq $START $END`; do
 
    # the rpm cannot be created from a common stage dir, so why
    # should we have one at all? each 'tmp' dir can be a stage
-   export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$STAGE/usr/lib/pkgconfig:$STAGE/usr/lib64/pkgconfig
+   if [ $PACKAGER = "rpm" ]; then
+       export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$STAGE/usr/lib64/pkgconfig
+   elif [ $PACKAGER = "deb" ]; then
+       export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$BUILD_DIR/STAGE/usr/lib/pkgconfig
+   fi
 done
 
 echo -e "\n*** native build completed ***\n"
