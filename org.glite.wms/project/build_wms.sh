@@ -373,7 +373,8 @@ mkdir tgz RPMS SRPMS 2>/dev/null
 
 echo -e "\n*** starting build ***\n"
 
-export PKG_CONFIG_PATH=$BUILD_DIR/org.glite.wms/org.glite.wms.jobsubmission/project/ # for emi-condorg.pc
+# the first one piece is an hack for debian 
+export PKG_CONFIG_PATH=$BUILD_DIR/STAGE/usr/lib/pkgconfig:$BUILD_DIR/org.glite.wms/org.glite.wms.jobsubmission/project/ # for emi-condorg.pc
 
 #if [ -d /usr/lib64 ]; then
 #   LOCAL_PKGCFG_LIB=usr/lib64/pkgconfig/
