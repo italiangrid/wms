@@ -1,5 +1,6 @@
 #!/bin/bash
 
+INITIALPWD=${PWD}
 PKGVERSION=3.5.0
 PKGAGE=1
 PKGNAME=libglite-wms-core
