@@ -31,15 +31,15 @@ Common libraries for the Workload Management System
 %build
 %{!?extbuilddir:%define extbuilddir "--"}
 if test "x%{extbuilddir}" == "x--" ; then
-  #./configure --srcdir=$PWD --prefix=%{buildroot}/usr --disable-static PVER=%{version}
-  #chmod u+x $PWD/src/scripts/generator.pl
-  #for hfile in `ls $PWD/src/configuration/*.h.G`; do
-  #  $PWD/src/scripts/generator.pl $PWD/src/configuration/Configuration.def -H $hfile
-  #done
-  #for cfile in `ls $PWD/src/configuration/*.cpp.G`; do
-  #  $PWD/src/scripts/generator.pl $PWD/src/configuration/Configuration.def -c $cfile
-  #done
-  cmake -DPREFIX:string=%{buildroot}/usr -DPVER:string=%{version} .
+  ./configure --srcdir=$PWD --prefix=%{buildroot}/usr --disable-static PVER=%{version}
+  chmod u+x $PWD/src/scripts/generator.pl
+  for hfile in `ls $PWD/src/configuration/*.h.G`; do
+    $PWD/src/scripts/generator.pl $PWD/src/configuration/Configuration.def -H $hfile
+  done
+  for cfile in `ls $PWD/src/configuration/*.cpp.G`; do
+    $PWD/src/scripts/generator.pl $PWD/src/configuration/Configuration.def -c $cfile
+  done
+  #cmake -DPREFIX:string=%{buildroot}/usr -DPVER:string=%{version} .
   make
 fi
 
