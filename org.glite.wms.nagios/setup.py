@@ -2,7 +2,7 @@
 
 from distutils.core import setup
 
-comp_version = '1.0.0'
+comp_version = '3.5.0'
 
 setup(
       name="emi-wms-nagios",

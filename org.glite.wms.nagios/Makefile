@@ -10,7 +10,7 @@ SITE=emi.wms
 PKG1=wmsmetrics
 
 SRPM=$(PKGNAME)-$(PKGVERS).src.tgz
-SPECFILE=emi-wms-nagios.spec
+SPECFILE=project/emi-wms-nagios.spec
 PROBES=src/WMS-probe src/WMS-jdl.template
 FILES=CHANGES setup.py README
 MODS1=src/$(PKG1)/__init__.py \

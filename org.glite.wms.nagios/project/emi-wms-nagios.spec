@@ -1,19 +1,16 @@
-%define lpylib wmsmetrics
 %define dir %{_libexecdir}/grid-monitoring/probes/emi.wms
-
 %global debug_package %{nil}
-
 %{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
+%define lpylib wmsmetrics
 %define pylib %{python_sitelib}/%{lpylib}
 
 Summary: Nagios probe for the EMI WMS service
 Name: emi-wms-nagios
-Version: 1.0.0
-Release: 1%{?dist}
-
+Version: %{extversion}
+Release: %{extage}.%{extdist}
 License: ASL 2.0
 Group: Monitoring
-Source: %{name}-%{version}.src.tgz
+Source: %{name}-%{version}-%{release}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 Requires: python >= 2.4
 Requires: python-GridMon >= 1.1.10
@@ -23,7 +20,7 @@ Requires: nagios-submit-conf >= 0.2
 #Requires: grid-monitoring-probes-hr.srce >= 0.20.1
 Requires: openssl >= 0.9.8e-12
 AutoReqProv: no
-BuildArch: noarch
+BuildArch: %{_arch}
 BuildRequires: python >= 2.4
 
 %description
@@ -31,13 +28,21 @@ This package contains nagios probe for EMI WMS service.
 It use a python-based gridmetrics.
 
 %prep
-%setup -q
+#%setup -q
 
 %build
 
 %install
 export DONT_STRIP=1
 %{__rm} -rf %{buildroot}
+mkdir -p %{buildroot}/usr/libexec/grid-monitoring/probes/emi.wms
+cp -rpf src/WMS-probe %{buildroot}/usr/libexec/grid-monitoring/probes/emi.wms
+cp -rpf src/WMS-jdl.template %{buildroot}/usr/libexec/grid-monitoring/probes/emi.wms
+mkdir -p $(distdir)/wmsmetrics
+cp -f $(MODS1) $(distdir)/wmsmetrics
+cp -f $(FILES) $(distdir)
+find $(distdir) -path '.*swp' -prune -exec rm -rf {} \;
+find $(distdir) -path 'CVS' -prune -exec rm -rf {} \;
 install --directory %{buildroot}%{dir}
 install --mode 755 .%dir/WMS-probe  %{buildroot}%{dir}
 install --mode 755 .%dir/WMS-jdl.template  %{buildroot}%{dir}

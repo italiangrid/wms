@@ -283,7 +283,7 @@ DEB_DEPS_LIST=( libglite-jobid-api-c-dev libglite-jobid-api-cpp-dev libglite-job
 
 COMPONENT=( org.glite.wms.configuration org.glite.wms.common org.glite.wms.purger org.glite.wms.core org.glite.wms.jobsubmission org.glite.wms.interface org.glite.wms.ice org.glite.wms.nagios org.glite.wms org.glite.wms.brokerinfo-access org.glite.wms.wmproxy-api-cpp org.glite.wms.wmproxy-api-python org.glite.wms-ui.api-python org.glite.wms-ui.commands )
 
-BUILD_TYPE=( autotools autotools autotools autotools autotools autotools autotools null metapackage cmake cmake python cmake cmake )
+BUILD_TYPE=( autotools autotools autotools autotools autotools autotools autotools python metapackage cmake cmake python cmake cmake )
 
 PACKAGE_NAME=( glite-wms-configuration glite-wms-common glite-wms-purger glite-wms-core glite-wms-jobsubmission glite-wms-interface glite-wms-ice emi-wms-nagios emi-wms glite-wms-brokerinfo-access glite-wms-wmproxy-api-cpp glite-wms-wmproxy-api-python glite-wms-ui-api-python glite-wms-ui-commands )
 
@@ -402,8 +402,8 @@ for i in `seq $START $END`; do
    echo -e "\n*** cleaning up ${COMPONENT[$i]} ***\n"
    cd "$BUILD_DIR/org.glite.wms/${COMPONENT[$i]}"
    make -C build clean 2>/dev/null
-   ant clean 2>/dev/null
-   python setup.py clean --all 2>/dev/null
+   ant clean 2>&1 /dev/null
+   python setup.py clean --all 2>&1 /dev/null
    rm -rf rpmbuild RPMS stage 2>/dev/null
    find -iname '*cmake*' -not -name CMakeLists.txt -exec rm -rf {} \+
 
