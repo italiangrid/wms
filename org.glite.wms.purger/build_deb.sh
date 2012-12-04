@@ -27,14 +27,22 @@ Source:  ${PKGNAME}
 Section:  libs
 Priority:  optional
 Maintainer:  WMS Support <wms-support@cnaf.infn.it>
-Build-Depends: debhelper (>= 8.0.0~), cmake
+Build-Depends: debhelper (>= 8.0.0~), cmake, libglite-wms-common, libglite-wms-common-dev, emi-pkgconfig-compat,
+ libglite-wms-utils-classad-dev , libglite-wms-utils-exception-dev, libclassad0-dev, libboost-system1.42-dev, libboost1.42-dev, libglite-lb-client-dev, libglite-lb-client11, libglite-lb-common-dev, libglite-lb-common13,libglobus-gss-assist-dev,libglobus-gss-assist3,libglobus-common-dev,libglobus-common0,libglobus-openssl-dev,libglobus-openssl,libglite-jobid-api-cpp-dev,libglite-jobid2,libc-ares-dev, libc-ares2,liblog4cpp5-dev,liblog4cpp5
 Standards-Version:  3.5.0
 Homepage: http://glite.cern.ch/
 
 Package:  ${PKGNAME}
 Architecture: any
-Depends: \${shlibs:Depends}, \${misc:Depends}
+Depends: debhelper (>= 8.0.0~), cmake, libglite-wms-common, libglite-wms-common-dev, emi-pkgconfig-compat,
+ libglite-wms-utils-classad-dev , libglite-wms-utils-exception-dev, libclassad0-dev, libboost-system1.42-dev, libboost1.42-dev, libglite-lb-client-dev, libglite-lb-client11, libglite-lb-common-dev, libglite-lb-common13,libglobus-gss-assist-dev,libglobus-gss-assist3,libglobus-common-dev,libglobus-common0,libglobus-openssl-dev,libglobus-openssl,libglite-jobid-api-cpp-dev,libglite-jobid2,libc-ares-dev, libc-ares2,liblog4cpp5-dev,liblog4cpp5,\${shlibs:Depends}, \${misc:Depends}
 Description:  WMS purger
+
+Package:  ${PKGNAME}-dev
+Architecture: any
+Depends: debhelper (>= 8.0.0~), cmake, libglite-wms-common, libglite-wms-common-dev, emi-pkgconfig-compat,
+ libglite-wms-utils-classad-dev , libglite-wms-utils-exception-dev, libclassad0-dev, libboost-system1.42-dev, libboost1.42-dev, libglite-lb-client-dev, libglite-lb-client11, libglite-lb-common-dev, libglite-lb-common13,libglobus-gss-assist-dev,libglobus-gss-assist3,libglobus-common-dev,libglobus-common0,libglobus-openssl-dev,libglobus-openssl,libglite-jobid-api-cpp-dev,libglite-jobid2,libc-ares-dev, libc-ares2,liblog4cpp5-dev,liblog4cpp5,\${shlibs:Depends}, \${misc:Depends}
+Description:  WMS purger development files
 
 EOF
 
@@ -67,11 +75,16 @@ EOF
 ###########################################################################
 cat << EOF > org.glite.wms/${PRJNAME}/debian/${PKGNAME}.install
 usr/share/doc/glite-wms-purger-3.5.0/LICENSE
-usr/lib/libglite_wms_purger*
+usr/lib/libglite_wms_purger*.so.*
 usr/sbin/glite-wms-purgeStorage
-usr/lib/pkgconfig/wms-purger.pc
 usr/sbin/glite-wms-purgeStorage.sh
 usr/sbin/glite-wms-create-proxy.sh
+EOF
+
+cat << EOF > org.glite.wms/${PRJNAME}/debian/${PKGNAME}-dev.install
+usr/lib/libglite_wms_purger*.so
+usr/lib/pkgconfig/wms-purger.pc
+usr/include/glite/wms/purger/purger.h
 EOF
 
 ###########################################################################
@@ -171,7 +184,3 @@ cd org.glite.wms/${PRJNAME}
 fakeroot make -f debian/rules binary
 rm -rf build debian build-stamp
 cd -
-
-#sudo dpkg -i BINARIES/libglite-wms-configuration_3.5.0-1_amd64.deb
-
-
