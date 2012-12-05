@@ -4,7 +4,7 @@ Release: __release__
 Name: emi-wms
 License: Apache License 2.0
 Vendor: EMI
-Buildarch: noarch
+Buildarch: %{_arch}
 Group: System Environment/Libraries
 Requires: lcmaps-plugins-voms
 Requires: emi-version
@@ -33,7 +33,7 @@ Requires: glite-wms-core
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 AutoReqProv: yes
-Source: emi-wms-%{version}-%{release}.noarch.tar.gz
+Source: emi-wms-%{version}-%{release}.%{platform}.tar.gz
 
 %description
 Meta-package to install the WMS service

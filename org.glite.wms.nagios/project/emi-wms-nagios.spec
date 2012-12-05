@@ -1,6 +1,6 @@
 Summary: Nagios probe for the EMI WMS service
 Name: emi-wms-nagios
-URL: http://glite.cern.ch/
+URL: http://web.infn.it/gLiteWMS/
 Version: %{extversion}
 Release: %{extage}.%{extdist}
 License: ASL 2.0

@@ -4,7 +4,7 @@ Version: %{extversion}
 Release: %{extage}.%{extdist}
 License: ASL 2.0
 Vendor: EMI
-URL: http://glite.cern.ch/
+URL: http://web.infn.it/gLiteWMS/
 Group: Applications/Internet
 BuildArch: %{_arch}
 Requires: glite-wms-configuration glite-wms-helper glite-wms-ism glite-wms-purger glite-wms-common glite-lb-client
