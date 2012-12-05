@@ -1,71 +1,67 @@
-%define dir %{_libexecdir}/grid-monitoring/probes/emi.wms
-%global debug_package %{nil}
-%{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
-%define lpylib wmsmetrics
-%define pylib %{python_sitelib}/%{lpylib}
-
 Summary: Nagios probe for the EMI WMS service
 Name: emi-wms-nagios
+URL: http://glite.cern.ch/
 Version: %{extversion}
 Release: %{extage}.%{extdist}
 License: ASL 2.0
-Group: Monitoring
+Group: Applications/Communications
 Source: %{name}-%{version}-%{release}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
+Requires: openssl >= 0.9.8e-12
 Requires: python >= 2.4
 Requires: python-GridMon >= 1.1.10
 Requires: python-ldap
-#Requires: python-suds >= 0.3.5
 Requires: nagios-submit-conf >= 0.2
+#Requires: python-suds >= 0.3.5
 #Requires: grid-monitoring-probes-hr.srce >= 0.20.1
-Requires: openssl >= 0.9.8e-12
 AutoReqProv: no
-BuildArch: %{_arch}
+BuildArch: noarch
 BuildRequires: python >= 2.4
+
+%global debug_package %{nil}
+%{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
+%define dir %{_libexecdir}/grid-monitoring/probes/emi.wms
 
 %description
 This package contains nagios probe for EMI WMS service. 
 It use a python-based gridmetrics.
 
 %prep
-#%setup -q
+%setup -c -q
 
 %build
 
 %install
 export DONT_STRIP=1
 %{__rm} -rf %{buildroot}
+%{__python} setup.py install_lib -O1 --skip-build --build-dir=./src/wmsmetrics --install-dir=%{buildroot}%{python_sitelib}/wmsmetrics
 mkdir -p %{buildroot}/usr/libexec/grid-monitoring/probes/emi.wms
-cp -rpf src/WMS-probe %{buildroot}/usr/libexec/grid-monitoring/probes/emi.wms
-cp -rpf src/WMS-jdl.template %{buildroot}/usr/libexec/grid-monitoring/probes/emi.wms
-mkdir -p $(distdir)/wmsmetrics
-cp -f $(MODS1) $(distdir)/wmsmetrics
-cp -f $(FILES) $(distdir)
-find $(distdir) -path '.*swp' -prune -exec rm -rf {} \;
-find $(distdir) -path 'CVS' -prune -exec rm -rf {} \;
 install --directory %{buildroot}%{dir}
-install --mode 755 .%dir/WMS-probe  %{buildroot}%{dir}
-install --mode 755 .%dir/WMS-jdl.template  %{buildroot}%{dir}
-install --directory %{buildroot}%{pylib}
-install --mode 644 %{lpylib}/*.py* %{buildroot}%{pylib}
-%{__python} setup.py install_lib -O1 --skip-build --build-dir=%{lpylib} --install-dir=%{buildroot}%{pylib}
+install --mode 755 ./src/WMS-probe  %{buildroot}%{dir}
+install --mode 755 ./src/WMS-jdl.template  %{buildroot}%{dir}
+install --directory %{buildroot}%{python_sitelib}/wmsmetrics
+install --mode 644 ./src/wmsmetrics/*.py* %{buildroot}%{python_sitelib}/wmsmetrics
 
 %post
 
 %postun
 
 %clean
-%{__rm} -rf %{buildroot}
+%{__python} setup.py clean --all
 
 %files
 %defattr(-,root,root,-)
 %{dir}/WMS-probe
 %{dir}/WMS-jdl.template
-%{pylib}/*.py*
+%{python_sitelib}/wmsmetrics/*.py*
 %doc README
 %doc CHANGES
 
 %changelog
+* Wed Dec 5 2012 M. Cecchi
+- Integrated with the WMS script to build from source and repackage
+- Makefile removed
+- Version number goes with WMS version
 * Thu Sep 15 2011 A. Gianelle - 1.0.0
 - Porting to EMI 
 * Tue Jul 5 2011 Emir Imamagic <eimamagi@srce.hr> - 0.2.3-1
@@ -96,7 +92,7 @@ install --mode 644 %{lpylib}/*.py* %{buildroot}%{pylib}
 * Mon May 10 2010 K. Skaburskas <Konstantin.Skaburskas@cern.ch> - 0.1.12-1
 - added CHANGES file to the package documentation
 * Wed Apr 21 2010 K. Skaburskas <Konstantin.Skaburskas@cern.ch> - 0.1.11-1
-- added %{pylib}/jobmonit package
+- added pylib/jobmonit package
 - dependency: python-GridMon >= 1.1.7
 * Thu Mar 18 2010 K. Skaburskas <Konstantin.Skaburskas@cern.ch> - 0.1.10-1
 - changes to use new VOMS FQAN based Nagios metrics naming
@@ -164,7 +160,7 @@ install --mode 644 %{lpylib}/*.py* %{buildroot}%{pylib}
 - added CREAM CE metrics for testing direct job submission.
 - added probe for WMS service.
 - added metrics and passive checks output sanitizer.
-- making Nagios WN checks config files as %config(noreplace) in RPM.
+- making Nagios WN checks config files as config(noreplace) in RPM.
 - added new gLite error expressions to /etc/gridmon/org.sam.errdb.
 - checked/updated LDAP queries in all metrics. Fixing:
   * https://savannah.cern.ch/bugs/?59599
@@ -294,7 +290,7 @@ install --mode 644 %{lpylib}/*.py* %{buildroot}%{pylib}
 - imporvements in command line paramters parsing and handling. All common ones
   to probe were moved to Metric.Gatherer.
 * Thu Jan 08 2009 K. Skaburskas <Konstantin.Skaburskas@cern.ch> - 0.0.3-3
-- changes to .spec in %post and %postun for safe upgrades.
+- changes to .spec in post and postun for safe upgrades.
 - Probes and metrics optional arguments:
   - removed -o "..." functionality to feed options to metrics. Now they can
     be provided along with others. Hacked Python's 'getopt' module to loosen
@@ -304,7 +300,7 @@ install --mode 644 %{lpylib}/*.py* %{buildroot}%{pylib}
 * Tue Jan 06 2009 K. Skaburskas <Konstantin.Skaburskas@cern.ch> - 0.0.2-1
 - .spec file
   - added dependency on GFAL-client, lcg_util, python-ldap
-  - added %post and %postun to create/remove probes working directory
+  - added post and postun to create/remove probes working directory
 - gridmonsam/probe.py module
   - added publication of passive checks via NSCA
 - added gridmonsam/{pexpect,pexpectpgrp}.py modules for getting line buffered
