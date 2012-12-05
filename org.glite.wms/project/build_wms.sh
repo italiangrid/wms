@@ -100,7 +100,6 @@ ant_build()
    AGE=$3
    PACKAGE_NAME=$4
    LOCAL_STAGE_DIR=$5
-   PLATFORM=noarch # that's supposed to be java stuff
 
    mkdir -p lib bin autogen doc/autogen src/autogen ${LOCAL_STAGE_DIR}/usr/share/doc/
    create_source_tarball ${PACKAGE_NAME} ${VERSION} ${AGE} ${PLATFORM}
@@ -151,7 +150,6 @@ mp_build()
    VERSION=$2
    AGE=$3
    PACKAGE_NAME=$4
-   PLATFORM=noarch
 
    mkdir -p rpmbuild/SOURCES rpmbuild/BUILD 2>/dev/null rpmbuild/SPECS rpmbuild/SRPMS rpmbuild/BUILD rpmbuild/RPMS 2>/dev/null
    create_source_tarball ${PACKAGE_NAME} ${VERSION} ${AGE} ${PLATFORM}
@@ -295,7 +293,9 @@ START=$9
 
 END=${10}
 
+###
 # mock build
+###
 if [ $8 -eq 1 ]; then
    echo -e "\n*** mock build ***\n"
 
@@ -319,7 +319,15 @@ if [ $8 -eq 1 ]; then
       if [ `expr match "${PACKAGE_NAME[$i]}" '.*java.*'` -gt 0 ]; then
          ARTEFACT_ARCH=noarch
          mock -r emi${EMI_RELEASE}-$PLATFORM-$ARCH --no-clean --rebuild \
-            "$BUILD_DIR/org.glite.wms/SRPMS/${PACKAGE_NAME[$i]}-${VERSION}-${AGE}.${ARTEFACT_ARCH}.src.rpm"
+            "$BUILD_DIR/org.glite.wms/SRPMS/${PACKAGE_NAME[$i]}-${VERSION}-${AGE}.${PLATFORM}.src.rpm"
+      elif [ `expr match "${PACKAGE_NAME[$i]}" '.*nagios.*'` -gt 0 ]; then
+         ARTEFACT_ARCH=noarch
+         mock -r emi${EMI_RELEASE}-$PLATFORM-$ARCH --no-clean --rebuild \
+            "$BUILD_DIR/org.glite.wms/SRPMS/${PACKAGE_NAME[$i]}-${VERSION}-${AGE}.${PLATFORM}.src.rpm"
+      elif [ `expr match "${PACKAGE_NAME[$i]}" '.*python.*'` -gt 0 ]; then
+         ARTEFACT_ARCH=noarch
+         mock -r emi${EMI_RELEASE}-$PLATFORM-$ARCH --no-clean --rebuild \
+            "$BUILD_DIR/org.glite.wms/SRPMS/${PACKAGE_NAME[$i]}-${VERSION}-${AGE}.${PLATFORM}.src.rpm"
       else
          ARTEFACT_ARCH=$ARCH
          mock -r emi${EMI_RELEASE}-$PLATFORM-$ARCH --no-clean --rebuild \
@@ -404,7 +412,7 @@ for i in `seq $START $END`; do
    make -C build clean 2>/dev/null
    ant clean 2>&1 /dev/null
    python setup.py clean --all 2>&1 /dev/null
-   rm -rf rpmbuild RPMS stage 2>/dev/null
+   rm -rf rpmbuild RPMS stage
    find -iname '*cmake*' -not -name CMakeLists.txt -exec rm -rf {} \+
 
    # hack required to integrate not os provided gsoap
