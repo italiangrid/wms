@@ -12,6 +12,14 @@ create_source_tarball()
    fi
 }
 
+mover()
+{
+   mv ./rpmbuild/SOURCES/${PACKAGE_NAME}-${VERSION}-${AGE}.$PLATFORM.tar.gz "$BUILD_DIR"/org.glite.wms/tgz 2>/dev/null
+   mv rpmbuild/RPMS/$ARCH/* "$BUILD_DIR"/org.glite.wms/RPMS 2>/dev/null
+   mv rpmbuild/RPMS/noarch/* "$BUILD_DIR"/org.glite.wms/RPMS 2>/dev/null
+   mv rpmbuild/SRPMS/* "$BUILD_DIR"/org.glite.wms/SRPMS 2>/dev/null
+}
+
 autotools_build()
 {
    COMPONENT=$1
@@ -55,7 +63,7 @@ autotools_build()
    elif [ $PACKAGER = "deb" ]; then
       deb_package $VERSION $AGE $PLATFORM $PACKAGE_NAME $COMPONENT $LOCAL_STAGE_DIR
    fi
-   mv ./rpmbuild/SOURCES/${PACKAGE_NAME}-${VERSION}-${AGE}.${PLATFORM}.tar.gz "$BUILD_DIR"/org.glite.wms/tgz
+   mover
 }
 
 cmake_build()
@@ -86,11 +94,11 @@ if [ $PACKAGER = "rpm" ]; then
 #   elif [ $PACKAGER = "deb" ]; then
 #      deb_package $VERSION $AGE $PLATFORM $PACKAGE_NAME $COMPONENT $LOCAL_STAGE_DIR
 #   fi
-   mv ./rpmbuild/SOURCES/${PACKAGE_NAME}-${VERSION}-${AGE}.${PLATFORM}.tar.gz "$BUILD_DIR"/org.glite.wms/tgz
 elif [ $PACKAGER = "deb" ]; then
     # the build "IS" the packaging procedure. A self-contained script must be ran from the build_root path
     deb_package $COMPONENT $VERSION $AGE $build_root
 fi
+   mover
 }
 
 ant_build()
@@ -121,7 +129,7 @@ ant_build()
    elif [ $PACKAGER = "deb" ]; then
       deb_package $VERSION $AGE $PLATFORM $PACKAGE_NAME $COMPONENT $LOCAL_STAGE_DIR
    fi
-   mv ./rpmbuild/SOURCES/${PACKAGE_NAME}-${VERSION}-${AGE}.${PLATFORM}.tar.gz "$BUILD_DIR"/org.glite.wms/tgz
+   mover
 }
 
 python_build()
@@ -141,7 +149,7 @@ python_build()
    elif [ $PACKAGER = "deb" ]; then
       deb_package $VERSION $AGE $PLATFORM $PACKAGE_NAME $COMPONENT $LOCAL_STAGE_DIR
    fi
-   mv ./rpmbuild/SOURCES/${PACKAGE_NAME}-${VERSION}-${AGE}.$PLATFORM.tar.gz "$BUILD_DIR"/org.glite.wms/tgz
+   mover
 }
 
 mp_build()
@@ -157,16 +165,8 @@ mp_build()
      echo ERROR creating tarball
      exit
    fi
-   eval "sed -e 's/__version__/$VERSION/g' -e 's/__release__/$AGE/g' \
-      < project/$PACKAGE_NAME.spec.in > project/$PACKAGE_NAME.spec"
-   rpmbuild -ba --define "_topdir $BUILD_DIR/org.glite.wms/$COMPONENT/rpmbuild" project/$PACKAGE_NAME.spec
-   if [ $? -ne 0 ]; then
-     echo ERROR
-     exit
-   fi
-   mv rpmbuild/SOURCES/${PACKAGE_NAME}-${VERSION}-${AGE}.noarch.tar.gz "$BUILD_DIR"/org.glite.wms/tgz
-   mv rpmbuild/RPMS/noarch/* "$BUILD_DIR"/org.glite.wms/RPMS
-   mv rpmbuild/SRPMS/* "$BUILD_DIR"/org.glite.wms/SRPMS
+   rpm_package $VERSION $AGE $PLATFORM $PACKAGE_NAME $COMPONENT $LOCAL_STAGE_DIR
+   mover
 }
 
 rpm_package()
@@ -193,14 +193,12 @@ rpm_package()
    /usr/bin/rpmlint --file=/usr/share/rpmlint/config -i rpmbuild/RPMS/$ARCH/*
    /usr/bin/rpmlint --file=/usr/share/rpmlint/config -i rpmbuild/SRPMS/*
 
-   mv rpmbuild/RPMS/$ARCH/* "$BUILD_DIR"/org.glite.wms/RPMS
-   mv rpmbuild/RPMS/noarch/* "$BUILD_DIR"/org.glite.wms/RPMS 2>/dev/null
-   mv rpmbuild/SRPMS/* "$BUILD_DIR"/org.glite.wms/SRPMS
+   mover
 }
 
 deb_package()
 {
-# This procedure needs to be rewritten
+   # TODO: this procedure needs to be rewritten
   
    COMP_TO_BUILD=$1
    VERSION=$2
@@ -268,8 +266,6 @@ elif [ ${PLATFORM:0:2} = "sl" ]; then
    PACKAGER=rpm
 fi
 M4_LOCATION=/usr/share/emi/build/m4
-#ARCH=`uname -i`
-# uname -i returns 'unknown' on Debian. Option -m seems more "portable"
 ARCH=`uname -m`
 #CORES=`cat /proc/cpuinfo|grep processor|wc -l`
 
@@ -318,21 +314,17 @@ if [ $8 -eq 1 ]; then
    for i in `seq $START $END`; do
       if [ `expr match "${PACKAGE_NAME[$i]}" '.*java.*'` -gt 0 ]; then
          ARTEFACT_ARCH=noarch
-         mock -r emi${EMI_RELEASE}-$PLATFORM-$ARCH --no-clean --rebuild \
-            "$BUILD_DIR/org.glite.wms/SRPMS/${PACKAGE_NAME[$i]}-${VERSION}-${AGE}.${PLATFORM}.src.rpm"
+      elif [ `expr match "${PACKAGE_NAME[$i]}" '.*emi-wms.*'` -gt 0 ]; then
+         ARTEFACT_ARCH=noarch
       elif [ `expr match "${PACKAGE_NAME[$i]}" '.*nagios.*'` -gt 0 ]; then
          ARTEFACT_ARCH=noarch
-         mock -r emi${EMI_RELEASE}-$PLATFORM-$ARCH --no-clean --rebuild \
-            "$BUILD_DIR/org.glite.wms/SRPMS/${PACKAGE_NAME[$i]}-${VERSION}-${AGE}.${PLATFORM}.src.rpm"
       elif [ `expr match "${PACKAGE_NAME[$i]}" '.*python.*'` -gt 0 ]; then
          ARTEFACT_ARCH=noarch
-         mock -r emi${EMI_RELEASE}-$PLATFORM-$ARCH --no-clean --rebuild \
-            "$BUILD_DIR/org.glite.wms/SRPMS/${PACKAGE_NAME[$i]}-${VERSION}-${AGE}.${PLATFORM}.src.rpm"
       else
          ARTEFACT_ARCH=$ARCH
-         mock -r emi${EMI_RELEASE}-$PLATFORM-$ARCH --no-clean --rebuild \
-            "$BUILD_DIR/org.glite.wms/SRPMS/${PACKAGE_NAME[$i]}-${VERSION}-${AGE}.${PLATFORM}.src.rpm"
       fi
+      mock -r emi${EMI_RELEASE}-$PLATFORM-$ARCH --no-clean --rebuild \
+         "$BUILD_DIR/org.glite.wms/SRPMS/${PACKAGE_NAME[$i]}-${VERSION}-${AGE}.${PLATFORM}.src.rpm"
       if [ $? -ne 0 ]; then
          echo ERROR
          exit
@@ -381,22 +373,9 @@ mkdir tgz RPMS SRPMS 2>/dev/null
 
 echo -e "\n*** starting build ***\n"
 
-# the first one piece is an hack for debian 
 export PKG_CONFIG_PATH=$BUILD_DIR/STAGE/usr/lib/pkgconfig:$BUILD_DIR/org.glite.wms/org.glite.wms.jobsubmission/project/ # for emi-condorg.pc
-
-#if [ -d /usr/lib64 ]; then
-#   LOCAL_PKGCFG_LIB=usr/lib64/pkgconfig/
-#else
-#   LOCAL_PKGCFG_LIB=usr/lib/pkgconfig/
-#fi
-
-# @Marco in my opinion it is better to include both lib and lib64 in the PKG_CONFIG_PATH
-# because also in Debian6_2 some package creates the /usr/lib64 directory, even if it is not
-# the debian's standard. Having both paths in the PKG_... doesn't hurt.
-
 for i in `seq 0 $((START - 1))`; do
    STAGE="$BUILD_DIR/org.glite.wms/${COMPONENT[$i]}/stage"
-#   export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$STAGE/$LOCAL_PKGCFG_LIB
    export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$STAGE/usr/lib/pkgconfig:$STAGE/usr/lib64/pkgconfig
 done
 
