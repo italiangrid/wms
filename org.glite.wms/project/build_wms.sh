@@ -409,9 +409,13 @@ for i in `seq $START $END`; do
    
    echo -e "\n*** cleaning up ${COMPONENT[$i]} ***\n"
    cd "$BUILD_DIR/org.glite.wms/${COMPONENT[$i]}"
-   make -C build clean 2>/dev/null
-   ant clean 2>&1 /dev/null
-   python setup.py clean --all 2>&1 /dev/null
+   if [ -r setup.py ]; then
+      python setup.py clean --all 2>&1 /dev/null
+   elif [ -r build.xml ]; then
+      ant clean 2>&1 /dev/null
+   else
+      make -C build clean 2>/dev/null
+   fi
    rm -rf rpmbuild RPMS stage
    find -iname '*cmake*' -not -name CMakeLists.txt -exec rm -rf {} \+
 

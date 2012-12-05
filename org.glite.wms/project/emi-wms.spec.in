@@ -33,7 +33,7 @@ Requires: glite-wms-core
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 AutoReqProv: yes
-Source: emi-wms-%{version}-%{release}.%{platform}.tar.gz
+Source: emi-wms-%{version}-%{release}.tar.gz
 
 %description
 Meta-package to install the WMS service
