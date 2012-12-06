@@ -41,6 +41,7 @@ namespace security {
 
 namespace {
 
+/*
 char const XACML_COMMONAUTHZ_PROFILE_1_1[] = "http://glite.org/xacml/profile/grid-ce/1.0"; // TODO comment, this is an override
 char const XACML_DCISEC_ATTRIBUTE_PROFILE_ID[] = "http://glite.org/xacml/attribute/profile-id"; // TODO comment, this is an override
 // should be XACML_DCISEC_ATTRIBUTE_PROFILE_ID = "http://dci-sec.org/xacml/attribute/profile-id";
@@ -51,7 +52,6 @@ std::string XACML_DCISEC_ATTRIBUTE_USER_ID("http://glite.org/xacml/attribute/use
 std::string XACML_DCISEC_ATTRIBUTE_GROUP_ID("http://glite.org/xacml/attribute/group-id"); // TODO comment, this is an override
 //  XACML_DCISEC_ATTRIBUTE_GROUP_ID_PRIMARY (XACML_DCISEC_OBLIGATION_MAP_POSIX_USER)
 std::string XACML_DCISEC_ATTRIBUTE_GROUP_ID_PRIMARY("http://glite.org/xacml/attribute/group-id/primary"); // TODO comment, this is an override
-/*
 */
 
 // Reads the certificate file and returns the public part as a string
