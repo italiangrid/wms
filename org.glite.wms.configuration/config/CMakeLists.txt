@@ -8,14 +8,6 @@ configure_file(
   ${CMAKE_CURRENT_BINARY_DIR}/glite-wms-parse-configuration.sh
   @ONLY)
 
-#install(FILES 
-#  ${CMAKE_CURRENT_SOURCE_DIR}/glite-wms-check-daemons.sh
-#  ${CMAKE_CURRENT_SOURCE_DIR}/glite-wms-services-certs.sh
-#  ${CMAKE_CURRENT_SOURCE_DIR}/glite-wms-parse-configuration.sh
-#  DESTINATION
-#  ${PREFIX}/${LIBEXEC}
-#  )
-
 install(DIRECTORY
   ${CMAKE_CURRENT_SOURCE_DIR}/functions
   DESTINATION ${PREFIX}/../opt/glite/yaim
@@ -73,7 +65,7 @@ add_custom_command(OUTPUT
   COMMAND 
   mkdir -p ${PREFIX}/../etc/glite-wms
   COMMAND
-  cp -f glite_wms.conf ${PREFIX}/../etc/glite-wms/wms.conf.template
+  cp -f ${CMAKE_CURRENT_SOURCE_DIR}/glite_wms.conf ${PREFIX}/../etc/glite-wms/wms.conf.template
 )
 
 add_custom_target(MAKEEXESCRIPTS ALL DEPENDS 
