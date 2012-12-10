@@ -104,11 +104,11 @@ target_link_libraries(glite-wms-workload_manager
 
 
 add_custom_target(SYMLINKS ALL DEPENDS
-  glite-wms-stats.py
+  ${CMAKE_CURRENT_SOURCE_DIR}/glite-wms-stats.py
   COMMAND
   mkdir -p ${PREFIX}/${BINDIR}
   COMMAND
-  cp -f glite-wms-stats.py ${PREFIX}/${BINDIR}/glite-wms-stats
+  cp -f ${CMAKE_CURRENT_SOURCE_DIR}/glite-wms-stats.py ${PREFIX}/${BINDIR}/glite-wms-stats
   COMMAND
   chmod 755 ${PREFIX}/${BINDIR}/glite-wms-stats
 )
