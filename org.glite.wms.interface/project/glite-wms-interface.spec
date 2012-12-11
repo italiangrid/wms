@@ -20,7 +20,7 @@ Requires: httpd
 Requires: mod_ssl
 Requires: gridsite-apache
 Requires: glite-px-proxyrenewal glite-px-proxyrenewal-progs
-Requires: %{!?extbuilddir: glite-wms-configuration, glite-wms-purger-devel, } lcmaps-plugins-basic
+Requires: %{!?extbuilddir: glite-wms-common, glite-wms-configuration, glite-wms-purger-devel, } lcmaps-plugins-basic
 Requires(post): chkconfig
 Requires(preun): chkconfig
 Requires(preun): initscripts
