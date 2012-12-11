@@ -3,16 +3,16 @@ add_custom_command(
   datalocationinterfaceC.cpp
   datalocationinterfaceClient.cpp
   COMMAND
-  wsdl2h -o datalocationinterface.h
-         -t catalogs_typemap.dat
-         DataLocationInterface.wsdl
+  wsdl2h -o ${CMAKE_CURRENT_SOURCE_DIR}/datalocationinterface.h
+         -t ${CMAKE_CURRENT_SOURCE_DIR}/catalogs_typemap.dat
+         ${CMAKE_CURRENT_SOURCE_DIR}/DataLocationInterface.wsdl
   COMMAND 
-  soapcpp2 -I/usr/include:/usr/import:/usr/share/gsoap/import:/usr/include/gsoap -C -n -p datalocationinterface datalocationinterface.h
+  soapcpp2 -I/usr/include:/usr/import:/usr/share/gsoap/import:/usr/include/gsoap -C -n -p datalocationinterface ${CMAKE_CURRENT_SOURCE_DIR}/datalocationinterface.h
   )
 
 add_custom_target(GENSTUBS ALL DEPENDS 
-  datalocationinterfaceC.cpp
-  datalocationinterfaceClient.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/datalocationinterfaceC.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/datalocationinterfaceClient.cpp
   )
 
 include_directories(${CLASSAD_INCLUDE_DIRS}
