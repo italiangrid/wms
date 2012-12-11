@@ -283,7 +283,7 @@ PACKAGE_NAME=( glite-wms-configuration glite-wms-common glite-wms-purger glite-w
 
 VERSION=( 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 )
 
-AGE=( 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 )
+AGE=( 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 )
 
 START=$9
 
