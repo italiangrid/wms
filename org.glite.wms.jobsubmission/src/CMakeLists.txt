@@ -1,0 +1,4 @@
+add_subdirectory(common)
+add_subdirectory(logmonitor)
+add_subdirectory(controller)
+add_subdirectory(daemons)
