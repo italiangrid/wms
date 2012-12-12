@@ -1,6 +1,6 @@
-prefix=${PREFIX}
+prefix=@PKG_INSTALL_PREFIX@
 exec_prefix=${prefix}
-libdir=${prefix}/${LIBDIR}
+libdir=${prefix}/@LIBDIR@
 includedir=${prefix}/include
 
 
