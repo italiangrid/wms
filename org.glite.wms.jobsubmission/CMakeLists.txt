@@ -1,6 +1,5 @@
-project(wms-jobsubmission CXX)
+project(wms-jobsubmission C CXX)
 cmake_minimum_required(VERSION 2.6)
-
 
 if(NOT DEFINED PVER)
     message(WARNING " Undefined version number, selected 0.0.0. Please use

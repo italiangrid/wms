@@ -8,26 +8,26 @@ include_directories(${CLASSAD_INCLUDE_DIRS}
 
 link_directories(${PREFIX}/${LIBDIR})
 
-#add_custom_target(COMMON 
-#  DEPENDS 
-#  fstreamlock.cpp
-#  id_container.cpp
-#  ram_container.cpp
-#  file_container.cpp
-#  pointer_id.cpp
-#  filelist.cpp
-#  filelist_iterator.cpp
-#  filelist_lock.cpp
-#  file_locker.cpp
-#  EventLogger.cpp
-#  JobFilePurger.cpp
-#  ProxyUnregistrar.cpp
-#  constants.cpp
-#  files.cpp
-#  LockFile.cpp
-#  SignalChecker.cpp
-#  handler.c
-#  )
+add_custom_target(COMMON 
+  DEPENDS 
+  fstreamlock.cpp
+  id_container.cpp
+  ram_container.cpp
+  file_container.cpp
+  pointer_id.cpp
+  filelist.cpp
+  filelist_iterator.cpp
+  filelist_lock.cpp
+  file_locker.cpp
+  EventLogger.cpp
+  JobFilePurger.cpp
+  ProxyUnregistrar.cpp
+  constants.cpp
+  files.cpp
+  LockFile.cpp
+  SignalChecker.cpp
+  handler.c
+  )
 
 add_library(glite_wms_jss_common
   SHARED 

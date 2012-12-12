@@ -9,6 +9,8 @@ include_directories(${CLASSAD_INCLUDE_DIRS}
 link_directories(${PREFIX}/${LIBDIR}
   ${PROJECT_SOURCE_DIR}/src/common
   ${PROJECT_SOURCE_DIR}/src/controller
+  ${PROJECT_SOURCE_DIR}/src/logmonitor
+  ${CONDOR_LIBRARY_DIRS}
   )
 
 add_executable(glite_wms_job_controller
@@ -44,12 +46,16 @@ target_link_libraries(glite_wms_job_controller
   ${PROXYRENEW_LIBRARIES}
   ${PURGER_LIBRARIES}
   ${Boost_LIBRARIES}
+  ${CONDOR_LIBRARIES}
+  ${CARES_LIBRARIES}
   )
 
 
 target_link_libraries(glite_wms_log_monitor
   glite_wms_jss_controller
+  glite_wms_jss_controller_adapter
   glite_wms_jss_logmonitor
+  glite_wms_jss_common
   ${WMS_COMMON_CONF_LIBRARIES}
   ${WMS_COMMON_LOGGER_LIBRARIES}
   ${WMS_COMMON_PROCESS_LIBRARIES}
@@ -66,6 +72,8 @@ target_link_libraries(glite_wms_log_monitor
   ${PROXYRENEW_LIBRARIES}
   ${PURGER_LIBRARIES}
   ${Boost_LIBRARIES}
+  ${CONDOR_LIBRARIES}
+  ${CARES_LIBRARIES}
   )
 
 install(TARGETS 

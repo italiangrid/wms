@@ -11,39 +11,8 @@ link_directories(
   ${PREFIX}/${LIBDIR}
   ${CMAKE_SOURCE_DIR}/src/common
   ${CMAKE_BIN_DIR}/src/common
-  /usr/${LIBDIR}}/condor
+  ${CONDOR_LIBRARY_DIRS}
   )
-
-#add_custom_target(LOGMON 
-#  DEPENDS
-#  EventAd.cpp 
-#  Timer.cpp 
-#  SizeFile.cpp 
-#  AbortedContainer.cpp 
-#  JobWrapperOutputParser.cpp 
-#  exceptions.cpp 
-#  processer/EventFactory.cpp 
-#  processer/EventInterface.cpp 
-#  processer/EventUnhandled.cpp 
-#  processer/EventSubmit.cpp 
-#  processer/EventGlobusSubmit.cpp 
-#  processer/EventGridSubmit.cpp 
-#  processer/EventExecute.cpp 
-#  processer/EventTerminated.cpp 
-#  processer/EventPostTerminated.cpp 
-#  processer/EventAborted.cpp 
-#  processer/EventGlobusSubmitFailed.cpp 
-#  processer/EventGlobusResourceDown.cpp 
-#  processer/EventGridResourceDown.cpp 
-#  processer/EventGlobusResourceUp.cpp 
-#  processer/EventGridResourceUp.cpp 
-#  processer/EventJobHeld.cpp 
-#  processer/EventJobReleased.cpp 
-#  processer/EventGeneric.cpp 
-#  processer/MonitorData.cpp 
-#  processer/SubmitReader.cpp 
-#  processer/JobResubmitter.cpp
-#  )
 
 add_library(glite_wms_jss_controller_wrapper
   SHARED 
@@ -78,7 +47,7 @@ set_target_properties(glite_wms_jss_controller          PROPERTIES VERSION 0.0.0
 
 target_link_libraries(glite_wms_jss_controller
   glite_wms_jss_common
-  condorapi
+  ${CONDOR_LIBRARIES}
 )
 
 install(TARGETS 
