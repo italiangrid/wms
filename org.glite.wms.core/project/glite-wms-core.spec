@@ -7,12 +7,11 @@ Vendor: EMI
 URL: http://web.infn.it/gLiteWMS/
 Group: Applications/Internet
 BuildArch: %{_arch}
-Requires: glite-wms-configuration glite-wms-helper glite-wms-ism glite-wms-purger glite-wms-common glite-lb-client
-Requires(post): chkconfig
-Requires(preun): chkconfig
-Requires(preun): initscripts
+#Requires: %{name}%{?_isa} = %{version}-%{release}
+Requires: %{!?extbuilddir: glite-wms-common-devel, glite-wms-common, glite-wms-configuration, glite-wms-helper, glite-wms-purger, } glite-lb-client
+Requires: boost-devel, classads-devel, openldap-devel, glite-build-common-cpp, glite-wms-utils-classad-devel
 BuildRequires: chrpath, libtool, boost-devel, c-ares-devel, classads-devel, globus-ftp-client-devel, globus-ftp-control-devel, docbook-style-xsl
-BuildRequires: glite-build-common-cpp, glite-jobid-api-c-devel
+BuildRequires: glite-build-common-cpp, glite-jobid-api-c-devel, openldap-devel
 BuildRequires: %{!?extbuilddir: glite-wms-common-devel, glite-wms-purger-devel, } glite-px-proxyrenewal-devel
 BuildRequires: glite-lb-client-devel, glite-jobid-api-cpp-devel, libxslt
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -95,10 +94,6 @@ fi
 %package devel
 Summary: Development files for the WMS information superkmarket
 Group: System Environment/Libraries
-Requires: %{name}%{?_isa} = %{version}-%{release}
-Requires: %{!?extbuilddir: glite-wms-common-devel, } glite-wms-utils-classad-devel
-Requires: boost-devel, classads-devel, openldap-devel
-Requires: glite-build-common-cpp
 
 %description devel
 Development files for the WMS core module
