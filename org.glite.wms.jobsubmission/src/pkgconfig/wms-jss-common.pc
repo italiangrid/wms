@@ -1,0 +1,12 @@
+prefix=
+exec_prefix=
+libdir=
+includedir=
+
+Name: wms jobsubmission common
+Description: WMS jobsubmission common C/C++ APIs
+Version: 
+Requires: wms-common-util
+Libs: -L${libdir} -lglite_wms_jss_common
+Cflags: -I${includedir}
+

@@ -1,0 +1,12 @@
+prefix=
+exec_prefix=
+libdir=
+includedir=
+
+Name: wms jobsubmission controller adapter
+Description: WMS jobsubmission controller adapter C/C++ APIs
+Version: 
+Requires: wms-common-conf
+Libs: -L${libdir} -lglite_wms_jss_controller_adapter
+Cflags: -I${includedir}
+
