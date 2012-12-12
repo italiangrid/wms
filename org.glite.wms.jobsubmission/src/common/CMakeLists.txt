@@ -4,6 +4,8 @@ include_directories(${CLASSAD_INCLUDE_DIRS}
 		    ${PREFIX}/include
 		    ${WMSUTILS_CLASSADS_ALT_INCLUDE_DIRS}
 		    ${WMSUTILS_CLASSADS_INCLUDE_DIRS}
+		    ${WMS_COMMON_UTIL_INCLUDE_DIRS}
+		    ${PURGER_INCLUDE_DIRS}
 		    ${PROJECT_SOURCE_DIR}/src)
 
 link_directories(${PREFIX}/${LIBDIR})

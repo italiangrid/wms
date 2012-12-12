@@ -5,14 +5,20 @@ include_directories(${CLASSAD_INCLUDE_DIRS}
 		    ${WMSUTILS_CLASSADS_ALT_INCLUDE_DIRS}
 		    ${WMSUTILS_CLASSADS_INCLUDE_DIRS}
 		    ${PROJECT_SOURCE_DIR}/src
+		    ${WMS_COMMON_CONF_INCLUDE_DIRS}
+		    ${WMS_COMMON_UTIL_INCLUDE_DIRS}
+		    ${WMS_COMMON_LOGGER_INCLUDE_DIRS}
 		    ${PROJECT_SOURCE_DIR}/src/logmonitor/processer)
 
 link_directories(
   ${PREFIX}/${LIBDIR}
   ${CMAKE_SOURCE_DIR}/src/common
-#  ${CMAKE_BIN_DIR}/src/common
   ${CMAKE_SOURCE_DIR}/src/controller
   ${CONDOR_LIBRARY_DIRS}
+  ${WMS_COMMON_CONF_LIBRARY_DIRS}
+  ${WMS_COMMON_LOGGER_LIBRARY_DIRS}
+  ${WMS_COMMON_UTIL_LIBRARY_DIRS}
+  ${PURGER_LIBRARY_DIRS}
   )
 
 add_executable(glite_wms_lm_job_status
