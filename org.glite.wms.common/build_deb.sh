@@ -10,10 +10,10 @@ PRJNAME=org.glite.wms.common
 
 set -e
 
-if [ "x$1" == "x-s" ]; then
+#if [ "x$1" == "x-s" ]; then
     mkdir -p SOURCES
     tar --exclude .git --exclude debian --exclude build* -zcf ${PKGNAME}_${PKGVERSION}.orig.tar.gz org.glite.wms/${PRJNAME} 
-fi
+#fi
 
 mkdir -p BINARIES org.glite.wms/${PRJNAME}/debian/source
 
@@ -190,10 +190,10 @@ ${PKGNAME} (${PKGVERSION}-${PKGAGE}) stable; urgency=low
 EOF
 
 
-if [ "x$1" == "x-s" ]; then
+#if [ "x$1" == "x-s" ]; then
     dpkg-source -i.* -b org.glite.wms/${PRJNAME}
     mv ${PKGNAME}_${PKGVERSION}* SOURCES
-fi
+#fi
 cd org.glite.wms/${PRJNAME}
 fakeroot make -f debian/rules binary
 rm -rf build debian build-stamp
