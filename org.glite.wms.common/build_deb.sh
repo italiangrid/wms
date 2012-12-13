@@ -75,6 +75,7 @@ EOF
 #
 ###########################################################################
 cat << EOF > org.glite.wms/${PRJNAME}/debian/${PKGNAME}.install
+usr/share/doc/${PKGNAME}-${PKGVERSION}/LICENSE
 usr/lib/lib*.so.*
 usr/bin/*
 usr/sbin/*
@@ -86,9 +87,6 @@ usr/include/glite/wms/common/configuration/*
 usr/include/glite/wms/common/logger/*
 usr/include/glite/wms/common/utilities/*
 usr/lib/lib*.so
-#usr/bin/*
-#usr/sbin/*
-#usr/libexec/*
 usr/lib/pkgconfig/wms-common*.pc
 EOF
 
