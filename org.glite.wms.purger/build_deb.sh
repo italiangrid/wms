@@ -4,7 +4,7 @@ INITIALPWD=${PWD}
 
 PKGVERSION=3.5.0
 PKGAGE=1
-PKGNAME=libglite-wms-purger
+PKGNAME=glite-wms-purger
 
 PRJNAME=org.glite.wms.purger
 
@@ -74,7 +74,7 @@ EOF
 #
 ###########################################################################
 cat << EOF > org.glite.wms/${PRJNAME}/debian/${PKGNAME}.install
-usr/share/doc/glite-wms-purger-3.5.0/LICENSE
+usr/share/doc/${PKGNAME}-${PKGVERSION}/LICENSE
 usr/lib/libglite_wms_purger*.so.*
 usr/sbin/glite-wms-purgeStorage
 usr/sbin/glite-wms-purgeStorage.sh
