@@ -7,8 +7,7 @@ Vendor: EMI
 URL: http://web.infn.it/gLiteWMS/
 Group: Applications/Internet
 BuildArch: %{_arch}
-Requires: glite-wms-configuration
-Requires: glite-px-proxyrenewal
+Requires: %{!?extbuilddir: glite-wms-common, glite-wms-purger, } glite-px-proxyrenewal
 Requires(post): chkconfig
 Requires(preun): chkconfig
 Requires(preun): initscripts
