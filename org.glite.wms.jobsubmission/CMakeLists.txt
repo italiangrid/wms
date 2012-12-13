@@ -111,7 +111,7 @@ endif(DEFINED BUILD_DBG)
 
 install(FILES
         LICENSE
-        DESTINATION ${PREFIX}/share/doc/glite-wms-core-${PVER}/
+        DESTINATION ${PREFIX}/share/doc/glite-wms-jobsubmission-${PVER}/
 )
 
 if(NOT DEFINED SYSCONFIGDIR)
