@@ -65,6 +65,7 @@ EOF
 #
 ###########################################################################
 cat << EOF > org.glite.wms/${PRJNAME}/debian/${PKGNAME}.install
+usr/share/doc/${PKGNAME}-${PKGVERSION}/LICENSE
 opt/glite/yaim/functions/config_*
 opt/glite/yaim/node-info.d/glite-*
 opt/glite/yaim/defaults/glite-*
