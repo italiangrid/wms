@@ -26,7 +26,7 @@ Source:  ${PKGNAME}
 Section:  libs
 Priority:  optional
 Maintainer:  WMS Support <wms-support@cnaf.infn.it>
-Build-Depends: debhelper (>= 8.0.0~),cmake,chrpath,libc-ares-dev,gsoap,libglite-lbjp-common-gsoap-plugin-dev,libboost1.42-dev,libclassad0-dev,libglite-wms-utils-classad-dev,libglite-wms-utils-exception-dev,libglite-jdl-dev,glite-wms-common-dev,libglite-lb-client-dev,libglite-lb-common-dev,libglite-security-proxyrenewal-dev,glite-wms-purger-dev,libglite-jobid-api-cpp-dev,libglobus-gssapi-gsi-dev,libglobus-gram-protocol-dev,libxslt1.1,libxslt1-dev,condor,docbook-xsl
+Build-Depends: debhelper (>= 8.0.0~),cmake,chrpath,emi-pkgconfig-compat,libc-ares-dev,gsoap,libglite-lbjp-common-gsoap-plugin-dev,libboost1.42-dev,libclassad0-dev,libglite-wms-utils-classad-dev,libglite-wms-utils-exception-dev,libglite-jdl-dev,glite-wms-common-dev,libglite-lb-client-dev,libglite-lb-common-dev,libglite-security-proxyrenewal-dev,glite-wms-purger-dev,libglite-jobid-api-cpp-dev,libglobus-gssapi-gsi-dev,libglobus-gram-protocol-dev,libxslt1.1,libxslt1-dev,condor,docbook-xsl
 Standards-Version:  3.5.0
 Homepage: http://glite.cern.ch/
 

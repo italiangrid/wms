@@ -26,7 +26,7 @@ Source:  ${PKGNAME}
 Section:  libs
 Priority:  optional
 Maintainer:  WMS Support <wms-support@cnaf.infn.it>
-Build-Depends: debhelper (>= 8.0.0~), cmake
+Build-Depends: debhelper (>= 8.0.0~), cmake,chrpath
 Standards-Version:  3.5.0
 Homepage: http://glite.cern.ch/
 

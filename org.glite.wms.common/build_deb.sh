@@ -27,8 +27,8 @@ Source:  ${PKGNAME}
 Section:  libs
 Priority:  optional
 Maintainer:  WMS Support <wms-support@cnaf.infn.it>
-Build-Depends: debhelper (>= 8.0.0~), cmake, emi-pkgconfig-compat,
- libglite-wms-utils-classad-dev , libglite-wms-utils-exception-dev, libclassad0-dev, libboost-system1.42-dev, libboost1.42-dev
+Build-Depends: debhelper (>= 8.0.0~), cmake, chrpath,emi-pkgconfig-compat,
+ libglite-wms-utils-classad-dev,libglite-wms-utils-exception-dev,libclassad0-dev,libboost1.42-dev
 Standards-Version:  3.5.0
 Homepage: http://glite.cern.ch/
 
@@ -42,7 +42,7 @@ Description:  WMProxy CPP API libraries
 Package:  ${PKGNAME}-dev
 Section: libdevel
 Architecture: any
-Depends: ${PKGNAME} (= \${binary:Version}), libglite-wms-utils-classad-dev , libglite-wms-utils-exception-dev, libclassad0-dev, libboost-system1.42-dev, libboost1.42-dev, \${misc:Depends}
+Depends: ${PKGNAME} (= \${binary:Version}), libglite-wms-utils-classad-dev , libglite-wms-utils-exception-dev, libclassad0-dev, libboost1.42-dev, \${misc:Depends}
 Description: WMS Common libraries and utilities
 
 EOF

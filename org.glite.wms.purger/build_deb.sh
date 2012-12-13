@@ -27,21 +27,20 @@ Source:  ${PKGNAME}
 Section:  libs
 Priority:  optional
 Maintainer:  WMS Support <wms-support@cnaf.infn.it>
-Build-Depends: debhelper (>= 8.0.0~), cmake, libglite-wms-common, libglite-wms-common-dev, emi-pkgconfig-compat,
- libglite-wms-utils-classad-dev , libglite-wms-utils-exception-dev, libclassad0-dev, libboost-system1.42-dev, libboost1.42-dev, libglite-lb-client-dev, libglite-lb-client11, libglite-lb-common-dev, libglite-lb-common13,libglobus-gss-assist-dev,libglobus-gss-assist3,libglobus-common-dev,libglobus-common0,libglobus-openssl-dev,libglobus-openssl,libglite-jobid-api-cpp-dev,libglite-jobid2,libc-ares-dev, libc-ares2,liblog4cpp5-dev,liblog4cpp5
+Build-Depends: debhelper (>= 8.0.0~), cmake, emi-pkgconfig-compat,chrpath,libglite-wms-common-dev,
+ libglite-wms-utils-classad-dev , libglite-wms-utils-exception-dev, libclassad0-dev,libboost1.42-dev, libglite-lb-client-dev, libglite-lb-common-dev, libglobus-gss-assist-dev,libglobus-common-dev,libglobus-openssl-dev,libglite-jobid-api-cpp-dev,libc-ares-dev,liblog4cpp5-dev
 Standards-Version:  3.5.0
 Homepage: http://glite.cern.ch/
 
 Package:  ${PKGNAME}
 Architecture: any
-Depends: debhelper (>= 8.0.0~), cmake, libglite-wms-common, libglite-wms-common-dev, emi-pkgconfig-compat,
- libglite-wms-utils-classad-dev , libglite-wms-utils-exception-dev, libclassad0-dev, libboost-system1.42-dev, libboost1.42-dev, libglite-lb-client-dev, libglite-lb-client11, libglite-lb-common-dev, libglite-lb-common13,libglobus-gss-assist-dev,libglobus-gss-assist3,libglobus-common-dev,libglobus-common0,libglobus-openssl-dev,libglobus-openssl,libglite-jobid-api-cpp-dev,libglite-jobid2,libc-ares-dev, libc-ares2,liblog4cpp5-dev,liblog4cpp5,\${shlibs:Depends}, \${misc:Depends}
+Depends: \${shlibs:Depends}, \${misc:Depends}
 Description:  WMS purger
 
 Package:  ${PKGNAME}-dev
 Architecture: any
-Depends: debhelper (>= 8.0.0~), cmake, libglite-wms-common, libglite-wms-common-dev, emi-pkgconfig-compat,
- libglite-wms-utils-classad-dev , libglite-wms-utils-exception-dev, libclassad0-dev, libboost-system1.42-dev, libboost1.42-dev, libglite-lb-client-dev, libglite-lb-client11, libglite-lb-common-dev, libglite-lb-common13,libglobus-gss-assist-dev,libglobus-gss-assist3,libglobus-common-dev,libglobus-common0,libglobus-openssl-dev,libglobus-openssl,libglite-jobid-api-cpp-dev,libglite-jobid2,libc-ares-dev, libc-ares2,liblog4cpp5-dev,liblog4cpp5,\${shlibs:Depends}, \${misc:Depends}
+Depends: debhelper (>= 8.0.0~), libglite-wms-common-dev, emi-pkgconfig-compat,
+ libglite-wms-utils-classad-dev , libglite-wms-utils-exception-dev, libclassad0-dev, libboost1.42-dev, libglite-lb-client-dev, libglite-lb-common-dev,     libglobus-gss-assist-dev,libglobus-common-dev,libglobus-openssl-dev,libglite-jobid-api-cpp-dev,libc-ares-dev, liblog4cpp5-dev,\${shlibs:Depends}, \${misc:Depends}
 Description:  WMS purger development files
 
 EOF
