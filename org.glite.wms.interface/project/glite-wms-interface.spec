@@ -20,7 +20,7 @@ Requires: httpd
 Requires: mod_ssl
 Requires: gridsite-apache
 Requires: glite-px-proxyrenewal glite-px-proxyrenewal-progs
-Requires: %{!?extbuilddir: glite-wms-common, glite-wms-configuration, glite-wms-purger-devel, } lcmaps-plugins-basic
+Requires: %{!?extbuilddir: glite-wms-common, glite-wms-configuration, glite-wms-purger, } lcmaps-plugins-basic
 Requires(post): chkconfig
 Requires(preun): chkconfig
 Requires(preun): initscripts
@@ -30,7 +30,7 @@ BuildRequires: argus-pep-api-c-devel, libtool
 BuildRequires: lcmaps-without-gsi-devel, lcmaps-devel, classads-devel
 BuildRequires: glite-jdl-api-cpp-devel, glite-lb-client-devel, fcgi-devel
 BuildRequires: glite-px-proxyrenewal-devel, libxslt-devel, libtar-devel
-BuildRequires: glite-build-common-cpp, gsoap-devel
+BuildRequires: %{!?extbuilddir: glite-wms-common-devel, glite-wms-purger-devel, } glite-build-common-cpp, gsoap-devel
 BuildRequires: httpd-devel, zlib-devel, boost-devel, c-ares-devel
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 AutoReqProv: yes
