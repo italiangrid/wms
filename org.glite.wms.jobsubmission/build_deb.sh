@@ -3,9 +3,9 @@
 INITIALPWD=${PWD}
 PKGVERSION=3.5.0
 PKGAGE=1
-PKGNAME=libglite-wms-core
+PKGNAME=glite-wms-jobsubmission
 
-PRJNAME=org.glite.wms.core
+PRJNAME=org.glite.wms.jobsubmission
 
 set -e
 
@@ -26,15 +26,25 @@ Source:  ${PKGNAME}
 Section:  libs
 Priority:  optional
 Maintainer:  WMS Support <wms-support@cnaf.infn.it>
-Build-Depends: debhelper (>= 8.0.0~), cmake
+Build-Depends: debhelper (>= 8.0.0~),cmake,chrpath,libc-ares-dev,gsoap,libglite-lbjp-common-gsoap-plugin-dev,libboost1.42-dev,libclassad0-dev,libglite-wms-utils-classad-dev,libglite-wms-utils-exception-dev,libglite-jdl-dev,glite-wms-common-dev,libglite-lb-client-dev,libglite-lb-common-dev,libglite-security-proxyrenewal-dev,glite-wms-purger-dev,libglite-jobid-api-cpp-dev,libglobus-gssapi-gsi-dev,libglobus-gram-protocol-dev,libxslt1.1,libxslt1-dev,condor,docbook-xsl
 Standards-Version:  3.5.0
 Homepage: http://glite.cern.ch/
 
 Package:  ${PKGNAME}
 Architecture: any
 Depends: \${shlibs:Depends}, \${misc:Depends}
-Description:  WMS core
+Description:  WMS jobsubmission libraries and executables
 
+
+Package:  ${PKGNAME}-dev
+Architecture: any
+Depends: \${shlibs:Depends}, \${misc:Depends},libc-ares-dev,gsoap,libglite-lbjp-common-gsoap-plugin-dev,libboost1.42-dev,libclassad0-dev,libglite-wms-utils-classad-dev,libglite-wms-utils-exception-dev,libglite-jdl-dev,glite-wms-common-dev,libglite-lb-client-dev,libglite-lb-common-dev,libglite-security-proxyrenewal-dev,glite-wms-purger-dev,libglite-jobid-api-cpp-dev,libglobus-gssapi-gsi-dev,libglobus-gram-protocol-dev,condor
+Description:  WMS jobsubmission development files
+
+Package:  ${PKGNAME}-doc
+Architecture: any
+Depends: \${shlibs:Depends}, \${misc:Depends}
+Description:  WMS jobsubmission man pages
 EOF
 
 ###########################################################################
@@ -65,16 +75,24 @@ EOF
 #
 ###########################################################################
 cat << EOF > org.glite.wms/${PRJNAME}/debian/${PKGNAME}.install
-usr/bin/glite-wms-workload_manager
-usr/bin/glite-wms-query-job-state-transitions
+usr/share/doc/${PKGNAME}-${PKGVERSION}/LICENSE
 usr/lib/libglite_wms*.so.*
-etc/rc.d/init.d/glite-wms-wm
-usr/include/glite/wms/helper/*.h
-usr/include/glite/wms/helper/jobadapter/*.h
-usr/include/glite/wms/ism/*.h
-usr/include/glite/wms/ism/purchaser/*.h
-usr/lib/libglite_wms*.so
+usr/bin/glite_wms_log_monitor
+usr/bin/glite_wms_job_controller
+etc/rc.d/init.d/glite-wms-lm
+etc/rc.d/init.d/glite-wms-jc
+usr/libexec/glite-wms-clean-lm-recycle.sh
 EOF
+cat << EOF > org.glite.wms/${PRJNAME}/debian/${PKGNAME}-dev.install
+usr/lib/libglite_wms*.so
+usr/include/glite/wms/jobsubmission/SubmitAdapter.h
+usr/lib/pkgconfig/*.pc
+EOF
+cat << EOF > org.glite.wms/${PRJNAME}/debian/${PKGNAME}-doc.install
+usr/share/man/man1/glite-wms-job_controller.1.gz
+usr/share/man/man1/glite-wms-log_monitor.1.gz
+EOF
+
 ###########################################################################
 #
 # Rule file
