@@ -4,7 +4,7 @@ INITIALPWD=${PWD}
 
 PKGVERSION=3.5.0
 PKGAGE=1
-PKGNAME=libglite-wms-common
+PKGNAME=glite-wms-common
 
 PRJNAME=org.glite.wms.common
 
