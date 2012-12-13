@@ -3,7 +3,7 @@
 INITIALPWD=${PWD}
 PKGVERSION=3.5.0
 PKGAGE=1
-PKGNAME=libglite-wms-core
+PKGNAME=glite-wms-core
 
 PRJNAME=org.glite.wms.core
 
@@ -65,6 +65,7 @@ EOF
 #
 ###########################################################################
 cat << EOF > org.glite.wms/${PRJNAME}/debian/${PKGNAME}.install
+usr/share/doc/${PKGNAME}-${PKGVERSION}/LICENSE
 usr/bin/glite-wms-workload_manager
 usr/bin/glite-wms-query-job-state-transitions
 usr/lib/libglite_wms*.so.*
