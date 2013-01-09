@@ -10,7 +10,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 Requires: openssl >= 0.9.8e-12
 Requires: python >= 2.4
 Requires: python-ldap
-Requires: nagios-submit-conf >= 0.2
+#Requires: nagios-submit-conf >= 0.2
 #Requires: python-GridMon >= 1.1.10
 #Requires: python-suds >= 0.3.5
 #Requires: grid-monitoring-probes-hr.srce >= 0.20.1
