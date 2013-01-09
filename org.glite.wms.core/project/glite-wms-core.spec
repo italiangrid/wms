@@ -9,7 +9,7 @@ Group: Applications/Internet
 BuildArch: %{_arch}
 #Requires: %{name}%{?_isa} = %{version}-%{release}
 Requires: %{!?extbuilddir: glite-wms-common, glite-wms-configuration, glite-wms-helper, glite-wms-purger, } glite-lb-client
-Requires: boost, classads, openldap, glite-build-common-cpp, glite-wms-utils-classad, emi-pkgconfig-compat
+Requires: boost, classads, openldap, glite-build-common-cpp, glite-wms-utils-classad
 BuildRequires: chrpath, libtool, boost-devel, c-ares-devel, classads-devel, globus-ftp-client-devel, globus-ftp-control-devel, docbook-style-xsl
 BuildRequires: glite-build-common-cpp, emi-pkgconfig-compat, glite-jobid-api-c-devel, openldap-devel, boost-devel, classads-devel, glite-wms-utils-classad-devel
 BuildRequires: %{!?extbuilddir: glite-wms-common-devel, glite-wms-purger-devel, } glite-px-proxyrenewal-devel
