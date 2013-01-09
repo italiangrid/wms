@@ -268,25 +268,15 @@ fi
 M4_LOCATION=/usr/share/emi/build/m4
 ARCH=`uname -m`
 #CORES=`cat /proc/cpuinfo|grep processor|wc -l`
-
 RH_DEPS_LIST=( ant bouncycastle doxygen docbook-style-xsl libxslt-devel gcc gcc-c++ python-devel SOAPpy PyXML python-fpconst libtool automake swig yum-priorities pkgconfig mock rpm-build rpmlint git mod_fcgid fcgi-devel mod_ssl axis2 gridsite-devel httpd-devel zlib-devel boost-devel c-ares-devel gsoap-devel libtar-devel cmake openldap-devel python-ldap globus-ftp-client globus-ftp-client-devel log4cpp-devel log4cpp globus-gram-protocol-devel myproxy-devel expat expat-devel fcgi-devel fcgi libtar libtar-devel httpd-devel myproxy-devel cmake ant axis2 bouncycastle.noarch python-fpconst PyXML SOAPpy )
-
 INT_DEPS_LIST=( glite-jobid-api-c glite-jobid-api-c-devel glite-jobid-api-cpp-devel glite-px-proxyrenewal-devel voms-devel voms-clients argus-pep-api-c-devel lcmaps-without-gsi-devel lcmaps-devel classads-devel glite-build-common-cpp glite-wms-utils-exception glite-wms-utils-classad glite-wms-utils-exception-devel glite-wms-utils-classad-devel chrpath cppunit-devel glite-jdl-api-cpp-devel glite-lb-client-devel glite-lbjp-common-gsoap-plugin-devel condor-emi glite-ce-cream-client-api-c glite-ce-cream-client-devel emi-trustmanager emi-trustmanager-axis )
-
 DEB_DEPS_LIST=( libglite-jobid-api-c-dev libglite-jobid-api-cpp-dev libglite-jobid2 libclassad0-dev liblog4cpp5-dev libglobus-io-dev libglobus-gss-assist-dev libglobus-ftp-client-dev libglobus-common-dev libboost-regex-dev libboost-filesystem-dev libboost-date-time-dev libldap2-dev gsoap libgridsite-dev swig libgridsite1.7 libxml2-dev doxygen debhelper pkg-config cmake autoconf expat libexpat1-dev libglite-lb-client-dev python-dev docbook docbook-xsl libxslt1-dev globus-gass-copy-progs xsltproc valgrind voms-dev voms-clients build-essential autoconf automake autotools-dev dh-make debhelper devscripts fakeroot xutils lintian pbuilder cmake dpkg-dev pkg-config libglobus-gram-protocol-dev )
-
 COMPONENT=( org.glite.wms.configuration org.glite.wms.common org.glite.wms.purger org.glite.wms.core org.glite.wms.jobsubmission org.glite.wms.interface org.glite.wms.ice org.glite.wms.nagios org.glite.wms org.glite.wms.brokerinfo-access org.glite.wms.wmproxy-api-cpp org.glite.wms.wmproxy-api-python org.glite.wms-ui.api-python org.glite.wms-ui.commands )
-
 BUILD_TYPE=( autotools autotools autotools autotools autotools autotools autotools python metapackage cmake cmake python cmake cmake )
-
 PACKAGE_NAME=( glite-wms-configuration glite-wms-common glite-wms-purger glite-wms-core glite-wms-jobsubmission glite-wms-interface glite-wms-ice emi-wms-nagios emi-wms glite-wms-brokerinfo-access glite-wms-wmproxy-api-cpp glite-wms-wmproxy-api-python glite-wms-ui-api-python glite-wms-ui-commands )
-
 VERSION=( 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 3.5.0 )
-
-AGE=( 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 )
-
+AGE=( 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 )
 START=$9
-
 END=${10}
 
 ###
