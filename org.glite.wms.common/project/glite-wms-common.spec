@@ -13,7 +13,7 @@ BuildRequires: %{!?extbuilddir: glite-wms-utils-exception-devel,} boost-devel
 BuildRequires: %{!?extbuilddir: glite-wms-utils-classad-devel,} classads-devel
 BuildRequires: globus-common-devel, globus-ftp-client-devel
 BuildRequires: globus-gss-assist-devel, globus-io-devel
-BuildRequires: %{!?extbuilddir: glite-build-common-cpp, } cppunit-devel, openldap-devel, log4cpp, log4cpp-devel
+BuildRequires: %{!?extbuilddir: glite-build-common-cpp, emi-pkgconfig-compat } cppunit-devel, openldap-devel, log4cpp, log4cpp-devel
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 AutoReqProv: yes
 Source: %{name}-%{version}-%{release}.tar.gz
@@ -99,8 +99,7 @@ Summary: Development files for WMS common module
 Group: System Environment/Libraries
 Requires: %{name}%{?_isa} = %{version}-%{release}
 Requires: glite-jobid-api-c-devel, glite-jobid-api-cpp-devel
-Requires: glite-wms-utils-exception-devel
-Requires: glite-wms-utils-classad-devel, glite-build-common-cpp
+Requires: glite-wms-utils-exception-devel, glite-wms-utils-classad-devel
 Requires: globus-common-devel, globus-ftp-client-devel
 Requires: globus-gss-assist-devel, globus-io-devel
 

@@ -15,7 +15,7 @@ BuildRequires: %{!?extbuilddir: glite-wms-common-devel, glite-wms-purger-devel, 
 BuildRequires: glite-ce-cream-client-devel, libtool, classads-devel
 BuildRequires: glite-px-proxyrenewal-devel, gsoap-devel, boost-devel
 BuildRequires: gridsite-devel, libxml2-devel, log4cpp-devel
-BuildRequires: glite-build-common-cpp, myproxy-devel, c-ares-devel
+BuildRequires: glite-build-common-cpp, myproxy-devel, c-ares-devel, emi-pkgconfig-compat
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 AutoReqProv: yes
 Source: %{name}-%{version}-%{release}.tar.gz
