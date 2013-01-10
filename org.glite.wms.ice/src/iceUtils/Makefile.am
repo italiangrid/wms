@@ -23,7 +23,6 @@ lib_LTLIBRARIES = libglite_wms_iceUtils.la
 libglite_wms_iceUtils_la_SOURCES = \
 				IceUtils.cpp \
 				CreamJob.cpp \
-				ESActivity.cpp \
 				DNProxyManager.cpp \
 				DelegationManager.cpp \
 				CEBlackList.cpp \
