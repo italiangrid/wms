@@ -13,6 +13,7 @@ Requires(preun): chkconfig
 Requires(preun): initscripts
 BuildRequires: %{!?extbuilddir: glite-wms-common-devel, glite-wms-purger-devel, } chrpath
 BuildRequires: glite-ce-cream-client-devel, libtool, classads-devel
+BuildRequires: glite-jobid-api-c-devel, glite-jobid-api-cpp-devel
 BuildRequires: glite-px-proxyrenewal-devel, gsoap-devel, boost-devel
 BuildRequires: gridsite-devel, libxml2-devel, log4cpp-devel
 BuildRequires: glite-build-common-cpp, emi-pkgconfig-compat, myproxy-devel, c-ares-devel
