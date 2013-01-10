@@ -11,7 +11,7 @@ BuildRequires: %{!?extbuilddir: glite-wms-common-devel,} chrpath
 BuildRequires: %{!?extbuilddir: glite-jobid-api-cpp-devel, glite-lb-client-devel, } libtool
 BuildRequires: %{!?extbuilddir: glite-wms-utils-classad-devel,} boost-devel
 BuildRequires: %{!?extbuilddir: glite-px-proxyrenewal-devel,} classads-devel
-BuildRequires: %{!?extbuilddir: glite-build-common-cpp, } globus-gss-assist-devel
+BuildRequires: %{!?extbuilddir: glite-build-common-cpp, emi-pkgconfig-compat } globus-gss-assist-devel
 BuildRequires: %{!?extbuilddir: glite-jobid-api-c-devel, } c-ares-devel
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 AutoReqProv: yes
