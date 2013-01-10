@@ -30,7 +30,7 @@ BuildRequires: argus-pep-api-c-devel, libtool
 BuildRequires: lcmaps-without-gsi-devel, lcmaps-devel, classads-devel
 BuildRequires: glite-jdl-api-cpp-devel, glite-lb-client-devel, fcgi-devel
 BuildRequires: glite-px-proxyrenewal-devel, libxslt-devel, libtar-devel
-BuildRequires: %{!?extbuilddir: glite-build-common-cpp, emi-pkgconfig-compat, glite-wms-common-devel, glite-wms-purger-devel, } gsoap-devel
+BuildRequires: %{!?extbuilddir: glite-wms-common-devel, glite-wms-purger-devel, } gsoap-devel, glite-build-common-cpp, emi-pkgconfig-compat
 BuildRequires: httpd-devel, zlib-devel, boost-devel, c-ares-devel
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 AutoReqProv: yes

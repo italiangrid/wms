@@ -8,11 +8,11 @@ URL: http://web.infn.it/gLiteWMS/
 Group: System Environment/Libraries
 BuildArch: %{_arch}
 BuildRequires: %{!?extbuilddir: glite-wms-common-devel,} chrpath
-BuildRequires: %{!?extbuilddir: glite-jobid-api-cpp-devel, glite-lb-client-devel, } libtool
-BuildRequires: %{!?extbuilddir: glite-wms-utils-classad-devel,} boost-devel
-BuildRequires: %{!?extbuilddir: glite-px-proxyrenewal-devel,} classads-devel
-BuildRequires: %{!?extbuilddir: glite-build-common-cpp, emi-pkgconfig-compat } globus-gss-assist-devel
-BuildRequires: %{!?extbuilddir: glite-jobid-api-c-devel, } c-ares-devel
+BuildRequires: glite-jobid-api-cpp-devel, glite-lb-client-devel, libtool
+BuildRequires: glite-wms-utils-classad-devel, boost-devel
+BuildRequires: glite-px-proxyrenewal-devel, classads-devel
+BuildRequires: glite-build-common-cpp, emi-pkgconfig-compat, globus-gss-assist-devel
+BuildRequires: glite-jobid-api-c-devel, c-ares-devel
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 AutoReqProv: yes
 Source: %{name}-%{version}-%{release}.tar.gz
@@ -76,11 +76,10 @@ rm -rf %{buildroot}
 Summary: Development files for the WMS purger module
 Group: System Environment/Libraries
 Requires: %{name}%{?_isa} = %{version}-%{release}
-Requires: glite-wms-common-devel, glite-jobid-api-cpp-devel
+Requires: %{!?extbuilddir: glite-wms-common-devel, } glite-jobid-api-cpp-devel
 Requires: glite-lb-client-devel, glite-wms-utils-classad-devel
 Requires: glite-px-proxyrenewal-devel, boost-devel
-Requires: c-ares-devel, globus-gss-assist-devel
-Requires: glite-build-common-cpp, glite-jobid-api-c-devel
+Requires: c-ares-devel, globus-gss-assist-devel, glite-jobid-api-c-devel
 
 %description devel
 Development files for the WMS purger module

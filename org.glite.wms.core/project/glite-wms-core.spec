@@ -7,11 +7,11 @@ Vendor: EMI
 URL: http://web.infn.it/gLiteWMS/
 Group: Applications/Internet
 BuildArch: %{_arch}
-#Requires: %{name}%{?_isa} = %{version}-%{release}
-Requires: %{!?extbuilddir: glite-wms-common, glite-wms-configuration, glite-wms-helper, glite-wms-purger, } glite-lb-client
-Requires: boost, classads, openldap, glite-build-common-cpp, glite-wms-utils-classad
+Requires: %{!?extbuilddir: glite-wms-common, glite-wms-configuration, glite-wms-purger, } glite-lb-client
+Requires: boost, classads, openldap, glite-wms-utils-classad
 BuildRequires: chrpath, libtool, boost-devel, c-ares-devel, classads-devel, globus-ftp-client-devel, globus-ftp-control-devel, docbook-style-xsl
-BuildRequires: glite-build-common-cpp, emi-pkgconfig-compat, glite-jobid-api-c-devel, openldap-devel, boost-devel, classads-devel, glite-wms-utils-classad-devel
+BuildRequires: glite-build-common-cpp, emi-pkgconfig-compat, glite-jobid-api-c-devel, openldap-devel
+BuildRequires: boost-devel, classads-devel, glite-wms-utils-classad-devel
 BuildRequires: %{!?extbuilddir: glite-wms-common-devel, glite-wms-purger-devel, } glite-px-proxyrenewal-devel
 BuildRequires: glite-lb-client-devel, glite-jobid-api-cpp-devel, libxslt
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)

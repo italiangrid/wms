@@ -7,13 +7,13 @@ Vendor: EMI
 URL: http://web.infn.it/gLiteWMS/
 Group: System Environment/Libraries
 BuildArch: %{_arch}
-BuildRequires: %{!?extbuilddir: glite-jobid-api-c-devel,} chrpath
-BuildRequires: %{!?extbuilddir: glite-jobid-api-cpp-devel,} libtool, gcc, gcc-c++, cmake
-BuildRequires: %{!?extbuilddir: glite-wms-utils-exception-devel,} boost-devel
-BuildRequires: %{!?extbuilddir: glite-wms-utils-classad-devel,} classads-devel
+BuildRequires: glite-jobid-api-c-devel, chrpath
+BuildRequires: glite-jobid-api-cpp-devel, libtool, gcc, gcc-c++, cmake
+BuildRequires: glite-wms-utils-exception-devel, boost-devel
+BuildRequires: glite-wms-utils-classad-devel, classads-devel
 BuildRequires: globus-common-devel, globus-ftp-client-devel
 BuildRequires: globus-gss-assist-devel, globus-io-devel
-BuildRequires: %{!?extbuilddir: glite-build-common-cpp, emi-pkgconfig-compat } cppunit-devel, openldap-devel, log4cpp, log4cpp-devel
+BuildRequires: glite-build-common-cpp, emi-pkgconfig-compat, cppunit-devel, openldap-devel, log4cpp, log4cpp-devel
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 AutoReqProv: yes
 Source: %{name}-%{version}-%{release}.tar.gz
