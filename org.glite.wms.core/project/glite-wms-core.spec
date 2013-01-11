@@ -11,7 +11,9 @@ Requires: %{!?extbuilddir: glite-wms-common, glite-wms-configuration, glite-wms-
 Requires: boost, classads, openldap, glite-wms-utils-classad
 BuildRequires: chrpath, libtool, boost-devel, c-ares-devel, classads-devel, globus-ftp-client-devel, globus-ftp-control-devel, docbook-style-xsl
 BuildRequires: glite-build-common-cpp, emi-pkgconfig-compat, glite-jobid-api-c-devel, openldap-devel
-BuildRequires: boost-devel, classads-devel, glite-wms-utils-classad-devel, gsoap-devel
+BuildRequires: boost-devel, classads-devel, glite-wms-utils-classad-devel
+BuildRequires: gsoap-devel, gsoap, glite-lbjp-common-gsoap-plugin-devel, glite-lbjp-common-gsoap-plugin
+BuildRequires: glite-jdl-api-cpp-devel, glite-jdl-api-cpp
 BuildRequires: %{!?extbuilddir: glite-wms-common-devel, glite-wms-purger-devel, } glite-px-proxyrenewal-devel
 BuildRequires: glite-lb-client-devel, glite-jobid-api-cpp-devel, libxslt
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
