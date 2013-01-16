@@ -92,6 +92,8 @@ fi
 %dir /usr/share/doc/%{name}-%{version}/
 %doc /usr/share/doc/%{name}-%{version}/LICENSE
 %doc /usr/share/man/man1/glite-wms-*.1.gz
+%dir /usr/share/glite-wms/
+/usr/share/glite-wms/jobwrapper.template.sh
 
 %package devel
 Summary: Development files for the WMS information superkmarket

@@ -12,4 +12,11 @@ EXTRA_DIST = \
 wmdir = $(sysconfdir)/$(initdir)
 wm_SCRIPTS = glite-wms-wm
 
+configdir = $(datadir)/glite-wms
+config_DATA = \
+	template.sh
+
+install-data-hook:
+	/bin/mv $(DESTDIR)$(configdir)/template.sh $(DESTDIR)$(configdir)/jobwrapper.template.sh
+
 MAINTAINERCLEANFILES = Makefile.in *~ *.*~
