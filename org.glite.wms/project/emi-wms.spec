@@ -7,6 +7,7 @@ Vendor: EMI
 Buildarch: noarch
 Group: System Environment/Libraries
 Requires: lcmaps-plugins-voms
+Requires: perl-suidperl
 Requires: emi-version
 Requires: emi-lb
 Requires: jemalloc
