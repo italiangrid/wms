@@ -28,6 +28,7 @@
 #include <fnCall.h>
 #include <string>
 #include <vector>
+#include <iostream>
 #include "glite/wmsutils/classads/classad_utils.h"
 
 using namespace std;
@@ -115,8 +116,10 @@ testMemberEx(
   EvalState &state, 
   Value &result)
 {
+std::cout << "HEREEEEEEEEEEEEEEEEEEEEEEEEEEE " << name << std::endl;
   bool  eval_successful = false;
-  result.SetErrorValue();
+//  result.SetErrorValue();
+result.SetBooleanValue( false );
   
   // We check to make sure that we passed exactly two arguments...
   if (arguments.size() == 2) {
@@ -145,6 +148,7 @@ testMemberEx(
       
         result.SetBooleanValue( false );
         eval_successful=true;
+std::cout << "HEREEEEEEEEEEEEEEEEEEEEEEEEEEE" << std::endl;
 
         ExprList::const_iterator el_it( el->begin() ); 
         ExprList::const_iterator const  el_e( el->end() );
@@ -154,6 +158,7 @@ testMemberEx(
             boost::algorithm::istarts_with(op1,"DENY:") ||
             boost::algorithm::istarts_with(op1,"VOMS:") ) 
         {
+std::cout << "2HEREEEEEEEEEEEEEEEEEEEEEEEEEEE" << std::endl;
           std::string op1_prefix = op1.substr(0,5);
   
           for( ; el_it != el_e; ++el_it ) {
@@ -168,6 +173,7 @@ testMemberEx(
                 if (fqancomparator(op1.substr(5),op2.substr(5))) {
               
                   result.SetBooleanValue( true );
+std::cout << "3breakHEREEEEEEEEEEEEEEEEEEEEEEEEEEE" << std::endl;
                   break;
                 }
               }

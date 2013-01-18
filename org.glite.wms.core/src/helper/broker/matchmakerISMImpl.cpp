@@ -26,6 +26,8 @@ limitations under the License.
 
 #include <boost/shared_ptr.hpp>
 #include <boost/algorithm/string/predicate.hpp>
+#include "glite/wmsutils/classads/classad_utils.h"
+
 #include <algorithm>
 #include <ctime>
 #include "glite/wmsutils/classads/classad_utils.h"
@@ -42,6 +44,31 @@ namespace glite {
 namespace utils = wmsutils::classads;
 namespace wms {
 namespace matchmaking {
+
+namespace {
+
+bool
+match(classad::ClassAd* lhs, classad::ClassAd* rhs, char const* match_type)
+{
+  classad::MatchClassAd match_ad(lhs, rhs);
+
+  bool result = false;
+  match_ad.EvaluateAttrBool(match_type, result);
+
+  match_ad.RemoveLeftAd();
+  match_ad.RemoveRightAd();
+
+  return result;
+}
+
+bool
+left_matches_right(classad::ClassAd const& lhs, classad::ClassAd& rhs)
+{
+  classad::ClassAd lhs_(lhs);
+  return match(&lhs_, &rhs, "leftMatchesRight");
+}
+
+}
 
 void
 matchmakerISMImpl::checkRequirement(
@@ -86,7 +113,7 @@ matchmakerISMImpl::checkRequirement(
       )
     ) {
 
-      if (utils::left_matches_right(ce_ad, jdl)) {
+      if (left_matches_right(ce_ad, jdl)) {
         suitableCEs[ism_it->first] = boost::tuples::make_tuple(
           std::make_pair(false, 0.0), ce_ad_ptr
         );
@@ -224,7 +251,7 @@ matchmakerISMImpl::checkRequirement(
         )
       ) {
 
-        if (utils::left_matches_right(ce_ad, jdl)) {
+        if (left_matches_right(ce_ad, jdl)) {
           suitableCEs[ism_it->first] = boost::tuples::make_tuple(
             std::make_pair(false, 0.0), ce_ad_ptr
           );
