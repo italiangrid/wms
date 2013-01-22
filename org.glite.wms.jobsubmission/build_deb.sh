@@ -77,8 +77,8 @@ EOF
 cat << EOF > org.glite.wms/${PRJNAME}/debian/${PKGNAME}.install
 usr/share/doc/${PKGNAME}-${PKGVERSION}/LICENSE
 usr/lib/libglite_wms*.so.*
-usr/bin/glite_wms_log_monitor
-usr/bin/glite_wms_job_controller
+usr/bin/glite-wms-log_monitor
+usr/bin/glite-wms-job_controller
 etc/rc.d/init.d/glite-wms-lm
 etc/rc.d/init.d/glite-wms-jc
 usr/libexec/glite-wms-clean-lm-recycle.sh
