@@ -63,7 +63,6 @@ pkg_check_modules(PURGER REQUIRED wms-purger)
 pkg_check_modules(GLOBUS_GSSAPI REQUIRED globus-gssapi-gsi)
 pkg_check_modules(LCMAPS REQUIRED lcmaps)
 pkg_check_modules(ARGUSPEP REQUIRED libargus-pep)
-pkg_check_modules(ZLIB REQUIRED zlib)
 find_package( Boost COMPONENTS date_time filesystem regex thread program_options)
 
 if(EXISTS "/etc/debian_version")
