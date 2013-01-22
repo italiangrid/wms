@@ -21,12 +21,12 @@ link_directories(
   ${PURGER_LIBRARY_DIRS}
   )
 
-add_executable(glite_wms_lm_job_status
+add_executable(glite-wms-lm-job_status
   jobstatus.cpp
   JobStatusExtractor.cpp
 )
 
-target_link_libraries(glite_wms_lm_job_status
+target_link_libraries(glite-wms-lm-job_status
   glite_wms_jss_controller
   glite_wms_jss_controller_adapter
   glite_wms_jss_logmonitor
@@ -94,3 +94,8 @@ install(TARGETS glite_wms_jss_logmonitor
   DESTINATION 
   ${PREFIX}/${LIBDIR}
   )
+
+install(TARGETS glite-wms-lm-job_status
+  DESTINATION
+  ${PREFIX}/${LIBEXEC}
+)

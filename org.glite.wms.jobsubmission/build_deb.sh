@@ -82,6 +82,7 @@ usr/bin/glite-wms-job_controller
 etc/rc.d/init.d/glite-wms-lm
 etc/rc.d/init.d/glite-wms-jc
 usr/libexec/glite-wms-clean-lm-recycle.sh
+usr/libexec/glite-wms-lm-job_status
 EOF
 cat << EOF > org.glite.wms/${PRJNAME}/debian/${PKGNAME}-dev.install
 usr/lib/libglite_wms*.so
