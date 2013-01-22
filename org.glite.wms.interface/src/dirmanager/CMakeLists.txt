@@ -12,7 +12,7 @@ include_directories(
   ${LCMAPS_INCLUDE_DIRS}
   )
 
-add_definitions( ${LIBTAR_CFLAGS} ${ZLIB_CFLAGS} -DALLOW_COMMAND_LINE_OVERRIDE )
+add_definitions( ${LIBTAR_CFLAGS} -DALLOW_COMMAND_LINE_OVERRIDE )
 
 link_directories(${PREFIX}/${LIBDIR})
 
@@ -23,7 +23,7 @@ add_executable(glite_wms_wmproxy_dirmanager
 target_link_libraries(glite_wms_wmproxy_dirmanager
   ${LIBTAR_LDFLAGS}
   -ltar
-  ${ZLIB_LDFLAGS}
+  -lz
 )
 
 #set_target_properties(glite_wms_wmproxy_eventlogger PROPERTIES VERSION 0.0.0 SOVERSION 0)
