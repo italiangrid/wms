@@ -75,6 +75,7 @@ usr/include/glite/wms/helper/jobadapter/*.h
 usr/include/glite/wms/ism/*.h
 usr/include/glite/wms/ism/purchaser/*.h
 usr/lib/libglite_wms*.so
+usr/share/glite-wms/*
 EOF
 ###########################################################################
 #
