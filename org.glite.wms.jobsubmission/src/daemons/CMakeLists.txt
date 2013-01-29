@@ -16,20 +16,20 @@ link_directories(${PREFIX}/${LIBDIR}
   ${CONDOR_LIBRARY_DIRS}
   )
 
-add_executable(glite_wms_job_controller
+add_executable(glite-wms-job_controller
   jobcontroller.cpp
   ControllerLoop.cpp
   exceptions.cpp  
   )
 
 
-add_executable(glite_wms_log_monitor
+add_executable(glite-wms-log_monitor
   logmonitor.cpp
   MonitorLoop.cpp
   exceptions.cpp
 )
 
-target_link_libraries(glite_wms_job_controller
+target_link_libraries(glite-wms-job_controller
   glite_wms_jss_controller
   glite_wms_jss_controller_adapter
   glite_wms_jss_common
@@ -54,7 +54,7 @@ target_link_libraries(glite_wms_job_controller
   )
 
 
-target_link_libraries(glite_wms_log_monitor
+target_link_libraries(glite-wms-log_monitor
   glite_wms_jss_controller
   glite_wms_jss_controller_adapter
   glite_wms_jss_logmonitor
@@ -80,8 +80,8 @@ target_link_libraries(glite_wms_log_monitor
   )
 
 install(TARGETS 
-  glite_wms_log_monitor 
-  glite_wms_job_controller
+  glite-wms-log_monitor 
+  glite-wms-job_controller
   DESTINATION 
   ${PREFIX}/${BINDIR}
 )

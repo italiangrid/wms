@@ -3,9 +3,9 @@
 INITIALPWD=${PWD}
 PKGVERSION=3.5.0
 PKGAGE=1
-PKGNAME=glite-wms-core
+PKGNAME=glite-wms-interface
 
-PRJNAME=org.glite.wms.core
+PRJNAME=org.glite.wms.interface
 
 set -e
 
@@ -26,14 +26,20 @@ Source:  ${PKGNAME}
 Section:  libs
 Priority:  optional
 Maintainer:  WMS Support <wms-support@cnaf.infn.it>
-Build-Depends: debhelper (>= 8.0.0~), cmake,chrpath,emi-pkgconfig-compat,libc-ares-dev,gsoap,libboost1.42-dev,libclassad0-dev,libglite-wms-utils-classad-dev,libglite-wms-utils-exception-dev,libglite-jdl-dev,glite-wms-common-dev,libglite-lb-common-dev,libglite-lb-client-dev,libglite-security-proxyrenewal-dev,glite-wms-purger-dev,libglite-jobid-api-cpp-dev,libglobus-gssapi-gsi-dev
+Build-Depends: debhelper (>= 8.0.0~),cmake,chrpath,emi-pkgconfig-compat,voms-dev,libboost1.42-dev,libclassad0-dev,libglite-wms-utils-classad-dev,libglite-wms-utils-exception-dev,libglite-jdl-dev,glite-wms-common-dev,glite-wms-purger-dev,libglobus-gssapi-gsi-dev,libargus-pep-dev,liblcmaps-dev
 Standards-Version:  3.5.0
 Homepage: http://glite.cern.ch/
 
 Package:  ${PKGNAME}
 Architecture: any
 Depends: \${shlibs:Depends}, \${misc:Depends}
-Description:  WMS core
+Description:  WMS interface libraries and executables
+
+
+Package:  ${PKGNAME}-dev
+Architecture: any
+Depends: \${shlibs:Depends}, \${misc:Depends},debhelper (>= 8.0.0~),cmake,chrpath,emi-pkgconfig-compat,voms-dev,libboost1.42-dev,libclassad0-dev,libglite-wms-utils-classad-dev,libglite-wms-utils-exception-dev,libglite-jdl-dev,glite-wms-common-dev,glite-wms-purger-dev,libglobus-gssapi-gsi-dev,libargus-pep-dev,liblcmaps-dev
+Description:  WMS interface development files
 
 EOF
 
@@ -66,17 +72,23 @@ EOF
 ###########################################################################
 cat << EOF > org.glite.wms/${PRJNAME}/debian/${PKGNAME}.install
 usr/share/doc/${PKGNAME}-${PKGVERSION}/LICENSE
-usr/bin/glite-wms-workload_manager
-usr/bin/glite-wms-query-job-state-transitions
 usr/lib/libglite_wms*.so.*
-etc/rc.d/init.d/glite-wms-wm
-usr/include/glite/wms/helper/*.h
-usr/include/glite/wms/helper/jobadapter/*.h
-usr/include/glite/wms/ism/*.h
-usr/include/glite/wms/ism/purchaser/*.h
-usr/lib/libglite_wms*.so
-usr/share/glite-wms/*
+usr/bin/glite_wms_log_monitor
+usr/bin/glite_wms_job_controller
+etc/rc.d/init.d/glite-wms-lm
+etc/rc.d/init.d/glite-wms-jc
+usr/libexec/glite-wms-clean-lm-recycle.sh
 EOF
+cat << EOF > org.glite.wms/${PRJNAME}/debian/${PKGNAME}-dev.install
+usr/lib/libglite_wms*.so
+usr/include/glite/wms/jobsubmission/SubmitAdapter.h
+usr/lib/pkgconfig/*.pc
+EOF
+cat << EOF > org.glite.wms/${PRJNAME}/debian/${PKGNAME}-doc.install
+usr/share/man/man1/glite-wms-job_controller.1.gz
+usr/share/man/man1/glite-wms-log_monitor.1.gz
+EOF
+
 ###########################################################################
 #
 # Rule file
@@ -173,3 +185,7 @@ cd org.glite.wms/${PRJNAME}
 fakeroot make -f debian/rules binary
 rm -rf build debian build-stamp
 cd -
+
+#sudo dpkg -i BINARIES/libglite-wms-configuration_3.5.0-1_amd64.deb
+
+
