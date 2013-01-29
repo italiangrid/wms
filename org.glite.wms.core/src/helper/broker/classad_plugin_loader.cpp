@@ -6,33 +6,55 @@
 
 // $Id: classad_plugin_loader.cpp,v 1.1.2.1 2012/09/11 10:19:40 mcecchi Exp $
 
-#define ENABLE_SHARED_LIBRARY_FUNCTIONS
+#include <iostream>
+#include <boost/thread/once.hpp>
 
 #include "classad_plugin_loader.h"
 #include <classad_distribution.h>
 #include <fnCall.h>
-#include <boost/thread/once.hpp>
-#include <algorithm>
+
+using namespace classad;
+using namespace std;
 
 namespace glite {
 namespace wms {
 namespace classad_plugin {
 
+extern bool doMatch(const char *, const ArgumentList&, EvalState&, Value&);
+extern bool listAttrRegEx(const char *, const ArgumentList&, EvalState&, Value&);
+extern bool retrieveCloseSEsInfo(const char *, const ArgumentList&, EvalState&, Value&);
+extern bool testMemberEx(const char *, const ArgumentList&, EvalState&, Value&);
+extern bool successFraction(const char *, const ArgumentList&, EvalState&, Value&);
+
+static ClassAdFunctionMapping functions[] = 
+{
+  { "fqanMember", (void *)testMemberEx, 0 },
+  { "allMatch",      (void *)doMatch,   0 },
+  { "anyMatch",      (void *)doMatch,   0 },
+  { "",            NULL,                 0 }
+};
+
 namespace {
 
 boost::once_flag f_once = BOOST_ONCE_INIT;
 
-char const* plugins[] = { 
-  "libglite_wms_classad_plugin.so"
-};
-
 void load()
 {
-  classad::ClassAdParser parser;
-  std::for_each(
-    plugins, plugins + (sizeof(plugins)/sizeof(char const*)),
-    classad::FunctionCall::RegisterSharedLibraryFunctions
-  );
+  //classad::FunctionCall::RegisterFunctions(functions);
+  std::string name("fqanMember");
+  classad::FunctionCall::RegisterFunction(name, testMemberEx);
+  name = "allMatch";
+  classad::FunctionCall::RegisterFunction(name, doMatch);
+  name = "anyMatch";
+  classad::FunctionCall::RegisterFunction(name, doMatch);
+  name = "whichMatch";
+  classad::FunctionCall::RegisterFunction(name, doMatch);
+  name = "listAttrRegEx";
+  classad::FunctionCall::RegisterFunction(name, listAttrRegEx);
+  name = "retrieveCloseSEsInfo";
+  classad::FunctionCall::RegisterFunction(name, retrieveCloseSEsInfo);
+  name = "successFraction";
+  classad::FunctionCall::RegisterFunction(name, successFraction);
 }
 
 }

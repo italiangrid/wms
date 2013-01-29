@@ -12,6 +12,7 @@
 // limitations under the License.
 
 #include <fnCall.h>
+#include <iostream>
 #include <classad_distribution.h>
 #include <boost/regex.hpp>
 #include <boost/lexical_cast.hpp>

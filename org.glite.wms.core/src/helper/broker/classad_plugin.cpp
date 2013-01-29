@@ -8,9 +8,7 @@
 #include <fnCall.h>
 
 using namespace std;
-#ifdef WANT_NAMESPACES
 using namespace classad;
-#endif
 
 namespace glite {
 namespace wms {
@@ -36,11 +34,3 @@ static ClassAdFunctionMapping functions[] = {
 };
 
 }}}
-
-extern "C" 
-{ 
-  ClassAdFunctionMapping *Init(void) 
-  {
-    return glite::wms::classad_plugin::functions; 
-  }
-}

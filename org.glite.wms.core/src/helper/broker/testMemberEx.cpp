@@ -116,7 +116,6 @@ testMemberEx(
   EvalState &state, 
   Value &result)
 {
-std::cout << "HEREEEEEEEEEEEEEEEEEEEEEEEEEEE " << name << std::endl;
   bool  eval_successful = false;
 //  result.SetErrorValue();
 result.SetBooleanValue( false );
@@ -129,7 +128,6 @@ result.SetBooleanValue( false );
     if ( arguments[0]->Evaluate(state,arg0) &&
          arguments[1]->Evaluate(state,arg1)) {
 
-#ifdef FLEXIBLE_MEMBER
       if (arg0.IsListValue() && !arg1.IsListValue()) {
     
         Value swap;
@@ -138,7 +136,6 @@ result.SetBooleanValue( false );
         arg0.CopyFrom(arg1);
         arg1.CopyFrom(swap);
       }
-#endif
       const ExprList *el;
       // arg1 must be a list; arg0 must be comparable
       // since we're using strict comparison, arg0 can't be 'error'
@@ -148,7 +145,6 @@ result.SetBooleanValue( false );
       
         result.SetBooleanValue( false );
         eval_successful=true;
-std::cout << "HEREEEEEEEEEEEEEEEEEEEEEEEEEEE" << std::endl;
 
         ExprList::const_iterator el_it( el->begin() ); 
         ExprList::const_iterator const  el_e( el->end() );
@@ -158,7 +154,6 @@ std::cout << "HEREEEEEEEEEEEEEEEEEEEEEEEEEEE" << std::endl;
             boost::algorithm::istarts_with(op1,"DENY:") ||
             boost::algorithm::istarts_with(op1,"VOMS:") ) 
         {
-std::cout << "2HEREEEEEEEEEEEEEEEEEEEEEEEEEEE" << std::endl;
           std::string op1_prefix = op1.substr(0,5);
   
           for( ; el_it != el_e; ++el_it ) {
@@ -173,7 +168,6 @@ std::cout << "2HEREEEEEEEEEEEEEEEEEEEEEEEEEEE" << std::endl;
                 if (fqancomparator(op1.substr(5),op2.substr(5))) {
               
                   result.SetBooleanValue( true );
-std::cout << "3breakHEREEEEEEEEEEEEEEEEEEEEEEEEEEE" << std::endl;
                   break;
                 }
               }
