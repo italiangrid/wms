@@ -76,7 +76,7 @@ GLITE_CHECK_LDAP
 PKG_CHECK_MODULES(ARES, libcares, , AC_MSG_ERROR(["ARES not found"]))
 PKG_CHECK_MODULES(GSOAP, gsoapssl++, , AC_MSG_ERROR(["GSOAP not found"]))
 AC_GSOAP_EXTRAS
-PKG_CHECK_MODULES(GSOAP_PLUGIN, glite-security-gsoap-plugin, , AC_MSG_ERROR(["GSOAP_PLUGIN not found"]))
+PKG_CHECK_MODULES(GSOAP_PLUGIN, glite-security-gsoap-plugin++, , AC_MSG_ERROR(["GSOAP_PLUGIN not found"]))
 AC_BOOST([], AC_MSG_RESULT(["BOOST ok"]), AC_MSG_ERROR(["BOOST not found"]))
 PKG_CHECK_MODULES(CLASSAD, emi-classad-ns, , AC_MSG_ERROR(["CLASSADS not found"]))
 #PKG_CHECK_MODULES(CPPUNIT, cppunit, , AC_MSG_ERROR(["CPPUNIT not found"]))

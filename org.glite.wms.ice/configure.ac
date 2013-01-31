@@ -93,7 +93,7 @@ PKG_CHECK_MODULES(GLITE_LB_CLIENTPP, emi-lb-clientpp, , AC_MSG_ERROR(["GLITE_LB_
 
 PKG_CHECK_MODULES(RENEWAL, emi-proxyrenew, , AC_MSG_ERROR(["PROXY RENEWAL not found"]))
 
-PKG_CHECK_MODULES(GSOAP_PLUGIN, glite-security-gsoap-plugin, , AC_MSG_ERROR(["GSOAP_PLUGIN not found"]))
+PKG_CHECK_MODULES(GSOAP_PLUGIN, glite-security-gsoap-plugin++, , AC_MSG_ERROR(["GSOAP_PLUGIN not found"]))
 
 PKG_CHECK_MODULES(GRIDSITE_OPENSSL, emi-gridsite-openssl, , AC_MSG_ERROR(["GRIDSITE not found"]))
 
