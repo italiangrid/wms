@@ -21,6 +21,7 @@
 #include <cstring>
 #include <iostream>
 #include <fstream>
+#include <algorithm>
 
 #include <sys/types.h>
 #include <pwd.h>
@@ -41,25 +42,8 @@ namespace security {
 
 namespace {
 
-/*
-char const XACML_COMMONAUTHZ_PROFILE_1_1[] = "http://glite.org/xacml/profile/grid-ce/1.0"; // TODO comment, this is an override of:
-//static const char XACML_COMMONAUTHZ_PROFILE_1_1 [] = "http://dci-sec.org/xacml/profile/common-authz/1.1"
-char const XACML_DCISEC_ATTRIBUTE_PROFILE_ID[] = "http://glite.org/xacml/attribute/profile-id"; // TODO comment, this is an override of
-// XACML_DCISEC_ATTRIBUTE_PROFILE_ID = "http://dci-sec.org/xacml/attribute/profile-id";
-
-std::string XACML_DCISEC_ATTRIBUTE_USER_ID("http://glite.org/xacml/attribute/user-id"); // TODO comment, this is an override of:
-// XACML_DCISEC_ATTRIBUTE_USER_ID (XACML_DCISEC_OBLIGATION_MAP_POSIX_USER)
-// const char XACML_DCISEC_ATTRIBUTE_USER_ID[] = "http://dci-sec.org/xacml/attribute/user-id"
-std::string XACML_DCISEC_ATTRIBUTE_GROUP_ID("http://glite.org/xacml/attribute/group-id"); // TODO comment, this is an override of:
-// XACML_DCISEC_ATTRIBUTE_GROUP_ID (XACML_DCISEC_OBLIGATION_MAP_POSIX_USER)
-// const char XACML_DCISEC_OBLIGATION_MAP_POSIX_USER[] = "http://dci-sec.org/xacml/obligation/map-local-user/posix"
-std::string XACML_DCISEC_ATTRIBUTE_GROUP_ID_PRIMARY("http://glite.org/xacml/attribute/group-id/primary"); // TODO comment, this is an override of
-//  XACML_DCISEC_ATTRIBUTE_GROUP_ID_PRIMARY (XACML_DCISEC_OBLIGATION_MAP_POSIX_USER)
-//  static const char 	XACML_DCISEC_OBLIGATION_MAP_POSIX_USER [] = "http://dci-sec.org/xacml/obligation/map-local-user/posix"
-*/
-
-// Reads the certificate file and returns the public part as a string
-std::string read_certchain(std::string filename)
+// reads the certificate file and returns the public part as a string
+std::vector<std::string> read_certchain(std::string filename)
 {
    edglog_fn("argus_authZ::read_certchain");
    
@@ -70,25 +54,28 @@ std::string read_certchain(std::string filename)
    std::ifstream infile(filename.c_str());
    std::string line;
    std::string cert;
+	std::vector<std::string> certs;
    if (infile.fail()) {
       edglog(error) << "failed to open certificate file:" << filename << std::endl;
-      return "";
+      return std::vector<std::string>();
    }
    bool cert_part = false;
    while (infile.good()) {
       getline(infile, line);
       if (CERT_BEGIN == line) {
          cert_part = true;
-      }
-      if (cert_part) {
-         cert += line + '\n';
-      }
-      if (CERT_END == line) {
+      } else if (CERT_END == line) {
          cert_part = false; // more certs can be interleaved with the private key in the middle
+			if (!cert.empty()) {
+				certs.push_back(cert);
+				cert = "";
+			}
+      } else if (cert_part) {
+         cert += line + '\n';
       }
    }
 
-   return cert;
+   return certs;
 }
 
 xacml_subject_t*
@@ -130,7 +117,7 @@ create_xacml_subject_certchain(std::string const& certchain)
       edglog(error) << "can not allocate XACML Subject" << std::endl;
       return 0;
    }
-// XACML_AUTHZINTEROP_SUBJECT_CERTCHAIN // http://authz-interop.org/xacml/subject/cert-chain
+
    xacml_attribute_t* subject_attr_id = xacml_attribute_create(
       XACML_SUBJECT_KEY_INFO);
    if (!subject_attr_id) {
@@ -139,6 +126,8 @@ create_xacml_subject_certchain(std::string const& certchain)
       xacml_subject_delete(subject);
       return 0;
    }
+
+	// common xacml profile
    xacml_attribute_setdatatype(subject_attr_id, XACML_DATATYPE_BASE64BINARY);
    xacml_attribute_addvalue(subject_attr_id, certchain.c_str());
    xacml_subject_addattribute(subject, subject_attr_id);
@@ -222,8 +211,8 @@ create_xacml_environment_profile_id(char const* const profile) {
 }
 
 /**
- * Merges the attributes of the first XACML Subject into the second Subject.
- * WARNING: the attributes values are not copied, only the attributes pointers.
+ * merges the attributes of the first XACML Subject into the second Subject.
+ * warning: the attributes values are not copied, only the attributes pointers.
  */
 bool
 merge_xacml_subject_attrs_into(
@@ -389,8 +378,6 @@ get_response(xacml_response_t* response, std::string const& resourceid)
       for (size_t j = 0; j < obligations_l; ++j) {
          xacml_obligation_t* obligation = xacml_result_getobligation(result, j);
          //xacml_fulfillon_t fulfillon = xacml_obligation_getfulfillon(obligation);
-         //        XACML_FULFILLON_DENY = 0, /* Fulfill the Obligation on Deny decision */
-         //        XACML_FULFILLON_PERMIT
          size_t attrs_l = xacml_obligation_attributeassignments_length(obligation);
          for (size_t k = 0; k < attrs_l; ++k) {
             xacml_attributeassignment_t* attr = xacml_obligation_getattributeassignment(obligation, k);
@@ -450,7 +437,6 @@ argus_authZ(
    std::string const& dn,
    std::string const& userproxypath)
 {
-
    edglog_fn("argus_authZ");
 
    boost::tuple<bool, xacml_decision_t, uid_t, gid_t> error(
@@ -506,27 +492,32 @@ argus_authZ(
      return error;
    }   
 
-   //int timeout = 10;
-   //Debug("setting PEP-C client timeout: " << timeout);
-   //pep_rc = pep_setoption(pep, PEP_OPTION_ENDPOINT_TIMEOUT, timeout);
-   //if (pep_rc != PEP_OK) {
-   // Warning("failed to set PEP client timeout: " << timeout
-   //    << ": " << pep_strerror(pep_rc));
-   //}
+   int timeout = 60;
+   pep_rc = pep_setoption(pep, PEP_OPTION_ENDPOINT_TIMEOUT, timeout);
+   if (pep_rc != PEP_OK) {
+    Warning("failed to set PEP client timeout: " << timeout
+       << ": " << pep_strerror(pep_rc));
+   }
 
-   xacml_subject_t* subject = xacml_subject_create();
-   // subject-id, cert-chain and VOMS FQANs are all one Subject
+   xacml_subject_t* subject(xacml_subject_create());
+   std::vector<std::string> certchain(read_certchain(userproxypath));
+	std::vector<std::string>::iterator it_end(certchain.end());
+	for (std::vector<std::string>::iterator it = certchain.begin();
+	   it != it_end;
+	   ++it) {
+	   xacml_subject_t* subject_certchain(create_xacml_subject_certchain(*it));
+   	// subject-id, cert-chain and VOMS FQANs are all one Subject
+   	if (!merge_xacml_subject_attrs_into(subject_certchain, subject)) {
+      	pep_destroy(pep);
+	      return error;
+	   }
+	}
+
    //xacml_subject_t* subject_id = create_xacml_subjectid(dn);
    //if (!subject_id || !merge_xacml_subject_attrs_into(subject_id, subject)) {
    //   pep_destroy(pep);
    //   return error;
    //}
-   std::string certchain(read_certchain(userproxypath));
-   xacml_subject_t* subject_certchain = create_xacml_subject_certchain(certchain);
-   if (!merge_xacml_subject_attrs_into(subject_certchain, subject)) {
-      pep_destroy(pep);
-      return error;
-   }
    //xacml_subject_t* subject_voms_fqan = create_xacml_subject_voms_fqans(fqans);
    //if (!subject_voms_fqan) {
    //   pep_destroy(pep);
