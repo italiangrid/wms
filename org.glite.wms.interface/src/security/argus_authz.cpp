@@ -108,34 +108,6 @@ create_xacml_subjectid(std::string const& x500dn)
 }
 
 xacml_subject_t*
-create_xacml_subject_certchain(std::string const& certchain)
-{
-   edglog_fn("argus_authZ::create_xacml_subject_certchain");
-
-   xacml_subject_t* subject = xacml_subject_create();
-   if (!subject) {
-      edglog(error) << "can not allocate XACML Subject" << std::endl;
-      return 0;
-   }
-
-   xacml_attribute_t* subject_attr_id = xacml_attribute_create(
-      XACML_SUBJECT_KEY_INFO);
-   if (!subject_attr_id) {
-      edglog(error) << "can not allocate XACML Subject/Attribute: "
-        << XACML_SUBJECT_KEY_INFO << std::endl;
-      xacml_subject_delete(subject);
-      return 0;
-   }
-
-	// common xacml profile
-   xacml_attribute_setdatatype(subject_attr_id, XACML_DATATYPE_BASE64BINARY);
-   xacml_attribute_addvalue(subject_attr_id, certchain.c_str());
-   xacml_subject_addattribute(subject, subject_attr_id);
-
-   return subject;
-}
-
-xacml_subject_t*
 create_xacml_subject_voms_fqans(std::vector<std::string> const& fqans)
 {
    edglog_fn("argus_authZ::create_xacml_subject_voms_fqans");
@@ -230,7 +202,7 @@ merge_xacml_subject_attrs_into(
       return false;
    }
    size_t l = xacml_subject_attributes_length(from_subject);
-   for(size_t i = 0; i < l; ++i) {
+   for (size_t i = 0; i < l; ++i) {
       xacml_attribute_t* attr = xacml_subject_getattribute(from_subject, i);
       if (xacml_subject_addattribute(to_subject,attr) != PEP_XACML_OK) {
          edglog(error) << "failed to merge attribute " << i << " into Subject" << std::endl;
@@ -426,6 +398,28 @@ get_response(xacml_response_t* response, std::string const& resourceid)
    return error;
 }
 
+xacml_subject_t*
+create_xacml_subject_certchain()
+{
+   edglog_fn("argus_authZ::create_xacml_subject_certchain");
+
+   xacml_subject_t* subject = xacml_subject_create();
+   if (!subject) {
+      edglog(error) << "can not allocate XACML Subject" << std::endl;
+      return 0;
+   }
+   xacml_attribute_t* subject_attr_id = xacml_attribute_create(
+      XACML_SUBJECT_KEY_INFO);
+   if (!subject_attr_id) {
+      edglog(error) << "can not allocate XACML Subject/Attribute: "
+        << XACML_SUBJECT_KEY_INFO << std::endl;
+      xacml_subject_delete(subject);
+      return 0;
+   }
+
+   return subject;
+}
+
 } // anonymous namespace
 
 boost::tuple<bool, xacml_decision_t, uid_t, gid_t>
@@ -463,7 +457,7 @@ argus_authZ(
 
    // endpoint urls
    pep_error_t pep_rc;
-   for(unsigned int i = 0; i < pepds.size(); ++i) {
+   for (unsigned int i = 0; i < pepds.size(); ++i) {
       pep_rc = pep_setoption(pep, PEP_OPTION_ENDPOINT_URL, pepds[i].c_str());
       if (pep_rc != PEP_OK) {
          edglog(error) << "failed to set PEPd url: "
@@ -500,18 +494,28 @@ argus_authZ(
    }
 
    xacml_subject_t* subject(xacml_subject_create());
+   if (!subject) {
+      edglog(error) << "can not allocate XACML Subject" << std::endl;
+      return error;
+   }
+   xacml_attribute_t* subject_attr_id = xacml_attribute_create(XACML_SUBJECT_KEY_INFO);
+   if (!subject_attr_id) {
+      edglog(error) << "can not allocate XACML Subject/Attribute: " << XACML_SUBJECT_KEY_INFO << std::endl;
+      xacml_subject_delete(subject);
+      return error;
+   }
+   // common XAML profile datatype for key-info
+   xacml_attribute_setdatatype(subject_attr_id, XACML_DATATYPE_BASE64BINARY);
    std::vector<std::string> certchain(read_certchain(userproxypath));
-	std::vector<std::string>::iterator it_end(certchain.end());
-	for (std::vector<std::string>::iterator it = certchain.begin();
-	   it != it_end;
-	   ++it) {
-	   xacml_subject_t* subject_certchain(create_xacml_subject_certchain(*it));
-   	// subject-id, cert-chain and VOMS FQANs are all one Subject
-   	if (!merge_xacml_subject_attrs_into(subject_certchain, subject)) {
-      	pep_destroy(pep);
-	      return error;
-	   }
-	}
+   // add all certchain values into the attribute
+   std::vector<std::string>::iterator it_end(certchain.end());
+   for (std::vector<std::string>::iterator it = certchain.begin();
+      it != it_end;
+      ++it) {
+      xacml_attribute_addvalue(subject_attr_id, (*it).c_str());
+   }
+   // add the key-info attribute into the subject
+   xacml_subject_addattribute(subject, subject_attr_id);
 
    //xacml_subject_t* subject_id = create_xacml_subjectid(dn);
    //if (!subject_id || !merge_xacml_subject_attrs_into(subject_id, subject)) {
