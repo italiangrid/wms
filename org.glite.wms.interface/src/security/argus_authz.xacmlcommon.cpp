@@ -344,7 +344,7 @@ get_response(xacml_response_t* response, std::string const& resourceid)
       size_t obligations_l = xacml_result_obligations_length(result);
       if (obligations_l == 0 && decision == XACML_DECISION_PERMIT) {
          edglog(error) << "argus no Obligation received, cannot map user" << std::endl;
-         return error;
+         return ret;
       }
 
       for (size_t j = 0; j < obligations_l; ++j) {
