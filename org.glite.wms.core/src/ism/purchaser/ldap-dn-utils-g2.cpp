@@ -134,6 +134,15 @@ bool is_glue2_share_capacity_dn(std::vector<std::string> const& dn)
     boost::algorithm::istarts_with(dn[3],"GLUE2GroupID");
 }
 
+bool is_glue2_storage_access_protocol_dn(std::vector<std::string> const& dn)
+{
+  return dn.size() > 3 &&
+    boost::algorithm::istarts_with(dn[0],"GLUE2StorageAccessProtocolID") &&
+    boost::algorithm::istarts_with(dn[1],"GLUE2ServiceID") &&
+    boost::algorithm::istarts_with(dn[2],"GLUE2GroupID") &&
+    boost::algorithm::istarts_with(dn[3],"GLUE2DomainID");
+}
+
 } // namespace purchaser
 } // namespace ism
 } // namespace wms
