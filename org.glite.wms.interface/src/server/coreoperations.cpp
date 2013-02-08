@@ -996,7 +996,7 @@ jobpurge(jobPurgeResponse& jobPurge_response, JobId *jobid, bool checkstate = fa
    }
 
    // Purge allowed if the job is in ABORTED state or DONE success
-   // DONE_COE = DONE_CODE_OK  or DONE_CODE_CANCELLED
+   // DONE_CODE = DONE_CODE_OK  or DONE_CODE_CANCELLED
    int donecode = status.getValInt(JobStatus::DONE_CODE);
    if (!checkstate
          || ((status.status == JobStatus::ABORTED)
@@ -1004,63 +1004,67 @@ jobpurge(jobPurgeResponse& jobPurge_response, JobId *jobid, bool checkstate = fa
                  && ((donecode == JobStatus::DONE_CODE_OK)
                      || (donecode == JobStatus::DONE_CODE_CANCELLED))))) {
 
-      string usercert;
-      string userkey;
-      bool isproxyfile = false;
-      try {
+      //string usercert;
+      //string userkey;
+      //bool isproxyfile = false;
+      //try {
 
-         try {
-           security::checkProxyValidity(delegatedproxy); // are we sure we need valid delegated credential for a job purge?
-         } catch (glite::wmsutils::exception::Exception& ex) {
-         }
+         //try {
+           //security::checkProxyValidity(delegatedproxy);
+
+           // are we sure we need valid delegated credential for a job purge?
+           // MC answer: NO
+
+         //} catch (glite::wmsutils::exception::Exception& ex) {
+         //}
 
          // Creating temporary Proxy file
-         char time_string[20];
-         wmsutilities::oedgstrstream s;
-         struct timeval tv;
-         struct tm* ptm;
-         long milliseconds;
-         gettimeofday(&tv, NULL);
-         ptm = localtime(&tv.tv_sec);
-         strftime(time_string, sizeof (time_string), "%Y%m%d%H%M%S", ptm);
-         milliseconds = tv.tv_usec / 1000;
-         s<<"/tmp/"<<std::string(time_string)<<milliseconds<<".pproxy";
-         string tempproxy = s.str();
+         //char time_string[20];
+         //wmsutilities::oedgstrstream s;
+         //struct timeval tv;
+         //struct tm* ptm;
+         //long milliseconds;
+         //gettimeofday(&tv, NULL);
+         //ptm = localtime(&tv.tv_sec);
+         //strftime(time_string, sizeof (time_string), "%Y%m%d%H%M%S", ptm);
+         //milliseconds = tv.tv_usec / 1000;
+         //s<<"/tmp/"<<std::string(time_string)<<milliseconds<<".pproxy";
+         //string tempproxy = s.str();
 
-         if (!wmputilities::fileCopy(delegatedproxy, tempproxy)) {
-               edglog(severe)<<"Unable to copy " << delegatedproxy << " to " <<tempproxy << endl;
-         }
+         //if (!wmputilities::fileCopy(delegatedproxy, tempproxy)) {
+         //      edglog(severe)<<"Unable to copy " << delegatedproxy << " to " <<tempproxy << endl;
+         //}
 
-         usercert = tempproxy;
-         userkey = tempproxy;
+         //usercert = tempproxy;
+         //userkey = tempproxy;
 
-         isproxyfile = true;
-      } catch (glite::wmsutils::exception::Exception& ex) {
-         if (ex.getCode() == wmputilities::WMS_PROXY_EXPIRED) {
-            if (!getenv(GLITE_HOST_CERT) || ! getenv(GLITE_HOST_KEY)) {
-               edglog(severe)<<"Unable to get values for environment variable "
-                             <<string(GLITE_HOST_CERT)<<" and/or "<<string(GLITE_HOST_KEY)<<endl;
-               throw JobOperationException(__FILE__, __LINE__,
-                                           "jobpurge()", wmputilities::WMS_ENVIRONMENT_ERROR,
-                                           "Unable to perform job purge. Server error\n(please "
-                                           "contact server administrator)");
-            } else {
-               edglog(debug)<<"Reading user cert and user key from "
-                            "environment variables GLITE_HOST_CERT and "
-                            "GLITE_HOST_KEY"<<endl;
-               usercert = string(getenv(GLITE_HOST_CERT));
-               userkey = string(getenv(GLITE_HOST_KEY));
-            }
-         } else {
-            throw ex;
-         }
-      }
+         //isproxyfile = true;
+      //} catch (glite::wmsutils::exception::Exception& ex) {
+         //if (ex.getCode() == wmputilities::WMS_PROXY_EXPIRED) {
+            //if (!getenv(GLITE_HOST_CERT) || ! getenv(GLITE_HOST_KEY)) {
+            //   edglog(severe)<<"Unable to get values for environment variable "
+            //                 <<string(GLITE_HOST_CERT)<<" and/or "<<string(GLITE_HOST_KEY)<<endl;
+            //   throw JobOperationException(__FILE__, __LINE__,
+            //                               "jobpurge()", wmputilities::WMS_ENVIRONMENT_ERROR,
+            //                               "Unable to perform job purge. Server error\n(please "
+            //                               "contact server administrator)");
+            //} else {
+            //   edglog(debug)<<"Reading user cert and user key from "
+            //                "environment variables GLITE_HOST_CERT and "
+            //                "GLITE_HOST_KEY"<<endl;
+            //   usercert = string(getenv(GLITE_HOST_CERT));
+            //   userkey = string(getenv(GLITE_HOST_KEY));
+            //}
+         //} else {
+         //   throw ex;
+         //}
+      //}
 
-      edglog(debug)<<"User cert: "<<usercert<<endl;
-      edglog(debug)<<"User key: "<<userkey<<endl;
+      //edglog(debug)<<"User cert: "<<usercert<<endl;
+      //edglog(debug)<<"User key: "<<userkey<<endl;
 
-      setenv(X509_USER_CERT, usercert.c_str(), 1);
-      setenv(X509_USER_KEY, userkey.c_str(), 1);
+      //setenv(X509_USER_CERT, usercert.c_str(), 1);
+      //setenv(X509_USER_KEY, userkey.c_str(), 1);
 
       if (!wmputilities::doPurge(jobid->toString(), forcePurge, wmputilities::hasParent(status))) {
          edglog(severe)<<"Unable to complete job purge"<<endl;
@@ -1071,13 +1075,13 @@ jobpurge(jobPurgeResponse& jobPurge_response, JobId *jobid, bool checkstate = fa
          }
       }
 
-      unsetenv(X509_USER_CERT);
-      unsetenv(X509_USER_KEY);
+      //unsetenv(X509_USER_CERT);
+      //unsetenv(X509_USER_KEY);
 
       // Removing temporary Proxy file
-      if (isproxyfile) {
-         remove(usercert.c_str());
-      }
+      //if (isproxyfile) {
+      //   remove(usercert.c_str());
+      //}
 
    } else {
       edglog(error)<<"Job current status doesn't allow purge operation"<<endl;
