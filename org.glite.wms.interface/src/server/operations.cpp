@@ -324,6 +324,21 @@ getOutputFileList(getOutputFileListResponse& getOutputFileList_response,
 
       string jobdirectory = wmputilities::getJobDirectoryPath(jobid);
 
+	// bug 98113
+	// wmputilities::readTextFile(wmputilities::getJobJDLExistingStartPath(jid)
+	// turn into classad
+	// get VO and VOMS_FQAN attributes
+	// compare with wmputilities::getGridsiteVO()
+	// build a set from this vector of strings wmputilities::getGridsiteFQANs()
+	// and check that VOMS_FQAN is in that set
+	//ClassAd        *classad;
+	//ClassAdParser  parser;
+	//classad = parser.ParseClassAd(wmputilities::getJobJDLExistingStartPath(jid), true);
+	//ad.EvaluateAttr( "foo", val )
+	//JDLPrivate::VOMS_FQAN
+	//JDL::VIRTUAL_ORGANISATION
+
+
       // Checking for maradona file, created if and only if the job is in DONE state
       // isn't the check on the status already done in the client?
       edglog(info)<<"Searching for MARADONA file: "<<jobdirectory + FILE_SEPARATOR

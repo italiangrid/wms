@@ -887,8 +887,7 @@ generateRandomNumber(int lowerlimit, int upperlimit)
    GLITE_STACK_CATCH();
 }
 
-void
-fileCopy(const string& source, const string& target)
+bool fileCopy(const string& source, const string& target)
 {
    GLITE_STACK_TRY("fileCopy()");
    edglog_fn("wmputils::fileCopy");
@@ -899,17 +898,13 @@ fileCopy(const string& source, const string& target)
    if (!in.good()) {
       edglog(severe)<<"Copy failed, !in.good(). \n\tSource: "
                     <<source<<" Target: "<<target<<endl;
-      throw FileSystemException(__FILE__, __LINE__,
-                                "fileCopy(const string& source, const string& target)",
-                                WMS_IS_FAILURE, "Unable to copy file");
+      return false;
    }
    ofstream out(target.c_str());
    if (!out.good()) {
       edglog(severe)<<"Copy failed, !out.good(). \n\tSource: "
                     <<source<<"\n\tTarget: "<<target<<endl;
-      throw FileSystemException(__FILE__, __LINE__,
-                                "fileCopy(const string& source, const string& target)",
-                                WMS_IS_FAILURE, "Unable to copy file");
+      return false;
    }
    out<<in.rdbuf(); // read original file into target
 
@@ -919,10 +914,9 @@ fileCopy(const string& source, const string& target)
          chmod(target.c_str(), from_stat.st_mode)) {
       edglog(severe)<<"Copy failed, chown/chmod. \n\tSource: "
                     <<source<<"\n\tTarget: "<<target<<endl;
-      throw FileSystemException(__FILE__, __LINE__,
-                                "fileCopy(const string& source, const string& target)",
-                                WMS_IS_FAILURE, "Unable to copy file");
+      return false;
    }
+   return true;
    GLITE_STACK_CATCH();
 }
 

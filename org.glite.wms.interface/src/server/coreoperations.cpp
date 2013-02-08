@@ -1027,7 +1027,9 @@ jobpurge(jobPurgeResponse& jobPurge_response, JobId *jobid, bool checkstate = fa
          s<<"/tmp/"<<std::string(time_string)<<milliseconds<<".pproxy";
          string tempproxy = s.str();
 
-         wmputilities::fileCopy(delegatedproxy, tempproxy);
+         if (!wmputilities::fileCopy(delegatedproxy, tempproxy)) {
+               edglog(severe)<<"Unable to copy " << delegatedproxy << " to " <<tempproxy << endl;
+         }
 
          usercert = tempproxy;
          userkey = tempproxy;

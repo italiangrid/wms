@@ -87,7 +87,7 @@ std::string getFileName(const std::string& path);
  * @param source the source file
  * @param target the target file
  */
-void fileCopy(const std::string& source, const std::string& target);
+bool fileCopy(const std::string& source, const std::string& target);
 
 int doExecv(const std::string& command, std::vector<std::string> &params,
             std::string& errormsg);
