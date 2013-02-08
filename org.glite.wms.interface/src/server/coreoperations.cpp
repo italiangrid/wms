@@ -1013,7 +1013,7 @@ jobpurge(jobPurgeResponse& jobPurge_response, JobId *jobid, bool checkstate = fa
            //security::checkProxyValidity(delegatedproxy);
 
            // are we sure we need valid delegated credential for a job purge?
-           // MC answer: NO
+           // MC answer: NO, we don't need them
 
          //} catch (glite::wmsutils::exception::Exception& ex) {
          //}
