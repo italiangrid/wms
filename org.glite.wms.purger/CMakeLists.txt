@@ -31,6 +31,25 @@ else( ${CMAKE_VERSION} VERSION_LESS "2.8.2" )
     endif( IS_DIRECTORY "/usr/lib64" AND NOT IS_SYMLINK "/usr/lib64" )
 endif( ${CMAKE_VERSION} VERSION_LESS "2.8.2" )
 
+IF (UNIX)
+  # since it's unix-specific we will use bash
+  ADD_CUSTOM_TARGET (distclean @echo cleaning ${FASTLIB_SOURCE_DIR}
+for source distribution)
+        
+  ADD_CUSTOM_COMMAND(TARGET distclean
+    COMMAND make ARGS clean
+    COMMAND find ARGS ${FASTLIB_SOURCE_DIR} -iname CMakeCache.txt
+-delete
+    COMMAND find ARGS ${FASTLIB_SOURCE_DIR} -iname cmake_install.cmake
+-delete
+    COMMAND find ARGS ${FASTLIB_SOURCE_DIR} -iname Makefile -delete
+    COMMAND find ARGS ${FASTLIB_SOURCE_DIR} -depth -type d -iname
+CMakeFiles -exec rm -rf {} \;
+    COMMAND rm ARGS -rf bin lib include
+    VERBATIM )
+ENDIF(UNIX)
+
+
 set(BINDIR "bin")
 
 set(SBINDIR "sbin")
