@@ -47,7 +47,7 @@ if(DEFINED ADDITIONAL_PKG_CONFIG_PATH)
 "${ADDITIONAL_PKG_CONFIG_PATH}:$ENV{PKG_CONFIG_PATH}")
 endif(DEFINED ADDITIONAL_PKG_CONFIG_PATH)
 
-
+set(BOOST_ROOT "/usr/lib64:/usr/lib")
 
 find_package(PkgConfig REQUIRED)
 find_package(Perl REQUIRED)
@@ -107,16 +107,16 @@ if("${RH_VER}" STREQUAL "5")
 	set(BOOST_THREAD_HACK_LDFLAGS "-lboost_thread")
 endif("${RH_VER}" STREQUAL "5") 
 
-add_definitions( -DHAVE_STRINGSTREAM=1 )
+add_definitions( -pipe -Wall -DHAVE_STRINGSTREAM=1 ${CLASSAD_CFLAGS})
 
 if(DEFINED BUILD_DBG)
 
-  add_definitions( -pipe -g -O0 -Wall ${CLASSAD_CFLAGS})
+  add_definitions( -g -O0 )
 
 
 else(DEFINED BUILD_DBG)
 
-  add_definitions( -pipe -O2 -Wall ${CLASSAD_CFLAGS})
+  add_definitions( -O2 )
 
 endif(DEFINED BUILD_DBG)
 
