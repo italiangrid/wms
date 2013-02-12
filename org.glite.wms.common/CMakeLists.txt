@@ -47,7 +47,7 @@ if(DEFINED ADDITIONAL_PKG_CONFIG_PATH)
 "${ADDITIONAL_PKG_CONFIG_PATH}:$ENV{PKG_CONFIG_PATH}")
 endif(DEFINED ADDITIONAL_PKG_CONFIG_PATH)
 
-
+set(BOOST_ROOT "/usr/lib64:/usr/lib")
 
 find_package(PkgConfig REQUIRED)
 find_package(Perl REQUIRED)
@@ -64,15 +64,16 @@ pkg_check_modules(LOG4CPP REQUIRED log4cpp)
 find_package( Boost COMPONENTS date_time filesystem regex thread
 program_options REQUIRED)
 
+add_definitions( -Wall -pipe -DHAVE_STRINGSTREAM=1 )
 
 if(DEFINED BUILD_DBG)
   
-  add_definitions( -pipe -g -O0 -Wall ${CLASSAD_CFLAGS})
+  add_definitions( -g -O0 ${CLASSAD_CFLAGS})
   
   
 else(DEFINED BUILD_DBG)
   
-  add_definitions( -pipe -O2 -Wall ${CLASSAD_CFLAGS})
+  add_definitions( -O2 ${CLASSAD_CFLAGS})
   
 endif(DEFINED BUILD_DBG)
 
