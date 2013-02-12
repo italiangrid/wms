@@ -130,7 +130,7 @@ install(FILES
 )
 
 if(NOT DEFINED SYSCONFIGDIR)
-    set(SYSCONFIGDIR "etc/")
+    set(SYSCONFIGDIR "${PREFIX}/../etc/")
 endif(NOT DEFINED SYSCONFIGDIR)
 
 
