@@ -32,6 +32,7 @@ Requires: glite-wms-interface
 Requires: glite-wms-ice
 Requires: glite-wms-jobsubmission
 Requires: glite-wms-core
+Requires: argus-gsi-pep-callout
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 AutoReqProv: yes
