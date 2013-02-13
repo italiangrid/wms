@@ -19,6 +19,7 @@ Requires: glite-initscript-globus-gridftp
 Requires: kill-stale-ftp
 Requires: lcas-plugins-voms
 Requires: fetch-crl
+Requires: argus-gsi-pep-callout
 Requires: mysql-server
 Requires: lcas-plugins-basic
 Requires: glite-info-provider-service
