@@ -31,6 +31,24 @@ else( ${CMAKE_VERSION} VERSION_LESS "2.8.2" )
     endif( IS_DIRECTORY "/usr/lib64" AND NOT IS_SYMLINK "/usr/lib64" )
 endif( ${CMAKE_VERSION} VERSION_LESS "2.8.2" )
 
+IF (UNIX)
+  # since it's unix-specific we will use bash
+  ADD_CUSTOM_TARGET (distclean @echo cleaning ${FASTLIB_SOURCE_DIR}
+for source distribution)
+	
+  ADD_CUSTOM_COMMAND(TARGET distclean
+    COMMAND make ARGS clean
+    COMMAND find ARGS ${FASTLIB_SOURCE_DIR} -iname CMakeCache.txt
+-delete
+    COMMAND find ARGS ${FASTLIB_SOURCE_DIR} -iname cmake_install.cmake
+-delete
+    COMMAND find ARGS ${FASTLIB_SOURCE_DIR} -iname Makefile -delete
+    COMMAND find ARGS ${FASTLIB_SOURCE_DIR} -depth -type d -iname
+CMakeFiles -exec rm -rf {} \;
+    COMMAND rm ARGS -rf bin lib include
+    VERBATIM )
+ENDIF(UNIX)
+
 set(BINDIR "bin")
 
 set(SBINDIR "sbin")
@@ -47,7 +65,7 @@ if(DEFINED ADDITIONAL_PKG_CONFIG_PATH)
 "${ADDITIONAL_PKG_CONFIG_PATH}:$ENV{PKG_CONFIG_PATH}")
 endif(DEFINED ADDITIONAL_PKG_CONFIG_PATH)
 
-
+set(BOOST_ROOT "/usr/lib64:/usr/lib")
 
 find_package(PkgConfig REQUIRED)
 find_package(Perl REQUIRED)
@@ -58,10 +76,6 @@ pkg_check_modules(GSOAP_PLUSPLUS REQUIRED gsoap++)
 pkg_check_modules(GSOAP_SSL REQUIRED gsoapssl)
 pkg_check_modules(GSOAP_SSL_PLUSPLUS REQUIRED gsoapssl++)
 pkg_check_modules(GSOAP_PLUGIN REQUIRED glite-security-gsoap-plugin++)
-pkg_check_modules(BOOST_REGEX REQUIRED emi-boost-regex)
-pkg_check_modules(BOOST_FILESYSTEM REQUIRED emi-boost-filesystem)
-pkg_check_modules(BOOST_THREAD REQUIRED emi-boost-thread)
-pkg_check_modules(BOOST_OPTIONS REQUIRED emi-boost-options)
 pkg_check_modules(CLASSAD REQUIRED emi-classad-ns)
 pkg_check_modules(WMSUTILS_CLASSADS REQUIRED classad-utils)
 pkg_check_modules(WMSUTILS_JOBMAN_EXCEPTION REQUIRED jobman-exception)
@@ -79,6 +93,7 @@ pkg_check_modules(PROXYRENEW REQUIRED emi-proxyrenew)
 pkg_check_modules(PURGER REQUIRED wms-purger)
 pkg_check_modules(JOBID REQUIRED emi-jobid)
 pkg_check_modules(GLOBUS_GSSAPI REQUIRED globus-gssapi-gsi)
+find_package( Boost COMPONENTS filesystem thread regex program_options REQUIRED )
 
 if(EXISTS "/etc/debian_version")
   set(ONDEB "1")
@@ -91,18 +106,21 @@ if(EXISTS "/etc/redhat-release")
 endif(EXISTS "/etc/redhat-release")
 
 
+add_definitions(-DHAVE_STRINGSTREAM=1  -pipe -Wall ${CLASSAD_CFLAGS}
+-DLDAP_DEPRECATED)
+
 if(DEFINED ONDEB)
   add_definitions( -DGSOAP_279_TRICK )
 endif(DEFINED ONDEB)
 
 if(DEFINED BUILD_DBG)
   
-  add_definitions( -pipe -g -O0 -Wall ${CLASSAD_CFLAGS} -DLDAP_DEPRECATED)
+  add_definitions( -g -O0 )
   
   
 else(DEFINED BUILD_DBG)
   
-  add_definitions( -pipe -O2 -Wall ${CLASSAD_CFLAGS} -DLDAP_DEPRECATED)
+  add_definitions( -O2 )
   
 endif(DEFINED BUILD_DBG)
 
@@ -112,11 +130,10 @@ install(FILES
 )
 
 if(NOT DEFINED SYSCONFIGDIR)
-    set(SYSCONFIGDIR "etc/")
+    set(SYSCONFIGDIR "${PREFIX}/../etc/")
 endif(NOT DEFINED SYSCONFIGDIR)
 
 
-#add_subdirectory(src)
 add_subdirectory(src)
 add_subdirectory(interface)
 add_subdirectory(doc)

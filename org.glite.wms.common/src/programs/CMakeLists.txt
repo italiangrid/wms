@@ -19,9 +19,7 @@ target_link_libraries(glite-wms-get-configuration
   glite_wms_conf 
   glite_wms_util 
   ${JOBID_LIBRARIES}
-  ${BOOST_REGEX_LIBRARIES}
-  ${BOOST_FILESYSTEM_LIBRARIES}
-  ${BOOST_DATE_TIME_LIBRARIES}
+  ${Boost_LIBRARIES}
   ${WMSUTILS_CLASSADS_ALT_LIBRARIES}
   ${WMSUTILS_CLASSADS_LIBRARIES}
   )
