@@ -1,4 +1,6 @@
 [
+  ce_id="emi002.grid.sinica.edu.tw:8443/cream-pbs-testers_q";
+
   nodenumber = 2;
 
   lrms_type = "LSF"; 

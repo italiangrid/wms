@@ -34,12 +34,12 @@ limitations under the License.
 
 #include "glite/wms/helper/exceptions.h"
 
-#include "jobadapter/JobAdapter.h"
-#include "jobadapter/exceptions.h"
+#include "glite/wms/helper/exceptions.h"
+#include "glite/wms/helper/jobadapter/JobAdapter.h"
 
-#include "jobadapter/url.h"
+#include "helper/jobadapter/url.h"
 
-#include "glite/wmsutils/jobid/JobId.h"
+#include "glite/jobid/JobId.h"
 
 #include "glite/jdl/convert.h"
 

@@ -1,4 +1,4 @@
-opyright (c) Members of the EGEE Collaboration. 2004.
+/* Copyright (c) Members of the EGEE Collaboration. 2004.
 See http://www.eu-egee.org/partners for details on the
 copyright holders.
 
@@ -32,14 +32,12 @@ limitations under the License.
 #include "classad_distribution.h"
 
 #include "glite/wms/helper/exceptions.h"
+#include "glite/wms/helper/jobadapter/JobAdapter.h"
 
-#include "jobadapter/JobAdapter.h"
-#include "jobadapter/exceptions.h"
+#include "helper/jobadapter/exceptions.h"
+#include "helper/jobadapter/url.h"
 
-#include "jobadapter/url.h"
-
-#include "glite/wmsutils/jobid/JobId.h"
-
+#include "glite/jobid/JobId.h"
 #include "glite/jdl/convert.h"
 
 #include "glite/wms/common/configuration/Configuration.h"

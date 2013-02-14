@@ -25,7 +25,8 @@ limitations under the License.
 //**************************************************************************
 
 #include <iostream>
-#include "jobadapter/url.h"
+
+#include "helper/jobadapter/url.h"
 
 using std::cout;
 using std::cerr;
