@@ -1,0 +1,125 @@
+add_subdirectory( sqlite)
+
+include_directories(${CLASSAD_INCLUDE_DIRS}
+                    ${PROJECT_SOURCE_DIR}/src
+		    ${PROJECT_SOURCE_DIR}/src/iceDb/sqlite
+		    #${VOMS_INCLUDE_DIRS}
+		    ${WMS_COMMON_CONF_INCLUDE_DIRS}
+		    #${LOG4CPP_INCLUDE_DIRS}
+		    #${CLASSAD_INCLUDE_DIRS}
+		    ${Boost_INCLUDE_DIRS}
+		    
+		    /usr/include)
+
+add_custom_target(ICEDB
+  DEPENDS
+   Transaction.cpp 
+                                GetCEUrl.cpp 
+                                AbsDbOperation.cpp 
+                                CheckGridJobID.cpp 
+                                CheckDelegationByID.cpp 
+                                GetAllProxyByDN.cpp 
+                                GetDelegation.cpp 
+                                GetDelegationByID.cpp 
+                                GetAllDelegation.cpp 
+                                GetProxyInfoByDN.cpp 
+                                GetProxyInfoByDN_MYProxy.cpp 
+                                GetLease.cpp 
+                                GetLeaseByID.cpp 
+                                GetTerminatedJobs.cpp 
+                                CreateJob.cpp 
+                                GetAllProxyInfo.cpp 
+                                CreateProxyField.cpp 
+                                CreateDelegation.cpp 
+                                CreateLease.cpp 
+                                DNHasJobs.cpp 
+                                UpdateProxyFieldsByDN.cpp 
+                                UpdateDelegationTimesByID.cpp 
+                                RemoveJobByGid.cpp 
+                                RemoveJobByCid.cpp 
+                                RemoveProxyByDN.cpp 
+                                RemoveDelegationByID.cpp 
+                                RemoveDelegationByDNMyProxy.cpp 
+                                RemoveDelegation.cpp 
+                                RemoveLease.cpp 
+                                GetAllJobs.cpp 
+                                GetJobByGid.cpp 
+                                GetJobByCid.cpp 
+                                GetJobsToPoll.cpp 
+                                GetJobsByDbID.cpp 
+                                GetEventID.cpp 
+                                SetEventID.cpp 
+                                SetEventIDForCE.cpp 
+                                GetDbID.cpp 
+                                SetDbID.cpp
+				GetAllDN.cpp 
+                                RemoveJobsByDbID.cpp 
+                                InsertStat.cpp 
+                                GetStats.cpp 
+                                GetJobsByDN.cpp 
+                                GetJobsByDNMyProxy.cpp 
+                                UpdateProxyCounterByDN.cpp 
+                                RemoveJobByUserDN.cpp 
+                                UpdateJob.cpp
+
+)
+
+add_library( glite_wms_iceDb
+  SHARED
+    Transaction.cpp 
+                                GetCEUrl.cpp 
+                                AbsDbOperation.cpp 
+                                CheckGridJobID.cpp 
+                                CheckDelegationByID.cpp 
+                                GetAllProxyByDN.cpp 
+                                GetDelegation.cpp 
+                                GetDelegationByID.cpp 
+                                GetAllDelegation.cpp 
+                                GetProxyInfoByDN.cpp 
+                                GetProxyInfoByDN_MYProxy.cpp 
+                                GetLease.cpp 
+                                GetLeaseByID.cpp 
+                                GetTerminatedJobs.cpp 
+                                CreateJob.cpp 
+                                GetAllProxyInfo.cpp 
+                                CreateProxyField.cpp 
+                                CreateDelegation.cpp 
+                                CreateLease.cpp 
+                                DNHasJobs.cpp 
+                                UpdateProxyFieldsByDN.cpp 
+                                UpdateDelegationTimesByID.cpp 
+                                RemoveJobByGid.cpp 
+                                RemoveJobByCid.cpp 
+                                RemoveProxyByDN.cpp 
+                                RemoveDelegationByID.cpp 
+                                RemoveDelegationByDNMyProxy.cpp 
+                                RemoveDelegation.cpp 
+                                RemoveLease.cpp 
+                                GetAllJobs.cpp 
+                                GetJobByGid.cpp 
+                                GetJobByCid.cpp 
+                                GetJobsToPoll.cpp 
+                                GetJobsByDbID.cpp 
+                                GetEventID.cpp 
+                                SetEventID.cpp 
+                                SetEventIDForCE.cpp 
+                                GetDbID.cpp 
+                                SetDbID.cpp
+				GetAllDN.cpp 
+                                RemoveJobsByDbID.cpp 
+                                InsertStat.cpp 
+                                GetStats.cpp 
+                                GetJobsByDN.cpp 
+                                GetJobsByDNMyProxy.cpp 
+                                UpdateProxyCounterByDN.cpp 
+                                RemoveJobByUserDN.cpp 
+                                UpdateJob.cpp  
+  )
+
+set_target_properties( glite_wms_iceDb PROPERTIES VERSION 0.0.0 SOVERSION 0)
+
+install(TARGETS glite_wms_iceDb
+  LIBRARY 
+  DESTINATION 
+  ${PREFIX}/${LIBDIR}
+  )
