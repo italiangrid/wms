@@ -40,6 +40,9 @@ link_directories(${PREFIX}/${LIBDIR}
   ${PROJECT_SOURCE_DIR}/src/eventlogger
   ${PROJECT_SOURCE_DIR}/src/dirmanager
   ${PROJECT_SOURCE_DIR}/src/commands
+  ${WMS_COMMON_LOGGER_LIBRARY_DIRS}
+  ${PURGER_LIBRARY_DIRS}
+  ${Boost_LIBRARY_DIRS}
   )
 
 add_executable(glite_wms_wmproxy_server
@@ -57,7 +60,7 @@ add_executable(glite_wms_wmproxy_server
   configuration.cpp
   wmp2wm.cpp
   structconverter.cpp
-  stdsoap2_${GSOAP_VERSION}.cpp
+  stdsoap2-${GSOAP_VERSION}.cpp
   signalhandler.cpp
 )
 
@@ -75,11 +78,6 @@ target_link_libraries(
   ${FCGI_CPP_LIBRARIES}
   ${GRIDSITE_OPENSSL_LIBRARIES}
   ${VOMS_LIBRARIES}
-#  ${LCMAPS_RET_ACCT_LIBRARIES} 
-#  ${LCMAPS_RET_POOLIDX_LIBRARIES}
-#  ${LCMAPS_VER_ACCT_LIBRARIES}
-#  ${LCMAPS_GSS_ASSIST_LIBRARIES}
-#  ${LCMAPS_LIBRARIES}
   ${LCMAPS_WITHOUT_GSI_LIBRARIES}
   ${LCMAPS_RET_POOLIDX_WITHOUT_GSI_LIBRARIES}
   ${LCMAPS_GSS_ASSIST_WITHOUT_GSI_LIBRARIES}

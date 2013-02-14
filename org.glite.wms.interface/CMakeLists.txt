@@ -30,6 +30,24 @@ else( ${CMAKE_VERSION} VERSION_LESS "2.8.2" )
     endif( IS_DIRECTORY "/usr/lib64" AND NOT IS_SYMLINK "/usr/lib64" )
 endif( ${CMAKE_VERSION} VERSION_LESS "2.8.2" )
 
+IF (UNIX)
+  # since it's unix-specific we will use bash
+  ADD_CUSTOM_TARGET (distclean @echo cleaning ${FASTLIB_SOURCE_DIR}
+for source distribution)
+        
+  ADD_CUSTOM_COMMAND(TARGET distclean
+    COMMAND make ARGS clean
+    COMMAND find ARGS ${FASTLIB_SOURCE_DIR} -iname CMakeCache.txt
+-delete
+    COMMAND find ARGS ${FASTLIB_SOURCE_DIR} -iname cmake_install.cmake
+-delete
+    COMMAND find ARGS ${FASTLIB_SOURCE_DIR} -iname Makefile -delete
+    COMMAND find ARGS ${FASTLIB_SOURCE_DIR} -depth -type d -iname
+CMakeFiles -exec rm -rf {} \;
+    COMMAND rm ARGS -rf bin lib include
+    VERBATIM )
+ENDIF(UNIX)
+
 set(BINDIR "bin")
 
 set(SBINDIR "sbin")
@@ -46,7 +64,7 @@ if(DEFINED ADDITIONAL_PKG_CONFIG_PATH)
 "${ADDITIONAL_PKG_CONFIG_PATH}:$ENV{PKG_CONFIG_PATH}")
 endif(DEFINED ADDITIONAL_PKG_CONFIG_PATH)
 
-
+set(BOOST_ROOT "/usr/lib64:/usr/lib" )
 
 find_package(PkgConfig REQUIRED)
 find_package(Perl REQUIRED)
@@ -86,7 +104,7 @@ pkg_check_modules( LCMAPS_GSS_ASSIST_WITHOUT_GSI REQUIRED lcmaps-gss-assist-grid
 pkg_check_modules( LCMAPS_RET_POOLIDX_WITHOUT_GSI REQUIRED lcmaps-return-poolindex-without-gsi )
 pkg_check_modules( LCMAPS_WITHOUT_GSI REQUIRED lcmaps-without-gsi)
 
-find_package( Boost COMPONENTS date_time filesystem regex system thread program_options REQUIRED)
+find_package( Boost COMPONENTS filesystem thread regex REQUIRED)
 
 if(EXISTS "/etc/debian_version")
   set(ONDEB "1")
@@ -105,6 +123,8 @@ EXEC_PROGRAM(cat
   OUTPUT_VARIABLE RH_VER)
 endif(DEFINED ONRH)
 
+add_definitions( -DHAVE_STRINGSTREAM -pipe -Wall ${CLASSAD_CFLAGS} )
+
 if(DEFINED ONRH)
   if("${RH_VER}" STREQUAL "5")
     add_definitions( -DGSOAP_VERSION_NUM=20713 )
@@ -120,10 +140,10 @@ endif(DEFINED ONRH)
 message("\n\nGSOAP_VERSION=${GSOAP_VERSION}\n\n")
 
 if(DEFINED BUILD_DBG)
-  add_definitions( -pipe -g -O0 -Wall ${CLASSAD_CFLAGS} )#-DLDAP_DEPRECATED)
+  add_definitions( -g -O0 )
 else(DEFINED BUILD_DBG)
   
-  add_definitions( -pipe -O2 -Wall ${CLASSAD_CFLAGS} )#-DLDAP_DEPRECATED)
+  add_definitions( -O2 )
   
 endif(DEFINED BUILD_DBG)
 
@@ -138,8 +158,6 @@ endif(NOT DEFINED SYSCONFIGDIR)
 
 add_definitions( -DWITH_FASTCGI ${FCGI_CPP_CFLAGS} -DWMP_SOFTWARE_VERSION=\"${PVER}\" )
 
-#CMAKE_EXE_LINKER_FLAGS(-Xlinker --export-dynamic)
 
 add_subdirectory(src)
-#add_subdirectory(doc)
 add_subdirectory(config)
