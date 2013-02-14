@@ -153,10 +153,15 @@ install(FILES
 )
 
 if(NOT DEFINED SYSCONFIGDIR)
-    set(SYSCONFIGDIR "etc/")
+    set(SYSCONFIGDIR "${PREFIX}/../etc/")
 endif(NOT DEFINED SYSCONFIGDIR)
 
 add_definitions( -DWITH_FASTCGI ${FCGI_CPP_CFLAGS} -DWMP_SOFTWARE_VERSION=\"${PVER}\" )
+
+install(FILES
+        LICENSE
+        DESTINATION ${PREFIX}/share/doc/glite-wms-interface-${PVER}/
+)
 
 
 add_subdirectory(src)
