@@ -141,3 +141,18 @@ ${CLASSAD_LIBRARIES} ${JDL_API_CPP_LIBRARIES} ${WMS_COMMON_CONF_LIBRARIES} ${WMS
 ${JDL_API_CPP_LIBRARIES} ${JOBID_LIBRARIES} ${FCGI_CPP_LIBRARIES} ${GRIDSITE_OPENSSL_LIBRARIES} ${VOMS_LIBRARIES} ${RENEWAL_LIBRARIES} ${GSOAP_PP_LIBRARIES}
 ${GSOAPSSL_PP_LIBRARIES} ${LIBXML_LIBRARIES} ${CREAM_CLIENT_UTIL_LIBRARIES} ${CREAM_CLIENT_SOAP_LIBRARIES} ${Boost_LIBRARIES})
 
+install(TARGETS 
+  glite-wms-ice
+  glite-wms-ice-safe
+  glite-wms-ice-proxy-renew
+  glite-wms-ice-db-rm
+  glite-wms-ice-rm
+  putFL_cancel
+  putFL_reschedule
+  putFL
+  queryDb
+  queryStats
+  DESTINATION 
+  ${PREFIX}/${BINDIR}
+  )
+
