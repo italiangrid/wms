@@ -522,7 +522,10 @@ regist(
 
    // Initializing LB logger
    WMPEventLogger wmplogger(wmputilities::getEndpoint());
-   wmplogger.setLBProxy(conf.isLBProxyAvailable(), wmputilities::getDN_SSL());
+   security::VOMSAuthN authn(delegatedproxy);
+   std::string voms_dn(authn.getDN());
+   edglog(debug)<< "VOMS provided DN for LB registration: " << voms_dn << std::endl;
+   wmplogger.setLBProxy(conf.isLBProxyAvailable(), voms_dn);
    wmplogger.setUserProxy(delegatedproxy);
 
    std::pair<std::string, int> lbaddress;
@@ -1963,7 +1966,8 @@ jobSubmit(struct ns1__jobSubmitResponse& response,
    string delegatedproxy = security::getDelegatedProxyPath(delegation_id, wmputilities::getDN_SSL());
    edglog(debug)<<"Delegated proxy: "<<delegatedproxy<<endl;
    security::VOMSAuthN vomsproxy(delegatedproxy);
-   edglog(debug)<< "VOMS provided DN: " << vomsproxy.getDN() << std::endl;
+   std::string voms_dn(vomsproxy.getDN());
+   edglog(debug)<< "VOMS provided DN: " << voms_dn << std::endl;
    security::WMPAuthorizer auth("jobSubmit", delegatedproxy);
    auth.authorize();
 
@@ -1994,7 +1998,7 @@ jobSubmit(struct ns1__jobSubmitResponse& response,
    boost::scoped_ptr<JobId> jid(new JobId(jobid));
 
    WMPEventLogger wmplogger(wmputilities::getEndpoint());
-   wmplogger.setLBProxy(conf.isLBProxyAvailable(), vomsproxy.getDN());
+   wmplogger.setLBProxy(conf.isLBProxyAvailable(), voms_dn);
    wmplogger.init_and_set_logging_job("", 0, jid.get());
 
    // Getting delegated proxy inside job directory
@@ -2203,11 +2207,12 @@ jobCancel(jobCancelResponse& jobCancel_response, const string& job_id)
 
    boost::scoped_ptr<JobId> jid(new JobId(job_id));
    string delegatedproxy = wmputilities::getJobDelegatedProxyPath(*jid);
+   security::VOMSAuthN authn(delegatedproxy);
 
    string jobpath = wmputilities::getJobDirectoryPath(*jid);
    // Initializing logger
    WMPEventLogger wmplogger(wmputilities::getEndpoint());
-   wmplogger.setLBProxy(conf.isLBProxyAvailable(), wmputilities::getDN_SSL());
+   wmplogger.setLBProxy(conf.isLBProxyAvailable(), authn.getDN());
    wmplogger.init_and_set_logging_job("", 0, jid.get());
 
    wmplogger.setUserProxy(delegatedproxy);
@@ -2388,10 +2393,10 @@ listmatch(jobListMatchResponse& jobListMatch_response, const string& jdl,
 
       // Removing fake
       ad->delAttribute(JDL::WMPISB_BASE_URI);
-      // /_
 
       WMPEventLogger wmplogger(wmputilities::getEndpoint());
-      wmplogger.setLBProxy(conf.isLBProxyAvailable(), wmputilities::getDN_SSL());
+      security::VOMSAuthN authn(delegatedproxy);
+      wmplogger.setLBProxy(conf.isLBProxyAvailable(), authn.getDN());
 
       string filequeue = configuration::Configuration::instance()->wm()->input();
       boost::details::pool::singleton_default<WMP2WM>::instance()
