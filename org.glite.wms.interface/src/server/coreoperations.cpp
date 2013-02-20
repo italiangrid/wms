@@ -208,14 +208,14 @@ setAttributes(JobAd *jad, JobId *jid, const string& dest_uri, const string& dele
       jad->delAttribute(JDL::CERT_SUBJ);
    }
 
-   jad->setAttribute(JDL::CERT_SUBJ, wmputilities::getDN_SSL());
+   std::string delegatedproxy(wmputilities::getJobDelegatedProxyPath(*jid));
 
+   jad->setAttribute(JDL::CERT_SUBJ, wmputilities::getDN_SSL());
    edglog(debug)<<"Setting attribute JDLPrivate::USERPROXY"<<endl;
    if (jad->hasAttribute(JDLPrivate::USERPROXY)) {
       jad->delAttribute(JDLPrivate::USERPROXY);
    }
-   jad->setAttribute(JDLPrivate::USERPROXY,
-                     wmputilities::getJobDelegatedProxyPath(*jid));
+   jad->setAttribute(JDLPrivate::USERPROXY, delegatedproxy);
 
    if (delegatedproxyfqan != "") {
       edglog(debug)<<"Setting attribute JDLPrivate::VOMS_FQAN"<<endl;
@@ -525,7 +525,7 @@ regist(
    security::VOMSAuthN authn(delegatedproxy);
    std::string voms_dn(authn.getDN());
    edglog(debug)<< "VOMS provided DN for LB registration: " << voms_dn << std::endl;
-   wmplogger.setLBProxy(conf.isLBProxyAvailable(), voms_dn);
+   //wmplogger.setLBProxy(conf.isLBProxyAvailable(), voms_dn);
    wmplogger.setUserProxy(delegatedproxy);
 
    std::pair<std::string, int> lbaddress;
@@ -553,7 +553,7 @@ regist(
       throw LBException(__FILE__, __LINE__, "regist()",
                         WMS_LOGGING_ERROR, "job registration failed");
    }
-   wmplogger.init_and_set_logging_job(
+   wmplogger.init_and_set_logging_job( // setUserProxy called already
       lbaddress.first,
       lbaddress.second,
       jid.get());
@@ -581,7 +581,7 @@ regist(
    // Creating private job directory with delegated Proxy
    vector<string> jobids;
    setJobFileSystem(
-      wmputilities::getDN_SSL(),
+      voms_dn,
       delegatedproxyfqan,
       uid,
       delegatedproxy,
@@ -631,7 +631,9 @@ regist(
 
    // Initializing LB logger
    WMPEventLogger wmplogger(wmputilities::getEndpoint());
-   wmplogger.setLBProxy(conf.isLBProxyAvailable(), wmputilities::getDN_SSL());
+   security::VOMSAuthN authn(delegatedproxy);
+   std::string voms_dn(authn.getDN());
+   //wmplogger.setLBProxy(conf.isLBProxyAvailable(), voms_dn);
    wmplogger.setUserProxy(delegatedproxy);
    wmplogger.setBulkMM(true);
 
@@ -662,7 +664,7 @@ regist(
                         WMS_LOGGING_ERROR, "DAG job registration failed");
    }
 
-   wmplogger.init_and_set_logging_job(lbaddress.first, lbaddress.second, jid.get());
+   wmplogger.init_and_set_logging_job(lbaddress.first, lbaddress.second, jid.get()); // setUserProxy called already
    string stringjid = jid->toString();
    edglog(info)<<"Registered job id: " << stringjid << endl;
    edglog(debug)<<"Setting attribute WMPExpDagAd::EDG_JOBID "<< stringjid << endl;
@@ -727,7 +729,8 @@ regist(
 
    // Creating private job directory with delegated Proxy
    // Sub jobs directory MUST be created now
-   setJobFileSystem(wmputilities::getDN_SSL(),
+   setJobFileSystem(
+      voms_dn,
       delegatedproxyfqan,
       uid,
       delegatedproxy,
@@ -977,8 +980,7 @@ jobpurge(jobPurgeResponse& jobPurge_response, JobId *jobid, bool checkstate = fa
 
    // Initializing logger
    WMPEventLogger wmplogger(wmputilities::getEndpoint());
-   wmplogger.init_and_set_logging_job("", 0, jobid);
-   wmplogger.setLBProxy(conf.isLBProxyAvailable(), wmputilities::getDN_SSL());
+   //wmplogger.setLBProxy(conf.isLBProxyAvailable(), wmputilities::getDN_SSL());
 
    try {
      wmplogger.setUserProxy(delegatedproxy);
@@ -986,6 +988,7 @@ jobpurge(jobPurgeResponse& jobPurge_response, JobId *jobid, bool checkstate = fa
      string hostProxy = configuration::Configuration::instance()->common()->host_proxy_file();
      wmplogger.setUserProxy(hostProxy);
    }
+   wmplogger.init_and_set_logging_job("", 0, jobid); // setUserProxy called already
 
    // Getting job status to check if purge is possible
    JobStatus status = wmplogger.getStatus(false);
@@ -1643,7 +1646,9 @@ submit(
             }
          }
 
-         wmplogger.setLoggingJob(parentjobid.toString(), seqcode);
+         security::VOMSAuthN vomsproxy(proxy);
+         std::string voms_dn(vomsproxy.getDN());
+         wmplogger.setLoggingJob(parentjobid.toString(), seqcode, voms_dn.c_str());
          string flagfile = wmputilities::getJobDirectoryPath(*jid)
                            + FILE_SEPARATOR + FLAG_FILE_REGISTER_SUBJOBS;
          if (!wmputilities::fileExists(flagfile)) {
@@ -1703,7 +1708,7 @@ submit(
          for (unsigned int i = 0; i < size; ++i) {
             JobId subjobid(dag.getNodeAttribute(dag.getNodes()[i], JDL::JOBID));
             wmplogger.init_and_set_logging_job("", 0, &subjobid);
-            wmplogger.setLBProxy(conf.isLBProxyAvailable(), wmputilities::getDN_SSL());
+            //wmplogger.setLBProxy(conf.isLBProxyAvailable(), wmputilities::getDN_SSL());
             wmplogger.logEvent(eventlogger::WMPEventLogger::LOG_ABORT, exc.what(), true, true);
          }
 
@@ -1883,11 +1888,11 @@ jobStart(jobStartResponse& jobStart_response, const string& job_id, struct soap 
       edglog(debug)<<"No drain"<<endl;
    }
 
-   wmplogger.setLBProxy(conf.isLBProxyAvailable(), wmputilities::getDN_SSL());
    std::string delegatedproxy = wmputilities::getJobDelegatedProxyPath(job_id);
+   security::VOMSAuthN vomsproxy(delegatedproxy);
+   std::string voms_dn(vomsproxy.getDN());
    wmplogger.setUserProxy(delegatedproxy);
-
-   wmplogger.init_and_set_logging_job("", 0, jid.get());
+   wmplogger.init_and_set_logging_job("", 0, jid.get()); // user proxy must be set for loggingjob to work with empty DN
 
    pair<string, regJobEvent> startpair = wmplogger.isStartAllowed();
    if (startpair.first == "") { // seqcode
@@ -1963,7 +1968,7 @@ jobSubmit(struct ns1__jobSubmitResponse& response,
    edglog(debug)<<"JDL to Submit:\n"<<jdl<<endl;
 
    // Getting delegated proxy inside job directory
-   string delegatedproxy = security::getDelegatedProxyPath(delegation_id, wmputilities::getDN_SSL());
+   string delegatedproxy = security::getDelegatedProxyPath(delegation_id, wmputilities::getDN_SSL()); // the directory is created with the full DN (CN=<...>)
    edglog(debug)<<"Delegated proxy: "<<delegatedproxy<<endl;
    security::VOMSAuthN vomsproxy(delegatedproxy);
    std::string voms_dn(vomsproxy.getDN());
@@ -1998,15 +2003,11 @@ jobSubmit(struct ns1__jobSubmitResponse& response,
    boost::scoped_ptr<JobId> jid(new JobId(jobid));
 
    WMPEventLogger wmplogger(wmputilities::getEndpoint());
-   wmplogger.setLBProxy(conf.isLBProxyAvailable(), voms_dn);
-   wmplogger.init_and_set_logging_job("", 0, jid.get());
-
-   // Getting delegated proxy inside job directory
+   //wmplogger.setLBProxy(conf.isLBProxyAvailable(), voms_dn);
    string proxy(wmputilities::getJobDelegatedProxyPath(*jid));
    edglog(debug)<<"Job delegated proxy: "<<proxy<<endl;
-
-   // Setting user proxy
    wmplogger.setUserProxy(proxy);
+   wmplogger.init_and_set_logging_job("", 0, jid.get()); // user proxy must be set for loggingjob to work with empty DN
 
    jobSubmit_response.jobIdStruct = jobRegister_response.jobIdStruct;
 
@@ -2083,7 +2084,7 @@ jobSubmitJSDL
    // Registering the job for submission
    jobRegisterResponse jobRegister_response;
    std::string userproxypath =
-      security::getDelegatedProxyPath(delegation_id, wmputilities::getDN_SSL());
+      security::getDelegatedProxyPath(delegation_id, wmputilities::getDN_SSL()); // the directory is created with the full DN (CN=<...>)
    security::VOMSAuthN authn(userproxypath);
    pair<string, string> reginfo = jobregister(jobRegister_response, jdl,
                                   delegation_id, userproxypath, authn.getDefaultFQAN(), ai.uid_);
@@ -2093,17 +2094,14 @@ jobSubmitJSDL
    edglog(debug)<<"Starting registered job: "<<jobid<<endl;
 
    // Starting job submission
-   JobId *jid = new JobId(jobid);
+   boost::scoped_ptr<JobId> jid(new JobId(jobid));
 
    WMPEventLogger wmplogger(wmputilities::getEndpoint());
-   wmplogger.setLBProxy(conf.isLBProxyAvailable(), authn.getDN());
-   wmplogger.init_and_set_logging_job("", 0, jid);
-
-   // Getting delegated proxy inside job directory
+   //wmplogger.setLBProxy(conf.isLBProxyAvailable(), authn.getDN());
    string proxy(wmputilities::getJobDelegatedProxyPath(*jid));
    edglog(debug)<<"Job delegated proxy: "<<proxy<<endl;
-
    wmplogger.setUserProxy(proxy);
+   wmplogger.init_and_set_logging_job("", 0, jid.get()); // user proxy must be set for loggingjob to work with empty DN
 
    jobSubmit_response.jobIdStruct = jobRegister_response.jobIdStruct;
 
@@ -2130,7 +2128,7 @@ jobSubmitJSDL
          soap_send_fault(soap);
       }
    }
-   submit(reginfo.second, jid, ai.uid_, ai.gid_, wmplogger, true);
+   submit(reginfo.second, jid.get(), ai.uid_, ai.gid_, wmplogger, true);
 
    GLITE_STACK_CATCH();
 }
@@ -2181,7 +2179,7 @@ jobRegister(
    }
 
    std::string userproxypath =
-      security::getDelegatedProxyPath(delegation_id, wmputilities::getDN_SSL());
+      security::getDelegatedProxyPath(delegation_id, wmputilities::getDN_SSL()); // the directory is created with the full DN (CN=<...>)
    security::VOMSAuthN authn(userproxypath);
    jobregister(
       jobRegister_response,
@@ -2212,10 +2210,9 @@ jobCancel(jobCancelResponse& jobCancel_response, const string& job_id)
    string jobpath = wmputilities::getJobDirectoryPath(*jid);
    // Initializing logger
    WMPEventLogger wmplogger(wmputilities::getEndpoint());
-   wmplogger.setLBProxy(conf.isLBProxyAvailable(), authn.getDN());
-   wmplogger.init_and_set_logging_job("", 0, jid.get());
-
+   //wmplogger.setLBProxy(conf.isLBProxyAvailable(), authn.getDN());
    wmplogger.setUserProxy(delegatedproxy);
+   wmplogger.init_and_set_logging_job("", 0, jid.get()); // user proxy must be set for loggingjob to work with empty DN
    // Getting job status to check if cancellation is possible
 
    JobStatus status = wmplogger.getStatus(false);
@@ -2354,7 +2351,7 @@ listmatch(jobListMatchResponse& jobListMatch_response, const string& jdl,
 
       std::string dn(wmputilities::getDN_SSL());
       // Getting delegated proxy from SSL Proxy cache
-      string delegatedproxy = security::getDelegatedProxyPath(delegation_id, dn);
+      string delegatedproxy = security::getDelegatedProxyPath(delegation_id, dn); // the directory is created with the full DN (CN=<...>)
       edglog(debug)<<"Delegated proxy: "<<delegatedproxy<<endl;
 
       // Setting VIRTUAL_ORGANISATION attribute
@@ -2396,7 +2393,7 @@ listmatch(jobListMatchResponse& jobListMatch_response, const string& jdl,
 
       WMPEventLogger wmplogger(wmputilities::getEndpoint());
       security::VOMSAuthN authn(delegatedproxy);
-      wmplogger.setLBProxy(conf.isLBProxyAvailable(), authn.getDN());
+      //wmplogger.setLBProxy(conf.isLBProxyAvailable(), authn.getDN());
 
       string filequeue = configuration::Configuration::instance()->wm()->input();
       boost::details::pool::singleton_default<WMP2WM>::instance()

@@ -127,7 +127,7 @@ WMPEventLogger::init_and_set_logging_job(
    jobid::JobId *id)
 {
    GLITE_STACK_TRY("init()");
-   edglog_fn("WMPEventlogger::init");
+   edglog_fn("WMPEventlogger::init_and_set_logging_job");
 
    id_ = id;
    setLoggingJob(id->toString());
@@ -645,7 +645,7 @@ WMPEventLogger::logUserTags(classad::ClassAd* userTags)
 }
 
 void
-WMPEventLogger::setLoggingJob(const string& jid, const char* seq_code)
+WMPEventLogger::setLoggingJob(const string& jid, const char* seq_code, const char *dn)
 {
    GLITE_STACK_TRY("setLoggingJob()");
    edglog_fn("WMPEventlogger::setLoggingJob");
@@ -653,7 +653,9 @@ WMPEventLogger::setLoggingJob(const string& jid, const char* seq_code)
    glite::jobid::JobId jobid(jid);
    if (m_lbProxy_b) {
       edglog(debug)<<"Setting job for logging to LB Proxy..."<<endl;
-      if (edg_wll_SetLoggingJobProxy(ctx_, jobid.c_jobid(), seq_code, getDN_SSL().c_str(), EDG_WLL_SEQ_NORMAL)) {
+      // taking the DN from mod_ssl is not going to work with RFC proxies
+      int res(edg_wll_SetLoggingJobProxy(ctx_, jobid.c_jobid(), seq_code, dn, EDG_WLL_SEQ_NORMAL));
+      if (res) {
          string msg = error_message("Set logging job failed\n"
                                     "edg_wll_SetLoggingJobProxy");
          edglog(critical)<<msg<<endl;

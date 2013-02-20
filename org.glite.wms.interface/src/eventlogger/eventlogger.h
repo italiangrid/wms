@@ -100,7 +100,7 @@ public:
    void logUserTags(std::vector<std::pair<std::string,
                     classad::ExprTree*> > userTags);
 
-   void setLoggingJob(const std::string& jid, const char *seq_code = NULL);
+   void setLoggingJob(const std::string& jid, const char *seq_code = NULL, const char *dn = NULL);
 
    void setUserProxy(const std::string& proxy);
 
