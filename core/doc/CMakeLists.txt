@@ -33,7 +33,7 @@ ${CMAKE_CURRENT_SOURCE_DIR}/glite-wms-stats.xml
 ${CMAKE_CURRENT_SOURCE_DIR}/glite-wms-query-job-state-transitions.xml
 )
 
-add_custom_target(ZIPMAN ALL DEPENDS 
+add_custom_target(ZIPMAN2 ALL DEPENDS 
   ${PREFIX}/share/man/man1/glite-wms-workload_manager.1.gz
   ${PREFIX}/share/man/man1/glite-wms-stats.1.gz
   ${PREFIX}/share/man/man1/glite-wms-query-job-state-transitions.1.gz

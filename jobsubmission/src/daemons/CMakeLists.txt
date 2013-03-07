@@ -5,15 +5,26 @@ include_directories(${CLASSAD_INCLUDE_DIRS}
 		    ${WMSUTILS_CLASSADS_ALT_INCLUDE_DIRS}
 		    ${WMSUTILS_CLASSADS_INCLUDE_DIRS}
 		    ${WMS_COMMON_CONF_INCLUDE_DIRS}
-		    ${PROJECT_SOURCE_DIR}/src)
+		    ${PROJECT_SOURCE_DIR}/src
+		    ${MAIN_PROJECT_SOURCE_DIR}/common/interface
+		    ${MAIN_PROJECT_SOURCE_DIR}
+		    ${LOG4CPP_INCLUDE_DIRS}
+		    /usr/include
+)
 
 link_directories(${PREFIX}/${LIBDIR}
   ${PROJECT_SOURCE_DIR}/src/common
   ${PROJECT_SOURCE_DIR}/src/controller
   ${PROJECT_SOURCE_DIR}/src/logmonitor
-  ${WMS_COMMON_CONF_LIBRARY_DIRS}
-  ${PURGER_LIBRARY_DIRS}
   ${CONDOR_LIBRARY_DIRS}
+  ${MAIN_PROJECT_SOURCE_DIR}/common/src/configuration
+  ${MAIN_PROJECT_SOURCE_DIR}/common/src/utilities
+  ${MAIN_PROJECT_SOURCE_DIR}/common/src/process
+  ${MAIN_PROJECT_SOURCE_DIR}/common/src/logger
+  ${MAIN_PROJECT_SOURCE_DIR}/purger/src
+  ${LOG4CPP_INCLUDE_DIRS}
+  /usr/lib
+  /usr/lib64
   )
 
 add_executable(glite-wms-job_controller
@@ -30,13 +41,15 @@ add_executable(glite-wms-log_monitor
 )
 
 target_link_libraries(glite-wms-job_controller
+  glite_wms_jss_logmonitor
   glite_wms_jss_controller
   glite_wms_jss_controller_adapter
   glite_wms_jss_common
-  ${WMS_COMMON_CONF_LIBRARIES}
-  ${WMS_COMMON_LOGGER_LIBRARIES}
-  ${WMS_COMMON_PROCESS_LIBRARIES}
-  ${WMS_COMMON_UTIL_LIBRARIES}
+  glite_wms_conf
+  glite_wms_logger
+  glite_wms_process
+  glite_wms_util
+  glite_wms_purger
   ${WMSUTILS_CLASSADS_LIBRARIES}
   ${WMSUTILS_JOBMAN_EXCEPTION_LIBRARIES}
   ${JDL_API_CPP_LIBRARIES}
@@ -46,11 +59,11 @@ target_link_libraries(glite-wms-job_controller
   ${LB_COMMON_LIBRARIES}
   ${CLASSAD_LIBRARIES}
   ${CARES_LIBRARIES}
-  ${PROXYRENEW_LIBRARIES}
-  ${PURGER_LIBRARIES}
+  ${RENEWAL_LIBRARIES}
   ${Boost_LIBRARIES}
   ${CONDOR_LIBRARIES}
   ${CARES_LIBRARIES}
+  ${LOG4CPP_LIBRARIES}
   )
 
 
@@ -59,10 +72,12 @@ target_link_libraries(glite-wms-log_monitor
   glite_wms_jss_controller_adapter
   glite_wms_jss_logmonitor
   glite_wms_jss_common
-  ${WMS_COMMON_CONF_LIBRARIES}
-  ${WMS_COMMON_LOGGER_LIBRARIES}
-  ${WMS_COMMON_PROCESS_LIBRARIES}
-  ${WMS_COMMON_UTIL_LIBRARIES}
+  glite_wms_jss_logmonitor
+  glite_wms_conf
+  glite_wms_process
+  glite_wms_logger
+  glite_wms_util
+  glite_wms_purger
   ${WMSUTILS_CLASSADS_LIBRARIES}
   ${WMSUTILS_JOBMAN_EXCEPTION_LIBRARIES}
   ${JDL_API_CPP_LIBRARIES}
@@ -72,11 +87,12 @@ target_link_libraries(glite-wms-log_monitor
   ${LB_COMMON_LIBRARIES}
   ${CLASSAD_LIBRARIES}
   ${CARES_LIBRARIES}
-  ${PROXYRENEW_LIBRARIES}
+  ${RENEWAL_LIBRARIES}
   ${PURGER_LIBRARIES}
   ${Boost_LIBRARIES}
   ${CONDOR_LIBRARIES}
   ${CARES_LIBRARIES}
+  ${LOG4CPP_LIBRARIES}
   )
 
 install(TARGETS 

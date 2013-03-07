@@ -1,12 +1,11 @@
 
 include_directories(${CLASSAD_INCLUDE_DIRS}
                     ${PROJECT_SOURCE_DIR}/src
-		    #${VOMS_INCLUDE_DIRS}
+                    ${MAIN_PROJECT_SOURCE_DIR}
+                    ${MAIN_PROJECT_SOURCE_DIR}/common/interface
+                    ${MAIN_PROJECT_SOURCE_DIR}/purger/src
 		    ${WMS_COMMON_CONF_INCLUDE_DIRS}
-		    #${LOG4CPP_INCLUDE_DIRS}
-		    #${CLASSAD_INCLUDE_DIRS}
 		    ${Boost_INCLUDE_DIRS}
-		    
 		    /usr/include)
 
 add_custom_target(ICETHREADS

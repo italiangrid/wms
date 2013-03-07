@@ -5,6 +5,8 @@ include_directories(${CLASSAD_INCLUDE_DIRS}
 	 	    ${WMS_COMMON_UTIL_INCLUDE_DIRS}
                     ${PROJECT_SOURCE_DIR}/interface
                     ${PROJECT_SOURCE_DIR}/src
+		    ${MAIN_PROJECT_SOURCE_DIR}
+ 		    ${MAIN_PROJECT_SOURCE_DIR}/common/interface
 		    ${CMAKE_INSTALL_PREFIX}/include)
 
 add_custom_target(HELPER DEPENDS 

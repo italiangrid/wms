@@ -1,9 +1,13 @@
 
 include_directories(${CLASSAD_INCLUDE_DIRS}
                     ${PROJECT_SOURCE_DIR}/interface
+		    ${MAIN_PROJECT_SOURCE_DIR}/common/interface
+		    ${MAIN_PROJECT_SOURCE_DIR}/
 		    ${PROJECT_SOURCE_DIR}/src
-		    ${WMS_COMMON_LOGGER_INCLUDE_DIRS}
-		    ${RENEWAL_INCLUDE_DIRS})
+		    ${RENEWAL_INCLUDE_DIRS}
+		    ${LOG4CPP_INCLUDE_DIRS}
+		    /usr/include
+)
 
 add_custom_target(PURGER 
   DEPENDS 
@@ -26,9 +30,6 @@ add_executable(glite-wms-purgeStorage glite-wms-purgeStorage.cpp)
 link_directories(
   ${WMSUTILS_JOBMAN_EXCEPTION_LIBRARY_DIRS}
   ${WMSUTILS_CLASSADS_LIBRARY_DIRS}
-  ${WMS_COMMON_CONF_LIBRARY_DIRS}
-  ${WMS_COMMON_LOGGER_LIBRARY_DIRS}
-  ${WMS_COMMON_UTIL_LIBRARY_DIRS}
   ${LB_CLIENT_LIBRARY_DIRS}
   ${LB_CLIENTPP_LIBRARY_DIRS}
   ${LB_COMMON_LIBRARY_DIRS}
@@ -41,6 +42,11 @@ link_directories(
   ${RENEWAL_LIBRARY_DIRS}
   ${Boost_LIBRARY_DIRS}
   ${LOG4CPP_LIBRARY_DIRS}
+  ${MAIN_PROJECT_SOURCE_DIR}/common/src/configuration
+  ${MAIN_PROJECT_SOURCE_DIR}/common/src/logger
+  ${MAIN_PROJECT_SOURCE_DIR}/common/src/utilities
+  /usr/lib64
+  /usr/lib
 )
 
 
@@ -49,9 +55,9 @@ target_link_libraries(glite-wms-purgeStorage
   glite_wms_purger
   ${WMSUTILS_JOBMAN_EXCEPTION_LIBRARIES}
   ${WMSUTILS_CLASSADS_LIBRARIES}
-  ${WMS_COMMON_CONF_LDFLAGS}
-  ${WMS_COMMON_LOGGER_LIBRARIES}
-  ${WMS_COMMON_UTIL_LIBRARIES}
+  glite_wms_conf  
+  glite_wms_logger
+  glite_wms_util
   ${LB_CLIENT_LIBRARIES}
   ${LB_CLIENTPP_LIBRARIES}
   ${LB_COMMON_LIBRARIES}
@@ -78,17 +84,10 @@ install(TARGETS
   ${PREFIX}/${SBINDIR}
 )
 
-add_subdirectory(pkgconfig)
+#add_subdirectory(pkgconfig)
 
-add_custom_command(OUTPUT
-  ${PREFIX}/include/glite/wms/purger/purger.h
-  COMMAND
-  mkdir -p ${PREFIX}/include/glite/wms/purger/
-  COMMAND
-  cp -f purger.h ${PREFIX}/include/glite/wms/purger/
-)
-
-add_custom_target(PURGERHFILE ALL
-  DEPENDS
-  ${PREFIX}/include/glite/wms/purger/purger.h
-)
+install(FILES
+  purger.h
+  DESTINATION
+  ${PREFIX}/include/glite/wms/purger/
+  )

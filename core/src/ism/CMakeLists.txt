@@ -3,6 +3,8 @@ add_subdirectory(purchaser)
 include_directories(${CLASSAD_INCLUDE_DIRS}
                     ${PROJECT_SOURCE_DIR}/interface
 		    ${PROJECT_SOURCE_DIR}/src
+		    ${MAIN_PROJECT_SOURCE_DIR}
+		    ${MAIN_PROJECT_SOURCE_DIR}/common/interface
 		    ${WMS_COMMON_CONF_INCLUDE_DIRS}
 		    ${WMS_COMMON_LOGGER_INCLUDE_DIRS}
 		    /usr/include)

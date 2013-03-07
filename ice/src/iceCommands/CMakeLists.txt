@@ -1,6 +1,9 @@
 
 include_directories(${CLASSAD_INCLUDE_DIRS}
                     ${PROJECT_SOURCE_DIR}/src
+                    ${MAIN_PROJECT_SOURCE_DIR}
+                    ${MAIN_PROJECT_SOURCE_DIR}/common/interface
+                    ${MAIN_PROJECT_SOURCE_DIR}/purger/src
 		    ${WMS_COMMON_CONF_INCLUDE_DIRS}
 		    ${Boost_INCLUDE_DIRS}
 		    /usr/include)

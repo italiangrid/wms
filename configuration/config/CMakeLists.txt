@@ -34,44 +34,46 @@ install(DIRECTORY
 )
 
 add_custom_command(OUTPUT 
-  ${PREFIX}/../opt/glite/share/man/man1/glite-WMS.1.gz
+  man/glite-WMS.1.gz
   COMMAND mkdir -p ${PREFIX}/../opt/glite/share/man/man1
-  COMMAND gzip -c ${CMAKE_CURRENT_SOURCE_DIR}/man/glite-WMS.1 > ${PREFIX}/../opt/glite/share/man/man1/glite-WMS.1.gz
+  COMMAND gzip -c man/glite-WMS.1 > man/glite-WMS.1.gz
 )
 
 add_custom_target(ZIPMAN ALL DEPENDS 
-  ${PREFIX}/../opt/glite/share/man/man1/glite-WMS.1.gz
+  man/glite-WMS.1.gz
   )
-
+  
+install(FILES
+  man/glite-WMS.1.gz
+  DESTINATION
+  ${PREFIX}/../opt/glite/share/man/man1/
+  )
+  
 add_custom_command(OUTPUT 
-  ${PREFIX}/${LIBEXEC}/glite-wms-check-daemons.sh
-  ${PREFIX}/${LIBEXEC}/glite-wms-services-certs.sh
-  ${PREFIX}/${LIBEXEC}/glite-wms-parse-configuration.sh
-  ${PREFIX}/../etc/wms.conf.template
+  wms.conf.template
   COMMAND
-  mkdir -p ${PREFIX}/${LIBEXEC}
-  COMMAND
-  cp ${CMAKE_CURRENT_SOURCE_DIR}/glite-wms-check-daemons.sh ${PREFIX}/${LIBEXEC}/
-  COMMAND
-  cp ${CMAKE_CURRENT_SOURCE_DIR}/glite-wms-services-certs.sh ${PREFIX}/${LIBEXEC}/
-  COMMAND
-  cp ${CMAKE_CURRENT_SOURCE_DIR}/glite-wms-parse-configuration.sh ${PREFIX}/${LIBEXEC}/
-  COMMAND 
-  chmod 755 ${PREFIX}/${LIBEXEC}/glite-wms-check-daemons.sh 
-  COMMAND
-  chmod 755 ${PREFIX}/${LIBEXEC}/glite-wms-services-certs.sh 
-  COMMAND
-  chmod 755 ${PREFIX}/${LIBEXEC}/glite-wms-parse-configuration.sh
-  COMMAND 
-  mkdir -p ${PREFIX}/../etc/glite-wms
-  COMMAND
-  cp -f ${CMAKE_CURRENT_SOURCE_DIR}/glite_wms.conf ${PREFIX}/../etc/glite-wms/wms.conf.template
+  cp -f glite_wms.conf wms.conf.template
 )
 
+install(FILES
+  glite-wms-check-daemons.sh
+  glite-wms-services-certs.sh
+  glite-wms-parse-configuration.sh
+  DESTINATION
+  ${PREFIX}/${LIBEXEC}/
+  PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
+  )
+  
+install(FILES
+  wms.conf.template 
+  DESTINATION
+  ${SYSCONFIGDIR}/glite-wms/
+  )
+
 add_custom_target(MAKEEXESCRIPTS ALL DEPENDS 
-  ${PREFIX}/${LIBEXEC}/glite-wms-check-daemons.sh
-  ${PREFIX}/${LIBEXEC}/glite-wms-services-certs.sh
-  ${PREFIX}/${LIBEXEC}/glite-wms-parse-configuration.sh
-  ${PREFIX}/../etc/glite-wms/wms.conf.template
+#  ${PREFIX}/${LIBEXEC}/glite-wms-check-daemons.sh
+#  ${PREFIX}/${LIBEXEC}/glite-wms-services-certs.sh
+#  ${PREFIX}/${LIBEXEC}/glite-wms-parse-configuration.sh
+  wms.conf.template
   )
 

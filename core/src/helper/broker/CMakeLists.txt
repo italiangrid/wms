@@ -2,6 +2,7 @@ add_custom_command(
   OUTPUT 
   datalocationinterfaceC.cpp
   datalocationinterfaceClient.cpp
+  datalocationinterface.h
   COMMAND
   wsdl2h -o ${CMAKE_CURRENT_SOURCE_DIR}/datalocationinterface.h
          -t ${CMAKE_CURRENT_SOURCE_DIR}/catalogs_typemap.dat
@@ -19,6 +20,8 @@ include_directories(${CLASSAD_INCLUDE_DIRS}
                     ${PROJECT_SOURCE_DIR}/interface
 		    ${PROJECT_SOURCE_DIR}/src
 		    ${PROJECT_SOURCE_DIR}/src/helper/broker
+                    ${MAIN_PROJECT_SOURCE_DIR}
+                    ${MAIN_PROJECT_SOURCE_DIR}/common/interface
 		    ${WMS_COMMON_CONF_INCLUDE_DIRS}
 		    ${GLOBUS_GSSAPI_INCLUDE_DIRS}
 		    /usr/include)

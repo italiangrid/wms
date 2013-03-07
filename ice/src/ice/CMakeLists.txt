@@ -1,8 +1,9 @@
 
 include_directories(${CLASSAD_INCLUDE_DIRS}
                     ${PROJECT_SOURCE_DIR}/src
-		    ${WMS_COMMON_CONF_INCLUDE_DIRS}
-		    ${WMS_COMMON_UTIL_INCLUDE_DIRS}
+		    ${MAIN_PROJECT_SOURCE_DIR}
+		    ${MAIN_PROJECT_SOURCE_DIR}/common/interface
+ 		    ${MAIN_PROJECT_SOURCE_DIR}/purger/src
 		    ${JOBID_INCLUDE_DIRS}
 		    ${PURGER_INCLUDE_DIRS}
 		    ${Boost_INCLUDE_DIRS}

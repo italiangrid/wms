@@ -1,0 +1,11 @@
+prefix=@PKG_INSTALL_PREFIX@
+exec_prefix=${prefix}
+libdir=${prefix}/@LIBDIR@
+includedir=${prefix}/include
+
+Name: wms server library
+Description: WMS server configuration C/C++ APIs
+Version: @VERSION@
+Requires: classad-utils, jobman-exception,
+Libs: -L${libdir} -lglite_wms_conf  -lglite_wms_iiattrutil  -lglite_wms_logger  -lglite_wms_conf -lglite_wms_iiattrutil \  -lglite_wms_process  -lglite_wms_quota  -lglite_wms_util  -lglite_wms_jss_common  -lglite_wms_jss_controller_adapter  -lglite_wms_jss_controller  -lglite_wms_jss_controller_wrapper  -lglite_wms_jss_logmonitor  -lglite_wms_purger
+Cflags: -I${includedir}

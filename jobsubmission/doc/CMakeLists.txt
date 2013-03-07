@@ -7,13 +7,13 @@ if( NOT DB_MANPAGES_STYLESHEET )
 endif( NOT DB_MANPAGES_STYLESHEET )
 
 
-add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/doc/glite-wms-log_monitor.1
+add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/doc/glite-wms-log_monitor.1 ${PROJECT_SOURCE_DIR}/doc/glite-wms-log_monitor.1.gz
   DEPENDS ${PROJECT_SOURCE_DIR}/doc/glite-wms-log_monitor.xml
   COMMAND xsltproc ${DB_MANPAGES_STYLESHEET} ${PROJECT_SOURCE_DIR}/doc/glite-wms-log_monitor.xml
   COMMAND gzip -c -f ${PROJECT_SOURCE_DIR}/doc/glite-wms-log_monitor.1 > ${PROJECT_SOURCE_DIR}/doc/glite-wms-log_monitor.1.gz
   )
 
-add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/doc/glite-wms-job_controller.1
+add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/doc/glite-wms-job_controller.1 ${PROJECT_SOURCE_DIR}/doc/glite-wms-job_controller.1.gz
   DEPENDS ${PROJECT_SOURCE_DIR}/doc/glite-wms-job_controller.xml
   COMMAND xsltproc ${DB_MANPAGES_STYLESHEET} ${PROJECT_SOURCE_DIR}/doc/glite-wms-job_controller.xml
   COMMAND gzip -c -f ${PROJECT_SOURCE_DIR}/doc/glite-wms-job_controller.1 > ${PROJECT_SOURCE_DIR}/doc/glite-wms-job_controller.1.gz
