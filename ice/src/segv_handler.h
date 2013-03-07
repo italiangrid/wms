@@ -17,7 +17,7 @@
  * Copyright (C) 2005 - 2009 Jaco Kroon
  */
 
-#include "config.h"
+//#include "config.h"
 
 #ifdef RUN_ON_LINUX
 #ifndef _GNU_SOURCE
@@ -61,7 +61,7 @@ using __cxxabiv1::__cxa_demangle;
 
 void signal_segv(int signum, siginfo_t* info, void*ptr) {
 
-	int i, f = 0;
+	int  f = 0;
 	ucontext_t *ucontext = (ucontext_t*)ptr;
 	Dl_info dlinfo;
 	void **bp = 0;

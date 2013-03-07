@@ -41,7 +41,7 @@
 #include "Helper_matcher_ism.h"
 
 #include "glite/wms/common/configuration/Configuration.h"
-#include "glite/wms/common/configuration/WMConfiguration.h"
+#include "common/src/configuration/WMConfiguration.h"
 #include "glite/wms/common/configuration/exceptions.h"
 #include "glite/wms/common/logger/edglog.h"
 #include "glite/wms/common/logger/manipulators.h"

@@ -28,19 +28,19 @@
 #include "glite/jdl/ManipulationExceptions.h"
 
 #include "glite/wms/common/configuration/Configuration.h"
-#include "glite/wms/common/configuration/WMConfiguration.h"
-#include "glite/wms/common/configuration/CommonConfiguration.h"
-#include "glite/wms/common/configuration/NSConfiguration.h"
+#include "common/src/configuration/WMConfiguration.h"
+#include "common/src/configuration/CommonConfiguration.h"
+#include "common/src/configuration/NSConfiguration.h"
 #include "glite/wms/common/utilities/wm_commands.h"
 #include "glite/wms/common/utilities/input_reader.h"
-#include "glite/wms/common/utilities/manipulation.h"
+#include "common/src/utilities/manipulation.h"
 #include "glite/wms/common/logger/logger_utils.h"
 #include "glite/wms/helper/exceptions.h"
 
 #include "glite/wmsutils/exception/Exception.h"
 #include "glite/jobid/JobId.h"
 
-#include "glite/wms/purger/purger.h"
+#include "purger/src/purger.h"
 #include "glite/security/proxyrenewal/renewal.h"
 
 #include "glite/lb/producer.h"

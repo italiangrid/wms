@@ -32,16 +32,16 @@
 #include <signal.h>
 
 #include "glite/wms/common/utilities/LineParser.h"
-#include "glite/wms/common/utilities/boost_fs_add.h"
+#include "common/src/utilities/boost_fs_add.h"
 #include "glite/wms/common/configuration/Configuration.h"
-#include "glite/wms/common/configuration/JCConfiguration.h"
-#include "glite/wms/common/configuration/LMConfiguration.h"
-#include "glite/wms/common/configuration/CommonConfiguration.h"
+#include "common/src/configuration/JCConfiguration.h"
+#include "common/src/configuration/LMConfiguration.h"
+#include "common/src/configuration/CommonConfiguration.h"
 
 #include "glite/jobid/JobId.h"
 
-#include "glite/wms/common/process/process.h"
-#include "glite/wms/common/process/user.h"
+#include "common/src/process/process.h"
+#include "common/src/process/user.h"
 #include "glite/wms/common/logger/manipulators.h"
 #include "glite/wms/common/logger/logstream.h"
 #include "glite/wms/common/logger/edglog.h"

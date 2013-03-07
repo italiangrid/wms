@@ -19,7 +19,7 @@ limitations under the License. */
 
 #include <cstdio>
 
-#include "glite/wms/common/configuration/JCConfiguration.h"
+#include "common/src/configuration/JCConfiguration.h"
 
 #include "CondorG.h"
 

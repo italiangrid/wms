@@ -18,15 +18,15 @@
 #include <boost/lexical_cast.hpp>
 
 #include "glite/wms/common/configuration/Configuration.h"
-#include "glite/wms/common/configuration/JCConfiguration.h"
-#include "glite/wms/common/configuration/LMConfiguration.h"
-#include "glite/wms/common/configuration/NSConfiguration.h"
+#include "common/src/configuration/JCConfiguration.h"
+#include "common/src/configuration/LMConfiguration.h"
+#include "common/src/configuration/NSConfiguration.h"
 
 #include "glite/jobid/JobId.h"
-#include "glite/wms/common/utilities/manipulation.h"
+#include "common/src/utilities/manipulation.h"
 
 #include "glite/jdl/PrivateAdManipulation.h"
-#include "glite/wms/common/utilities/boost_fs_add.h"
+#include "common/src/utilities/boost_fs_add.h"
 #include "jobcontrol_namespace.h"
 
 #include "constants.h"

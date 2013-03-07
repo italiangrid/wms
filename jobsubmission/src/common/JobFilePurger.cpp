@@ -20,15 +20,15 @@
 namespace fs = boost::filesystem;
 
 #include "glite/wms/common/configuration/Configuration.h"
-#include "glite/wms/common/configuration/JCConfiguration.h"
-#include "glite/wms/common/configuration/LMConfiguration.h"
+#include "common/src/configuration/JCConfiguration.h"
+#include "common/src/configuration/LMConfiguration.h"
 #include "glite/wms/common/logger/logstream.h"
 #include "glite/wms/common/logger/manipulators.h"
 
 #include "glite/jobid/JobId.h"
 
-#include "glite/wms/common/utilities/boost_fs_add.h"
-#include "glite/wms/purger/purger.h"
+#include "common/src/utilities/boost_fs_add.h"
+#include "purger/src/purger.h"
 #include "jobcontrol_namespace.h"
 #include "common/files.h"
 

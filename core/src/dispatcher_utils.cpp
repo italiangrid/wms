@@ -35,7 +35,7 @@
 #include <classad_distribution.h>
 
 #include "glite/wms/common/configuration/Configuration.h"
-#include "glite/wms/common/configuration/WMConfiguration.h"
+#include "common/src/configuration/WMConfiguration.h"
 #include "glite/wms/common/logger/logger_utils.h"
 #include "glite/wms/common/utilities/input_reader.h"
 #include "glite/wms/common/utilities/jobdir_reader.h"

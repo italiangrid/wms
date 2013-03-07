@@ -28,7 +28,7 @@ END LICENSE */
 #include "glite/ce/cream-client-api-c/creamApiLogger.h"
 #include "glite/ce/cream-client-api-c/soap_runtime_ex.h"
 
-#include "glite/wms/common/configuration/ICEConfiguration.h"
+#include "common/src/configuration/ICEConfiguration.h"
 
 #include <boost/thread/thread.hpp>
 #include <boost/bind.hpp>

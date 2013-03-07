@@ -113,24 +113,19 @@ namespace ice {
         // 
         // ICE threads
         //        
-//        IceThreadHelper m_listener_thread;
         IceThreadHelper m_poller_thread;
-//        IceThreadHelper m_updater_thread;
-//         IceThreadHelper m_lease_updater_thread;
         IceThreadHelper m_proxy_renewer_thread;
-//        IceThreadHelper m_job_killer_thread;
         
         // 
         // ICE request sources
         //
         glite::wms::ice::util::Request_source* m_wms_input_queue; ///< Input queue for the WM
         glite::wms::ice::util::Request_source* m_ice_input_queue; ///< Input queue for ICE
-	  int m_reqnum;
+	int m_reqnum;
 
         log4cpp::Category* m_log_dev;
         
         util::iceLBLogger* m_lb_logger;
-        //util::jobCache* m_cache;
         glite::wms::common::configuration::Configuration* m_configuration;
 
         // 
@@ -142,10 +137,10 @@ namespace ice {
 
         static glite::wms::ice::IceCore* s_instance; ///< Singleton instance of this class
        
+        int  	    m_times_too_queue_full;
+       
 	std::string m_hostdn;
  
-	//std::string m_myname;
-
 	time_t      m_start_time;
 
         IceCore( ) throw(glite::wms::ice::iceInit_ex&);

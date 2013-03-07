@@ -24,7 +24,7 @@ limitations under the License. */
 
 #include <boost/filesystem/path.hpp>
 
-#include "glite/wms/common/utilities/streamdescriptor.h"
+#include "common/src/utilities/streamdescriptor.h"
 #include "glite/wms/common/logger/logstream.h"
 #include "glite/wms/common/logger/manipulators.h"
 #include "jobcontrol_namespace.h"

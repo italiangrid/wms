@@ -21,9 +21,9 @@
 #include <classad_distribution.h>
 
 #include "glite/wms/common/configuration/Configuration.h"
-#include "glite/wms/common/configuration/WMConfiguration.h"
-#include "glite/wms/common/configuration/WMPConfiguration.h"
-#include "glite/wms/common/configuration/NSConfiguration.h"
+#include "common/src/configuration/WMConfiguration.h"
+#include "common/src/configuration/WMPConfiguration.h"
+#include "common/src/configuration/NSConfiguration.h"
 #include "glite/wms/common/logger/logger_utils.h"
 #include "glite/wms/common/utilities/wm_commands.h"
 #include "glite/wms/common/utilities/jobdir.h"
@@ -37,9 +37,9 @@
 #include "glite/jdl/PrivateAdManipulation.h"
 #include "glite/jdl/ManipulationExceptions.h"
 
-#include "glite/wms/purger/purger.h"
+#include "purger/src/purger.h"
 #include "glite/security/proxyrenewal/renewal.h"
-#include "glite/wms/common/utilities/manipulation.h"
+#include "common/src/utilities/manipulation.h"
 
 #include "glite/lb/statistics.h"
 

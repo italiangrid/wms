@@ -33,7 +33,7 @@ limitations under the License. */
 #include <boost/algorithm/string/replace.hpp>
 
 #include "glite/wms/common/configuration/Configuration.h"
-#include "glite/wms/common/configuration/WMPConfiguration.h"
+#include "common/src/configuration/WMPConfiguration.h"
 #include "glite/wms/common/logger/logger_utils.h"
 #include "glite/wms/common/logger/edglog.h"
 #include "glite/security/proxyrenewal/renewal.h"

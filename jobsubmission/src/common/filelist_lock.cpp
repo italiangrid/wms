@@ -17,7 +17,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include "glite/wms/common/utilities/streamdescriptor.h"
+#include "common/src/utilities/streamdescriptor.h"
 
 #include "common/filelist.h"
 #include "common/filelist_lock.h"

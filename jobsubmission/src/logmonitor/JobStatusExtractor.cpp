@@ -23,7 +23,7 @@ limitations under the License. */
 
 
 #include "glite/wms/common/configuration/Configuration.h"
-#include "glite/wms/common/configuration/LMConfiguration.h"
+#include "common/src/configuration/LMConfiguration.h"
 #include "glite/wms/common/utilities/LineParser.h"
 #include "jobcontrol_namespace.h"
 #include "common/id_container.h"

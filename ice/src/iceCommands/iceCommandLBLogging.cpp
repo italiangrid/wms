@@ -27,8 +27,8 @@ END LICENSE */
 #include "iceUtils/IceLBEvent.h"
 #include "iceUtils/iceLBEventFactory.h"
 #include "glite/security/proxyrenewal/renewal.h"
-#include "glite/wms/common/configuration/ICEConfiguration.h"
-#include "glite/wms/common/configuration/CommonConfiguration.h"
+#include "common/src/configuration/ICEConfiguration.h"
+#include "common/src/configuration/CommonConfiguration.h"
 /**
  *
  * Cream Client API C++ Headers

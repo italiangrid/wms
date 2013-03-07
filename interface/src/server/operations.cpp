@@ -37,7 +37,7 @@ limitations under the License.
 #include "configuration.h"
 #include "structconverter.h"
 
-#include "glite/wms/common/utilities/manipulation.h"
+#include "common/src/utilities/manipulation.h"
 
 // Utilities
 #include "utilities/utils.h"
@@ -76,7 +76,7 @@ limitations under the License.
 
 // Configuration
 #include "glite/wms/common/configuration/Configuration.h"
-#include "glite/wms/common/configuration/NSConfiguration.h"
+#include "common/src/configuration/NSConfiguration.h"
 
 using namespace std;
 using namespace glite::lb; // JobStatus

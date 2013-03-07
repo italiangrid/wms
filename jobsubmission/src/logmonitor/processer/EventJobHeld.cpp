@@ -27,12 +27,12 @@
 #include "glite/jobid/JobId.h"
 
 #include "glite/wms/common/configuration/Configuration.h"
-#include "glite/wms/common/configuration/NSConfiguration.h"
+#include "common/src/configuration/NSConfiguration.h"
 
 #include "glite/wms/common/logger/logstream.h"
 #include "glite/wms/common/logger/manipulators.h"
 
-#include "glite/wms/common/utilities/manipulation.h"
+#include "common/src/utilities/manipulation.h"
 
 #include "common/EventLogger.h"
 #include "common/id_container.h"

@@ -32,9 +32,9 @@ END LICENSE */
 #include <vector>
 #include <exception>
 
-#include "glite/wms/common/configuration/ICEConfiguration.h"
-#include "glite/wms/common/configuration/WMConfiguration.h"
-#include "glite/wms/common/configuration/CommonConfiguration.h"
+#include "common/src/configuration/ICEConfiguration.h"
+#include "common/src/configuration/WMConfiguration.h"
+#include "common/src/configuration/CommonConfiguration.h"
 
 #include "iceUtils/CreamJob.h"
 #include "iceDb/GetJobByGid.h"

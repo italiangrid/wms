@@ -25,8 +25,8 @@ limitations under the License.
 #define GLITE_WMS_WMPROXY_WMPCONFIGURATION_H
 
 #include "glite/wms/common/configuration/Configuration.h"
-#include "glite/wms/common/configuration/WMPConfiguration.h"
-#include "glite/wms/common/configuration/CommonConfiguration.h"
+#include "common/src/configuration/WMPConfiguration.h"
+#include "common/src/configuration/CommonConfiguration.h"
 #include "glite/wms/common/configuration/ModuleType.h"
 
 /**

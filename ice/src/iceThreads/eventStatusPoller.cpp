@@ -31,7 +31,7 @@ END LICENSE */
 // other glite includes
 #include "glite/ce/cream-client-api-c/creamApiLogger.h"
 #include "glite/wms/common/configuration/Configuration.h"
-#include "glite/wms/common/configuration/ICEConfiguration.h"
+#include "common/src/configuration/ICEConfiguration.h"
 
 // boost includes
 #include <boost/thread/thread.hpp>

@@ -39,7 +39,7 @@ limitations under the License.
 #include <boost/shared_ptr.hpp>
 
 #include "glite/wms/common/configuration/Configuration.h"
-#include "glite/wms/common/configuration/WMConfiguration.h"
+#include "common/src/configuration/WMConfiguration.h"
 #include "url.h"
 
 namespace classad {

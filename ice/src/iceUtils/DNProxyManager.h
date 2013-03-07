@@ -28,7 +28,7 @@ END LICENSE */
 #include <cstring>
 #include <string.h>
 #include "CopyProxyException.h"
-#include "glite/wms/common/configuration/ICEConfiguration.h"
+#include "common/src/configuration/ICEConfiguration.h"
 #include "IceConfManager.h"
 #include "IceUtils.h"
 #include "CreamJob.h"

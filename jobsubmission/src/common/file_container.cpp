@@ -30,7 +30,7 @@ limitations under the License.
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
 
-#include "glite/wms/common/utilities/streamdescriptor.h"
+#include "common/src/utilities/streamdescriptor.h"
 
 #include "common/file_container.h"
 

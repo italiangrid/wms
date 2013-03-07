@@ -34,12 +34,12 @@ namespace fs = boost::filesystem;
 #include <openssl/pem.h>
 #include <openssl/x509.h>
 
-#include "glite/wms/common/utilities/boost_fs_add.h"
+#include "common/src/utilities/boost_fs_add.h"
 #include "glite/lb/producer.h"
 #include "glite/lb/consumer.h"
 #include "glite/lb/context.h"
 #include "glite/wms/common/configuration/Configuration.h"
-#include "glite/wms/common/configuration/CommonConfiguration.h"
+#include "common/src/configuration/CommonConfiguration.h"
 #include "glite/wms/common/logger/manipulators.h"
 #include "glite/wms/common/logger/edglog.h"
 

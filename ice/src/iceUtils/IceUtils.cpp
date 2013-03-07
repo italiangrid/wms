@@ -50,9 +50,9 @@ END LICENSE */
 #include "boost/filesystem/path.hpp"
 
 #include "glite/wms/common/configuration/Configuration.h"
-#include "glite/wms/common/configuration/ICEConfiguration.h"
-#include "glite/wms/common/configuration/WMConfiguration.h"
-#include "glite/wms/common/configuration/NSConfiguration.h"
+#include "common/src/configuration/ICEConfiguration.h"
+#include "common/src/configuration/WMConfiguration.h"
+#include "common/src/configuration/NSConfiguration.h"
 
 #include "glite/ce/cream-client-api-c/scoped_timer.h"
 #include "glite/ce/cream-client-api-c/creamApiLogger.h"

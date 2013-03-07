@@ -29,8 +29,8 @@ END LICENSE */
 #include "iceDb/GetJobsByDNMyProxy.h"
 #include "iceDb/GetJobByGid.h"
 #include "iceDb/Transaction.h"
-#include "glite/wms/common/configuration/ICEConfiguration.h"
-#include "glite/wms/common/configuration/CommonConfiguration.h"
+#include "common/src/configuration/ICEConfiguration.h"
+#include "common/src/configuration/CommonConfiguration.h"
 /**
  *
  * Cream Client API C++ Headers

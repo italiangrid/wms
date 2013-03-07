@@ -23,7 +23,7 @@
 #include "glite/lb/consumer.h"
 
 #include "glite/wms/common/configuration/Configuration.h"
-#include "glite/wms/common/configuration/WMPConfiguration.h"
+#include "common/src/configuration/WMPConfiguration.h"
 
 namespace ism = glite::wms::ism;
 #ifdef WANT_NAMESPACES

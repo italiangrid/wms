@@ -19,13 +19,13 @@ limitations under the License. */
 #include <memory>
 
 #include "glite/wms/common/configuration/Configuration.h"
-#include "glite/wms/common/configuration/LMConfiguration.h"
+#include "common/src/configuration/LMConfiguration.h"
 #include "glite/wms/common/configuration/exceptions.h"
 #include "glite/wms/common/utilities/LineParser.h"
-#include "glite/wms/common/utilities/LineParserExceptions.h"
+#include "common/src/utilities/LineParserExceptions.h"
 #include "glite/wms/common/logger/logstream.h"
 #include "glite/wms/common/logger/manipulators.h"
-#include "glite/wms/common/process/process.h"
+#include "common/src/process/process.h"
 #include "jobcontrol_namespace.h"
 #include "common/LockFile.h"
 

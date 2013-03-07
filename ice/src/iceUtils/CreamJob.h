@@ -42,7 +42,7 @@ END LICENSE */
 #include "IceConfManager.h"
 #include "ClassadSyntax_ex.h"
 #include "classad_distribution.h"
-#include "glite/wms/common/configuration/ICEConfiguration.h"
+#include "common/src/configuration/ICEConfiguration.h"
 
 /**
  *

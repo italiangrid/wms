@@ -40,7 +40,7 @@ limitations under the License.  */
 #include "glite/wms/common/configuration/ModuleType.h"
 #include "glite/wms/common/configuration/exceptions.h"
 #include "glite/wms/common/configuration/Configuration.h"
-#include "glite/wms/common/configuration/WMConfiguration.h"
+#include "common/src/configuration/WMConfiguration.h"
 
 #include "configuration.h"
 #include "gsoapfaultmanipulator.h"

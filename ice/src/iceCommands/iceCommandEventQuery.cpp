@@ -23,7 +23,7 @@ END LICENSE */
 #include "glite/ce/cream-client-api-c/job_statuses.h"
 #include "glite/ce/cream-client-api-c/scoped_timer.h"
 #include "glite/wms/common/configuration/Configuration.h"
-#include "glite/wms/common/configuration/ICEConfiguration.h"
+#include "common/src/configuration/ICEConfiguration.h"
 
 #include "iceCommandStatusPoller.h"
 #include "iceCommandEventQuery.h"

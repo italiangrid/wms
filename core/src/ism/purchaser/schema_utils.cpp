@@ -43,7 +43,7 @@ limitations under the License.
 #include <boost/lexical_cast.hpp>
 
 #include "glite/wms/common/configuration/Configuration.h"
-#include "glite/wms/common/configuration/NSConfiguration.h"
+#include "common/src/configuration/NSConfiguration.h"
 #include "glite/wms/common/utilities/scope_guard.h"
 
 #include "glite/wmsutils/exception/Exception.h"

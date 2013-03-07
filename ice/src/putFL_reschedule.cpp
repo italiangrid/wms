@@ -21,7 +21,7 @@ END LICENSE */
 #include "classad_distribution.h"
 #include "iceUtils/IceConfManager.h"
 #include "glite/wms/common/configuration/Configuration.h"
-#include "glite/wms/common/configuration/ICEConfiguration.h"
+#include "common/src/configuration/ICEConfiguration.h"
 #include "iceUtils/Request_source.h"
 #include "iceUtils/Request.h"
 #include "iceUtils/Request_source_jobdir.h"

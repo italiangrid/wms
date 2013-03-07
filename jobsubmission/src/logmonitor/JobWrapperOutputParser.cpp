@@ -18,7 +18,7 @@
 #include <memory>
 
 #include "glite/wms/common/configuration/Configuration.h"
-#include "glite/wms/common/configuration/LMConfiguration.h"
+#include "common/src/configuration/LMConfiguration.h"
 
 #include "glite/jobid/JobId.h"
 

@@ -31,13 +31,13 @@
 #include <openssl/x509.h>
 
 #include "glite/jobid/JobId.h"
-#include "glite/wms/common/utilities/manipulation.h"
+#include "common/src/utilities/manipulation.h"
 #include "glite/lb/context.h"
 #include "glite/lb/producer.h"
 #include "glite/wms/common/utilities/scope_guard.h"
 #include "glite/wms/common/configuration/Configuration.h"
-#include "glite/wms/common/configuration/NSConfiguration.h"
-#include "glite/wms/common/configuration/CommonConfiguration.h"
+#include "common/src/configuration/NSConfiguration.h"
+#include "common/src/configuration/CommonConfiguration.h"
 #include "glite/security/proxyrenewal/renewal.h"
 #include "glite/jdl/PrivateAttributes.h"
 

@@ -20,10 +20,10 @@ limitations under the License. */
 #include <condor/user_log.c++.h>
 
 #include "glite/wms/common/configuration/Configuration.h"
-#include "glite/wms/common/configuration/LMConfiguration.h"
+#include "common/src/configuration/LMConfiguration.h"
 #include "glite/wms/common/logger/logstream.h"
 #include "glite/wms/common/logger/manipulators.h"
-#include "glite/wms/common/utilities/streamdescriptor.h"
+#include "common/src/utilities/streamdescriptor.h"
 #include "jobcontrol_namespace.h"
 #include "logmonitor/SizeFile.h"
 

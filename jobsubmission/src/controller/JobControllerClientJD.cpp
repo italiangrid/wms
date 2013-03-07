@@ -25,7 +25,7 @@ namespace fs = boost::filesystem;
 #include <classad_distribution.h>
 
 #include "glite/wms/common/configuration/Configuration.h"
-#include "glite/wms/common/configuration/JCConfiguration.h"
+#include "common/src/configuration/JCConfiguration.h"
 #include "glite/wms/common/logger/manipulators.h"
 #include "jobcontrol_namespace.h"
 #include "common/SignalChecker.h"

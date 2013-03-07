@@ -31,7 +31,7 @@ limitations under the License.
 
 #include "glite/wms/helper/RequestStateMachine.h"
 #include "glite/wms/helper/Helper.h"
-#include "glite/wms/common/logger/logger_utils.h"
+#include "common/interface/glite/wms/common/logger/logger_utils.h"
 #include "glite/wmsutils/classads/classad_utils.h"
 
 namespace utils = glite::wmsutils::classads;

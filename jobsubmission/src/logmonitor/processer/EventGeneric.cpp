@@ -26,7 +26,7 @@
 #include "glite/wms/common/logger/logstream.h"
 #include "glite/wms/common/logger/manipulators.h"
 #include "glite/wms/common/configuration/Configuration.h"
-#include "glite/wms/common/configuration/LMConfiguration.h"
+#include "common/src/configuration/LMConfiguration.h"
 #include "common/EventLogger.h"
 #include "common/id_container.h"
 #include "common/JobFilePurger.h"

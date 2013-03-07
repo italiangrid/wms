@@ -20,8 +20,8 @@
 
 #include "glite/lb/statistics.h"
 #include "glite/wms/common/configuration/Configuration.h"
-#include "glite/wms/common/configuration/CommonConfiguration.h"
-#include "glite/wms/common/configuration/WMPConfiguration.h"
+#include "common/src/configuration/CommonConfiguration.h"
+#include "common/src/configuration/WMPConfiguration.h"
 
 namespace configuration = glite::wms::common::configuration;
 

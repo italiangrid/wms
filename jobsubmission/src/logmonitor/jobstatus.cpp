@@ -28,14 +28,14 @@ limitations under the License. */
 #include <boost/filesystem/exception.hpp>
 
 #include "glite/wms/common/configuration/Configuration.h"
-#include "glite/wms/common/configuration/LMConfiguration.h"
+#include "common/src/configuration/LMConfiguration.h"
 #include "glite/wms/common/configuration/exceptions.h"
 #include "glite/wms/common/logger/manipulators.h"
 #include "glite/wms/common/logger/edglog.h"
-#include "glite/wms/common/utilities/boost_fs_add.h"
-#include "glite/wms/common/utilities/streamdescriptor.h"
+#include "common/src/utilities/boost_fs_add.h"
+#include "common/src/utilities/streamdescriptor.h"
 #include "glite/wms/common/utilities/LineParser.h"
-#include "glite/wms/common/utilities/LineParserExceptions.h"
+#include "common/src/utilities/LineParserExceptions.h"
 #include "jobcontrol_namespace.h"
 
 #include "JobStatusExtractor.h"

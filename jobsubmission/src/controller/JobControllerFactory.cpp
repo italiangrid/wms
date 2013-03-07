@@ -16,7 +16,7 @@
 #include <string>
 
 #include "glite/wms/common/configuration/Configuration.h"
-#include "glite/wms/common/configuration/JCConfiguration.h"
+#include "common/src/configuration/JCConfiguration.h"
 
 #include "JobControllerFactory.h"
 #include "JobControllerProxy.h"

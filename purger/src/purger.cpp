@@ -27,8 +27,9 @@
 #include "glite/jobid/JobId.h"
 
 #include "glite/wms/common/configuration/Configuration.h"
-#include "glite/wms/common/configuration/WMPConfiguration.h"
-#include "glite/wms/common/configuration/CommonConfiguration.h"
+//#include "glite/wms/common/configuration/WMPConfiguration.h"
+#include "common/src/configuration/WMPConfiguration.h"
+#include "common/src/configuration/CommonConfiguration.h"
 #include "glite/wms/common/configuration/exceptions.h"
 
 #include "glite/wmsutils/classads/classad_utils.h"
@@ -36,7 +37,7 @@
 #include "glite/wms/common/logger/logger_utils.h"
 #include "glite/wms/common/logger/manipulators.h"
 #include "glite/wms/common/utilities/scope_guard.h"
-#include "glite/wms/common/utilities/manipulation.h"
+#include "common/src/utilities/manipulation.h"
 
 #include "glite/lb/Job.h"
 #include "lb_utils.h"

@@ -27,7 +27,7 @@ limitations under the License. */
 #include "glite/wms/common/logger/manipulators.h"
 #include "common/EventLogger.h"
 #include "glite/wms/common/configuration/Configuration.h"
-#include "glite/wms/common/configuration/LMConfiguration.h"
+#include "common/src/configuration/LMConfiguration.h"
 
 #include "EventGlobusResourceDown.h"
 #include "MonitorData.h"

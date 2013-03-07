@@ -24,7 +24,7 @@
 #include "glite/jdl/ManipulationExceptions.h"
 
 #include "glite/wms/common/configuration/Configuration.h"
-#include "glite/wms/common/configuration/CommonConfiguration.h"
+#include "common/src/configuration/CommonConfiguration.h"
 #include "glite/wms/common/utilities/wm_commands.h"
 #include "glite/wms/common/utilities/input_reader.h"
 #include "glite/wms/common/logger/logger_utils.h"
@@ -32,7 +32,7 @@
 #include "glite/wmsutils/exception/Exception.h"
 #include "glite/jobid/JobId.h"
 
-#include "glite/wms/purger/purger.h"
+#include "purger/src/purger.h"
 #include "glite/security/proxyrenewal/renewal.h"
 
 #include "glite/lb/producer.h"

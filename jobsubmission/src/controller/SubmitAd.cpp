@@ -31,15 +31,15 @@ namespace fs = boost::filesystem;
 #include "glite/wms/common/logger/logstream.h"
 #include "glite/wms/common/logger/manipulators.h"
 #include "glite/wms/common/configuration/Configuration.h"
-#include "glite/wms/common/configuration/LMConfiguration.h"
-#include "glite/wms/common/configuration/JCConfiguration.h"
+#include "common/src/configuration/LMConfiguration.h"
+#include "common/src/configuration/JCConfiguration.h"
 #include "glite/jdl/JobAdManipulation.h"
 #include "glite/jdl/PrivateAdManipulation.h"
 #include "glite/jdl/ManipulationExceptions.h"
 
 #include "glite/jobid/JobId.h"
 
-#include "glite/wms/common/utilities/boost_fs_add.h"
+#include "common/src/utilities/boost_fs_add.h"
 #include "common/files.h"
 
 #include "SubmitAd.h"

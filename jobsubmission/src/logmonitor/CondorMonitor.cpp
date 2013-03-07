@@ -29,14 +29,14 @@
 #include <boost/lexical_cast.hpp>
 
 #include "glite/wms/common/configuration/Configuration.h"
-#include "glite/wms/common/configuration/LMConfiguration.h"
+#include "common/src/configuration/LMConfiguration.h"
 
 #include "glite/jobid/JobId.h"
 
 #include "glite/wms/common/logger/logstream.h"
 #include "glite/wms/common/logger/manipulators.h"
-#include "glite/wms/common/utilities/boost_fs_add.h"
-#include "glite/wms/common/utilities/streamdescriptor.h"
+#include "common/src/utilities/boost_fs_add.h"
+#include "common/src/utilities/streamdescriptor.h"
 
 #include "logmonitor/processer/EventFactory.h"
 #include "logmonitor/processer/EventInterface.h"

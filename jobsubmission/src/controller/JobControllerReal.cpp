@@ -42,10 +42,10 @@ namespace fs = boost::filesystem;
 #include <condor/user_log.c++.h>
 
 #include "glite/wms/common/configuration/Configuration.h"
-#include "glite/wms/common/configuration/CommonConfiguration.h"
-#include "glite/wms/common/configuration/JCConfiguration.h"
-#include "glite/wms/common/configuration/LMConfiguration.h"
-#include "glite/wms/common/configuration/NSConfiguration.h"
+#include "common/src/configuration/CommonConfiguration.h"
+#include "common/src/configuration/JCConfiguration.h"
+#include "common/src/configuration/LMConfiguration.h"
+#include "common/src/configuration/NSConfiguration.h"
 
 #include "glite/jobid/JobId.h"
 

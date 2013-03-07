@@ -21,9 +21,9 @@ END LICENSE */
 
 #include "IceConfManager.h"
 #include "glite/wms/common/configuration/Configuration.h"
-#include "glite/wms/common/configuration/CommonConfiguration.h"
-#include "glite/wms/common/configuration/ICEConfiguration.h"
-#include "glite/wms/common/configuration/WMConfiguration.h"
+#include "common/src/configuration/CommonConfiguration.h"
+#include "common/src/configuration/ICEConfiguration.h"
+#include "common/src/configuration/WMConfiguration.h"
 
 namespace conf_ns = glite::wms::common::configuration;
 using namespace glite::wms::ice::util;

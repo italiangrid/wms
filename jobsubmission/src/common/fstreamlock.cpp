@@ -26,7 +26,7 @@ limitations under the License.
 #include <fstream>
 
 #include "fstreamlock.h"
-#include "glite/wms/common/utilities/streamdescriptor.h"
+#include "common/src/utilities/streamdescriptor.h"
 
 JOBCONTROL_NAMESPACE_BEGIN {
 namespace jccommon {

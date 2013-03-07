@@ -21,7 +21,7 @@ END LICENSE */
 #include "DNProxyManager.h"
 #include "IceConfManager.h"
 #include "IceUtils.h"
-#include "glite/wms/common/configuration/ICEConfiguration.h"
+#include "common/src/configuration/ICEConfiguration.h"
 #include "glite/security/proxyrenewal/renewal.h"
 
 #include "iceDb/GetProxyInfoByDN.h"

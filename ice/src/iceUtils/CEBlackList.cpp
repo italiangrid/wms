@@ -23,7 +23,7 @@ END LICENSE */
 #include "IceUtils.h"
 #include "IceConfManager.h"
 #include "glite/wms/common/configuration/Configuration.h"
-#include "glite/wms/common/configuration/ICEConfiguration.h"
+#include "common/src/configuration/ICEConfiguration.h"
 
 #include <algorithm>
 

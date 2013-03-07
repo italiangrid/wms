@@ -46,8 +46,8 @@ END LICENSE */
 
 // WMS Headers
 #include "glite/wms/common/configuration/Configuration.h"
-#include "glite/wms/common/configuration/ICEConfiguration.h"
-#include "glite/wms/common/utilities/scope_guard.h"
+#include "common/src/configuration/ICEConfiguration.h"
+#include "common/src/utilities/scope_guard.h"
 
 // BOOST Headers
 #include <boost/lexical_cast.hpp>

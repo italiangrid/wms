@@ -44,7 +44,7 @@ limitations under the License.
 #include "glite/wms/helper/jobadapter/JobAdapter.h"
 #include "glite/wms/common/logger/logger_utils.h"
 #include "glite/wms/common/configuration/Configuration.h"
-#include "glite/wms/common/configuration/WMConfiguration.h"
+#include "common/src/configuration/WMConfiguration.h"
 
 #include "match_utils.h"
 #include "bulkmm_utils.h"

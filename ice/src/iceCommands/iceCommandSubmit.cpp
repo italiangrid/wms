@@ -54,8 +54,8 @@ END LICENSE */
 
 #include "glite/wms/common/utilities/scope_guard.h"
 #include "glite/wms/common/configuration/Configuration.h"
-#include "glite/wms/common/configuration/WMConfiguration.h"
-#include "glite/wms/common/configuration/ICEConfiguration.h"
+#include "common/src/configuration/WMConfiguration.h"
+#include "common/src/configuration/ICEConfiguration.h"
 
 // Boost stuff
 #include "boost/algorithm/string.hpp"

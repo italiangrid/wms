@@ -23,8 +23,8 @@
 #include "glite/jdl/ManipulationExceptions.h"
 
 #include "glite/wms/common/configuration/Configuration.h"
-#include "glite/wms/common/configuration/WMConfiguration.h"
-#include "glite/wms/common/configuration/NSConfiguration.h"
+#include "common/src/configuration/WMConfiguration.h"
+#include "common/src/configuration/NSConfiguration.h"
 #include "glite/wms/common/utilities/wm_commands.h"
 #include "glite/wms/common/utilities/input_reader.h"
 #include "glite/wms/common/logger/logger_utils.h"

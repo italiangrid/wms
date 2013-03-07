@@ -43,8 +43,8 @@ namespace fs = boost::filesystem;
 #include "glite/ce/cream-client-api-c/creamApiLogger.h"
 
 #include "glite/wms/common/configuration/Configuration.h"
-#include "glite/wms/common/configuration/ICEConfiguration.h"
-#include "glite/wms/common/configuration/CommonConfiguration.h"
+#include "common/src/configuration/ICEConfiguration.h"
+#include "common/src/configuration/CommonConfiguration.h"
 // #include "jobCache.h"
 #include "IceUtils.h"
 

@@ -29,18 +29,18 @@
 #include "glite/lb/producer.h"
 
 #include "glite/wms/common/configuration/Configuration.h"
-#include "glite/wms/common/configuration/WMConfiguration.h"
-#include "glite/wms/common/configuration/CommonConfiguration.h"
-#include "glite/wms/common/configuration/NSConfiguration.h"
-#include "glite/wms/common/configuration/JCConfiguration.h"
-#include "glite/wms/common/configuration/ICEConfiguration.h"
+#include "common/src/configuration/WMConfiguration.h"
+#include "common/src/configuration/CommonConfiguration.h"
+#include "common/src/configuration/NSConfiguration.h"
+#include "common/src/configuration/JCConfiguration.h"
+#include "common/src/configuration/ICEConfiguration.h"
 
 #include "glite/wms/common/logger/logger_utils.h"
 
-#include "glite/wms/common/utilities/boost_fs_add.h"
+#include "common/src/utilities/boost_fs_add.h"
 #include "glite/wms/common/utilities/scope_guard.h"
 
-#include "glite/wms/purger/purger.h"
+#include "purger/src/purger.h"
 #include "glite/security/proxyrenewal/renewal.h"
 
 #include "glite/jdl/PrivateAttributes.h"
@@ -53,7 +53,7 @@
 #include "glite/wms/helper/Request.h"
 
 #include "glite/jobid/JobId.h"
-#include "glite/wms/common/utilities/manipulation.h"
+#include "common/src/utilities/manipulation.h"
 #include "glite/wmsutils/classads/classad_utils.h"
 
 #include "glite/security/proxyrenewal/renewal.h"

@@ -34,9 +34,9 @@
 #include <classad_distribution.h>
 
 #include "glite/wms/common/configuration/Configuration.h"
-#include "glite/wms/common/configuration/CommonConfiguration.h"
-#include "glite/wms/common/configuration/WMConfiguration.h"
-#include "glite/wms/common/configuration/NSConfiguration.h"
+#include "common/src/configuration/CommonConfiguration.h"
+#include "common/src/configuration/WMConfiguration.h"
+#include "common/src/configuration/NSConfiguration.h"
 #include "glite/wms/common/configuration/exceptions.h"
 
 #include "glite/wms/common/logger/edglog.h"

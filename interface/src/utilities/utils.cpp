@@ -47,7 +47,7 @@ limitations under the License.
 
 // JobId
 #include "glite/jobid/JobId.h"
-#include "glite/wms/common/utilities/manipulation.h"
+#include "common/src/utilities/manipulation.h"
 
 // Logging and Bookkeeping
 #include "glite/lb/JobStatus.h"
@@ -59,8 +59,8 @@ limitations under the License.
 // Event logger
 #include "eventlogger/eventlogger.h"
 
-#include "glite/wms/purger/purger.h"
-#include "glite/wms/common/utilities/quota.h"
+#include "purger/src/purger.h"
+#include "common/src/utilities/quota.h"
 
 // Exceptions
 #include "wmpexceptions.h"
