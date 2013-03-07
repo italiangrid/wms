@@ -1,5 +1,0 @@
-usr/sbin/glite-wms-purgeStorage
-usr/sbin/glite-wms-create-proxy.sh
-usr/sbin/glite-wms-purgeStorage.sh
-usr/lib/libglite_wms_purger.so.0
-usr/lib/libglite_wms_purger.so.0.0.0

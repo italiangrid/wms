@@ -1,8 +1,0 @@
-usr/include/glite/wms/common/logger/*.h
-usr/include/glite/wms/common/configuration/*.h
-usr/include/glite/wms/common/ldif2classad/*.h
-usr/include/glite/wms/common/utilities/*.h
-usr/include/glite/wms/common/process/*.h
-usr/lib/pkgconfig/wms-common*.pc
-usr/lib/libglite_wms_*.so
-

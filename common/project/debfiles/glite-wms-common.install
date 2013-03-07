@@ -1,6 +1,0 @@
-usr/lib/libglite_wms_*.so.0.0.0
-usr/lib/libglite_wms_*.so.0
-usr/sbin/glite-wms-quota-adjust
-usr/bin/glite-wms-get-configuration
-usr/libexec/glite-wms-eval_ad_expr
-
