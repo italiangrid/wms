@@ -13,7 +13,7 @@ Requires: glite-wms-utils-exception,boost,c-ares,argus-pep-api-c,lcmaps-without-
 Requires: glite-wms-utils-classad,classads,globus-ftp-client,globus-ftp-control,globus-common,globus-ftp-client
 Requires: glite-lbjp-common-gsoap-plugin,lcmaps,fcgi,globus-gss-assist,globus-io,glite-jdl-api-cpp
 Requires: globus-gram-protocol,condor-emi,openldap,log4cpp,glite-ce-cream-client-api-c,globus-gridftp-server-progs
-Requires: lcas-lcmaps-gt4-interface,glite-lb-yaim,globus-proxy-utils,perl-suidperl,fetch-crl,glite-lb-server,glite-lb-logger-msg,bdii
+Requires: lcas-lcmaps-gt4-interface,glite-lb-yaim,globus-proxy-utils,perl-suidperl,fetch-crl,glite-lb-server,glite-lb-logger-msg,bdii,lcmaps-plugins-basic
 #Requires: libtar,libxml2,libxslt,zlib ## these deps are unneeded. rpmbuild will resolve itself
 BuildRequires: glite-jobid-api-c-devel, chrpath, glite-lb-client-devel,glite-jobid-api-c-devel,voms-devel,gridsite-devel,libxml2-devel
 BuildRequires: glite-jobid-api-cpp-devel, glite-jobid-api-c-devel, gcc, gcc-c++, cmake,glite-px-proxyrenewal-devel
