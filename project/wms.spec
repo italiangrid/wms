@@ -7,7 +7,14 @@ Vendor: EMI
 URL: http://web.infn.it/gLiteWMS/
 Group: Applications/Internet
 BuildArch: %{_arch}
-Requires: glite-yaim-core, glite-yaim-lb, glite-px-proxyrenewal,httpd,gridsite-apache,mod_fcgid,mod_ssl,gsoap,glite-info-provider-service,glite-initscript-globus-gridftp,glite-jobid-api-c,glite-lb-client,voms,gridsite,libxml2,glite-wms-utils-exception,boost,c-ares,argus-pep-api-c,lcmaps-without-gsi,libtar,glite-wms-utils-classad,classads,globus-ftp-client,globus-ftp-control,globus-common,globus-ftp-client,glite-lbjp-common-gsoap-plugin,lcmaps,fcgi,globus-gss-assist,globus-io,glite-jdl-api-cpp,libxslt,globus-gram-protocol,condor-emi,openldap,log4cpp,zlib,glite-ce-cream-client-api-c,globus-gridftp-server-progs,lcas-lcmaps-gt4-interface,glite-lb-yaim,globus-proxy-utils,perl-suidperl,fetch-crl
+Requires: glite-yaim-core, glite-yaim-lb, glite-px-proxyrenewal,httpd,gridsite-apache,mod_fcgid,mod_ssl,gsoap,
+Requires: glite-info-provider-service,glite-initscript-globus-gridftp,glite-jobid-api-c,glite-lb-client,voms,gridsite,
+Requires: glite-wms-utils-exception,boost,c-ares,argus-pep-api-c,lcmaps-without-gsi,
+Requires: glite-wms-utils-classad,classads,globus-ftp-client,globus-ftp-control,globus-common,globus-ftp-client
+Requires: glite-lbjp-common-gsoap-plugin,lcmaps,fcgi,globus-gss-assist,globus-io,glite-jdl-api-cpp
+Requires: globus-gram-protocol,condor-emi,openldap,log4cpp,glite-ce-cream-client-api-c,globus-gridftp-server-progs
+Requires: lcas-lcmaps-gt4-interface,glite-lb-yaim,globus-proxy-utils,perl-suidperl,fetch-crl
+#Requires: libtar,libxml2,libxslt,zlib ## these deps are unneeded. rpmbuild will resolve itself
 BuildRequires: glite-jobid-api-c-devel, chrpath, glite-lb-client-devel,glite-jobid-api-c-devel,voms-devel,gridsite-devel,libxml2-devel
 BuildRequires: glite-jobid-api-cpp-devel, glite-jobid-api-c-devel, gcc, gcc-c++, cmake,glite-px-proxyrenewal-devel
 BuildRequires: glite-wms-utils-exception-devel, boost-devel, c-ares-devel,argus-pep-api-c-devel,lcmaps-without-gsi-devel,libtar-devel
@@ -87,6 +94,16 @@ strip -s %{buildroot}/usr/bin/glite-wms-log_monitor
 strip -s %{buildroot}/usr/libexec/glite-wms-lm-job_status
 strip -s %{buildroot}/usr/bin/glite_wms_wmproxy_server
 strip -s %{buildroot}/usr/libexec/glite_wms_wmproxy_dirmanager
+strip -s %{buildroot}/usr/bin/glite-wms-ice-safe
+strip -s %{buildroot}/usr/bin/putFL
+strip -s %{buildroot}/usr/bin/glite-wms-ice-db-rm
+strip -s %{buildroot}/usr/bin/glite-wms-ice-rm
+strip -s %{buildroot}/usr/bin/queryDb
+strip -s %{buildroot}/usr/bin/putFL_cancel
+strip -s %{buildroot}/usr/bin/queryStats
+strip -s %{buildroot}/usr/bin/glite-wms-ice-proxy-renew
+strip -s %{buildroot}/usr/bin/glite-wms-ice
+strip -s %{buildroot}/usr/bin/putFL_reschedule
 chrpath --delete %{buildroot}/usr/bin/glite_wms_wmproxy_server
 chrpath --delete %{buildroot}/usr/libexec/glite_wms_wmproxy_dirmanager
 chrpath --delete %{buildroot}%{_libdir}/libglite_wms_*.so.0.0.0
@@ -186,7 +203,7 @@ fi
 /usr/bin/queryStats
 /usr/bin/glite-wms-ice-rm
 /usr/bin/glite-wms-ice
-%{_libdir}/libglite_wms_ice*.so
+#%{_libdir}/libglite_wms_ice*.so
 %config(noreplace) /etc/glite-wms/wms.conf.template
 /usr/libexec/glite-wms-parse-configuration.sh
 /usr/libexec/glite-wms-check-daemons.sh
