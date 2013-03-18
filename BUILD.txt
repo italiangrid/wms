@@ -1,0 +1,97 @@
+To build the software you need cmake to be installed.
+type
+
+cmake . -DPREFIX=<your_preferred_path>/usr -DSYSCONFIGDIR=<your_preferred_path>/etc -DOS=<sl5|sl6> -DMOCK=<mock_cfg_file>
+
+If you do not plan to do a mock build, then the <mock_cfg_file> can be anything (e.g. "none"). Otherwise you have to specify the name of an existing mock configuration file without extension and without path:
+
+dorigoa@sl5-64 11:22:05 ~/wms>ll /etc/mock/emi-3-rc-sl5-x86_64.cfg 
+-rw-r--r-- 1 root root 2207 Mar 18 11:16 /etc/mock/emi-3-rc-sl5-x86_64.cfg
+
+dorigoa@sl5-64 11:22:11 ~/wms>cmake . -DPREFIX=`pwd`/stage/usr
+-DSYSCONFIGDIR=`pwd`/stage/etc -DOS=sl5 -DMOCKCFG=emi-3-rc-sl5-x86_64
+
+Please note that for the moment OS can assume only the two values "sl5" and
+"sl6" (no need to specify the architecture, because only 64bit is supported).
+Debian build will come soon.
+
+The very first cmake's output could be something like this:
+
+------------------------------------------------------------
+-- checking for module 'cream-client-api-util'
+--   package 'cream-client-api-util' not found
+CMake Error at /usr/share/cmake/Modules/FindPkgConfig.cmake:270 (message):
+  A required package was not found
+Call Stack (most recent call first):
+  /usr/share/cmake/Modules/FindPkgConfig.cmake:322
+(_pkg_check_modules_internal)
+  CMakeLists.txt:199 (pkg_check_modules)
+
+
+WARNING *** Some dependencies are missing. Will try to install
+them via yum. Please intert your password
+running sudo yum -y install argus-pep-api-c argus-pep-api-c-devel boost
+boost-devel c-ares c-ares-devel chrpath classads classads-devel condor-emi
+docbook-style-xsl emi-pkgconfig-compat fcgi fcgi-devel
+glite-ce-cream-client-api-c glite-ce-cream-client-devel glite-jdl-api-cpp
+glite-jdl-api-cpp-devel glite-jobid-api-c glite-jobid-api-c-devel
+glite-jobid-api-cpp-devel glite-lb-client glite-lb-client-devel
+glite-lb-common glite-lb-common-devel glite-px-proxyrenewal-devel
+glite-px-proxyrenewal-libs glite-wms-utils-classad
+glite-wms-utils-classad-devel glite-wms-utils-exception
+glite-wms-utils-exception-devel globus-common globus-common-devel
+globus-ftp-client globus-ftp-client-devel globus-gram-protocol
+globus-gram-protocol-devel globus-gssapi-gsi globus-gssapi-gsi-devel
+globus-gss-assist globus-gss-assist-devel globus-io globus-io-devel
+globus-openssl-module globus-openssl-module-devel gridsite gridsite-devel
+gsoap gsoap-devel httpd-devel lcmaps lcmaps-basic-interface lcmaps-devel
+lcmaps-globus-interface lcmaps-openssl-interface lcmaps-without-gsi
+lcmaps-without-gsi-devel libtar-devel libxml2 libxml2-devel libxslt
+libxslt-devel log4cpp log4cpp-devel openldap-devel rpm-build voms voms-devel
+2>&1
+
+We trust you have received the usual lecture from the local System
+Administrator. It usually boils down to these three things:
+
+    #1) Respect the privacy of others.
+    #2) Think before you type.
+    #3) With great power comes great responsibility.
+
+[sudo] password for dorigoa: 
+dorigoa is not in the sudoers file.  This incident will be reported.
+-----------------------------------------
+
+This is because build time dependencies are missing and cmake will install
+them via yum for you. Of course it needs your password to execute the 'yum
+install' command with root privileges. 
+After installation a message like this will show:
+
+------------------------------
+WARNING Please re-run cmake once again...
+-- Configuring incomplete, errors occurred!
+------------------------------
+
+Deps have been installed, and cmake needs to be run once more to resolve them
+and prepare the macro variables.
+
+If *ALL* deps are already installed, or after the second run with all deps
+correctly installed, cmake will prepare the Makefiles for the build.
+Just type
+
+make
+
+This will build (and NOT stage) the artifacts. To stage the binaries just type
+
+make install 
+
+To build the (s)rpm packages just type:
+
+make RPM
+
+If you've specified the mock cfg file you can also try a mock build by typing:
+
+make MOCK
+
+the (s)rpm packages are save into $PWD/rpmbuild.
+
+That's all, enjoy NOT using etics ;-)
