@@ -40,7 +40,7 @@ Workload Management System (server and libraries)
 %{!?extbuilddir:%define extbuilddir "--"}
 if test "x%{extbuilddir}" == "x--" ; then
   echo "buildroot=%{buildroot}"
-  cmake . -DPREFIX=%{buildroot} -DPVER=%{version} -DOS=%{release} -DMOCKCFG=none
+  cmake . -DPREFIX=%{buildroot} -DPVER=%{version} -DOS=%{extdist} -DMOCKCFG=none -DAGE=%{extage}
   chmod u+x $PWD/common/src/scripts/generator.pl
   for hfile in `ls $PWD/common/src/configuration/*.h.G`; do
     $PWD/common/src/scripts/generator.pl $PWD/common/src/configuration/Configuration.def -H $hfile
