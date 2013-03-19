@@ -1459,8 +1459,8 @@ submit(
             jobidstring = nodead.getString(JDL::JOBID);
 
             dest_uri = getDestURI(jobidstring, conf.getDefaultProtocol(), conf.getDefaultPort());
-            edglog(debug)<<"Setting internal attributes for sub job: "
-                         <<jobidstring<< " with index " << i <<endl;
+            edglog(debug) <<"Setting internal attributes for sub job: " <<jobidstring<<
+               " with index "<<i<<endl;
             edglog(debug)<<"Destination URI: "<<dest_uri<<endl;
 
             edglog(debug)<<"Setting attribute JDL::WMPISB_BASE_URI"<<endl;
@@ -1612,7 +1612,7 @@ submit(
 
          dag.getSubmissionStrings();
          if (maxInputSandboxFiles > 0) {
-            vector<string> dag_nodes(dg.getNodes());
+            vector<string>dag_nodes(dg.getNodes());
             for (unsigned int i = 0; i < size; ++i) {
                NodeAd nodead = dag.getNode(dag_nodes[i]);
                if (nodead.hasAttribute(JDL::INPUTSB)) {
