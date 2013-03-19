@@ -55,7 +55,7 @@ if test "x%{extbuilddir}" == "x--" ; then
   %endif
 
   make
-  sh configuration/install.sh %{buildroot} %{version}
+  
 fi
 
 %install
