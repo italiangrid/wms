@@ -99,7 +99,7 @@ strip -s %{buildroot}/usr/bin/glite-wms-ice-safe
 strip -s %{buildroot}/usr/bin/glite-wms-ice-putfl
 strip -s %{buildroot}/usr/bin/glite-wms-ice-db-rm
 strip -s %{buildroot}/usr/bin/glite-wms-ice-rm
-strip -s %{buildroot}/usr/bin/glite-wms-ice-query-bb
+strip -s %{buildroot}/usr/bin/glite-wms-ice-query-db
 strip -s %{buildroot}/usr/bin/glite-wms-ice-putfl-cancel
 strip -s %{buildroot}/usr/bin/glite-wms-ice-query-stats
 strip -s %{buildroot}/usr/bin/glite-wms-ice-proxy-renew
@@ -108,14 +108,14 @@ strip -s %{buildroot}/usr/bin/glite-wms-ice-putfl-reschedule
 chrpath --delete %{buildroot}/usr/bin/glite_wms_wmproxy_server
 chrpath --delete %{buildroot}/usr/libexec/glite_wms_wmproxy_dirmanager
 chrpath --delete %{buildroot}%{_libdir}/libglite_wms_*.so.0.0.0
-chrpath --delete %{buildroot}/usr/bin/queryStats
+chrpath --delete %{buildroot}/usr/bin/glite-wms-ice-query-stats
 chrpath --delete %{buildroot}/usr/bin/glite-wms-ice-safe
-chrpath --delete %{buildroot}/usr/bin/putFL
+chrpath --delete %{buildroot}/usr/bin/glite-wms-ice-putfl
 chrpath --delete %{buildroot}/usr/bin/glite-wms-ice-db-rm
-chrpath --delete %{buildroot}/usr/bin/putFL_reschedule
+chrpath --delete %{buildroot}/usr/bin/glite-wms-ice-putfl-reschedule
 chrpath --delete %{buildroot}/usr/bin/glite-wms-ice-rm
 chrpath --delete %{buildroot}/usr/bin/glite-wms-ice-proxy-renew
-chrpath --delete %{buildroot}/usr/bin/queryDb
+chrpath --delete %{buildroot}/usr/bin/glite-wms-ice-query-db
 chrpath --delete %{buildroot}/usr/bin/glite-wms-ice
 
 export QA_SKIP_BUILD_ROOT=yes
@@ -194,14 +194,14 @@ fi
 %{_libdir}/libglite_wms_wmproxy_*.so
 %attr(4755, root, root) /usr/libexec/glite_wms_wmproxy_dirmanager
 /etc/rc.d/init.d/glite-wms-ice
-/usr/bin/queryDb
+/usr/bin/glite-wms-ice-query-db
 /usr/bin/glite-wms-ice-proxy-renew
 /usr/bin/glite-wms-ice-db-rm
 /usr/bin/glite-wms-ice-safe
-/usr/bin/putFL_cancel
-/usr/bin/putFL_reschedule
-/usr/bin/putFL
-/usr/bin/queryStats
+/usr/bin/glite-wms-ice-putfl-cancel
+/usr/bin/glite-wms-ice-putfl-reschedule
+/usr/bin/glite-wms-ice-putfl
+/usr/bin/glite-wms-ice-query-stats
 /usr/bin/glite-wms-ice-rm
 /usr/bin/glite-wms-ice
 #%{_libdir}/libglite_wms_ice*.so
