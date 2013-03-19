@@ -74,7 +74,7 @@ for source distribution)
     COMMAND tar ARGS czvf /tmp/glite-wms-server-${PVER}-${AGE}.${OS}.tar.gz
 	    --exclude CMakeCache.txt 
 	    --exclude cmake_install.cmake 
-	    --exclude "*wms/stage*"
+	    --exclude "${PREFIX}/stage/*"
 	    --exclude "*Makefile" 
 	    --exclude "*CMakeFiles*" 
 	    --exclude install_manifest.txt

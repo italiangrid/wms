@@ -1,7 +1,7 @@
 To build the software you need cmake to be installed.
 type
 
-cmake . -DPREFIX=<your_preferred_path>/usr -DSYSCONFIGDIR=<your_preferred_path>/etc -DOS=<sl5|sl6> -DMOCK=<mock_cfg_file>
+cmake . -DPREFIX=<your_preferred_path> -DOS=<sl5|sl6> -DMOCK=<mock_cfg_file>
 
 If you do not plan to do a mock build, then the <mock_cfg_file> can be anything (e.g. "none"). Otherwise you have to specify the name of an existing mock configuration file without extension and without path:
 

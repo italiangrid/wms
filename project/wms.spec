@@ -39,6 +39,7 @@ Workload Management System (server and libraries)
 %build
 %{!?extbuilddir:%define extbuilddir "--"}
 if test "x%{extbuilddir}" == "x--" ; then
+  echo "buildroot=%{buildroot}"
   cmake . -DPREFIX=%{buildroot} -DPVER=%{version} -DOS=%{release} -DMOCKCFG=none
   chmod u+x $PWD/common/src/scripts/generator.pl
   for hfile in `ls $PWD/common/src/configuration/*.h.G`; do
@@ -95,15 +96,15 @@ strip -s %{buildroot}/usr/libexec/glite-wms-lm-job_status
 strip -s %{buildroot}/usr/bin/glite_wms_wmproxy_server
 strip -s %{buildroot}/usr/libexec/glite_wms_wmproxy_dirmanager
 strip -s %{buildroot}/usr/bin/glite-wms-ice-safe
-strip -s %{buildroot}/usr/bin/putFL
+strip -s %{buildroot}/usr/bin/glite-wms-ice-putfl
 strip -s %{buildroot}/usr/bin/glite-wms-ice-db-rm
 strip -s %{buildroot}/usr/bin/glite-wms-ice-rm
-strip -s %{buildroot}/usr/bin/queryDb
-strip -s %{buildroot}/usr/bin/putFL_cancel
-strip -s %{buildroot}/usr/bin/queryStats
+strip -s %{buildroot}/usr/bin/glite-wms-ice-query-bb
+strip -s %{buildroot}/usr/bin/glite-wms-ice-putfl-cancel
+strip -s %{buildroot}/usr/bin/glite-wms-ice-query-stats
 strip -s %{buildroot}/usr/bin/glite-wms-ice-proxy-renew
 strip -s %{buildroot}/usr/bin/glite-wms-ice
-strip -s %{buildroot}/usr/bin/putFL_reschedule
+strip -s %{buildroot}/usr/bin/glite-wms-ice-putfl-reschedule
 chrpath --delete %{buildroot}/usr/bin/glite_wms_wmproxy_server
 chrpath --delete %{buildroot}/usr/libexec/glite_wms_wmproxy_dirmanager
 chrpath --delete %{buildroot}%{_libdir}/libglite_wms_*.so.0.0.0
