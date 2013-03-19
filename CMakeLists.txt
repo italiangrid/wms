@@ -14,7 +14,7 @@ if(NOT DEFINED MOCKCFG)
 endif(NOT DEFINED MOCKCFG)
 
 if(NOT DEFINED AGE)
-    message(WARNING " Undefined age number, selected 0.0.0. Please use -DAGE=<number> to customize")
+    message(WARNING " Undefined age number, selected 0 Please use -DAGE=<number> to customize")
     set(AGE "0")
 endif(NOT DEFINED AGE)
 
