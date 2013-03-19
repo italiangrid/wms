@@ -29,5 +29,5 @@ set_target_properties(glite_wms_iceThreads PROPERTIES VERSION 0.0.0 SOVERSION 0)
 install(TARGETS glite_wms_iceThreads
   LIBRARY 
   DESTINATION 
-  ${PREFIX}/stage/usr/${LIBDIR}
+  ${PREFIX}/usr/${LIBDIR}
   )

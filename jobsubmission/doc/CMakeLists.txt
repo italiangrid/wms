@@ -30,5 +30,5 @@ install(FILES
   glite-wms-job_controller.1.gz
   glite-wms-log_monitor.1.gz
   DESTINATION
-  ${PREFIX}/stage/usr/share/man/man1
+  ${PREFIX}/usr/share/man/man1
 )

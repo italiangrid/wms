@@ -41,4 +41,4 @@ target_link_libraries(glite_wms_logger ${CLASSAD_LIBRARIES})
 
 
 install(TARGETS glite_wms_logger
-        LIBRARY DESTINATION ${PREFIX}/stage/usr/${LIBDIR})
+        LIBRARY DESTINATION ${PREFIX}/usr/${LIBDIR})

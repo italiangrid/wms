@@ -44,5 +44,5 @@ target_link_libraries(glite_wms_helper_jobadapter
 install(TARGETS glite_wms_helper_jobadapter
   LIBRARY 
   DESTINATION 
-  ${PREFIX}/stage/usr/${LIBDIR}
+  ${PREFIX}/usr/${LIBDIR}
   )

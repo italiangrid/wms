@@ -1,12 +1,12 @@
 
 include_directories(${CLASSAD_INCLUDE_DIRS}
                     ${PROJECT_SOURCE_DIR}/interface
-		    ${PREFIX}/stage/usr/include
+		    ${PREFIX}/usr/include
 		    ${WMSUTILS_CLASSADS_ALT_INCLUDE_DIRS}
 		    ${WMSUTILS_CLASSADS_INCLUDE_DIRS}
 		    ${PROJECT_SOURCE_DIR}/src)
 
-link_directories(${PREFIX}/stage/usr/${LIBDIR})
+link_directories(${PREFIX}/usr/${LIBDIR})
 
 add_custom_target(UTILITIES 
   DEPENDS 
@@ -60,7 +60,7 @@ set_target_properties(glite_wms_quota PROPERTIES VERSION 0.0.0 SOVERSION 0)
 
 add_executable(glite-wms-quota-adjust glite_wms_quota_adjust.cpp)
 install(TARGETS glite-wms-quota-adjust
-        DESTINATION ${PREFIX}/stage/usr/${SBINDIR})
+        DESTINATION ${PREFIX}/usr/${SBINDIR})
 
 target_link_libraries(glite-wms-quota-adjust 
   ${WMSUTILS_CLASSADS_ALT_LIBRARIES}
@@ -73,7 +73,7 @@ target_link_libraries(glite-wms-quota-adjust
 
 add_executable(glite-wms-eval_ad_expr glite-wms-eval_ad_expr.cpp)
 install(TARGETS glite-wms-eval_ad_expr
-        DESTINATION ${PREFIX}/stage/usr/${LIBEXEC})
+        DESTINATION ${PREFIX}/usr/${LIBEXEC})
 
 
 target_link_libraries(glite-wms-eval_ad_expr
@@ -86,7 +86,7 @@ target_link_libraries(glite-wms-eval_ad_expr
   )
 
 install(TARGETS glite_wms_util glite_wms_quota
-        LIBRARY DESTINATION ${PREFIX}/stage/usr/${LIBDIR})
+        LIBRARY DESTINATION ${PREFIX}/usr/${LIBDIR})
 
 
 install(FILES 
@@ -97,7 +97,7 @@ install(FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/quota.h
   ${CMAKE_CURRENT_SOURCE_DIR}/triple.h
   DESTINATION
-  ${PREFIX}/stage/usr/include/glite/wms/common/utilities)
+  ${PREFIX}/usr/include/glite/wms/common/utilities)
 
 
 

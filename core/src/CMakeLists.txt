@@ -7,7 +7,7 @@ include_directories(${CLASSAD_INCLUDE_DIRS}
                     ${PROJECT_SOURCE_DIR}/interface
 		    ${MAIN_PROJECT_SOURCE_DIR}/common/interface
 		    ${MAIN_PROJECT_SOURCE_DIR}
-		    ${PREFIX}/stage/usr/include
+		    ${PREFIX}/usr/include
 		    ${PROJECT_SOURCE_DIR}/src		    
 ${Boost_INCLUDE_DIRS}
 ${CARES_INCLUDE_DIRS}
@@ -35,7 +35,7 @@ ${GLOBUS_GSSAPI_INCLUDE_DIRS}
 ${LOG4CPP_INCLUDE_DIRS}
 )
 
-link_directories(${PREFIX}/stage/usr/${LIBDIR}
+link_directories(${PREFIX}/usr/${LIBDIR}
 ${MAIN_PROJECT_SOURCE_DIR}/common/src/utilities
 ${MAIN_PROJECT_SOURCE_DIR}/common/src/logger
 ${MAIN_PROJECT_SOURCE_DIR}/common/src/configuration
@@ -104,7 +104,7 @@ install(TARGETS
   glite-wms-workload_manager
   glite-wms-query-job-state-transitions
   DESTINATION 
-  ${PREFIX}/stage/usr/${BINDIR}
+  ${PREFIX}/usr/${BINDIR}
 )
 
 target_link_libraries(glite-wms-query-job-state-transitions
@@ -174,9 +174,9 @@ ${LOG4CPP_LIBRARIES}
 add_custom_target(SYMLINKS ALL DEPENDS
   ${CMAKE_CURRENT_SOURCE_DIR}/glite-wms-stats.py
   COMMAND
-  mkdir -p ${PREFIX}/stage/usr/${BINDIR}
+  mkdir -p ${PREFIX}/usr/${BINDIR}
   COMMAND
-  cp -f ${CMAKE_CURRENT_SOURCE_DIR}/glite-wms-stats.py ${PREFIX}/stage/usr/${BINDIR}/glite-wms-stats
+  cp -f ${CMAKE_CURRENT_SOURCE_DIR}/glite-wms-stats.py ${PREFIX}/usr/${BINDIR}/glite-wms-stats
   COMMAND
-  chmod 755 ${PREFIX}/stage/usr/${BINDIR}/glite-wms-stats
+  chmod 755 ${PREFIX}/usr/${BINDIR}/glite-wms-stats
 )

@@ -1,7 +1,7 @@
 
 include_directories(${CLASSAD_INCLUDE_DIRS}
                     ${PROJECT_SOURCE_DIR}/interface
-		    ${PREFIX}/stage/usr/include
+		    ${PREFIX}/usr/include
 		    ${WMSUTILS_CLASSADS_ALT_INCLUDE_DIRS}
 		    ${WMSUTILS_CLASSADS_INCLUDE_DIRS}
 		    ${PROJECT_SOURCE_DIR}/src
@@ -13,7 +13,7 @@ include_directories(${CLASSAD_INCLUDE_DIRS}
 		    ${PROJECT_SOURCE_DIR}/src/)
 
 link_directories(
-  ${PREFIX}/stage/usr/${LIBDIR}
+  ${PREFIX}/usr/${LIBDIR}
   ${CMAKE_SOURCE_DIR}/src/common
   ${CMAKE_BIN_DIR}/src/common
   ${CONDOR_LIBRARY_DIRS}
@@ -61,5 +61,5 @@ install(TARGETS
   glite_wms_jss_controller_wrapper
   LIBRARY
   DESTINATION 
-  ${PREFIX}/stage/usr/${LIBDIR}
+  ${PREFIX}/usr/${LIBDIR}
   )

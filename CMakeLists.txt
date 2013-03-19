@@ -74,7 +74,7 @@ for source distribution)
     COMMAND tar ARGS czvf /tmp/glite-wms-server-${PVER}-${AGE}.${OS}.tar.gz
 	    --exclude CMakeCache.txt 
 	    --exclude cmake_install.cmake 
-	    --exclude "${PREFIX}/stage/*"
+	    --exclude "${PREFIX}/*"
 	    --exclude "*Makefile" 
 	    --exclude "*CMakeFiles*" 
 	    --exclude install_manifest.txt
@@ -139,7 +139,7 @@ set(SBINDIR "sbin")
 set(LIBEXEC "libexec")
 
 set(ENV{PKG_CONFIG_PATH}
-"${PREFIX}/stage/usr/lib/pkgconfig/:${PREFIX}/stage/usr/lib64/pkgconfig/:$ENV{PKG_CONFIG_PATH}")
+"${PREFIX}/usr/lib/pkgconfig/:${PREFIX}/stage/usr/lib64/pkgconfig/:$ENV{PKG_CONFIG_PATH}")
 
 if(DEFINED ADDITIONAL_PKG_CONFIG_PATH)
   set(ENV{PKG_CONFIG_PATH}
@@ -385,12 +385,12 @@ endif(DEFINED BUILD_DBG)
 set(MAIN_PROJECT_SOURCE_DIR "${PROJECT_SOURCE_DIR}")
 
 #if(NOT DEFINED SYSCONFIGDIR)
-set(SYSCONFIGDIR "${PREFIX}/stage/etc/")
+set(SYSCONFIGDIR "${PREFIX}/etc/")
 #endif(NOT DEFINED SYSCONFIGDIR)
 
 install(FILES
         LICENSE
-        DESTINATION ${PREFIX}/stage/usr/share/doc/glite-wms-server-${PVER}/
+        DESTINATION ${PREFIX}/usr/share/doc/glite-wms-server-${PVER}/
 )
 
 add_subdirectory(configuration)

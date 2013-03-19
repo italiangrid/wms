@@ -1,12 +1,12 @@
 
 include_directories(${CLASSAD_INCLUDE_DIRS}
                     ${PROJECT_SOURCE_DIR}/interface
-		    ${PREFIX}/stage/usr/include
+		    ${PREFIX}/usr/include
 		    ${WMSUTILS_CLASSADS_ALT_INCLUDE_DIRS}
 		    ${WMSUTILS_CLASSADS_INCLUDE_DIRS}
 		    ${PROJECT_SOURCE_DIR}/src)
 
-link_directories(${PREFIX}/stage/usr/${LIBDIR})
+link_directories(${PREFIX}/usr/${LIBDIR})
 
 add_custom_target(COMMON 
   DEPENDS 
@@ -53,4 +53,4 @@ add_library(glite_wms_jss_common
 set_target_properties(glite_wms_jss_common PROPERTIES VERSION 0.0.0 SOVERSION 0)
 
 install(TARGETS glite_wms_jss_common
-  LIBRARY DESTINATION ${PREFIX}/stage/usr/${LIBDIR})
+  LIBRARY DESTINATION ${PREFIX}/usr/${LIBDIR})
