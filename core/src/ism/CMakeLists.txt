@@ -35,5 +35,5 @@ target_link_libraries(glite_wms_ism
 install(TARGETS glite_wms_ism
   LIBRARY 
   DESTINATION 
-  ${PREFIX}/${LIBDIR}
+  ${PREFIX}/stage/usr/${LIBDIR}
   )

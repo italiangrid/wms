@@ -1,7 +1,7 @@
 
 include_directories(${CLASSAD_INCLUDE_DIRS}
                     ${PROJECT_SOURCE_DIR}/interface
-		    ${PREFIX}/include
+		    ${PREFIX}/stage/usr/include
 		    ${WMSUTILS_CLASSADS_ALT_INCLUDE_DIRS}
 		    ${WMSUTILS_CLASSADS_INCLUDE_DIRS}
 		    ${WMS_COMMON_CONF_INCLUDE_DIRS}
@@ -12,7 +12,7 @@ include_directories(${CLASSAD_INCLUDE_DIRS}
 		    /usr/include
 )
 
-link_directories(${PREFIX}/${LIBDIR}
+link_directories(${PREFIX}/stage/usr/${LIBDIR}
   ${PROJECT_SOURCE_DIR}/src/common
   ${PROJECT_SOURCE_DIR}/src/controller
   ${PROJECT_SOURCE_DIR}/src/logmonitor
@@ -99,5 +99,5 @@ install(TARGETS
   glite-wms-log_monitor 
   glite-wms-job_controller
   DESTINATION 
-  ${PREFIX}/${BINDIR}
+  ${PREFIX}/stage/usr/${BINDIR}
 )

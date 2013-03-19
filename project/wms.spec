@@ -14,7 +14,6 @@ Requires: glite-wms-utils-classad,classads,globus-ftp-client,globus-ftp-control,
 Requires: glite-lbjp-common-gsoap-plugin,lcmaps,fcgi,globus-gss-assist,globus-io,glite-jdl-api-cpp
 Requires: globus-gram-protocol,condor-emi,openldap,log4cpp,glite-ce-cream-client-api-c,globus-gridftp-server-progs
 Requires: lcas-lcmaps-gt4-interface,glite-lb-yaim,globus-proxy-utils,perl-suidperl,fetch-crl,glite-lb-server,glite-lb-logger-msg,bdii,lcmaps-plugins-basic,lcmaps-plugins-voms
-#Requires: libtar,libxml2,libxslt,zlib ## these deps are unneeded. rpmbuild will resolve itself
 BuildRequires: glite-jobid-api-c-devel, chrpath, glite-lb-client-devel,glite-jobid-api-c-devel,voms-devel,gridsite-devel,libxml2-devel
 BuildRequires: glite-jobid-api-cpp-devel, glite-jobid-api-c-devel, gcc, gcc-c++, cmake,glite-px-proxyrenewal-devel
 BuildRequires: glite-wms-utils-exception-devel, boost-devel, c-ares-devel,argus-pep-api-c-devel,lcmaps-without-gsi-devel,libtar-devel
@@ -40,7 +39,7 @@ Workload Management System (server and libraries)
 %build
 %{!?extbuilddir:%define extbuilddir "--"}
 if test "x%{extbuilddir}" == "x--" ; then
-  cmake . -DPREFIX=%{buildroot}/usr -DPVER=%{version} -DSYSCONFIGDIR=%{buildroot}/etc -DOS=%{release} -DMOCKCFG=none
+  cmake . -DPREFIX=%{buildroot} -DPVER=%{version} -DOS=%{release} -DMOCKCFG=none
   chmod u+x $PWD/common/src/scripts/generator.pl
   for hfile in `ls $PWD/common/src/configuration/*.h.G`; do
     $PWD/common/src/scripts/generator.pl $PWD/common/src/configuration/Configuration.def -H $hfile
@@ -66,7 +65,8 @@ if test "x%{extbuilddir}" == "x--" ; then
   make install
   
 else
-  cp -R %{extbuilddir}/* %{buildroot}
+  echo "extbuilddir=%{extbuilddir}"
+  cp -R %{extbuilddir}/stage/* %{buildroot}
 fi
 sed 's|^prefix=.*|prefix=/usr|g' %{buildroot}%{_libdir}/pkgconfig/wms-server.pc > %{buildroot}%{_libdir}/pkgconfig/wms-server.pc.new
 mv %{buildroot}%{_libdir}/pkgconfig/wms-server.pc.new %{buildroot}%{_libdir}/pkgconfig/wms-server.pc

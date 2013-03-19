@@ -11,7 +11,7 @@ include_directories(
   ${LCMAPS_INCLUDE_DIRS}
   )
 
-link_directories(${PREFIX}/${LIBDIR})
+link_directories(${PREFIX}/stage/usr/${LIBDIR})
 
 
 add_library(glite_wms_wmproxy_utilities
@@ -23,4 +23,4 @@ add_library(glite_wms_wmproxy_utilities
 set_target_properties(glite_wms_wmproxy_utilities PROPERTIES VERSION 0.0.0 SOVERSION 0)
 
 install(TARGETS glite_wms_wmproxy_utilities
-  LIBRARY DESTINATION ${PREFIX}/${LIBDIR})
+  LIBRARY DESTINATION ${PREFIX}/stage/usr/${LIBDIR})

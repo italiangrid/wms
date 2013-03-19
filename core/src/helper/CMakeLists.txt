@@ -7,7 +7,7 @@ include_directories(${CLASSAD_INCLUDE_DIRS}
                     ${PROJECT_SOURCE_DIR}/src
 		    ${MAIN_PROJECT_SOURCE_DIR}
  		    ${MAIN_PROJECT_SOURCE_DIR}/common/interface
-		    ${CMAKE_INSTALL_PREFIX}/include)
+		    ${CMAKE_INSTALL_PREFIX}/stage/usr/include)
 
 add_custom_target(HELPER DEPENDS 
 			         Helper.cpp 
@@ -43,7 +43,7 @@ target_link_libraries(glite_wms_helper
 
 
 install(TARGETS glite_wms_helper
-        LIBRARY DESTINATION ${PREFIX}/${LIBDIR})
+        LIBRARY DESTINATION ${PREFIX}/stage/usr/${LIBDIR})
 
 #install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/
 #        DESTINATION ${CMAKE_INSTALL_PREFIX}/include/glite/wms/helper

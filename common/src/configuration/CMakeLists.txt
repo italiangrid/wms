@@ -31,13 +31,13 @@ add_custom_target(GENCONF ALL DEPENDS ${PROJECT_SOURCE_DIR}/src/configuration/Co
 				      
 #SET_SOURCE_FILES_PROPERTIES(${PROJECT_SOURCE_DIR}/src/configuration/CommonConfiguration.h PROPERTIES GENERATED 1)
 
-link_directories(${PREFIX}/${LIBDIR})
+link_directories(${PREFIX}/stage/usr/${LIBDIR})
 
 
 
 include_directories(${CLASSAD_INCLUDE_DIRS}
                     ${PROJECT_SOURCE_DIR}/interface
-                    ${PREFIX}/include
+                    ${PREFIX}/stage/usr/include
                     ${WMSUTILS_CLASSADS_ALT_INCLUDE_DIRS}
                     ${WMSUTILS_CLASSADS_INCLUDE_DIRS}
 		    ${PROJECT_SOURCE_DIR}/interface/glite/wms/common
@@ -88,12 +88,12 @@ set_target_properties(glite_wms_conf PROPERTIES VERSION 0.0.0 SOVERSION 0)
 
 
 install(TARGETS glite_wms_conf 
-        LIBRARY DESTINATION ${PREFIX}/${LIBDIR})
+        LIBRARY DESTINATION ${PREFIX}/stage/usr/${LIBDIR})
 
 
 
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/
         DESTINATION
-	${PREFIX}/include/glite/wms/common/configuration
+	${PREFIX}/stage/usr/include/glite/wms/common/configuration
         FILES_MATCHING PATTERN "*.h"
         PATTERN "CMakeFiles" EXCLUDE)

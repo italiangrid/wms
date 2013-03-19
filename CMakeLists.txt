@@ -26,11 +26,11 @@ endif(NOT DEFINED PVER)
 
 if(NOT DEFINED PREFIX)
     message(WARNING " Undefined prefix, selected /usr/local")
-    set(PREFIX "/usr/local")
+    set(PREFIX "/tmp/")
 endif(NOT DEFINED PREFIX)
 
 if(NOT DEFINED PKG_INSTALL_PREFIX)
-    set(PKG_INSTALL_PREFIX ${PREFIX})
+    set(PKG_INSTALL_PREFIX "${PREFIX}")
 endif(NOT DEFINED PKG_INSTALL_PREFIX)
 
 if( ${CMAKE_VERSION} VERSION_LESS "2.8.2" )
@@ -92,7 +92,7 @@ for source distribution)
     COMMAND mkdir ARGS -p rpmbuild/SPECS rpmbuild/SRPMS rpmbuild/BUILD rpmbuild/RPMS rpmbuild/SOURCES
     COMMAND mv ARGS /tmp/glite-wms-server-${PVER}-${AGE}.${OS}.tar.gz rpmbuild/SOURCES/
     COMMAND sed ARGS -e 's/%{extversion}/${PVER}/g' -e 's/%{extage}/${AGE}/g' -e 's/%{extdist}/${OS}/g' -e 's/%{extcdate}/${DATE}/g' -e 's/%{extclog}/Bug fixing/g' < project/wms.spec > rpmbuild/SPECS/wms.spec
-    COMMAND rpmbuild ARGS -ba --define "_topdir `pwd`/rpmbuild" --define "extbuilddir `pwd`/stage" `pwd`/rpmbuild/SPECS/wms.spec
+    COMMAND rpmbuild ARGS -ba --define "_topdir `pwd`/rpmbuild" --define "extbuilddir ${PREFIX}" `pwd`/rpmbuild/SPECS/wms.spec
   )
   
   ADD_CUSTOM_COMMAND(TARGET configuration 
@@ -120,7 +120,7 @@ for source distribution)
     COMMAND find ARGS ${FASTLIB_SOURCE_DIR} -iname Makefile -delete
     COMMAND find ARGS ${FASTLIB_SOURCE_DIR} -depth -type d -iname
 CMakeFiles -exec rm -rf {} \;
-    COMMAND rm ARGS -rf stage install_manifest.txt
+    COMMAND rm ARGS -rf ${PREFIX}/stage install_manifest.txt
     COMMAND rm ARGS ./configuration/config/glite-wms-check-daemons.sh
     ./configuration/config/glite-wms-parse-configuration.sh 
     ./ice/config/glite-wms-ice
@@ -139,7 +139,7 @@ set(SBINDIR "sbin")
 set(LIBEXEC "libexec")
 
 set(ENV{PKG_CONFIG_PATH}
-"${PREFIX}/lib/pkgconfig/:${PREFIX}/lib64/pkgconfig/:$ENV{PKG_CONFIG_PATH}")
+"${PREFIX}/stage/usr/lib/pkgconfig/:${PREFIX}/stage/usr/lib64/pkgconfig/:$ENV{PKG_CONFIG_PATH}")
 
 if(DEFINED ADDITIONAL_PKG_CONFIG_PATH)
   set(ENV{PKG_CONFIG_PATH}
@@ -384,13 +384,13 @@ endif(DEFINED BUILD_DBG)
 
 set(MAIN_PROJECT_SOURCE_DIR "${PROJECT_SOURCE_DIR}")
 
-if(NOT DEFINED SYSCONFIGDIR)
-    set(SYSCONFIGDIR "${PREFIX}/../etc/")
-endif(NOT DEFINED SYSCONFIGDIR)
+#if(NOT DEFINED SYSCONFIGDIR)
+set(SYSCONFIGDIR "${PREFIX}/stage/etc/")
+#endif(NOT DEFINED SYSCONFIGDIR)
 
 install(FILES
         LICENSE
-        DESTINATION ${PREFIX}/share/doc/glite-wms-server-${PVER}/
+        DESTINATION ${PREFIX}/stage/usr/share/doc/glite-wms-server-${PVER}/
 )
 
 add_subdirectory(configuration)

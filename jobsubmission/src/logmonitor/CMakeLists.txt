@@ -1,7 +1,7 @@
 
 include_directories(${CLASSAD_INCLUDE_DIRS}
                     ${PROJECT_SOURCE_DIR}/interface
-		    ${PREFIX}/include
+		    ${PREFIX}/stage/usr/include
 		    ${WMSUTILS_CLASSADS_ALT_INCLUDE_DIRS}
 		    ${WMSUTILS_CLASSADS_INCLUDE_DIRS}
 		    ${PROJECT_SOURCE_DIR}/src
@@ -16,7 +16,7 @@ include_directories(${CLASSAD_INCLUDE_DIRS}
 )
 
 link_directories(
-  ${PREFIX}/${LIBDIR}
+  ${PREFIX}/stage/usr/${LIBDIR}
   ${CMAKE_SOURCE_DIR}/src/common
   ${CMAKE_SOURCE_DIR}/src/controller
   ${CONDOR_LIBRARY_DIRS}
@@ -101,10 +101,10 @@ target_link_libraries(glite_wms_jss_logmonitor
 install(TARGETS glite_wms_jss_logmonitor
   LIBRARY
   DESTINATION 
-  ${PREFIX}/${LIBDIR}
+  ${PREFIX}/stage/usr/${LIBDIR}
   )
 
 install(TARGETS glite-wms-lm-job_status
   DESTINATION
-  ${PREFIX}/${LIBEXEC}
+  ${PREFIX}/stage/usr/${LIBEXEC}
 )

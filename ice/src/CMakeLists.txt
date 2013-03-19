@@ -31,7 +31,7 @@ ${WMSUTILS_JOBMAN_EXCEPTION_INCLUDE_DIRS}
 /usr/include
 )
 
-link_directories(${PREFIX}/${LIBDIR}
+link_directories(${PREFIX}/stage/usr/${LIBDIR}
   ${PROJECT_SOURCE_DIR}/src/utilities
   ${PROJECT_SOURCE_DIR}/src/security
   ${PROJECT_SOURCE_DIR}/src/eventlogger
@@ -252,6 +252,6 @@ install(TARGETS
   queryDb
   queryStats
   DESTINATION 
-  ${PREFIX}/${BINDIR}
+  ${PREFIX}/stage/usr/${BINDIR}
   )
 

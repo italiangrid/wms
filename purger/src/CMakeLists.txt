@@ -76,12 +76,12 @@ install(TARGETS
   glite_wms_purger
   LIBRARY 
   DESTINATION 
-  ${PREFIX}/${LIBDIR})
+  ${PREFIX}/stage/usr/${LIBDIR})
 
 install(TARGETS 
   glite-wms-purgeStorage
   DESTINATION
-  ${PREFIX}/${SBINDIR}
+  ${PREFIX}/stage/usr/${SBINDIR}
 )
 
 #add_subdirectory(pkgconfig)
@@ -89,5 +89,5 @@ install(TARGETS
 install(FILES
   purger.h
   DESTINATION
-  ${PREFIX}/include/glite/wms/purger/
+  ${PREFIX}/stage/usr/include/glite/wms/purger/
   )

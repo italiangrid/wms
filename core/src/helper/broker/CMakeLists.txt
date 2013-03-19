@@ -110,5 +110,5 @@ target_link_libraries(glite_wms_helper_broker_ism
 install(TARGETS glite_wms_helper_broker_ism
   LIBRARY 
   DESTINATION 
-  ${PREFIX}/${LIBDIR}
+  ${PREFIX}/stage/usr/${LIBDIR}
   )

@@ -22,14 +22,14 @@ target_link_libraries(glite_wms_process ${CLASSAD_LIBRARIES})
 install(TARGETS glite_wms_process
         LIBRARY 
 	DESTINATION 
-	${PREFIX}/${LIBDIR})
+	${PREFIX}/stage/usr/${LIBDIR})
 
 install(FILES
           ${CMAKE_CURRENT_SOURCE_DIR}/process.h
           ${CMAKE_CURRENT_SOURCE_DIR}/subprocess.h
           ${CMAKE_CURRENT_SOURCE_DIR}/user.h
 	  DESTINATION
-	  ${PREFIX}/include/glite/wms/common/process
+	  ${PREFIX}/stage/usr/include/glite/wms/common/process
 )
 
 #if(DEFINED INSTALL_BUILD_DEV)
