@@ -401,7 +401,7 @@ add_subdirectory(jobsubmission)
 add_subdirectory(interface)
 add_subdirectory(ice)
 add_subdirectory(pkgconfig)
-
+add_subdirectory(nagios)
 if(RERUN)
 message(WARNING " Please re-run cmake once again...")
 endif(RERUN)
