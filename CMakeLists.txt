@@ -71,6 +71,7 @@ for source distribution)
     # this will create the stage area needed by rpm packager (just in case if
     # the uses didn't it already
     COMMAND make ARGS install
+    COMMAND make ARGS nagios
     COMMAND rm ARGS -f /tmp/glite-wms-server-${PVER}-${AGE}.${OS}.tar.gz
     COMMAND ${PROJECT_SOURCE_DIR}/maketarball.sh ARGS ${PVER} ${AGE} ${OS} "${PREFIX}"
 ${PROJECT_SOURCE_DIR}

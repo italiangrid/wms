@@ -126,8 +126,8 @@ chrpath --delete %{buildroot}/usr/bin/glite-wms-ice-rm
 chrpath --delete %{buildroot}/usr/bin/glite-wms-ice-proxy-renew
 chrpath --delete %{buildroot}/usr/bin/glite-wms-ice-query-db
 chrpath --delete %{buildroot}/usr/bin/glite-wms-ice
-chmod 755 %{buildroot}/libexec/grid-monitoring/probes/emi.wms/WMS-probe
-chmod 755 %{buildroot}/libexec/grid-monitoring/probes/emi.wms/WMS-jdl.template
+chmod 755 %{buildroot}/usr/libexec/grid-monitoring/probes/emi.wms/WMS-probe
+chmod 755 %{buildroot}/usr/libexec/grid-monitoring/probes/emi.wms/WMS-jdl.template
 chmod 644 %{buildroot}/%{python_sitelib}/wmsmetrics/*.py
 export QA_SKIP_BUILD_ROOT=yes
 
