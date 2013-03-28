@@ -18,5 +18,8 @@ tar czvf /tmp/glite-wms-server-$1-$2.$3.tar.gz \
             --exclude "config/glite-wms-lm" \
             --exclude "*/.git*" \
             --exclude "rpmbuild*" \
+	    --exclude "usr*" \
+	    --exclude "opt*" \
+	    --exclude "etc*" \
             -C $5 \
             .
