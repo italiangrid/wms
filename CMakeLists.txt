@@ -74,30 +74,10 @@ for source distribution)
     COMMAND rm ARGS -f /tmp/glite-wms-server-${PVER}-${AGE}.${OS}.tar.gz
     COMMAND ${PROJECT_SOURCE_DIR}/maketarball.sh ARGS ${PVER} ${AGE} ${OS} "${PREFIX}"
 ${PROJECT_SOURCE_DIR}
-#    COMMAND tar ARGS czvf /tmp/glite-wms-server-${PVER}-${AGE}.${OS}.tar.gz
-#	    --exclude CMakeCache.txt 
-#	    --exclude cmake_install.cmake 
-#	    --exclude "${PREFIX}/*"
-#	    --exclude "*Makefile" 
-#	    --exclude "*CMakeFiles*" 
-#	    --exclude install_manifest.txt
-#	    --exclude "*libglite*.so*"
-#	    --exclude "*pkgconfig/wms-server.pc"
-#	    --exclude "glite-wms-check-daemons.sh"
-#	    --exclude "glite-wms-parse-configuration.sh"
-#	    --exclude "config/glite-wms-ice"
-#	    --exclude "config/glite-wms-clean-lm-recycle.sh"
-#	    --exclude "config/glite-wms-jc"
-#	    --exclude "config/glite-wms-lm"
-#	    --exclude "*/.git*" 
-#	    --exclude "rpmbuild*"
-#	    -C ${PROJECT_SOURCE_DIR}/
-#	    . 
-#	    2>/dev/null 1>/dev/null
     COMMAND mkdir ARGS -p rpmbuild/SPECS rpmbuild/SRPMS rpmbuild/BUILD rpmbuild/RPMS rpmbuild/SOURCES
     COMMAND mv ARGS /tmp/glite-wms-server-${PVER}-${AGE}.${OS}.tar.gz rpmbuild/SOURCES/
-#    COMMAND sed ARGS -e 's/%{extversion}/${PVER}/g' -e 's/%{extage}/${AGE}/g' -e 's/%{extdist}/${OS}/g' -e 's/%{extcdate}/${DATE}/g' -e 's/%{extclog}/Bug fixing/g' < project/wms.spec > rpmbuild/SPECS/wms.spec
-#    COMMAND rpmbuild ARGS -ba --define "_topdir `pwd`/rpmbuild" --define "extbuilddir ${PREFIX}" `pwd`/rpmbuild/SPECS/wms.spec
+    COMMAND sed ARGS -e 's/%{extversion}/${PVER}/g' -e 's/%{extage}/${AGE}/g' -e 's/%{extdist}/${OS}/g' -e 's/%{extcdate}/${DATE}/g' -e 's/%{extclog}/Bug fixing/g' < project/wms.spec > rpmbuild/SPECS/wms.spec
+    COMMAND rpmbuild ARGS -ba --define "_topdir `pwd`/rpmbuild" --define "extbuilddir ${PREFIX}" `pwd`/rpmbuild/SPECS/wms.spec
   )
   
   ADD_CUSTOM_COMMAND(TARGET configuration 

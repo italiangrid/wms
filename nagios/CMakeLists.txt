@@ -21,5 +21,6 @@ add_custom_command(TARGET nagios
   COMMAND
   /bin/echo \"pkgversion=${PVER}\" >> setup.cfg
   COMMAND
-  /usr/bin/python setup.py install -O1 --prefix ${PREFIX}/usr --install-data ${PREFIX}
+  /usr/bin/python setup.py install -O1 --prefix ${PREFIX}/usr --install-data
+${PREFIX}/usr
   )
