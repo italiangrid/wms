@@ -14,6 +14,10 @@ Requires: glite-wms-utils-classad,classads,globus-ftp-client,globus-ftp-control,
 Requires: glite-lbjp-common-gsoap-plugin,lcmaps,fcgi,globus-gss-assist,globus-io,glite-jdl-api-cpp
 Requires: globus-gram-protocol,condor-emi,openldap,log4cpp,glite-ce-cream-client-api-c,globus-gridftp-server-progs
 Requires: lcas-lcmaps-gt4-interface,glite-lb-yaim,globus-proxy-utils,perl-suidperl,fetch-crl,glite-lb-server,glite-lb-logger-msg,bdii,lcmaps-plugins-basic,lcmaps-plugins-voms
+Requires: openssl >= 0.9.8e-12
+Requires: python >= 2.4
+Requires: python-ldap
+
 BuildRequires: glite-jobid-api-c-devel, chrpath, glite-lb-client-devel,glite-jobid-api-c-devel,voms-devel,gridsite-devel,libxml2-devel
 BuildRequires: glite-jobid-api-cpp-devel, glite-jobid-api-c-devel, gcc, gcc-c++, cmake,glite-px-proxyrenewal-devel
 BuildRequires: glite-wms-utils-exception-devel, boost-devel, c-ares-devel,argus-pep-api-c-devel,lcmaps-without-gsi-devel,libtar-devel
@@ -22,15 +26,19 @@ BuildRequires: globus-common-devel, globus-ftp-client-devel,gsoap-devel,glite-lb
 BuildRequires: globus-gss-assist-devel, globus-io-devel,glite-jdl-api-cpp-devel,libxslt,globus-gram-protocol-devel,condor-emi,libxslt-devel
 BuildRequires: emi-pkgconfig-compat, openldap-devel, log4cpp-devel,docbook-style-xsl
 BuildRequires: zlib-devel,httpd-devel,glite-ce-cream-client-devel
+BuildRequires: python >= 2.4
+
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 AutoReqProv: yes
 Source: %{name}-%{version}-%{release}.tar.gz
 
 %global debug_package %{nil}
+%{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
+%define dir %{_libexecdir}/grid-monitoring/probes/emi.wms
 
 %description
 Workload Management System (server and libraries)
-
+plus nagios probe for EMI WMS service (using a python-based gridmetrics)
 %prep
  
 
@@ -55,7 +63,7 @@ if test "x%{extbuilddir}" == "x--" ; then
   %endif
 
   make
-  
+  make nagios
 fi
 
 %install
@@ -64,10 +72,11 @@ mkdir -p %{buildroot}
 %{!?extbuilddir:%define extbuilddir "--"}
 if test "x%{extbuilddir}" == "x--" ; then
   make install
+  make nagios
   
 else
   echo "extbuilddir=%{extbuilddir}"
-  cp -R %{extbuilddir}/usr %{extbuilddir}/etc %{extbuilddir}/opt %{buildroot}
+  cp -R %{extbuilddir}/usr %{extbuilddir}/etc %{extbuilddir}/opt %{extbuilddir}/share %{extbuilddir}/libexec %{buildroot}
 fi
 sed 's|^prefix=.*|prefix=/usr|g' %{buildroot}%{_libdir}/pkgconfig/wms-server.pc > %{buildroot}%{_libdir}/pkgconfig/wms-server.pc.new
 mv %{buildroot}%{_libdir}/pkgconfig/wms-server.pc.new %{buildroot}%{_libdir}/pkgconfig/wms-server.pc
@@ -117,11 +126,14 @@ chrpath --delete %{buildroot}/usr/bin/glite-wms-ice-rm
 chrpath --delete %{buildroot}/usr/bin/glite-wms-ice-proxy-renew
 chrpath --delete %{buildroot}/usr/bin/glite-wms-ice-query-db
 chrpath --delete %{buildroot}/usr/bin/glite-wms-ice
-
+chmod 755 %{buildroot}/libexec/grid-monitoring/probes/emi.wms/WMS-probe
+chmod 755 %{buildroot}/libexec/grid-monitoring/probes/emi.wms/WMS-jdl.template
+chmod 644 %{buildroot}/%{python_sitelib}/wmsmetrics/*.py
 export QA_SKIP_BUILD_ROOT=yes
 
 %clean
 rm -rf %{buildroot}
+%{__python} setup.py clean --all
 
 %post 
 /sbin/chkconfig --add glite-wms-wm 
@@ -157,6 +169,11 @@ fi
 
 
 %files
+%{dir}/WMS-probe
+%{dir}/WMS-jdl.template
+%{python_sitelib}/wmsmetrics/*.py*
+%doc README
+%doc CHANGES
 %defattr(-,root,root)
 %{_libdir}/libglite_wms_*.so.0.0.0
 %{_libdir}/libglite_wms_*.so.0
