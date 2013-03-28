@@ -34,7 +34,6 @@ Source: %{name}-%{version}-%{release}.tar.gz
 
 %global debug_package %{nil}
 %{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
-%define dir %{_libexecdir}/grid-monitoring/probes/emi.wms
 
 %description
 Workload Management System (server and libraries)
@@ -126,8 +125,6 @@ chrpath --delete %{buildroot}/usr/bin/glite-wms-ice-rm
 chrpath --delete %{buildroot}/usr/bin/glite-wms-ice-proxy-renew
 chrpath --delete %{buildroot}/usr/bin/glite-wms-ice-query-db
 chrpath --delete %{buildroot}/usr/bin/glite-wms-ice
-chmod 755 %{buildroot}/usr/libexec/grid-monitoring/probes/emi.wms/WMS-probe
-chmod 755 %{buildroot}/usr/libexec/grid-monitoring/probes/emi.wms/WMS-jdl.template
 chmod 644 %{buildroot}/%{python_sitelib}/wmsmetrics/*.py
 export QA_SKIP_BUILD_ROOT=yes
 
@@ -169,15 +166,14 @@ fi
 
 
 %files
-%{dir}/WMS-probe
-%{dir}/WMS-jdl.template
 %{python_sitelib}/wmsmetrics/*.py*
-%doc README
-%doc CHANGES
+%doc nagios/README
+%doc nagios/CHANGES
 %defattr(-,root,root)
 %{_libdir}/libglite_wms_*.so.0.0.0
 %{_libdir}/libglite_wms_*.so.0
-%dir /usr/share/doc/glite-wms-server-%{version}/
+%dir /usr/share/doc/glite-wms-server-%{version}
+
 %doc /usr/share/doc/glite-wms-server-%{version}/LICENSE
 /usr/sbin/glite-wms-quota-adjust
 /usr/bin/glite-wms-get-configuration
@@ -221,7 +217,6 @@ fi
 /usr/bin/glite-wms-ice-query-stats
 /usr/bin/glite-wms-ice-rm
 /usr/bin/glite-wms-ice
-#%{_libdir}/libglite_wms_ice*.so
 %config(noreplace) /etc/glite-wms/wms.conf.template
 /usr/libexec/glite-wms-parse-configuration.sh
 /usr/libexec/glite-wms-check-daemons.sh
