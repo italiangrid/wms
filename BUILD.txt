@@ -3,13 +3,15 @@ type
 
 cmake . -DPREFIX=<your_preferred_path> -DOS=<sl5|sl6> -DMOCK=<mock_cfg_file>
 
-If you do not plan to do a mock build, then the <mock_cfg_file> can be anything (e.g. "none"). Otherwise you have to specify the name of an existing mock configuration file without extension and without path:
+If you do not plan to do a mock build, then the <mock_cfg_file> can be anything 
+(e.g. "none"). 
+Otherwise you have to specify the name of an existing mock configuration 
+file without extension and without path:
 
 dorigoa@sl5-64 11:22:05 ~/wms>ll /etc/mock/emi-3-rc-sl5-x86_64.cfg 
 -rw-r--r-- 1 root root 2207 Mar 18 11:16 /etc/mock/emi-3-rc-sl5-x86_64.cfg
 
-dorigoa@sl5-64 11:22:11 ~/wms>cmake . -DPREFIX=`pwd`/stage/usr
--DSYSCONFIGDIR=`pwd`/stage/etc -DOS=sl5 -DMOCKCFG=emi-3-rc-sl5-x86_64
+dorigoa@sl5-64 11:22:11 ~/wms>cmake . -DPREFIX=`pwd`/stage/usr -DOS=sl5 -DMOCKCFG=emi-3-rc-sl5-x86_64
 
 Please note that for the moment OS can assume only the two values "sl5" and
 "sl6" (no need to specify the architecture, because only 64bit is supported).
@@ -64,7 +66,7 @@ dorigoa is not in the sudoers file.  This incident will be reported.
 This is because build time dependencies are missing and cmake will install
 them via yum for you. Of course it needs your password to execute the 'yum
 install' command with root privileges. 
-After installation a message like this will show:
+After installation a message like this will appear:
 
 ------------------------------
 WARNING Please re-run cmake once again...
@@ -72,10 +74,10 @@ WARNING Please re-run cmake once again...
 ------------------------------
 
 Deps have been installed, and cmake needs to be run once more to resolve them
-and prepare the macro variables.
+and prepare the related macro variables.
 
 If *ALL* deps are already installed, or after the second run with all deps
-correctly installed, cmake will prepare the Makefiles for the build.
+correctly installed, cmake will prepare the makefiles for the build.
 Just type
 
 make
@@ -88,7 +90,7 @@ To build the (s)rpm packages just type:
 
 make RPM
 
-If you've specified the mock cfg file you can also try a mock build by typing:
+If you've specified the mock cfg file you can also do a mock build by typing:
 
 make MOCK
 
