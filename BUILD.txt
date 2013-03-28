@@ -1,7 +1,9 @@
 To build the software you need cmake to be installed.
 type
 
-cmake . -DPREFIX=<your_preferred_path> -DOS=<sl5|sl6> -DMOCK=<mock_cfg_file>
+cmake . -DPREFIX=<your_preferred_path> -DOS=<sl5|sl6> [-DMOCK=<mock_cfg_file>] [-DPVER=<software_version>] [-DAGE=<age_number>]
+
+Square brackets express optional switches.
 
 If you do not plan to do a mock build, then the <mock_cfg_file> can be anything 
 (e.g. "none"). 
