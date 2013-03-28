@@ -76,7 +76,7 @@ if test "x%{extbuilddir}" == "x--" ; then
   
 else
   echo "extbuilddir=%{extbuilddir}"
-  cp -R %{extbuilddir}/usr %{extbuilddir}/etc %{extbuilddir}/opt %{extbuilddir}/share %{extbuilddir}/libexec %{buildroot}
+  cp -R %{extbuilddir}/usr %{extbuilddir}/etc %{extbuilddir}/opt %{buildroot}
 fi
 sed 's|^prefix=.*|prefix=/usr|g' %{buildroot}%{_libdir}/pkgconfig/wms-server.pc > %{buildroot}%{_libdir}/pkgconfig/wms-server.pc.new
 mv %{buildroot}%{_libdir}/pkgconfig/wms-server.pc.new %{buildroot}%{_libdir}/pkgconfig/wms-server.pc
