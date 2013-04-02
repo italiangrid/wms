@@ -170,13 +170,19 @@ ${GLOBUS_GSSAPI_LIBRARIES}
 ${LOG4CPP_LIBRARIES}
 )
 
+install(FILES
+  glite-wms-stats.py
+  DESTINATION ${PREFIX}/usr/${BINDIR}
+  RENAME glite-wms-stats
+  PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
+  )
 
-add_custom_target(SYMLINKS ALL DEPENDS
-  ${CMAKE_CURRENT_SOURCE_DIR}/glite-wms-stats.py
-  COMMAND
-  mkdir -p ${PREFIX}/usr/${BINDIR}
-  COMMAND
-  cp -f ${CMAKE_CURRENT_SOURCE_DIR}/glite-wms-stats.py ${PREFIX}/usr/${BINDIR}/glite-wms-stats
-  COMMAND
-  chmod 755 ${PREFIX}/usr/${BINDIR}/glite-wms-stats
-)
+#add_custom_target(SYMLINKS ALL DEPENDS
+#  ${CMAKE_CURRENT_SOURCE_DIR}/glite-wms-stats.py
+#  COMMAND
+#  mkdir -p ${PREFIX}/usr/${BINDIR}
+#  COMMAND
+#  cp -f ${CMAKE_CURRENT_SOURCE_DIR}/glite-wms-stats.py ${PREFIX}/usr/${BINDIR}/glite-wms-stats
+#  COMMAND
+#  chmod 755 ${PREFIX}/usr/${BINDIR}/glite-wms-stats
+#)
