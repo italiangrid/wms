@@ -9,7 +9,7 @@ EXEC_PROGRAM(/bin/echo ARGS \"[global]\" > nagios/setup.cfg 2>/dev/null OUTPUT_V
 
 EXEC_PROGRAM(/bin/echo ARGS \"pkgversion=${PVER}\" >> nagios/setup.cfg 2>/dev/null OUTPUT_VARIABLE SECOND)
 
-EXEC_PROGRAM(cd ARGS nagios; /usr/bin/python setup.py install -O1 --prefix ${PREFIX}/usr --install-data ${PREFIX}; cd - OUTPUT_VARIABLE THIRD)
+EXEC_PROGRAM(cd ARGS nagios; ${PYTHON_EXECUTABLE} setup.py install -O1 --prefix ${PREFIX}/usr --install-data ${PREFIX}; cd - OUTPUT_VARIABLE THIRD)
 
 add_custom_target(nagios)
 	

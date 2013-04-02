@@ -1,4 +1,4 @@
-project(wms-common C CXX)
+project(wms-server C CXX)
 cmake_minimum_required(VERSION 2.6)
 
 EXEC_PROGRAM(/bin/date ARGS +'%a %b %d %Y' OUTPUT_VARIABLE DATE)
@@ -47,7 +47,7 @@ else( ${CMAKE_VERSION} VERSION_LESS "2.8.2" )
     endif( IS_DIRECTORY "/usr/lib64" AND NOT IS_SYMLINK "/usr/lib64" )
 endif( ${CMAKE_VERSION} VERSION_LESS "2.8.2" )
 
-message(FATAL " ${PROJECT_SOURCE_DIR}" )
+#message(FATAL " ${PROJECT_SOURCE_DIR}" )
 
 IF (UNIX)
   # since it's unix-specific we will use bash
@@ -77,8 +77,11 @@ for source distribution)
 ${PROJECT_SOURCE_DIR}
     COMMAND mkdir ARGS -p rpmbuild/SPECS rpmbuild/SRPMS rpmbuild/BUILD rpmbuild/RPMS rpmbuild/SOURCES
     COMMAND mv ARGS /tmp/glite-wms-server-${PVER}-${AGE}.${OS}.tar.gz rpmbuild/SOURCES/
-    COMMAND sed ARGS -e 's/%{extversion}/${PVER}/g' -e 's/%{extage}/${AGE}/g' -e 's/%{extdist}/${OS}/g' -e 's/%{extcdate}/${DATE}/g' -e 's/%{extclog}/Bug fixing/g' < project/wms.spec > rpmbuild/SPECS/wms.spec
-    COMMAND rpmbuild ARGS -ba --define "_topdir `pwd`/rpmbuild" --define "extbuilddir ${PREFIX}" `pwd`/rpmbuild/SPECS/wms.spec
+    COMMAND sed ARGS -e 's/%{extversion}/${PVER}/g' -e 's/%{extage}/${AGE}/g'
+-e 's/%{extdist}/${OS}/g' -e 's/%{extcdate}/${DATE}/g' -e 's/%{extclog}/Bug
+fixing/g' < project/wms2.spec > rpmbuild/SPECS/wms2.spec
+    COMMAND rpmbuild ARGS -ba --define "_topdir `pwd`/rpmbuild" --define
+"extbuilddir ${PREFIX}" `pwd`/rpmbuild/SPECS/wms2.spec
   )
   
   ADD_CUSTOM_COMMAND(TARGET configuration 
@@ -183,7 +186,15 @@ pkg_check_modules(GRIDSITE_OPENSSL REQUIRED gridsite-openssl)
 pkg_check_modules(LIBXML REQUIRED libxml-2.0 )
 pkg_check_modules(CREAM_CLIENT_UTIL REQUIRED cream-client-api-soap )
 pkg_check_modules(CREAM_CLIENT_SOAP REQUIRED cream-client-api-util )
-#pkg_check_modules(MYPROXY REQUIRED myproxy)
+
+FIND_PROGRAM(PYTHON_EXECUTABLE
+	NAMES python
+	PATHS /usr/bin /usr/local/bin /opt/local/bin 
+	)
+
+if(NOT "${PYTHON_EXECUTABLE}" STREQUAL "PYTHON_EXECUTABLE-NOTFOUND"  )
+  set(OKPYTHON "1")
+endif(NOT "${PYTHON_EXECUTABLE}" STREQUAL "PYTHON_EXECUTABLE-NOTFOUND"  )
 
 find_file(LDAP "ldap.h"
           PATHS "/usr/include")
@@ -201,7 +212,7 @@ find_file(HTTPD "httpd.h"
 	  PATHS "/usr/include/httpd")
 
 IF( NOT(HTTPD AND CHRPATH AND RPMBUILD AND LIBTAR AND LDAP AND CLASSAD_FOUND AND
-WMSUTILS_CLASSADS_FOUND AND
+WMSUTILS_CLASSADS_FOUND AND OKPYTHON AND
 WMSUTILS_JOBMAN_EXCEPTION_FOUND AND
 GLOBUS_FTP_CLIENT_FOUND AND
 GLOBUS_IO_FOUND AND
@@ -315,10 +326,11 @@ openldap-devel
 rpm-build
 voms
 voms-devel
-
+python
+swig
   )
 ENDIF( NOT(HTTPD AND CHRPATH AND RPMBUILD AND LIBTAR AND LDAP AND CLASSAD_FOUND AND
-WMSUTILS_CLASSADS_FOUND AND
+WMSUTILS_CLASSADS_FOUND AND OKPYTHON AND
 WMSUTILS_JOBMAN_EXCEPTION_FOUND AND
 GLOBUS_FTP_CLIENT_FOUND AND
 GLOBUS_IO_FOUND AND

@@ -28,6 +28,9 @@ BuildRequires: emi-pkgconfig-compat, openldap-devel, log4cpp-devel,docbook-style
 BuildRequires: zlib-devel,httpd-devel,glite-ce-cream-client-devel
 BuildRequires: python >= 2.4
 
+%global debug_package %{nil}
+%{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
+
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 AutoReqProv: yes
 Source: %{name}-%{version}-%{release}.tar.gz
@@ -38,6 +41,7 @@ Source: %{name}-%{version}-%{release}.tar.gz
 %description
 Workload Management System (server and libraries)
 plus nagios probe for EMI WMS service (using a python-based gridmetrics)
+
 %prep
  
 
@@ -62,7 +66,6 @@ if test "x%{extbuilddir}" == "x--" ; then
   %endif
 
   make
-  make nagios
 fi
 
 %install
@@ -72,65 +75,16 @@ mkdir -p %{buildroot}
 if test "x%{extbuilddir}" == "x--" ; then
   make install
   make nagios
-  
 else
   echo "extbuilddir=%{extbuilddir}"
   cp -R %{extbuilddir}/usr %{extbuilddir}/etc %{extbuilddir}/opt %{buildroot}
 fi
 sed 's|^prefix=.*|prefix=/usr|g' %{buildroot}%{_libdir}/pkgconfig/wms-server.pc > %{buildroot}%{_libdir}/pkgconfig/wms-server.pc.new
 mv %{buildroot}%{_libdir}/pkgconfig/wms-server.pc.new %{buildroot}%{_libdir}/pkgconfig/wms-server.pc
-strip -s %{buildroot}%{_libdir}/libglite_wms_*.so.0.0.0
-strip -s %{buildroot}/usr/sbin/glite-wms-quota-adjust
-strip -s %{buildroot}/usr/bin/glite-wms-get-configuration
-strip -s %{buildroot}/usr/libexec/glite-wms-eval_ad_expr
-chrpath --delete %{buildroot}%{_libdir}/libglite_wms_*.so.0.0.0
-chrpath --delete %{buildroot}/usr/sbin/glite-wms-quota-adjust
-chrpath --delete %{buildroot}/usr/bin/glite-wms-get-configuration
-chrpath --delete %{buildroot}/usr/libexec/glite-wms-eval_ad_expr 
 
-strip -s %{buildroot}/usr/sbin/glite-wms-purgeStorage 
-chrpath --delete %{buildroot}/usr/sbin/glite-wms-purgeStorage 
-chrpath --delete %{buildroot}/usr/bin/glite-wms-workload_manager
-strip -s %{buildroot}/usr/bin/glite-wms-workload_manager
-chrpath --delete %{buildroot}/usr/bin/glite-wms-query-job-state-transitions
-strip -s %{buildroot}/usr/bin/glite-wms-query-job-state-transitions
-chmod 0755 %{buildroot}/usr/bin/glite-wms-stats
-chrpath --delete %{buildroot}/usr/bin/glite-wms-log_monitor
-chrpath --delete %{buildroot}/usr/libexec/glite-wms-lm-job_status
-chrpath --delete %{buildroot}/usr/bin/glite-wms-job_controller
-strip -s %{buildroot}/usr/bin/glite-wms-job_controller
-strip -s %{buildroot}/usr/bin/glite-wms-log_monitor
-strip -s %{buildroot}/usr/libexec/glite-wms-lm-job_status
-strip -s %{buildroot}/usr/bin/glite_wms_wmproxy_server
-strip -s %{buildroot}/usr/libexec/glite_wms_wmproxy_dirmanager
-strip -s %{buildroot}/usr/bin/glite-wms-ice-safe
-strip -s %{buildroot}/usr/bin/glite-wms-ice-putfl
-strip -s %{buildroot}/usr/bin/glite-wms-ice-db-rm
-strip -s %{buildroot}/usr/bin/glite-wms-ice-rm
-strip -s %{buildroot}/usr/bin/glite-wms-ice-query-db
-strip -s %{buildroot}/usr/bin/glite-wms-ice-putfl-cancel
-strip -s %{buildroot}/usr/bin/glite-wms-ice-query-stats
-strip -s %{buildroot}/usr/bin/glite-wms-ice-proxy-renew
-strip -s %{buildroot}/usr/bin/glite-wms-ice
-strip -s %{buildroot}/usr/bin/glite-wms-ice-putfl-reschedule
-chrpath --delete %{buildroot}/usr/bin/glite_wms_wmproxy_server
-chrpath --delete %{buildroot}/usr/libexec/glite_wms_wmproxy_dirmanager
-chrpath --delete %{buildroot}%{_libdir}/libglite_wms_*.so.0.0.0
-chrpath --delete %{buildroot}/usr/bin/glite-wms-ice-query-stats
-chrpath --delete %{buildroot}/usr/bin/glite-wms-ice-safe
-chrpath --delete %{buildroot}/usr/bin/glite-wms-ice-putfl
-chrpath --delete %{buildroot}/usr/bin/glite-wms-ice-db-rm
-chrpath --delete %{buildroot}/usr/bin/glite-wms-ice-putfl-reschedule
-chrpath --delete %{buildroot}/usr/bin/glite-wms-ice-rm
-chrpath --delete %{buildroot}/usr/bin/glite-wms-ice-proxy-renew
-chrpath --delete %{buildroot}/usr/bin/glite-wms-ice-query-db
-chrpath --delete %{buildroot}/usr/bin/glite-wms-ice
-chmod 644 %{buildroot}/%{python_sitelib}/wmsmetrics/*.py
 export QA_SKIP_BUILD_ROOT=yes
-
 %clean
 rm -rf %{buildroot}
-%{__python} setup.py clean --all
 
 %post 
 /sbin/chkconfig --add glite-wms-wm 
@@ -164,17 +118,25 @@ if [ $1 -eq 0 ] ; then
     /sbin/chkconfig --del glite-wms-ice
 fi
 
-
 %files
-%{python_sitelib}/wmsmetrics/*.py*
-%doc nagios/README
-%doc nagios/CHANGES
 %defattr(-,root,root)
 %{_libdir}/libglite_wms_*.so.0.0.0
 %{_libdir}/libglite_wms_*.so.0
 %dir /usr/share/doc/glite-wms-server-%{version}
-
 %doc /usr/share/doc/glite-wms-server-%{version}/LICENSE
+%{python_sitelib}/wmsmetrics/WmsMetrics.py
+%{python_sitelib}/wmsmetrics/WmsMetrics.pyc
+%{python_sitelib}/wmsmetrics/WmsMetrics.pyo
+%{python_sitelib}/wmsmetrics/__init__.py
+%{python_sitelib}/wmsmetrics/__init__.pyc
+%{python_sitelib}/wmsmetrics/__init__.pyo
+%{python_sitelib}/wmsmetrics/scheduler.py
+%{python_sitelib}/wmsmetrics/scheduler.pyc
+%{python_sitelib}/wmsmetrics/scheduler.pyo
+/usr/libexec/grid-monitoring/probes/emi.wms/WMS-jdl.template
+/usr/libexec/grid-monitoring/probes/emi.wms/WMS-probe
+/usr/share/doc/emi-wms-nagios-3.5.0/CHANGES
+/usr/share/doc/emi-wms-nagios-3.5.0/README
 /usr/sbin/glite-wms-quota-adjust
 /usr/bin/glite-wms-get-configuration
 /usr/libexec/glite-wms-eval_ad_expr
@@ -227,7 +189,6 @@ fi
 /opt/glite/yaim/defaults/glite-*
 /opt/glite/yaim/services/glite-wms
 
-
 %package devel
 Summary: Development files for WMS common module
 Group: System Environment/Libraries
@@ -271,3 +232,4 @@ Development files for WMS
 %changelog
 * %{extcdate} WMS group <wms-support@lists.infn.it> - %{extversion}-%{extage}.%{extdist}
 - %{extclog}
+
