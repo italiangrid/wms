@@ -79,9 +79,9 @@ ${PROJECT_SOURCE_DIR}
     COMMAND mv ARGS /tmp/glite-wms-server-${PVER}-${AGE}.${OS}.tar.gz rpmbuild/SOURCES/
     COMMAND sed ARGS -e 's/%{extversion}/${PVER}/g' -e 's/%{extage}/${AGE}/g'
 -e 's/%{extdist}/${OS}/g' -e 's/%{extcdate}/${DATE}/g' -e 's/%{extclog}/Bug
-fixing/g' < project/wms2.spec > rpmbuild/SPECS/wms2.spec
+fixing/g' < project/wms.spec > rpmbuild/SPECS/wms.spec
     COMMAND rpmbuild ARGS -ba --define "_topdir `pwd`/rpmbuild" --define
-"extbuilddir ${PREFIX}" `pwd`/rpmbuild/SPECS/wms2.spec
+"extbuilddir ${PREFIX}" `pwd`/rpmbuild/SPECS/wms.spec
   )
   
   ADD_CUSTOM_COMMAND(TARGET configuration 
