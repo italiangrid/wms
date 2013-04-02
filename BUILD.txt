@@ -13,7 +13,7 @@ file without extension and without path:
 dorigoa@sl5-64 11:22:05 ~/wms>ll /etc/mock/emi-3-rc-sl5-x86_64.cfg 
 -rw-r--r-- 1 root root 2207 Mar 18 11:16 /etc/mock/emi-3-rc-sl5-x86_64.cfg
 
-dorigoa@sl5-64 11:22:11 ~/wms>cmake . -DPREFIX=`pwd`/stage/usr -DOS=sl5 -DMOCKCFG=emi-3-rc-sl5-x86_64
+dorigoa@sl5-64 11:22:11 ~/wms>cmake . -DPREFIX=`pwd`/stage -DOS=sl5 -DMOCKCFG=emi-3-rc-sl5-x86_64
 
 Please note that for the moment OS can assume only the two values "sl5" and
 "sl6" (no need to specify the architecture, because only 64bit is supported).
