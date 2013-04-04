@@ -12,7 +12,6 @@ add_custom_target(ICECOMMANDS
   DEPENDS 
   IceCommandSubmit.cpp
   iceCommandCancel.cpp
-  iceCommandFactory.cpp
   iceCommandStatusPoller.cpp
   Request_source_purger.cpp
   iceCommandDelegationRenewal.cpp
@@ -25,7 +24,6 @@ add_library(glite_wms_IceCommands
   SHARED 
   IceCommandSubmit.cpp
   iceCommandCancel.cpp
-  iceCommandFactory.cpp
   iceCommandStatusPoller.cpp
   Request_source_purger.cpp
   iceCommandDelegationRenewal.cpp
