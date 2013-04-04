@@ -34,7 +34,6 @@ END LICENSE */
 #include "iceCommands/iceCommandReschedule.h"
 #include "iceCommands/iceCommandSubmit.h"
 #include "iceCommands/iceCommandCancel.h"
-//#include "iceUtils/Request_source_factory.h"
 #include "iceUtils/Request_source_jobdir.h"
 #include "iceUtils/Request.h"
 #include "iceUtils/RequestParser.h"
@@ -141,13 +140,13 @@ IceCore::IceThreadHelper::~IceThreadHelper( )
 }
 
 //____________________________________________________________________________
-void IceCore::IceThreadHelper::start( util::iceThread* obj ) throw( iceInit_ex& )
+void IceCore::IceThreadHelper::start( util::iceThread* obj ) throw( IceInitException& )
 {
   m_ptr_thread = boost::shared_ptr< util::iceThread >( obj );
   try {
     m_thread = new boost::thread(boost::bind(&util::iceThread::operator(), m_ptr_thread) );
   } catch( boost::thread_resource_error& ex ) {
-    throw iceInit_ex( ex.what() );
+    throw IceInitException( ex.what() );
   }
 }
 
@@ -185,9 +184,9 @@ IceCore* IceCore::instance( void )
 
     if ( 0 == s_instance ) {
         try {
-            s_instance = new IceCore( ); // may throw iceInit_ex
+            s_instance = new IceCore( ); // may throw IceInitException
 
-        } catch(iceInit_ex& ex) {
+        } catch(IceInitException& ex) {
             CREAM_SAFE_LOG(
                            m_log_dev->fatalStream() 
                            << "IceCore::instance() - " 
@@ -210,7 +209,7 @@ IceCore* IceCore::instance( void )
 }
 
 //____________________________________________________________________________
-IceCore::IceCore( ) throw(iceInit_ex&) : 
+IceCore::IceCore( ) throw(IceInitException&) : 
     m_poller_thread( "Event Status Poller" ),
     m_proxy_renewer_thread( "Proxy Renewer" ),
     m_wms_input_queue( new Request_source_jobdir( IceConfManager::instance()->getConfiguration()->wm()->input(), true ) /*util::Request_source_factory::make_source_input_wm()*/ ),

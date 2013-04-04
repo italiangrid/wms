@@ -21,7 +21,6 @@ END LICENSE */
 #ifndef GLITE_WMS_ICE_ICE_CORE_H
 #define GLITE_WMS_ICE_ICE_CORE_H
 
-#include "ice/iceInit_ex.h"
 #include "iceThreads/iceThread.h"
 #include "iceThreads/iceThreadPool.h"
 #include "iceUtils/ClassadSyntax_ex.h"
@@ -52,6 +51,17 @@ namespace wms {
 
 namespace ice {
 
+    class IceInitException : public std::exception {
+        
+        std::string cause;
+        
+      public:
+        IceInitException(const std::string& _cause) throw() : cause(_cause) {};
+        virtual ~IceInitException() throw() {}
+        const char* what() const throw() { return cause.c_str(); }
+        
+    };
+    
     namespace util {
         class iceLBLogger;
         class Request_source;
@@ -79,7 +89,7 @@ namespace ice {
              * which a thread should be created. The caller
              * transfers ownership of parameter obj.
              */
-            void start( util::iceThread* obj ) throw( iceInit_ex& );
+            void start( util::iceThread* obj ) throw( IceInitException& );
 
             /**
              * Returns true iff this thread started (i.e., iff
@@ -143,7 +153,7 @@ namespace ice {
  
 	time_t      m_start_time;
 
-        IceCore( ) throw(glite::wms::ice::iceInit_ex&);
+        IceCore( ) throw( IceInitException& );
 
         // Some utility functions
         void deregister_proxy_renewal( const util::CreamJob* job ) throw();
@@ -211,25 +221,18 @@ namespace ice {
 
         void removeRequest( util::Request* r );
 
-        // Starter methods
-//        void startListener( void );
+        // Starter/Stopper methods
         void startPoller( void );
-//        void startLeaseUpdater( void );
         void startProxyRenewer( void );
- //       void startJobKiller( void );
         
 	void stopAllThreads( void );
 
         // Query methods
-//        bool is_listener_started( void ) const;
         bool is_poller_started( void ) const;
-//        bool is_lease_updater_started( void ) const;
         bool is_proxy_renewer_started( void ) const;
-//        bool is_job_killer_started( void ) const;
 
         // Misc job handling functions
-
-        /**
+	/**
          * Resubmits or purge a given job.
          *
          * @param it the iterator to the job to purge or
@@ -241,7 +244,6 @@ namespace ice {
          * the job is purged or resubmitted (and hence removed from
          * the job cache).
          */
-	//        util::jobCache::iterator 
 	bool resubmit_or_purge_job( util::CreamJob* ) throw();
 
 	//void delete_jobs_by_dn( const std::string& ) throw();
