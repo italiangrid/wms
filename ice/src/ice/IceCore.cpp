@@ -32,7 +32,7 @@ END LICENSE */
 #include "iceUtils/iceLBLogger.h"
 #include "iceUtils/CreamProxyMethod.h"
 #include "iceCommands/iceCommandReschedule.h"
-#include "iceCommands/iceCommandSubmit.h"
+#include "iceCommands/IceCommandSubmit.h"
 #include "iceCommands/iceCommandCancel.h"
 #include "iceUtils/Request_source_jobdir.h"
 #include "iceUtils/Request.h"
@@ -998,7 +998,7 @@ int IceCore::main_loop( void ) {
 	    theJob.set_isbproxy_time_end( V.getProxyTimeEnd() );
 
 	    if( boost::algorithm::iequals( parser.get_command( ), "submit" ) ) {
-	      cmd = new glite::wms::ice::iceCommandSubmit( *it, theJob ); 
+	      cmd = new glite::wms::ice::IceCommandSubmit( *it, theJob ); 
 	    }
 		
 	    if( boost::algorithm::iequals( parser.get_command( ), "reschedule" ) ) {

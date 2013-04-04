@@ -26,7 +26,7 @@ END LICENSE */
 #include "iceUtils/iceLBLogger.h"
 #include "iceUtils/DNProxyManager.h"
 #include "iceUtils/IceConfManager.h"
-#include "iceCommandSubmit.h"
+#include "IceCommandSubmit.h"
 #include "iceUtils/CreamProxyMethod.h"
 #include "iceUtils/DelegationManager.h"
 #include "iceUtils/BlackListFailJob_ex.h"
@@ -75,8 +75,8 @@ namespace iceUtil       = glite::wms::ice::util;
 
 using namespace glite::wms::ice;
 
-boost::recursive_mutex iceCommandSubmit::s_localMutexForSubscriptions;
-boost::recursive_mutex iceCommandSubmit::s_localMutexForDelegations;
+boost::recursive_mutex IceCommandSubmit::s_localMutexForSubscriptions;
+boost::recursive_mutex IceCommandSubmit::s_localMutexForDelegations;
 
 //
 //
@@ -119,9 +119,9 @@ namespace { // Anonymous namespace
 //
 //
 //____________________________________________________________________________
-iceCommandSubmit::iceCommandSubmit( iceUtil::Request* request, 
+IceCommandSubmit::IceCommandSubmit( iceUtil::Request* request, 
 				    const iceUtil::CreamJob& aJob )
-  : IceAbstractCommand( "iceCommandSubmit", "" ),
+  : IceAbstractCommand( "IceCommandSubmit", "" ),
     m_theIce( IceCore::instance() ),
     m_myname( IceUtils::get_host_name( ) ),
     m_theJob( aJob ),
@@ -142,11 +142,11 @@ iceCommandSubmit::iceCommandSubmit( iceUtil::Request* request,
 //
 //
 //____________________________________________________________________________
-void iceCommandSubmit::execute( const std::string& tid ) throw( iceCommandFatal_ex&, iceCommandTransient_ex& )
+void IceCommandSubmit::execute( const std::string& tid ) throw( iceCommandFatal_ex&, iceCommandTransient_ex& )
 {
   m_thread_id = tid;
   
-    static const char* method_name="iceCommandSubmit::execute() - ";
+    static const char* method_name="IceCommandSubmit::execute() - ";
 
     CREAM_SAFE_LOG(
                    m_log_dev->infoStream()
@@ -174,8 +174,8 @@ void iceCommandSubmit::execute( const std::string& tid ) throw( iceCommandFatal_
       //clause.push_back( make_pair( util::CreamJob::grid_jobid_field(), _gid) );
       //list< vector<string> > results;
       
-      //db::GetFields getter(fields_to_retrieve, clause, results, "iceCommandSubmit::execute", false );
-      db::GetJobByGid getter( _gid, "iceCommandSubmit::execute" );
+      //db::GetFields getter(fields_to_retrieve, clause, results, "IceCommandSubmit::execute", false );
+      db::GetJobByGid getter( _gid, "IceCommandSubmit::execute" );
       db::Transaction tnx(false, false);
       tnx.execute( &getter );
       
@@ -189,7 +189,7 @@ void iceCommandSubmit::execute( const std::string& tid ) throw( iceCommandFatal_
 	  // new DB entry creation. Let's remove this entry and 
 	  // regularly submit the job.
 	  {
-	    db::RemoveJobByGid remover( _gid, "iceCommandSubmit::execute" );
+	    db::RemoveJobByGid remover( _gid, "IceCommandSubmit::execute" );
 	    db::Transaction tnx(false, false);
 	    tnx.execute( &remover );
 	  }
@@ -236,7 +236,7 @@ void iceCommandSubmit::execute( const std::string& tid ) throw( iceCommandFatal_
       // table
       //boost::recursive_mutex::scoped_lock proxy( glite::wms::ice::util::eventStatusPoller::s_proxymutex );
       {
-	db::CreateJob creator( m_theJob, "iceCommandSubmit::execute" );
+	db::CreateJob creator( m_theJob, "IceCommandSubmit::execute" );
 	db::Transaction tnx(false, false);
 	tnx.execute( &creator );
       }
@@ -328,13 +328,13 @@ void iceCommandSubmit::execute( const std::string& tid ) throw( iceCommandFatal_
 //
 //
 //______________________________________________________________________________
-void iceCommandSubmit::try_to_submit( const bool only_start ) 
+void IceCommandSubmit::try_to_submit( const bool only_start ) 
   throw( BlackListFailJob_ex&, iceCommandFatal_ex&, iceCommandTransient_ex& )
 {
   
   string _gid( m_theJob.grid_jobid() );
   
-  static const char* method_name = "iceCommandSubmit::try_to_submit() - ";
+  static const char* method_name = "IceCommandSubmit::try_to_submit() - ";
   /**
    * Retrieve all usefull cert info.  In order to make the userDN an
    * index in the BDb's secondary database it must be available
@@ -454,7 +454,7 @@ void iceCommandSubmit::try_to_submit( const bool only_start )
     m_theJob.set_complete_cream_jobid( completeid );
     m_theJob.set_cream_jobid( jobId );
     {
-      db::UpdateJob updater( m_theJob, "iceCommandSubmit::try_to_submit");
+      db::UpdateJob updater( m_theJob, "IceCommandSubmit::try_to_submit");
       db::Transaction tnx( false, false );
       tnx.execute( &updater );
     }
@@ -467,7 +467,7 @@ void iceCommandSubmit::try_to_submit( const bool only_start )
     // that in the DB the needed info to start it are
     // there. Let's retrieve them...
     {
-      db::GetJobByGid getter( _gid, "iceCommandSubmit::try_to_submit" );
+      db::GetJobByGid getter( _gid, "IceCommandSubmit::try_to_submit" );
       db::Transaction tnx( false, false );
       tnx.execute( &getter );
       if(getter.found( ) ) {
@@ -489,7 +489,7 @@ void iceCommandSubmit::try_to_submit( const bool only_start )
   cream_api::ResultWrapper startRes;
   
   {
-    db::InsertStat inserter( time(0), time(0),(short)glite::ce::cream_client_api::job_statuses::REGISTERED, "iceCommandSubmit::try_to_submit" );
+    db::InsertStat inserter( time(0), time(0),(short)glite::ce::cream_client_api::job_statuses::REGISTERED, "IceCommandSubmit::try_to_submit" );
     db::Transaction tnx(false, false);
     tnx.execute( &inserter );
   }
@@ -546,7 +546,7 @@ void iceCommandSubmit::try_to_submit( const bool only_start )
   // no failure: put jobids and status in database
   // and remove last request from WM's filelist
   {
-    db::InsertStat inserter( time(0), time(0),(short)glite::ce::cream_client_api::job_statuses::IDLE, "iceCommandSubmit::try_to_submit" );
+    db::InsertStat inserter( time(0), time(0),(short)glite::ce::cream_client_api::job_statuses::IDLE, "IceCommandSubmit::try_to_submit" );
     db::Transaction tnx(false, false);
     tnx.execute( &inserter );
   }
@@ -556,7 +556,7 @@ void iceCommandSubmit::try_to_submit( const bool only_start )
   m_theJob.set_wn_sequence_code( m_theJob.sequence_code() );
   m_theJob.set_cream_dbid( strtoull(dbid.c_str(), 0, 10) );
   
-  db::UpdateJob updater( m_theJob, "iceCommandSubmit::try_to_submit" );
+  db::UpdateJob updater( m_theJob, "IceCommandSubmit::try_to_submit" );
   db::Transaction tnx(false, false);
   tnx.execute( &updater );
   m_theJob.reset_change_flags( );
@@ -571,7 +571,7 @@ void iceCommandSubmit::try_to_submit( const bool only_start )
   
   {
     m_theJob.set_last_seen( time(0) );
-    db::UpdateJob( m_theJob, "iceCommandSubmit::try_to_submit" );
+    db::UpdateJob( m_theJob, "IceCommandSubmit::try_to_submit" );
     db::Transaction tnx(false, false);
     tnx.execute( &updater );
   }
@@ -581,9 +581,9 @@ void iceCommandSubmit::try_to_submit( const bool only_start )
 
 //______________________________________________________________________________
 /*
-void  iceCommandSubmit::doSubscription( const iceUtil::CreamJob& aJob )
+void  IceCommandSubmit::doSubscription( const iceUtil::CreamJob& aJob )
 {
-  static const char* method_name = "iceCommandSubmit::doSubscription() - ";
+  static const char* method_name = "IceCommandSubmit::doSubscription() - ";
   boost::recursive_mutex::scoped_lock cemonM( s_localMutexForSubscriptions );
   
   string cemon_url;
@@ -712,16 +712,16 @@ void  iceCommandSubmit::doSubscription( const iceUtil::CreamJob& aJob )
     } // if(can_subscribe)
   } // else -> if(subscribedTo...)
   
-} // end function, also unlocks the iceCommandSubmit's s_localMutexForSubscription mutex
+} // end function, also unlocks the IceCommandSubmit's s_localMutexForSubscription mutex
 */
 //______________________________________________________________________________
-void iceCommandSubmit::process_lease( const bool force_lease,
+void IceCommandSubmit::process_lease( const bool force_lease,
 				      const std::string& jobdesc,
 				      const std::string& _gid,
 				      string& lease_id )
   throw( iceCommandFatal_ex&, iceCommandTransient_ex& )
 {
-  const char* method_name = "iceCommandSubmit::process_lease() - ";
+  const char* method_name = "IceCommandSubmit::process_lease() - ";
 
   if ( force_lease ) {
     CREAM_SAFE_LOG( m_log_dev->infoStream() << method_name << " TID=[" << getThreadID() << "] "
@@ -765,7 +765,7 @@ void iceCommandSubmit::process_lease( const bool force_lease,
 }
 
 //______________________________________________________________________________
-void iceCommandSubmit::handle_delegation( string& delegation,
+void IceCommandSubmit::handle_delegation( string& delegation,
 					  bool& force_delegation,
 					  const string& jobdesc,
 					  const string& _gid,
@@ -775,7 +775,7 @@ void iceCommandSubmit::handle_delegation( string& delegation,
 
   boost::recursive_mutex::scoped_lock delegM( s_localMutexForDelegations );
 
-  const char* method_name = "iceCommandSubmit::handle_delegation() - ";
+  const char* method_name = "IceCommandSubmit::handle_delegation() - ";
   boost::tuple<string, time_t, long long int> SBP;
 
   if( m_theJob.proxy_renewable() ) {
@@ -844,7 +844,7 @@ void iceCommandSubmit::handle_delegation( string& delegation,
 }
 
 //______________________________________________________________________________
-bool iceCommandSubmit::register_job( const bool is_lease_enabled,
+bool IceCommandSubmit::register_job( const bool is_lease_enabled,
 				     const string& jobdesc,
 				     const string& _gid,
 				     const string& delegation,
@@ -855,7 +855,7 @@ bool iceCommandSubmit::register_job( const bool is_lease_enabled,
 				     cream_api::AbsCreamProxy::RegisterArrayResult& res)
   throw( BlackListFailJob_ex&, iceCommandTransient_ex&, iceCommandFatal_ex& )
 {
-  const char* method_name = "iceCommandSubmit::register_job() - ";
+  const char* method_name = "IceCommandSubmit::register_job() - ";
 
   try {
     
@@ -955,7 +955,7 @@ bool iceCommandSubmit::register_job( const bool is_lease_enabled,
 }
 
 //______________________________________________________________________________
-void iceCommandSubmit::process_result( bool& retry, 
+void IceCommandSubmit::process_result( bool& retry, 
 				       bool& force_delegation, 
 				       bool& force_lease,
 				       const bool is_lease_enabled,
@@ -963,7 +963,7 @@ void iceCommandSubmit::process_result( bool& retry,
 				       const cream_api::AbsCreamProxy::RegisterArrayResult& res )
   throw( iceCommandTransient_ex& )
 {
-  const char* method_name = "iceCommandSubmit::process_result() - ";
+  const char* method_name = "IceCommandSubmit::process_result() - ";
 
   cream_api::JobIdWrapper::RESULT result = res.begin()->second.get<0>();
   string err = res.begin()->second.get<2>();

@@ -21,7 +21,7 @@ END LICENSE */
 #ifndef GLITE_WMS_ICE_ICECOMMANDRESCHEDULE_H
 #define GLITE_WMS_ICE_ICECOMMANDRESCHEDULE_H
 
-#include "iceCommandSubmit.h"
+#include "IceCommandSubmit.h"
 #include "iceCommandFatal_ex.h"
 #include "iceCommandTransient_ex.h"
 #include "iceUtils/CreamJob.h"
@@ -53,14 +53,14 @@ namespace util {
 }
      
   
- class iceCommandReschedule : public iceCommandSubmit {
+ class iceCommandReschedule : public IceCommandSubmit {
      
  private:
      void  doSubscription( const glite::wms::ice::util::CreamJob& );
      
  public:
      iceCommandReschedule( util::Request* request, 
-		           const util::CreamJob& aJob ) : iceCommandSubmit( request, aJob ) { };
+		           const util::CreamJob& aJob ) : IceCommandSubmit( request, aJob ) { };
      
      virtual ~iceCommandReschedule() { }
      

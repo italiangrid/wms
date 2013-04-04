@@ -20,7 +20,7 @@ END LICENSE */
 
 #include "iceCommandFactory.h"
 #include "IceAbstractCommand.h"
-#include "iceCommandSubmit.h"
+#include "IceCommandSubmit.h"
 #include "iceCommandCancel.h"
 #include "classad_distribution.h"
 #include "boost/algorithm/string.hpp"
@@ -44,7 +44,7 @@ namespace glite {
 	IceAbstractCommand* result = 0;
 	  
 	  if ( boost::algorithm::iequals( cmdtype, "submit" ) ) {
-	    result = new iceCommandSubmit( request, aJob );
+	    result = new IceCommandSubmit( request, aJob );
 	  } else if ( boost::algorithm::iequals( cmdtype, "cancel" ) ) {
 	    result = new iceCommandCancel( request );
 	  } else {

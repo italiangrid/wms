@@ -75,6 +75,6 @@ void iceCommandReschedule::execute( const std::string& tid )
     DNProxyManager::getInstance()->decrementUserProxyCounter( m_theJob.user_dn(), m_theJob.myproxy_address() );
   
   }
-  iceCommandSubmit::execute( tid );
+  IceCommandSubmit::execute( tid );
 
 }

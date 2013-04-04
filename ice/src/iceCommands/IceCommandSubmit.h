@@ -54,7 +54,7 @@ namespace util {
 }
      
   
- class iceCommandSubmit : public IceAbstractCommand {
+ class IceCommandSubmit : public IceAbstractCommand {
      
  private:
      void  doSubscription( const glite::wms::ice::util::CreamJob& );
@@ -64,11 +64,11 @@ namespace util {
      static boost::recursive_mutex s_localMutexForDelegations;
 
  public:
-     iceCommandSubmit( util::Request* request, 
+     IceCommandSubmit( util::Request* request, 
 		       const util::CreamJob& );
        //       throw(util::ClassadSyntax_ex&, util::JobRequest_ex&);
      
-     virtual ~iceCommandSubmit() { }
+     virtual ~IceCommandSubmit() { }
      
      /**
       * This method is invoked to execute this command.

@@ -10,7 +10,7 @@ include_directories(${CLASSAD_INCLUDE_DIRS}
 
 add_custom_target(ICECOMMANDS 
   DEPENDS 
-  iceCommandSubmit.cpp
+  IceCommandSubmit.cpp
   iceCommandCancel.cpp
   iceCommandFactory.cpp
   iceCommandStatusPoller.cpp
@@ -21,9 +21,9 @@ add_custom_target(ICECOMMANDS
   iceCommandReschedule.cpp
 )
 
-add_library(glite_wms_iceCommands
+add_library(glite_wms_IceCommands
   SHARED 
-  iceCommandSubmit.cpp
+  IceCommandSubmit.cpp
   iceCommandCancel.cpp
   iceCommandFactory.cpp
   iceCommandStatusPoller.cpp
@@ -34,9 +34,9 @@ add_library(glite_wms_iceCommands
   iceCommandReschedule.cpp
   )
 
-set_target_properties(glite_wms_iceCommands PROPERTIES VERSION 0.0.0 SOVERSION 0)
+set_target_properties(glite_wms_IceCommands PROPERTIES VERSION 0.0.0 SOVERSION 0)
 
-install(TARGETS glite_wms_iceCommands
+install(TARGETS glite_wms_IceCommands
   LIBRARY 
   DESTINATION 
   ${PREFIX}/usr/${LIBDIR}
