@@ -13,7 +13,7 @@ Requires: glite-wms-utils-exception,boost,c-ares,argus-pep-api-c,lcmaps-without-
 Requires: glite-wms-utils-classad,classads,globus-ftp-client,globus-ftp-control,globus-common,globus-ftp-client
 Requires: glite-lbjp-common-gsoap-plugin,lcmaps,fcgi,globus-gss-assist,globus-io,glite-jdl-api-cpp
 Requires: globus-gram-protocol,condor-emi,openldap,log4cpp,glite-ce-cream-client-api-c,globus-gridftp-server-progs
-Requires: lcas-lcmaps-gt4-interface,glite-lb-yaim,globus-proxy-utils,perl-suidperl,fetch-crl,glite-lb-server,glite-lb-logger-msg,bdii,lcmaps-plugins-basic,lcmaps-plugins-voms
+Requires: lcas,lcas-plugins-basic,lcas-plugins-voms,lcas-lcmaps-gt4-interface,glite-lb-yaim,globus-proxy-utils,perl-suidperl,fetch-crl,glite-lb-server,glite-lb-logger-msg,bdii,lcmaps-plugins-basic,lcmaps-plugins-voms
 Requires: openssl >= 0.9.8e-12
 Requires: python >= 2.4
 Requires: python-ldap
