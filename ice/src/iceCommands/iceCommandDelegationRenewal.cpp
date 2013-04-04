@@ -64,7 +64,7 @@ using namespace glite::wms::ice::util;
 
 //______________________________________________________________________________
 iceCommandDelegationRenewal::iceCommandDelegationRenewal( ) :
-    iceAbsCommand( "iceCommandDelegationRenewal", "" ),
+    IceAbstractCommand( "iceCommandDelegationRenewal", "" ),
     m_log_dev( cream_api::util::creamApiLogger::instance()->getLogger() ),
     m_ctx( NULL )
 {

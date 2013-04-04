@@ -58,7 +58,7 @@ using namespace glite::wms::ice;
 //______________________________________________________________________________
 iceCommandCancel::iceCommandCancel( util::Request* request ) 
   throw(util::ClassadSyntax_ex&, util::JobRequest_ex&) :
-  iceAbsCommand( "iceCommandCancel", "" ),
+  IceAbstractCommand( "iceCommandCancel", "" ),
   m_log_dev(glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()),
   m_lb_logger( util::iceLBLogger::instance() ),
   m_request( request )

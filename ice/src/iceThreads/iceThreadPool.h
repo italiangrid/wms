@@ -34,7 +34,7 @@ namespace glite {
 namespace wms {
 namespace ice {
 
-    class iceAbsCommand;
+    class IceAbstractCommand;
     
 namespace util {
 
@@ -64,7 +64,7 @@ namespace util {
          *
          * @param req The request (command) to enqueue/execute
          */
-        void add_request( glite::wms::ice::iceAbsCommand* req );
+        void add_request( glite::wms::ice::IceAbstractCommand* req );
 
         /**
          * Gets the number of requests currently in the queue.
@@ -98,7 +98,7 @@ namespace util {
              * @return an iterator to a command in the queue, or
              * end() if no such command exists.
              */
-            std::list< iceAbsCommand* >::iterator get_first_request( void );
+            std::list< IceAbstractCommand* >::iterator get_first_request( void );
             
             iceThreadPoolState* m_state;
             const int m_threadNum; //!< the id of this thread

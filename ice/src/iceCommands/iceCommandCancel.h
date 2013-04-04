@@ -23,11 +23,10 @@ END LICENSE */
 
 #include <string>
 
-#include "iceAbsCommand.h"
+#include "IceAbstractCommand.h"
 #include "iceCommandFatal_ex.h"
 #include "iceCommandTransient_ex.h"
 #include "glite/ce/cream-client-api-c/creamApiLogger.h"
-//#include "glite/ce/cream-client-api-c/CreamProxy.h"
 #include <boost/scoped_ptr.hpp>
 
 namespace glite {
@@ -39,7 +38,7 @@ namespace ice {
         class Request;
     };
 
-    class iceCommandCancel : public iceAbsCommand {
+    class iceCommandCancel : public IceAbstractCommand {
         
 //        boost::scoped_ptr< glite::ce::cream_client_api::soap_proxy::CreamProxy > m_theProxy;
         

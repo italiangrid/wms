@@ -35,10 +35,10 @@ namespace glite {
         class Request;
       }
 	
-      class iceAbsCommand;
+      class IceAbstractCommand;
       
       /**
-       * This class is used to build an iceAbsCommand object
+       * This class is used to build an IceAbstractCommand object
        * corresponding to the command serialized in the request
        * classad. This class implements the classic "factory"
        * design pattern.
@@ -48,7 +48,7 @@ namespace glite {
 	virtual ~iceCommandFactory( ) { };
 	
 	/**
-	 * Returns an object instance of iceAbsCommand class;
+	 * Returns an object instance of IceAbstractCommand class;
 	 * the actual object class depends on the content of
 	 * the "request" parameter. The caller owns the
 	 * returned object, and is responsible for
@@ -57,9 +57,9 @@ namespace glite {
 	 * @param request the classad containing the
 	 * serialized version of the command to be built.
 	 *
-	 * @return a dynamically allocated iceAbsCommand object.
+	 * @return a dynamically allocated IceAbstractCommand object.
 	 */ 
-	static iceAbsCommand* mkCommand( util::Request* request,
+	static IceAbstractCommand* mkCommand( util::Request* request,
 					 const util::CreamJob&,
 					 const std::string& cmdtype) 
 	  throw( util::ClassadSyntax_ex&, util::JobRequest_ex&);

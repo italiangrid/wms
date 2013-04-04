@@ -31,7 +31,7 @@ namespace glite {
 namespace wms {
 namespace ice {
 
-    class iceAbsCommand;
+    class IceAbstractCommand;
 
 namespace util {
 
@@ -51,7 +51,7 @@ namespace util {
         const std::string m_name; ///< name of the pool
         boost::recursive_mutex m_mutex; ///< Mutex to protect the shared state object
         boost::condition m_no_requests_available; ///< Condition triggered when there is a new request in the queue
-        std::list< iceAbsCommand* > m_requests_queue; ///< The queue of requests (commands to be issued to CREAM)
+        std::list< IceAbstractCommand* > m_requests_queue; ///< The queue of requests (commands to be issued to CREAM)
         std::set< std::string > m_pending_jobs; ///< Grei Job IDs of pending jobs (jobs being processed)
     };
 

@@ -947,7 +947,7 @@ int IceCore::main_loop( void ) {
 
 	    parser.unparse_request( );
 
-	    glite::wms::ice::iceAbsCommand* cmd = 0;	
+	    glite::wms::ice::IceAbstractCommand* cmd = 0;	
 	    if( boost::algorithm::iequals( parser.get_command( ), "cancel" ) ) {
 	      cmd = new glite::wms::ice::iceCommandCancel( *it ); 
 	      this->get_requests_pool()->add_request( cmd );

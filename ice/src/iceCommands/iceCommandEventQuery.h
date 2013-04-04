@@ -23,7 +23,7 @@ END LICENSE */
 
 #undef soapStub_H
 
-#include "iceAbsCommand.h"
+#include "IceAbstractCommand.h"
 #include "iceUtils/CreamJob.h"
 
 #include <boost/scoped_ptr.hpp>
@@ -60,7 +60,7 @@ namespace glite {
         class iceLBLogger;
 	class IceConfManager;
 
-	class iceCommandEventQuery : public iceAbsCommand {
+	class iceCommandEventQuery : public IceAbstractCommand {
 
           log4cpp::Category                     *m_log_dev;
           glite::wms::ice::util::iceLBLogger    *m_lb_logger;

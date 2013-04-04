@@ -21,7 +21,7 @@ END LICENSE */
 #ifndef GLITE_WMS_ICE_ICECOMMANDSUBMIT_H
 #define GLITE_WMS_ICE_ICECOMMANDSUBMIT_H
 
-#include "iceAbsCommand.h"
+#include "IceAbstractCommand.h"
 #include "iceCommandFatal_ex.h"
 #include "iceCommandTransient_ex.h"
 #include "iceUtils/BlackListFailJob_ex.h"
@@ -54,7 +54,7 @@ namespace util {
 }
      
   
- class iceCommandSubmit : public iceAbsCommand {
+ class iceCommandSubmit : public IceAbstractCommand {
      
  private:
      void  doSubscription( const glite::wms::ice::util::CreamJob& );

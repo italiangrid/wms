@@ -19,7 +19,7 @@ limitations under the License.
 END LICENSE */
 #include "iceThreadPool.h"
 #include "iceThreadPoolState.h"
-#include "iceCommands/iceAbsCommand.h"
+#include "iceCommands/IceAbstractCommand.h"
 #include "ice/IceCore.h"
 #include "iceCommands/iceCommandFatal_ex.h"
 #include "iceCommands/iceCommandTransient_ex.h"
@@ -74,7 +74,7 @@ void iceThreadPool::iceThreadPoolWorker::body( )
 
     while( !isStopped() ) {
 
-        boost::scoped_ptr< iceAbsCommand > cmd;
+        boost::scoped_ptr< IceAbstractCommand > cmd;
         {
             boost::recursive_mutex::scoped_lock L( m_state->m_mutex );
             
@@ -100,9 +100,9 @@ void iceThreadPool::iceThreadPoolWorker::body( )
                 }
             } 
             // Remove one request from the queue
-            list< iceAbsCommand* >::iterator req_it = get_first_request( );
+            list< IceAbstractCommand* >::iterator req_it = get_first_request( );
             assert( req_it != m_state->m_requests_queue.end() );
-            iceAbsCommand* cmd_ptr = *req_it;
+            IceAbstractCommand* cmd_ptr = *req_it;
             cmd.reset( cmd_ptr );
             m_state->m_requests_queue.erase( req_it );
             m_state->m_pending_jobs.insert( cmd->get_grid_job_id() );
@@ -188,10 +188,10 @@ void iceThreadPool::iceThreadPoolWorker::body( )
 }
 
 //______________________________________________________________________________
-list< glite::wms::ice::iceAbsCommand* >::iterator
+list< glite::wms::ice::IceAbstractCommand* >::iterator
 iceThreadPool::iceThreadPoolWorker::get_first_request( void )
 {
-    list< glite::wms::ice::iceAbsCommand* >::iterator it = m_state->m_requests_queue.begin();
+    list< glite::wms::ice::IceAbstractCommand* >::iterator it = m_state->m_requests_queue.begin();
     while ( ( it != m_state->m_requests_queue.end() ) &&
             ( m_state->m_pending_jobs.end() != 
               m_state->m_pending_jobs.find( (*it)->get_grid_job_id() ) ) ) {
@@ -279,7 +279,7 @@ void iceThreadPool::stopAllThreads( void ) throw()
 }
 
 //______________________________________________________________________________
-void iceThreadPool::add_request( glite::wms::ice::iceAbsCommand* req )
+void iceThreadPool::add_request( glite::wms::ice::IceAbstractCommand* req )
 {
     boost::recursive_mutex::scoped_lock L( m_state->m_mutex );
     m_state->m_requests_queue.push_back( req );

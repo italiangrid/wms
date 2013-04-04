@@ -21,7 +21,7 @@ END LICENSE */
 #ifndef GLITE_WMS_ICE_ICECOMMANDLBLOGGING_H
 #define GLITE_WMS_ICE_ICECOMMANDLBLOGGING_H
 
-#include "iceAbsCommand.h"
+#include "IceAbstractCommand.h"
 #include "iceUtils/CreamJob.h"
 #include <boost/scoped_ptr.hpp>
 
@@ -39,13 +39,13 @@ namespace glite {
 	
 	class iceLBLogger;
 	
-	class iceCommandLBLogging : public iceAbsCommand {
+	class iceCommandLBLogging : public IceAbstractCommand {
 	  
 	  log4cpp::Category			*m_log_dev;
 	  std::list<CreamJob> 			 m_jobs_to_remove;
 	  glite::wms::ice::util::iceLBLogger    *m_lb_logger;
 	  
-	  iceCommandLBLogging( const iceCommandLBLogging& ) : iceAbsCommand("", "") {}
+	  iceCommandLBLogging( const iceCommandLBLogging& ) : IceAbstractCommand("", "") {}
 	  
 	  //void renewAllDelegations( void ) throw();
 

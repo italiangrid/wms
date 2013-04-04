@@ -23,7 +23,7 @@ END LICENSE */
 
 #undef soapStub_H
 
-#include "iceAbsCommand.h"
+#include "IceAbstractCommand.h"
 #include "iceUtils/CreamJob.h"
 #include "glite/ce/cream-client-api-c/JobInfoWrapper.h"
 #include "iceDb/GetJobsToPoll.h" // needed for definition of type 'JobToPoll'
@@ -50,7 +50,7 @@ namespace glite {
 	//	class jobCache;
 	class IceConfManager;
 
-	class iceCommandStatusPoller : public iceAbsCommand {
+	class iceCommandStatusPoller : public IceAbstractCommand {
 
           log4cpp::Category                           *m_log_dev;
           glite::wms::ice::util::iceLBLogger          *m_lb_logger;

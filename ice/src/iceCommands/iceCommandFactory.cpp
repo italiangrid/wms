@@ -19,7 +19,7 @@ limitations under the License.
 END LICENSE */
 
 #include "iceCommandFactory.h"
-#include "iceAbsCommand.h"
+#include "IceAbstractCommand.h"
 #include "iceCommandSubmit.h"
 #include "iceCommandCancel.h"
 #include "classad_distribution.h"
@@ -34,13 +34,14 @@ namespace glite {
   namespace wms {
     namespace ice {
       
-      iceAbsCommand* iceCommandFactory::mkCommand( util::Request* request,
-						   const util::CreamJob& aJob,
-						   const std::string& cmdtype )
+      IceAbstractCommand* 
+      iceCommandFactory::mkCommand( util::Request* request,
+				    const util::CreamJob& aJob,
+				    const std::string& cmdtype )
 	throw(util::ClassadSyntax_ex&, util::JobRequest_ex&) 
       {
 
-	iceAbsCommand* result = 0;
+	IceAbstractCommand* result = 0;
 	  
 	  if ( boost::algorithm::iequals( cmdtype, "submit" ) ) {
 	    result = new iceCommandSubmit( request, aJob );

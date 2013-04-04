@@ -21,7 +21,7 @@ END LICENSE */
 #ifndef GLITE_WMS_ICE_ICECOMMANDDELEGRENEWAL_H
 #define GLITE_WMS_ICE_ICECOMMANDDELEGRENEWAL_H
 
-#include "iceAbsCommand.h"
+#include "IceAbstractCommand.h"
 #include "iceUtils/CreamJob.h"
 #include <boost/scoped_ptr.hpp>
 
@@ -39,11 +39,11 @@ namespace glite {
     namespace ice {
       namespace util {
 	
-	class iceCommandDelegationRenewal : public iceAbsCommand {
+	class iceCommandDelegationRenewal : public IceAbstractCommand {
 	  log4cpp::Category* m_log_dev;
 	  glite_renewal_core_context m_ctx;
 
-	  iceCommandDelegationRenewal( const iceCommandDelegationRenewal& ) : iceAbsCommand("", "") {}
+	  iceCommandDelegationRenewal( const iceCommandDelegationRenewal& ) : IceAbstractCommand("", "") {}
 	  
 	  void renewAllDelegations( void ) throw();
 

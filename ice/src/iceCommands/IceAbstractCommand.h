@@ -45,11 +45,11 @@ namespace glite {
 
             class Ice;
 
-            class iceAbsCommand {
+            class IceAbstractCommand {
 	
             public:
 
-                virtual ~iceAbsCommand() { };
+                virtual ~IceAbstractCommand() { };
 
                 /**
                  * Executes the command. 
@@ -73,7 +73,7 @@ namespace glite {
                 std::string name( void ) { return m_name; };
             protected:
 
-                iceAbsCommand( const std::string& name, const std::string& tid ) throw(glite::wms::ice::util::ClassadSyntax_ex&, glite::wms::ice::util::JobRequest_ex&) : m_name( name ) {};
+                IceAbstractCommand( const std::string& name, const std::string& tid ) throw(glite::wms::ice::util::ClassadSyntax_ex&, glite::wms::ice::util::JobRequest_ex&) : m_name( name ) {};
                 std::string m_name; ///< Name of this command, default empty
 		
 		std::string m_thread_id;

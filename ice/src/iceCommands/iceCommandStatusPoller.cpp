@@ -72,7 +72,7 @@ iceCommandStatusPoller::iceCommandStatusPoller( glite::wms::ice::IceCore* theIce
 						const pair<string, string>& dnce,
 						bool poll_all_jobs
 						) :
-  iceAbsCommand( "iceCommandStatusPoller", "" ),
+  IceAbstractCommand( "iceCommandStatusPoller", "" ),
   m_log_dev( cream_api::util::creamApiLogger::instance()->getLogger() ),
   m_lb_logger( iceLBLogger::instance() ),
   m_iceManager( theIce ),

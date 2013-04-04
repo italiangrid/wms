@@ -60,7 +60,7 @@ using namespace glite::wms::ice;
 
 //______________________________________________________________________________
 util::iceCommandLBLogging::iceCommandLBLogging( const list<CreamJob>& jobs ) :
-    iceAbsCommand( "iceCommandLBLogging", "" ),
+    IceAbstractCommand( "iceCommandLBLogging", "" ),
     m_log_dev( cream_api::util::creamApiLogger::instance()->getLogger() ),
     m_jobs_to_remove( jobs ),
     m_lb_logger( ice::util::iceLBLogger::instance() )

@@ -121,7 +121,7 @@ namespace { // Anonymous namespace
 //____________________________________________________________________________
 iceCommandSubmit::iceCommandSubmit( iceUtil::Request* request, 
 				    const iceUtil::CreamJob& aJob )
-  : iceAbsCommand( "iceCommandSubmit", "" ),
+  : IceAbstractCommand( "iceCommandSubmit", "" ),
     m_theIce( IceCore::instance() ),
     m_myname( IceUtils::get_host_name( ) ),
     m_theJob( aJob ),

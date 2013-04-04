@@ -98,7 +98,7 @@ ice::util::iceCommandEventQuery::~iceCommandEventQuery( ) throw()
 ice::util::iceCommandEventQuery::iceCommandEventQuery( ice::IceCore* theIce,
 						       const std::string& dn,
 						       const std::string& ce)
-  : iceAbsCommand( "iceCommandEventQuery", "" ),
+  : IceAbstractCommand( "iceCommandEventQuery", "" ),
     m_log_dev( cream_api::util::creamApiLogger::instance()->getLogger() ),
     m_lb_logger( ice::util::iceLBLogger::instance() ),
     m_iceManager( theIce ),
