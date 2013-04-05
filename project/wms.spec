@@ -170,6 +170,7 @@ fi
 %attr(4755, root, root) /usr/libexec/glite_wms_wmproxy_dirmanager
 /etc/rc.d/init.d/glite-wms-ice
 /usr/bin/glite-wms-ice-query-db
+/usr/bin/glite-wms-ice-query-db-history
 /usr/bin/glite-wms-ice-proxy-renew
 /usr/bin/glite-wms-ice-db-rm
 /usr/bin/glite-wms-ice-safe

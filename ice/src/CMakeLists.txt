@@ -64,11 +64,9 @@ link_directories(${PREFIX}/usr/${LIBDIR}
   /usr/lib64
   )
   
-add_executable(glite-wms-ice
- glite-wms-ice.cpp
-)
-
+add_executable(glite-wms-ice glite-wms-ice.cpp)
 add_executable(glite-wms-ice-query-db query-db.cpp)
+add_executable(glite-wms-ice-query-db-history query-db-history.cpp)
 add_executable(glite-wms-ice-query-stats query-stats.cpp)
 add_executable(glite-wms-ice-putfl putfl.cpp)
 add_executable(glite-wms-ice-putfl-reschedule putfl-reschedule.cpp)
@@ -143,6 +141,41 @@ ${CREAM_CLIENT_UTIL_LIBRARIES}
 ${CREAM_CLIENT_SOAP_LIBRARIES} 
 ${Boost_LIBRARIES}
 )
+
+target_link_libraries(glite-wms-ice-query-db-history
+glite_wms_IceCommands 
+glite_wms_iceThreads 
+glite_wms_iceUtils 
+glite_wms_iceDb glite_wms_ice 
+glite_wms_logger
+glite_wms_conf
+glite_wms_util
+glite_wms_purger
+glite_wms_process
+sqlite3
+${WMSUTILS_CLASSADS_LIBRARIES}
+${WMSUTILS_JOBMAN_EXCEPTION_LIBRARIES}
+${GSOAP_PLUGIN_LIBRARIES}
+${CLASSAD_LIBRARIES} 
+${JDL_API_CPP_LIBRARIES} 
+${WMS_COMMON_CONF_LIBRARIES} 
+${WMS_COMMON_UTIL_LIBRARIES} 
+${PURGER_LIBRARIES} 
+${LB_COMMON_LIBRARIES} 
+${LB_CLIENTPP_LIBRARIES}
+${JDL_API_CPP_LIBRARIES} 
+${JOBID_LIBRARIES} 
+${GRIDSITE_OPENSSL_LIBRARIES} 
+${VOMS_LIBRARIES} 
+${RENEWAL_LIBRARIES} 
+${GSOAP_PP_LIBRARIES}
+${GSOAPSSL_PP_LIBRARIES} 
+${LIBXML_LIBRARIES} 
+${CREAM_CLIENT_UTIL_LIBRARIES} 
+${CREAM_CLIENT_SOAP_LIBRARIES} 
+${Boost_LIBRARIES}
+)
+
 
 target_link_libraries(glite-wms-ice-query-stats glite_wms_IceCommands glite_wms_iceThreads glite_wms_iceUtils glite_wms_iceDb glite_wms_ice 
 glite_wms_logger
@@ -250,6 +283,7 @@ install(TARGETS
   glite-wms-ice-putfl-reschedule
   glite-wms-ice-putfl
   glite-wms-ice-query-db
+  glite-wms-ice-query-db-history
   glite-wms-ice-query-stats
   DESTINATION 
   ${PREFIX}/usr/${BINDIR}

@@ -54,12 +54,14 @@ add_custom_target(ICEDB
 				GetAllDN.cpp 
                                 RemoveJobsByDbID.cpp 
                                 InsertStat.cpp 
+				InsertStartedJob.cpp
                                 GetStats.cpp 
                                 GetJobsByDN.cpp 
                                 GetJobsByDNMyProxy.cpp 
                                 UpdateProxyCounterByDN.cpp 
                                 RemoveJobByUserDN.cpp 
                                 UpdateJob.cpp
+				GetStartedJobs.cpp
 
 )
 
@@ -107,12 +109,14 @@ add_library( glite_wms_iceDb
 				GetAllDN.cpp 
                                 RemoveJobsByDbID.cpp 
                                 InsertStat.cpp 
+				InsertStartedJob.cpp
                                 GetStats.cpp 
                                 GetJobsByDN.cpp 
                                 GetJobsByDNMyProxy.cpp 
                                 UpdateProxyCounterByDN.cpp 
                                 RemoveJobByUserDN.cpp 
                                 UpdateJob.cpp  
+				GetStartedJobs.cpp
   )
 
 set_target_properties( glite_wms_iceDb PROPERTIES VERSION 0.0.0 SOVERSION 0)

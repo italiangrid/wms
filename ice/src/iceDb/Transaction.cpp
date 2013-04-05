@@ -198,27 +198,44 @@ namespace {
 	      abort();
 	      
 	    }
-	    /*
-	    try {
-	      string sqlcmd = 
-		"CREATE TABLE IF NOT EXISTS userdn_busy ( "	\
-		"userdn text primary key not null, "	\
-		"busy integer(1) not null"    \
-		")";
-	      do_query( db, sqlcmd );
-	      
-	    } catch( DbOperationException& ex ) {
-	    
-	      CREAM_SAFE_LOG( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()->fatalStream()
-			      << "CreateDb::execute() - "
-			      << "Error creating database table userdn_busy: "
-			      << ex.what() << ". STOP!"
-			      );
-	      abort();
-	      
-	    }
-	    */
+           
             try {
+              string sqlcmd =
+                "CREATE TABLE IF NOT EXISTS started_jobs ( "   \
+                "timestamp integer(8) not null, "   	       \
+                "ceurl text not null, "   		       \
+                "gridjobid text not null, "                  \
+	        "creamjobid  text not null"		    \
+                ")";
+              do_query( db, sqlcmd );
+
+            } catch( DbOperationException& ex ) {
+
+              CREAM_SAFE_LOG( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()->fatalStream()
+                              << "CreateDb::execute() - "
+                              << "Error creating database table started_jobs: "
+                              << ex.what() << ". STOP!"
+                              );
+              abort();
+
+            }
+
+            try {
+              string sqlcmd =
+                string("CREATE UNIQUE INDEX IF NOT EXISTS timestamp_startedjobs_index ON started_jobs (timestamp)");
+              do_query( db, sqlcmd );
+            } catch( DbOperationException& ex ) {
+
+              CREAM_SAFE_LOG( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()->fatalStream()
+                              << "CreateDb::execute() - "
+                              << "Error creating index timestamp_startedjobs_index on table started_jobs: "
+                              << ex.what() << ". STOP!"
+                              );
+              abort();
+
+            }
+ 
+	    try {
 	      string sqlcmd = 
 		string("CREATE UNIQUE INDEX IF NOT EXISTS gid_index ON jobs (") + util::CreamJob::grid_jobid_field() + ")"; 
 	      do_query( db, sqlcmd );
@@ -443,6 +460,22 @@ namespace {
 	      abort();
 	      
 	    }
+/*
+	    try {
+              string sqlcmd =
+                "CREATE UNIQUE INDEX IF NOT EXISTS status_gid_index ON stats (status,gridjobid)";
+              do_query( db, sqlcmd );
+            } catch(DbOperationException& ex ) {
+
+              CREAM_SAFE_LOG( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()->fatalStream()
+                              << "CreateDb::execute() - "
+                              << "Error creating index status_gid_index on table stats: "
+                              << ex.what() << ". STOP!"
+                              );
+              abort();
+
+            }
+*/
 	    try {
 	      string sqlcmd = 
 		"PRAGMA default_cache_size=200;";

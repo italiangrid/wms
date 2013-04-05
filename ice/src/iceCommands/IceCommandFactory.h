@@ -43,9 +43,9 @@ namespace glite {
        * classad. This class implements the classic "factory"
        * design pattern.
        */
-      class iceCommandFactory {
+      class IceCommandFactory {
       public:
-	virtual ~iceCommandFactory( ) { };
+	virtual ~IceCommandFactory( ) { };
 	
 	/**
 	 * Returns an object instance of IceAbstractCommand class;
@@ -65,7 +65,7 @@ namespace glite {
 	  throw( util::ClassadSyntax_ex&, util::JobRequest_ex&);
 	
       protected:
-	iceCommandFactory( ) { };
+	IceCommandFactory( ) { };
 	
       };
       

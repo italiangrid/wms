@@ -18,7 +18,7 @@ limitations under the License.
 
 END LICENSE */
 
-#include "iceCommandFactory.h"
+#include "IceCommandFactory.h"
 #include "IceAbstractCommand.h"
 #include "IceCommandSubmit.h"
 #include "iceCommandCancel.h"
@@ -35,7 +35,7 @@ namespace glite {
     namespace ice {
       
       IceAbstractCommand* 
-      iceCommandFactory::mkCommand( util::Request* request,
+      IceCommandFactory::mkCommand( util::Request* request,
 				    const util::CreamJob& aJob,
 				    const std::string& cmdtype )
 	throw(util::ClassadSyntax_ex&, util::JobRequest_ex&) 
