@@ -62,6 +62,7 @@ add_custom_target(ICEDB
                                 RemoveJobByUserDN.cpp 
                                 UpdateJob.cpp
 				GetStartedJobs.cpp
+				PurgeStartedJob.cpp
 
 )
 
@@ -117,6 +118,7 @@ add_library( glite_wms_iceDb
                                 RemoveJobByUserDN.cpp 
                                 UpdateJob.cpp  
 				GetStartedJobs.cpp
+				PurgeStartedJob.cpp
   )
 
 set_target_properties( glite_wms_iceDb PROPERTIES VERSION 0.0.0 SOVERSION 0)

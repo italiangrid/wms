@@ -25,6 +25,8 @@ END LICENSE */
 
 #include <boost/lexical_cast.hpp>
 
+#include <iostream>
+
 using namespace glite::wms::ice;
 using namespace std;
 
@@ -51,13 +53,21 @@ void db::GetStartedJobs::execute( sqlite3* db ) throw ( DbOperationException& )
   sqlcmd += util::IceUtils::withSQLDelimiters( boost::lexical_cast<std::string>( (unsigned long long int)m_datefrom ) );
   sqlcmd += " AND timestamp <= ";
   sqlcmd += util::IceUtils::withSQLDelimiters( boost::lexical_cast<std::string>( (unsigned long long int)m_dateto  ) );
+
+  //cout << "\n ******** creamurl=" << m_creamurl << " - WITH=" << util::IceUtils::withSQLDelimiters( m_creamurl ) <<endl<<endl;
+
   if(!m_creamurl.empty())
   {
-    sqlcmd += " AND ceurl='";
+    sqlcmd += " AND ceurl=";
     sqlcmd += util::IceUtils::withSQLDelimiters( m_creamurl );
-    sqlcmd += "'";
+    sqlcmd += "";
   }
+  if(m_order)
+    sqlcmd += " ORDER BY timestamp ASC ";
+    
   sqlcmd += ";";
+
+  //cout << "\n SQL=[" << sqlcmd << "]" <<endl<<endl;
 
   do_query( db, sqlcmd, fetch_fields_callback, m_target );
   

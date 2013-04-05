@@ -42,18 +42,21 @@ namespace glite {
 	  time_t                                   m_datefrom;
 	  time_t                                   m_dateto;
 	  std::string				   m_creamurl;
+	  bool					   m_order;
 
 	public:
 	  GetStartedJobs( std::vector< boost::tuple< time_t, std::string, std::string, std::string > >& target, 
-	  	          const time_t datefrom,
-		          const time_t dateto,
-		          const std::string creamurl,
-		          const std::string& caller ) 
+	  	          const time_t        datefrom,
+		          const time_t        dateto,
+		          const std::string&  creamurl,
+			  const bool          order,
+		          const std::string&  caller ) 
             : AbsDbOperation( caller ), 
 	      m_target(&target), 
 	      m_datefrom( datefrom ), 
 	      m_dateto( dateto ), 
-	      m_creamurl( creamurl ) {}
+	      m_creamurl( creamurl ),
+	      m_order( order ) {}
 	  
 	  virtual void execute( sqlite3* db ) throw( DbOperationException& );
 	  

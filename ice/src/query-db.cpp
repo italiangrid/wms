@@ -42,7 +42,7 @@ using namespace std;
 using namespace glite::wms::ice;
 
 void printhelp( void ) {
-  cout << "USAGE: queryDb --conf|-c <WMS CONFIGURATION FILE> [options]" << endl;
+  cout << "USAGE: glite-wms-ice-query-db --conf|-c <WMS CONFIGURATION FILE> [options]" << endl;
   cout << endl << "options: " << endl;
   cout << "  --verbose|-v\t\tVerbose output (print each db's record" << endl;
   cout << "  --status-filter|-s\tSelect only records in which the status column is one"<<endl
