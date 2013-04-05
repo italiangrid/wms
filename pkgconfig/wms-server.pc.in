@@ -1,7 +1,7 @@
 prefix=@PKG_INSTALL_PREFIX@
-exec_prefix=${prefix}
-libdir=${prefix}/@LIBDIR@
-includedir=${prefix}/include
+exec_prefix=${prefix}/usr
+libdir=${prefix}/usr/@LIBDIR@
+includedir=${prefix}/usr/include
 
 Name: wms server library
 Description: WMS server configuration C/C++ APIs
