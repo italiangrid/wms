@@ -121,6 +121,7 @@ fixing/g' < project/wms.spec > rpmbuild/SPECS/wms.spec
 CMakeFiles -exec rm -rf {} \;
     COMMAND rm ARGS -rf ${PREFIX}/stage install_manifest.txt
     COMMAND rm ARGS -rf ./interface/src/server/autogen
+    COMMAND rm ARGS -rf ./core/src/helper/broker/autogen
     COMMAND rm ARGS ./configuration/config/glite-wms-check-daemons.sh
     ./configuration/config/glite-wms-parse-configuration.sh 
     ./ice/config/glite-wms-ice
