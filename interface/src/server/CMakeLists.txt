@@ -2,6 +2,8 @@
 include_directories(
   ${CLASSAD_INCLUDE_DIRS}
   ${PROJECT_SOURCE_DIR}/src
+  ${PROJECT_SOURCE_DIR}/src/server
+  ${PROJECT_SOURCE_DIR}/src/server/autogen
   ${MAIN_PROJECT_SOURCE_DIR}
   ${MAIN_PROJECT_SOURCE_DIR}/common/interface
   ${WMSUTILS_JOBMAN_EXCEPTION_INCLUDE_DIRS}
@@ -18,23 +20,26 @@ include_directories(
 
 add_custom_command(
   OUTPUT 
-  ${PROJECT_SOURCE_DIR}/src/server/soapC.cpp 
-  ${PROJECT_SOURCE_DIR}/src/server/soapServer.cpp
-  ${PROJECT_SOURCE_DIR}/src/server/soapClient.cpp
-  ${PROJECT_SOURCE_DIR}/src/server/wm.h 
+  ${PROJECT_SOURCE_DIR}/src/server/autogen/soapC.cpp 
+  ${PROJECT_SOURCE_DIR}/src/server/autogen/soapServer.cpp
+  ${PROJECT_SOURCE_DIR}/src/server/autogen/soapClient.cpp
+  ${PROJECT_SOURCE_DIR}/src/server/autogen/wm.h 
+  COMMAND mkdir -p ${PROJECT_SOURCE_DIR}/src/server/autogen
   COMMAND
-  wsdl2h -o ${PROJECT_SOURCE_DIR}/src/server/wm.h 
+  wsdl2h -o ${PROJECT_SOURCE_DIR}/src/server/autogen/wm.h 
          -t ${PROJECT_SOURCE_DIR}/src/server/wmptypemap.dat 
          ${PROJECT_SOURCE_DIR}/src/server/WMProxy.wsdl
   COMMAND 
-  soapcpp2 -I/usr/include:/usr/import:/usr/share/gsoap/import:/usr/include/gsoap ${PROJECT_SOURCE_DIR}/src/server/wm.h
+  soapcpp2 -d${PROJECT_SOURCE_DIR}/src/server/autogen
+-I/usr/include:/usr/import:/usr/share/gsoap/import:/usr/include/gsoap
+${PROJECT_SOURCE_DIR}/src/server/autogen/wm.h
   )
 
 add_custom_target(GENSTUBS2 ALL DEPENDS 
-  ${PROJECT_SOURCE_DIR}/src/server/soapC.cpp 
-  ${PROJECT_SOURCE_DIR}/src/server/soapServer.cpp
-  ${PROJECT_SOURCE_DIR}/src/server/soapClient.cpp
-  ${PROJECT_SOURCE_DIR}/src/server/wm.h
+  ${PROJECT_SOURCE_DIR}/src/server/autogen/soapC.cpp 
+  ${PROJECT_SOURCE_DIR}/src/server/autogen/soapServer.cpp
+  ${PROJECT_SOURCE_DIR}/src/server/autogen/soapClient.cpp
+  ${PROJECT_SOURCE_DIR}/src/server/autogen/wm.h
   )
 
 link_directories(${PREFIX}/usr/${LIBDIR}
@@ -54,10 +59,10 @@ link_directories(${PREFIX}/usr/${LIBDIR}
   )
 
 add_executable(glite_wms_wmproxy_server
-  wm.h
-  soapC.cpp
-  soapServer.cpp
-  soapClient.cpp
+  autogen/wm.h
+  autogen/soapC.cpp
+  autogen/soapServer.cpp
+  autogen/soapClient.cpp
   wmproxy.cpp
   wmproxyserve.cpp
   common.cpp

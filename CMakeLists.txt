@@ -120,6 +120,7 @@ fixing/g' < project/wms.spec > rpmbuild/SPECS/wms.spec
     COMMAND find ARGS ${FASTLIB_SOURCE_DIR} -depth -type d -iname
 CMakeFiles -exec rm -rf {} \;
     COMMAND rm ARGS -rf ${PREFIX}/stage install_manifest.txt
+    COMMAND rm ARGS -rf ./interface/src/server/autogen
     COMMAND rm ARGS ./configuration/config/glite-wms-check-daemons.sh
     ./configuration/config/glite-wms-parse-configuration.sh 
     ./ice/config/glite-wms-ice
