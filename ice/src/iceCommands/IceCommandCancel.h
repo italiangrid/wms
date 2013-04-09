@@ -24,7 +24,7 @@ END LICENSE */
 #include <string>
 
 #include "IceAbstractCommand.h"
-#include "iceCommandFatal_ex.h"
+#include "IceCommandFatalException.h"
 #include "IceCommandTransientException.h"
 #include "glite/ce/cream-client-api-c/creamApiLogger.h"
 #include <boost/scoped_ptr.hpp>
@@ -45,7 +45,7 @@ namespace ice {
         
         virtual ~IceCommandCancel() { }
         
-        void execute( const std::string& ) throw ( iceCommandFatal_ex&, IceCommandTransientException& );          
+        void execute( const std::string& ) throw ( IceCommandFatalException&, IceCommandTransientException& );          
         std::string get_grid_job_id( void ) const { return m_gridJobId; };
         
     protected:

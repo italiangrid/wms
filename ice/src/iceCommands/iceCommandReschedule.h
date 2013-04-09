@@ -22,7 +22,7 @@ END LICENSE */
 #define GLITE_WMS_ICE_ICECOMMANDRESCHEDULE_H
 
 #include "IceCommandSubmit.h"
-#include "iceCommandFatal_ex.h"
+#include "IceCommandFatalException.h"
 #include "IceCommandTransientException.h"
 #include "iceUtils/CreamJob.h"
 
@@ -67,7 +67,7 @@ namespace util {
      /**
       * This method is invoked to execute this command.
       */
-     virtual void execute( const std::string& ) throw( iceCommandFatal_ex&, IceCommandTransientException& );
+     virtual void execute( const std::string& ) throw( IceCommandFatalException&, IceCommandTransientException& );
      
  protected:
 

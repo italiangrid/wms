@@ -143,7 +143,7 @@ IceCommandSubmit::IceCommandSubmit( iceUtil::Request* request,
 //
 //
 //____________________________________________________________________________
-void IceCommandSubmit::execute( const std::string& tid ) throw( iceCommandFatal_ex&, IceCommandTransientException& )
+void IceCommandSubmit::execute( const std::string& tid ) throw( IceCommandFatalException&, IceCommandTransientException& )
 {
   m_thread_id = tid;
   
@@ -262,7 +262,7 @@ void IceCommandSubmit::execute( const std::string& tid ) throw( iceCommandFatal_
  
     try {
         try_to_submit( only_start );        
-    } catch( const iceCommandFatal_ex& ex ) {
+    } catch( const IceCommandFatalException& ex ) {
         CREAM_SAFE_LOG(
                        m_log_dev->errorStream() 
                        << method_name  << " TID=[" << getThreadID() << "] "
@@ -278,7 +278,7 @@ void IceCommandSubmit::execute( const std::string& tid ) throw( iceCommandFatal_
 	if( m_theJob.proxy_renewable( ) )
 	  iceUtil::DNProxyManager::getInstance()->decrementUserProxyCounter(m_theJob.user_dn(), m_theJob.myproxy_address() );
 	
-        throw( iceCommandFatal_ex( reason ) ); // the job will be remove from ICE's DB as the scope exit from here.
+        throw( IceCommandFatalException( reason ) ); // the job will be remove from ICE's DB as the scope exit from here.
 	
     } catch( const IceCommandTransientException& ex ) {
 
@@ -304,7 +304,7 @@ void IceCommandSubmit::execute( const std::string& tid ) throw( iceCommandFatal_
         iceUtil::DNProxyManager::getInstance()->decrementUserProxyCounter(m_theJob.user_dn(), m_theJob.myproxy_address() );
       
       // this throw triggers the ICE's DB job removal
-      throw( iceCommandFatal_ex( string("Error submitting job to CE [") + m_theJob.cream_address() + "]: " + ex.what() ) ); // Yes, we throw an iceCommandFatal_ex in both cases
+      throw( IceCommandFatalException( string("Error submitting job to CE [") + m_theJob.cream_address() + "]: " + ex.what() ) ); // Yes, we throw an iceCommandFatal_ex in both cases
 
     } catch( BlackListFailJob_ex& ex ) {
       
@@ -330,7 +330,7 @@ void IceCommandSubmit::execute( const std::string& tid ) throw( iceCommandFatal_
 //
 //______________________________________________________________________________
 void IceCommandSubmit::try_to_submit( const bool only_start ) 
-  throw( BlackListFailJob_ex&, iceCommandFatal_ex&, IceCommandTransientException& )
+  throw( BlackListFailJob_ex&, IceCommandFatalException&, IceCommandTransientException& )
 {
   
   string _gid( m_theJob.grid_jobid() );
@@ -725,7 +725,7 @@ void IceCommandSubmit::process_lease( const bool force_lease,
 				      const std::string& jobdesc,
 				      const std::string& _gid,
 				      string& lease_id )
-  throw( iceCommandFatal_ex&, IceCommandTransientException& )
+  throw( IceCommandFatalException&, IceCommandTransientException& )
 {
   const char* method_name = "IceCommandSubmit::process_lease() - ";
 
@@ -859,7 +859,7 @@ bool IceCommandSubmit::register_job( const bool is_lease_enabled,
 				     bool& force_delegation,
 				     bool& force_lease,
 				     cream_api::AbsCreamProxy::RegisterArrayResult& res)
-  throw( BlackListFailJob_ex&, IceCommandTransientException&, iceCommandFatal_ex& )
+  throw( BlackListFailJob_ex&, IceCommandTransientException&, IceCommandFatalException& )
 {
   const char* method_name = "IceCommandSubmit::register_job() - ";
 

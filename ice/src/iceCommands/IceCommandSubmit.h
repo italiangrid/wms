@@ -22,7 +22,7 @@ END LICENSE */
 #define GLITE_WMS_ICE_ICECOMMANDSUBMIT_H
 
 #include "IceAbstractCommand.h"
-#include "iceCommandFatal_ex.h"
+#include "IceCommandFatalException.h"
 #include "IceCommandTransientException.h"
 #include "iceUtils/BlackListFailJob_ex.h"
 #include "iceUtils/CreamJob.h"
@@ -66,14 +66,13 @@ namespace util {
  public:
      IceCommandSubmit( util::Request* request, 
 		       const util::CreamJob& );
-       //       throw(util::ClassadSyntax_ex&, util::JobRequest_ex&);
      
      virtual ~IceCommandSubmit() { }
      
      /**
       * This method is invoked to execute this command.
       */
-     virtual void execute( const std::string& ) throw( iceCommandFatal_ex&, IceCommandTransientException& );
+     virtual void execute( const std::string& ) throw( IceCommandFatalException&, IceCommandTransientException& );
      
      std::string get_grid_job_id( void ) const { return m_theJob.grid_jobid(); };
 
@@ -89,14 +88,12 @@ namespace util {
       * logging the appropriate events to LB and try to resubmit.
       */
 
-     void try_to_submit( const bool only_start ) throw( BlackListFailJob_ex&, iceCommandFatal_ex&, IceCommandTransientException& );
-     //bool try_to_register( void ) throw( iceCommandFatal_ex&, IceCommandTransientException& );
-     //     bool try_to_start( void ) throw( iceCommandFatal_ex&, IceCommandTransientException& );
+     void try_to_submit( const bool only_start ) throw( BlackListFailJob_ex&, IceCommandFatalException&, IceCommandTransientException& );
 
      void process_lease( const bool force_lease, 
 			 const std::string& jobdesc, 
 			 const std::string&, 
-			 std::string& lease_id ) throw( iceCommandFatal_ex&, IceCommandTransientException& );
+			 std::string& lease_id ) throw( IceCommandFatalException&, IceCommandTransientException& );
 
      void handle_delegation( std::string& delegation, 
 			     bool&,
@@ -113,7 +110,7 @@ namespace util {
 			bool& force_delegation,
 			bool& force_lease,
 			glite::ce::cream_client_api::soap_proxy::AbsCreamProxy::RegisterArrayResult& res) 
-       throw( BlackListFailJob_ex&, IceCommandTransientException&, iceCommandFatal_ex& );
+       throw( BlackListFailJob_ex&, IceCommandTransientException&, IceCommandFatalException& );
      
      void process_result( bool& retry, 
 			  bool& force_delegation, 
@@ -124,36 +121,6 @@ namespace util {
        throw( IceCommandTransientException& );
 
      
-     
-     /**
-      * This method is used to transform a "standard" jdl into the
-      * format expected by CREAM. In particular: the mandatory (for
-      * CREAM) attributes QueueName and BatchSystem are
-      * added. Moreover, the Input and Output sandbox attributes are
-      * modified.
-      *
-      * @param oldJdl the original jdl
-      * @retyrn the CREAM-compliand jdl
-      */
-     //std::string creamJdlHelper( const std::string& oldJdl ) throw( glite::wms::ice::util::ClassadSyntax_ex& );
-     
-     /**
-      * This function updates the "InputSandbox" attribute value on
-      * the jdl passed as parameter.
-      *
-      * @param jdl the original jdl, which will be modified
-      * by this function
-      */
-     //void updateIsbList( classad::ClassAd* jdl );
-     
-     /**
-      * This function updates the "OutputSandbox"-related
-      * attribute value on the jdl passed as parameter.
-      *
-      * @param jdl the original jdl, which will be modified
-      * by this function
-      */
-     //void updateOsbList( classad::ClassAd* jdl );
      
      std::string m_myname;	
      std::string m_jdl;

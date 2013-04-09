@@ -34,11 +34,11 @@ namespace glite {
              * failed, which means that submitting the command another
              * time will invariably result in another failure.
              */
-            class iceCommandFatal_ex : public iceCommand_ex {
+            class IceCommandFatalException : public iceCommand_ex {
             public:
-                iceCommandFatal_ex( const std::string& c ) throw() : 
+                IceCommandFatalException( const std::string& c ) throw() : 
                     iceCommand_ex( c ) { }
-                virtual ~iceCommandFatal_ex() throw() { }
+                virtual ~IceCommandFatalException() throw() { }
             };
 
 

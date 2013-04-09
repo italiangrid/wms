@@ -122,7 +122,7 @@ IceCommandCancel::IceCommandCancel( util::Request* request )
 //
 //
 //______________________________________________________________________________
-void IceCommandCancel::execute( const std::string& tid ) throw ( iceCommandFatal_ex&, IceCommandTransientException& )
+void IceCommandCancel::execute( const std::string& tid ) throw ( IceCommandFatalException&, IceCommandTransientException& )
 {
 #ifdef ICE_PROFILE
   util::ice_timer timer("IceCommandCancel::execute");
@@ -152,7 +152,7 @@ void IceCommandCancel::execute( const std::string& tid ) throw ( iceCommandFatal
 		       );
 	
 	
-	throw iceCommandFatal_ex( string("ICE cannot cancel job with grid job id=[") 
+	throw IceCommandFatalException( string("ICE cannot cancel job with grid job id=[") 
 				  + m_gridJobId 
 				  + string("], as the job does not appear to exist") );
 	
@@ -270,20 +270,20 @@ void IceCommandCancel::execute( const std::string& tid ) throw ( iceCommandFatal
 			 );
 	  
 	  m_lb_logger->logEvent( new util::cream_cancel_refuse_event( theJob, string("Error: ") + errMex ), true, true );
-	  throw iceCommandFatal_ex( errMex );
+	  throw IceCommandFatalException( errMex );
 	}
     } catch(cream_api::auth_ex& ex) {
       m_lb_logger->logEvent( new util::cream_cancel_refuse_event( theJob, string("Authentication Exception: ") + ex.what() ), true, true );
-      throw iceCommandFatal_ex( string("auth_ex: ") + ex.what() );
+      throw IceCommandFatalException( string("auth_ex: ") + ex.what() );
     } catch(cream_api::soap_ex& ex) {
       m_lb_logger->logEvent( new util::cream_cancel_refuse_event( theJob, string("SOAP Exception: ") + ex.what() ), true, true );
       throw IceCommandTransientException( string("soap_ex: ") + ex.what() );
     } catch(cream_ex::BaseException& base) {
       m_lb_logger->logEvent( new util::cream_cancel_refuse_event( theJob, string("BaseException: ") + base.what() ), true, true );
-      throw iceCommandFatal_ex( string("BaseException: ") + base.what() );
+      throw IceCommandFatalException( string("BaseException: ") + base.what() );
     } catch(cream_ex::InternalException& intern) {
       m_lb_logger->logEvent( new util::cream_cancel_refuse_event( theJob, string("InternalException: ") + intern.what() ), true, true );
-      throw iceCommandFatal_ex( string("InternalException: ") + intern.what() );
+      throw IceCommandFatalException( string("InternalException: ") + intern.what() );
     } catch( ConnectionTimeoutException& ex) {
       throw IceCommandTransientException( string("CREAM Cancel raised a ConnectionTimeoutException ") + ex.what() ) ;
     }
