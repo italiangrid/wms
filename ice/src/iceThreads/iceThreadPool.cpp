@@ -21,7 +21,7 @@ END LICENSE */
 #include "iceThreadPoolState.h"
 #include "iceCommands/IceAbstractCommand.h"
 #include "ice/IceCore.h"
-#include "iceCommands/iceCommandFatal_ex.h"
+#include "iceCommands/IceCommandFatalException.h"
 #include "iceCommands/IceCommandTransientException.h"
 
 //#include "glite/ce/cream-client-api-c/scoped_timer.h"
@@ -139,7 +139,7 @@ void iceThreadPool::iceThreadPoolWorker::body( )
                            << cmd->name() << "]"
                            );
 */
-        } catch ( glite::wms::ice::iceCommandFatal_ex& ex ) {
+        } catch ( glite::wms::ice::IceCommandFatalException& ex ) {
             CREAM_SAFE_LOG( 
                            m_log_dev->errorStream() << method_name
                            << "Command execution got FATAL exception: "
