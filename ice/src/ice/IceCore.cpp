@@ -33,7 +33,7 @@ END LICENSE */
 #include "iceUtils/CreamProxyMethod.h"
 #include "iceCommands/iceCommandReschedule.h"
 #include "iceCommands/IceCommandSubmit.h"
-#include "iceCommands/iceCommandCancel.h"
+#include "iceCommands/IceCommandCancel.h"
 #include "iceUtils/Request_source_jobdir.h"
 #include "iceUtils/Request.h"
 #include "iceUtils/RequestParser.h"
@@ -949,7 +949,7 @@ int IceCore::main_loop( void ) {
 
 	    glite::wms::ice::IceAbstractCommand* cmd = 0;	
 	    if( boost::algorithm::iequals( parser.get_command( ), "cancel" ) ) {
-	      cmd = new glite::wms::ice::iceCommandCancel( *it ); 
+	      cmd = new glite::wms::ice::IceCommandCancel( *it ); 
 	      this->get_requests_pool()->add_request( cmd );
 	      continue;
 	    }

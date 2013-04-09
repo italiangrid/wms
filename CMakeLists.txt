@@ -266,7 +266,7 @@ CREAM_CLIENT_UTIL_FOUND AND
 CREAM_CLIENT_SOAP_FOUND AND Boost_FOUND) ) 
 
   message( WARNING " *** Some dependencies are missing. Will try to install
-them via yum. Please intert your password" )
+them via yum. Please insert your password" )
   set(RERUN "1")
   EXEC_PROGRAM(sudo ARGS yum -y install 
 argus-pep-api-c

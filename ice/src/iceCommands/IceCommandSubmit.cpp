@@ -143,7 +143,7 @@ IceCommandSubmit::IceCommandSubmit( iceUtil::Request* request,
 //
 //
 //____________________________________________________________________________
-void IceCommandSubmit::execute( const std::string& tid ) throw( iceCommandFatal_ex&, iceCommandTransient_ex& )
+void IceCommandSubmit::execute( const std::string& tid ) throw( iceCommandFatal_ex&, IceCommandTransientException& )
 {
   m_thread_id = tid;
   
@@ -280,7 +280,7 @@ void IceCommandSubmit::execute( const std::string& tid ) throw( iceCommandFatal_
 	
         throw( iceCommandFatal_ex( reason ) ); // the job will be remove from ICE's DB as the scope exit from here.
 	
-    } catch( const iceCommandTransient_ex& ex ) {
+    } catch( const IceCommandTransientException& ex ) {
 
         // The next event is used to show the failure reason in the
         // status info JC+LM log transfer-fail / aborted in case of
@@ -330,7 +330,7 @@ void IceCommandSubmit::execute( const std::string& tid ) throw( iceCommandFatal_
 //
 //______________________________________________________________________________
 void IceCommandSubmit::try_to_submit( const bool only_start ) 
-  throw( BlackListFailJob_ex&, iceCommandFatal_ex&, iceCommandTransient_ex& )
+  throw( BlackListFailJob_ex&, iceCommandFatal_ex&, IceCommandTransientException& )
 {
   
   string _gid( m_theJob.grid_jobid() );
@@ -346,7 +346,7 @@ void IceCommandSubmit::try_to_submit( const bool only_start )
   string dbid, completeid, jobId, __creamURL, jobdesc;
   
   if( m_theJob.isbproxy_time_end() <= time(0) ) {
-    throw( iceCommandTransient_ex( "Authentication error: proxyfile [" 
+    throw( IceCommandTransientException( "Authentication error: proxyfile [" 
 				   + m_theJob.user_proxyfile() 
 				   + "] is expired! Skipping submission of the job [" 
 				   + m_theJob.grid_jobid() +"]"));
@@ -521,7 +521,7 @@ void IceCommandSubmit::try_to_submit( const bool only_start )
 			       (const cream_api::JobFilterWrapper *)&jw, 
 			       &startRes ).execute( 7 );
   } catch( exception& ex ) {
-    throw iceCommandTransient_ex( boost::str( boost::format( "CREAM Start raised exception %1%") % ex.what() ) );
+    throw IceCommandTransientException( boost::str( boost::format( "CREAM Start raised exception %1%") % ex.what() ) );
   }
   
   list<pair<cream_api::JobIdWrapper, string> > tmp;
@@ -546,7 +546,7 @@ void IceCommandSubmit::try_to_submit( const bool only_start )
 		   << "]. Reason is: " << errMex
 		   );
     
-    throw iceCommandTransient_ex( boost::str( boost::format( "CREAM Start failed due to error %1%") % errMex ) );
+    throw IceCommandTransientException( boost::str( boost::format( "CREAM Start failed due to error %1%") % errMex ) );
   }
   
   // no failure: put jobids and status in database
@@ -725,7 +725,7 @@ void IceCommandSubmit::process_lease( const bool force_lease,
 				      const std::string& jobdesc,
 				      const std::string& _gid,
 				      string& lease_id )
-  throw( iceCommandFatal_ex&, iceCommandTransient_ex& )
+  throw( iceCommandFatal_ex&, IceCommandTransientException& )
 {
   const char* method_name = "IceCommandSubmit::process_lease() - ";
 
@@ -752,14 +752,14 @@ void IceCommandSubmit::process_lease( const bool force_lease,
     
     CREAM_SAFE_LOG( m_log_dev->errorStream()
 		    << method_name << err_msg );
-    throw( iceCommandTransient_ex( err_msg ) );
+    throw( IceCommandTransientException( err_msg ) );
 
   } catch( ... ) {
 
     string err_msg( boost::str( boost::format( "Failed to get lease_id for job %1% due to unknown exception" ) % _gid ) );
     CREAM_SAFE_LOG( m_log_dev->errorStream()
 		    << method_name << err_msg );
-    throw( iceCommandTransient_ex( err_msg ) );
+    throw( IceCommandTransientException( err_msg ) );
 
   }
   
@@ -776,7 +776,7 @@ void IceCommandSubmit::handle_delegation( string& delegation,
 					  const string& jobdesc,
 					  const string& _gid,
 					  const string& _ceurl)
-  throw( iceCommandTransient_ex& )
+  throw( IceCommandTransientException& )
 {
 
   boost::recursive_mutex::scoped_lock delegM( s_localMutexForDelegations );
@@ -845,7 +845,7 @@ void IceCommandSubmit::handle_delegation( string& delegation,
   try {
     delegation = iceUtil::Delegation_manager::instance()->delegate( m_theJob, m_theJob.proxy_renewable(), force_delegation );
   } catch( const exception& ex ) {
-    throw( iceCommandTransient_ex( boost::str( boost::format( "Failed to create a delegation id for job %1%: reason is %2%" ) % _gid % ex.what() ) ) );
+    throw( IceCommandTransientException( boost::str( boost::format( "Failed to create a delegation id for job %1%: reason is %2%" ) % _gid % ex.what() ) ) );
   }
 }
 
@@ -859,7 +859,7 @@ bool IceCommandSubmit::register_job( const bool is_lease_enabled,
 				     bool& force_delegation,
 				     bool& force_lease,
 				     cream_api::AbsCreamProxy::RegisterArrayResult& res)
-  throw( BlackListFailJob_ex&, iceCommandTransient_ex&, iceCommandFatal_ex& )
+  throw( BlackListFailJob_ex&, IceCommandTransientException&, iceCommandFatal_ex& )
 {
   const char* method_name = "IceCommandSubmit::register_job() - ";
 
@@ -931,7 +931,7 @@ bool IceCommandSubmit::register_job( const bool is_lease_enabled,
       force_delegation = true;
       return false;
     } else {
-      throw( iceCommandTransient_ex( boost::str( boost::format( "CREAM Register raised DelegationException %1%") % ex.what() ) ) ); // Rethrow
+      throw( IceCommandTransientException( boost::str( boost::format( "CREAM Register raised DelegationException %1%") % ex.what() ) ) ); // Rethrow
     }
   } catch ( glite::ce::cream_client_api::cream_exceptions::GenericException& ex ) {
     if ( is_lease_enabled && !force_lease ) {
@@ -944,7 +944,7 @@ bool IceCommandSubmit::register_job( const bool is_lease_enabled,
       force_lease = true;
       return false;//continue;
     } else {
-      throw( iceCommandTransient_ex( boost::str( boost::format( "CREAM Register raised GenericFault %1%") % ex.what() ) ) ); // Rethrow
+      throw( IceCommandTransientException( boost::str( boost::format( "CREAM Register raised GenericFault %1%") % ex.what() ) ) ); // Rethrow
     }                        
   } catch ( exception& ex ) {
     CREAM_SAFE_LOG( m_log_dev->warnStream() << method_name << " TID=[" << getThreadID() << "] "
@@ -953,9 +953,9 @@ bool IceCommandSubmit::register_job( const bool is_lease_enabled,
 		    << "] due to std::exception: " 
 		    << ex.what() << "."
 		    );
-    throw( iceCommandTransient_ex( boost::str( boost::format( "CREAM Register raised std::exception %1%") % ex.what() ) ) ); // Rethrow
+    throw( IceCommandTransientException( boost::str( boost::format( "CREAM Register raised std::exception %1%") % ex.what() ) ) ); // Rethrow
   } catch( ... ) {
-    throw( iceCommandTransient_ex( "Unknown exception catched" ) );
+    throw( IceCommandTransientException( "Unknown exception catched" ) );
   }
   return true;
 }
@@ -967,7 +967,7 @@ void IceCommandSubmit::process_result( bool& retry,
 				       const bool is_lease_enabled,
 				       const string& _gid,
 				       const cream_api::AbsCreamProxy::RegisterArrayResult& res )
-  throw( iceCommandTransient_ex& )
+  throw( IceCommandTransientException& )
 {
   const char* method_name = "IceCommandSubmit::process_result() - ";
 
@@ -989,7 +989,7 @@ void IceCommandSubmit::process_result( bool& retry,
 		      );
       force_delegation = true;
     } else {
-      throw( iceCommandTransient_ex( boost::str( boost::format( "CREAM Register returned delegation error \"%1%\"") % err ) ) );
+      throw( IceCommandTransientException( boost::str( boost::format( "CREAM Register returned delegation error \"%1%\"") % err ) ) );
     }            
     break;
   case cream_api::JobIdWrapper::LEASEIDMISMATCH:
@@ -1002,7 +1002,7 @@ void IceCommandSubmit::process_result( bool& retry,
 		      );
       force_lease = true;
     } else {
-      throw( iceCommandTransient_ex( boost::str( boost::format( "CREAM Register returned lease id mismatch \"%1%\"") % err ) ) );
+      throw( IceCommandTransientException( boost::str( boost::format( "CREAM Register returned lease id mismatch \"%1%\"") % err ) ) );
     }     
     break;                               
   default:
@@ -1012,6 +1012,6 @@ void IceCommandSubmit::process_result( bool& retry,
 		    << "] due to Error: " 
 		    << err
 		    );
-    throw( iceCommandTransient_ex( boost::str( boost::format( "CREAM Register returned error \"%1%\"") % err ) ) ); 
+    throw( IceCommandTransientException( boost::str( boost::format( "CREAM Register returned error \"%1%\"") % err ) ) ); 
   }
 }

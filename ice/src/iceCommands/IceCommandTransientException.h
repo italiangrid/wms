@@ -34,11 +34,11 @@ namespace glite {
              * failed, but resubmitting it another time <em>may</em>
              * result in a command success or failure.
              */
-            class iceCommandTransient_ex : public iceCommand_ex {
+            class IceCommandTransientException : public iceCommand_ex {
             public:
-                iceCommandTransient_ex( const std::string& c ) throw() : 
+                IceCommandTransientException( const std::string& c ) throw() : 
                     iceCommand_ex( c ) { }
-                virtual ~iceCommandTransient_ex() throw() { }
+                virtual ~IceCommandTransientException() throw() { }
             };
 
 

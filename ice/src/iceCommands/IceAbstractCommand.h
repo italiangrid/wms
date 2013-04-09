@@ -26,7 +26,7 @@ END LICENSE */
 #include "classad_distribution.h"
 #include "iceUtils/JobRequest_ex.h"
 #include "iceCommandFatal_ex.h"
-#include "iceCommandTransient_ex.h"
+#include "IceCommandTransientException.h"
 
 // forward declaration
 namespace glite {
@@ -59,7 +59,7 @@ namespace glite {
                  * @throw an iceCommandTransient_ex if the command failed
                  * but could be tried again and succeed.
                  */
-                virtual void execute( const std::string& ) throw( iceCommandFatal_ex&, iceCommandTransient_ex& ) = 0;
+                virtual void execute( const std::string& ) throw( iceCommandFatal_ex&, IceCommandTransientException& ) = 0;
 
                 /**
                  * Returns the Grid jobID for the job this command

@@ -23,7 +23,7 @@ END LICENSE */
 
 #include "IceAbstractCommand.h"
 #include "iceCommandFatal_ex.h"
-#include "iceCommandTransient_ex.h"
+#include "IceCommandTransientException.h"
 #include "iceUtils/BlackListFailJob_ex.h"
 #include "iceUtils/CreamJob.h"
 
@@ -73,7 +73,7 @@ namespace util {
      /**
       * This method is invoked to execute this command.
       */
-     virtual void execute( const std::string& ) throw( iceCommandFatal_ex&, iceCommandTransient_ex& );
+     virtual void execute( const std::string& ) throw( iceCommandFatal_ex&, IceCommandTransientException& );
      
      std::string get_grid_job_id( void ) const { return m_theJob.grid_jobid(); };
 
@@ -89,20 +89,20 @@ namespace util {
       * logging the appropriate events to LB and try to resubmit.
       */
 
-     void try_to_submit( const bool only_start ) throw( BlackListFailJob_ex&, iceCommandFatal_ex&, iceCommandTransient_ex& );
-     //bool try_to_register( void ) throw( iceCommandFatal_ex&, iceCommandTransient_ex& );
-     //     bool try_to_start( void ) throw( iceCommandFatal_ex&, iceCommandTransient_ex& );
+     void try_to_submit( const bool only_start ) throw( BlackListFailJob_ex&, iceCommandFatal_ex&, IceCommandTransientException& );
+     //bool try_to_register( void ) throw( iceCommandFatal_ex&, IceCommandTransientException& );
+     //     bool try_to_start( void ) throw( iceCommandFatal_ex&, IceCommandTransientException& );
 
      void process_lease( const bool force_lease, 
 			 const std::string& jobdesc, 
 			 const std::string&, 
-			 std::string& lease_id ) throw( iceCommandFatal_ex&, iceCommandTransient_ex& );
+			 std::string& lease_id ) throw( iceCommandFatal_ex&, IceCommandTransientException& );
 
      void handle_delegation( std::string& delegation, 
 			     bool&,
 			     const std::string& jobdesc,
 			     const std::string& _gid,
-			     const std::string& ceurl) throw( iceCommandTransient_ex& );
+			     const std::string& ceurl) throw( IceCommandTransientException& );
 
      bool register_job( const bool is_lease_enabled, 
 			const std::string& jobdesc,
@@ -113,7 +113,7 @@ namespace util {
 			bool& force_delegation,
 			bool& force_lease,
 			glite::ce::cream_client_api::soap_proxy::AbsCreamProxy::RegisterArrayResult& res) 
-       throw( BlackListFailJob_ex&, iceCommandTransient_ex&, iceCommandFatal_ex& );
+       throw( BlackListFailJob_ex&, IceCommandTransientException&, iceCommandFatal_ex& );
      
      void process_result( bool& retry, 
 			  bool& force_delegation, 
@@ -121,7 +121,7 @@ namespace util {
 			  const bool,
 			  const std::string& _gid,
 			  const glite::ce::cream_client_api::soap_proxy::AbsCreamProxy::RegisterArrayResult& res )
-       throw( iceCommandTransient_ex& );
+       throw( IceCommandTransientException& );
 
      
      

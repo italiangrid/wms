@@ -25,7 +25,7 @@ END LICENSE */
 
 #include "IceAbstractCommand.h"
 #include "iceCommandFatal_ex.h"
-#include "iceCommandTransient_ex.h"
+#include "IceCommandTransientException.h"
 #include "glite/ce/cream-client-api-c/creamApiLogger.h"
 #include <boost/scoped_ptr.hpp>
 
@@ -38,17 +38,14 @@ namespace ice {
         class Request;
     };
 
-    class iceCommandCancel : public IceAbstractCommand {
-        
-//        boost::scoped_ptr< glite::ce::cream_client_api::soap_proxy::CreamProxy > m_theProxy;
+    class IceCommandCancel : public IceAbstractCommand {
         
     public:
-        //iceCommandCancel( glite::ce::cream_client_api::soap_proxy::CreamProxy*, util::Request* request ) throw(glite::wms::ice::util::ClassadSyntax_ex&, glite::wms::ice::util::JobRequest_ex&);
-	iceCommandCancel( util::Request* request ) throw(glite::wms::ice::util::ClassadSyntax_ex&, glite::wms::ice::util::JobRequest_ex&);
+	IceCommandCancel( util::Request* request ) throw(glite::wms::ice::util::ClassadSyntax_ex&, glite::wms::ice::util::JobRequest_ex&);
         
-        virtual ~iceCommandCancel() { }
+        virtual ~IceCommandCancel() { }
         
-        void execute( const std::string& ) throw ( iceCommandFatal_ex&, iceCommandTransient_ex& );          
+        void execute( const std::string& ) throw ( iceCommandFatal_ex&, IceCommandTransientException& );          
         std::string get_grid_job_id( void ) const { return m_gridJobId; };
         
     protected:

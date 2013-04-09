@@ -23,7 +23,7 @@ END LICENSE */
 
 #include "IceCommandSubmit.h"
 #include "iceCommandFatal_ex.h"
-#include "iceCommandTransient_ex.h"
+#include "IceCommandTransientException.h"
 #include "iceUtils/CreamJob.h"
 
 #include "glite/ce/cream-client-api-c/creamApiLogger.h"
@@ -67,7 +67,7 @@ namespace util {
      /**
       * This method is invoked to execute this command.
       */
-     virtual void execute( const std::string& ) throw( iceCommandFatal_ex&, iceCommandTransient_ex& );
+     virtual void execute( const std::string& ) throw( iceCommandFatal_ex&, IceCommandTransientException& );
      
  protected:
 

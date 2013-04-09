@@ -22,7 +22,7 @@ END LICENSE */
  * ICE  Headers
  *
  */
-#include "iceCommandCancel.h"
+#include "IceCommandCancel.h"
 #include "ice/IceCore.h"
 #include "iceUtils/iceLBLogger.h"
 #include "iceUtils/IceLBEvent.h"
@@ -56,9 +56,9 @@ using namespace glite::wms::ice;
 //
 //
 //______________________________________________________________________________
-iceCommandCancel::iceCommandCancel( util::Request* request ) 
+IceCommandCancel::IceCommandCancel( util::Request* request ) 
   throw(util::ClassadSyntax_ex&, util::JobRequest_ex&) :
-  IceAbstractCommand( "iceCommandCancel", "" ),
+  IceAbstractCommand( "IceCommandCancel", "" ),
   m_log_dev(glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()),
   m_lb_logger( util::iceLBLogger::instance() ),
   m_request( request )
@@ -107,7 +107,7 @@ iceCommandCancel::iceCommandCancel( util::Request* request )
     if ( !argumentsAD->EvaluateAttrString( "sequencecode", m_sequence_code ) ) {
       // FIXME: This should be an error to throw. For now, we try anyway...
       CREAM_SAFE_LOG( m_log_dev->warnStream()
-		      << "iceCommandCancel::execute() - Cancel request does not have a "
+		      << "IceCommandCancel::execute() - Cancel request does not have a "
 		      << "\"sequencecode\" attribute. "
 		      << "Fine for now, should not happen in the future"
 		      
@@ -122,17 +122,17 @@ iceCommandCancel::iceCommandCancel( util::Request* request )
 //
 //
 //______________________________________________________________________________
-void iceCommandCancel::execute( const std::string& tid ) throw ( iceCommandFatal_ex&, iceCommandTransient_ex& )
+void IceCommandCancel::execute( const std::string& tid ) throw ( iceCommandFatal_ex&, IceCommandTransientException& )
 {
 #ifdef ICE_PROFILE
-  util::ice_timer timer("iceCommandCancel::execute");
+  util::ice_timer timer("IceCommandCancel::execute");
 #endif
 
     m_thread_id = tid;
 
     CREAM_SAFE_LOG( 
                    m_log_dev->infoStream()
-                   << "iceCommandCancel::execute() - This request is a Cancel..."
+                   << "IceCommandCancel::execute() - This request is a Cancel..."
                    
                    );
 
@@ -146,7 +146,7 @@ void iceCommandCancel::execute( const std::string& tid ) throw ( iceCommandFatal
       if( !get.found() ) {
 	CREAM_SAFE_LOG( 
 		       m_log_dev->errorStream()
-		       << "iceCommandCancel::execute() - Cancel operation cannot locate jobid=["
+		       << "IceCommandCancel::execute() - Cancel operation cannot locate jobid=["
 		       << m_gridJobId 
 		       << "] in the database. Giving up"
 		       );
@@ -176,7 +176,7 @@ void iceCommandCancel::execute( const std::string& tid ) throw ( iceCommandFatal
 
     theJob.set_cancel_sequence_code( m_seq_code );
     {
-      glite::wms::ice::db::UpdateJob updater( theJob, "iceCommandCancel::execute" );
+      glite::wms::ice::db::UpdateJob updater( theJob, "IceCommandCancel::execute" );
       glite::wms::ice::db::Transaction tnx(false, false);
       tnx.execute( &updater );
     }
@@ -188,7 +188,7 @@ void iceCommandCancel::execute( const std::string& tid ) throw ( iceCommandFatal
 
     CREAM_SAFE_LOG(    
                    m_log_dev->infoStream()
-                   << "iceCommandCancel::execute() - Sending cancellation request to ["
+                   << "IceCommandCancel::execute() - Sending cancellation request to ["
                    << theJob.cream_address() << "] for GridJobID ["
 	 	   << theJob.grid_jobid( ) << "]"
                    );
@@ -205,7 +205,7 @@ void iceCommandCancel::execute( const std::string& tid ) throw ( iceCommandFatal
 
     if( betterproxy.empty() ) {
       CREAM_SAFE_LOG( m_log_dev->warnStream()
-		      << "iceCommandCancel::execute() - DNProxyManager returned an empty string for BetterProxy of user DN ["
+		      << "IceCommandCancel::execute() - DNProxyManager returned an empty string for BetterProxy of user DN ["
 		      << "] for job ["
 		      << jobdesc
 		      << "]. Using the Job's proxy." 
@@ -225,7 +225,7 @@ void iceCommandCancel::execute( const std::string& tid ) throw ( iceCommandFatal
       //params.push_back( make_pair( util::CreamJob::failure_reason_field(), "Aborted by user" ));
       {
 	db::Transaction tnx( false, false );
-	db::UpdateJob updater(theJob, "iceCommandCancel::cancel" );
+	db::UpdateJob updater(theJob, "IceCommandCancel::cancel" );
 	tnx.execute( &updater );
       }
       theJob.reset_change_flags( );
@@ -265,7 +265,7 @@ void iceCommandCancel::execute( const std::string& tid ) throw ( iceCommandFatal
 	  errMex += errorJob.second + "]";
 	  
 	  CREAM_SAFE_LOG(    
-			 m_log_dev->errorStream() << "iceCommandCancel::execute - "
+			 m_log_dev->errorStream() << "IceCommandCancel::execute - "
 			 << errMex
 			 );
 	  
@@ -277,7 +277,7 @@ void iceCommandCancel::execute( const std::string& tid ) throw ( iceCommandFatal
       throw iceCommandFatal_ex( string("auth_ex: ") + ex.what() );
     } catch(cream_api::soap_ex& ex) {
       m_lb_logger->logEvent( new util::cream_cancel_refuse_event( theJob, string("SOAP Exception: ") + ex.what() ), true, true );
-      throw iceCommandTransient_ex( string("soap_ex: ") + ex.what() );
+      throw IceCommandTransientException( string("soap_ex: ") + ex.what() );
     } catch(cream_ex::BaseException& base) {
       m_lb_logger->logEvent( new util::cream_cancel_refuse_event( theJob, string("BaseException: ") + base.what() ), true, true );
       throw iceCommandFatal_ex( string("BaseException: ") + base.what() );
@@ -285,6 +285,6 @@ void iceCommandCancel::execute( const std::string& tid ) throw ( iceCommandFatal
       m_lb_logger->logEvent( new util::cream_cancel_refuse_event( theJob, string("InternalException: ") + intern.what() ), true, true );
       throw iceCommandFatal_ex( string("InternalException: ") + intern.what() );
     } catch( ConnectionTimeoutException& ex) {
-      throw iceCommandTransient_ex( string("CREAM Cancel raised a ConnectionTimeoutException ") + ex.what() ) ;
+      throw IceCommandTransientException( string("CREAM Cancel raised a ConnectionTimeoutException ") + ex.what() ) ;
     }
 }

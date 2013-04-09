@@ -31,7 +31,7 @@ using namespace glite::wms::ice;
 //
 //____________________________________________________________________________
 void iceCommandReschedule::execute( const std::string& tid ) 
-  throw( iceCommandFatal_ex&, iceCommandTransient_ex& )
+  throw( iceCommandFatal_ex&, IceCommandTransientException& )
 {
   m_thread_id = tid;
   {

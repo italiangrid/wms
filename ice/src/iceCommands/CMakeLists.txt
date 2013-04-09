@@ -11,7 +11,7 @@ include_directories(${CLASSAD_INCLUDE_DIRS}
 add_custom_target(ICECOMMANDS 
   DEPENDS 
   IceCommandSubmit.cpp
-  iceCommandCancel.cpp
+  IceCommandCancel.cpp
   iceCommandStatusPoller.cpp
   Request_source_purger.cpp
   iceCommandDelegationRenewal.cpp
@@ -23,7 +23,7 @@ add_custom_target(ICECOMMANDS
 add_library(glite_wms_IceCommands
   SHARED 
   IceCommandSubmit.cpp
-  iceCommandCancel.cpp
+  IceCommandCancel.cpp
   iceCommandStatusPoller.cpp
   Request_source_purger.cpp
   iceCommandDelegationRenewal.cpp
