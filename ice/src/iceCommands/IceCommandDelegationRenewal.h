@@ -39,11 +39,11 @@ namespace glite {
     namespace ice {
       namespace util {
 	
-	class iceCommandDelegationRenewal : public IceAbstractCommand {
+	class IceCommandDelegationRenewal : public IceAbstractCommand {
 	  log4cpp::Category* m_log_dev;
 	  glite_renewal_core_context m_ctx;
 
-	  iceCommandDelegationRenewal( const iceCommandDelegationRenewal& ) : IceAbstractCommand("", "") {}
+	  IceCommandDelegationRenewal( const IceCommandDelegationRenewal& ) : IceAbstractCommand("", "") {}
 	  
 	  void renewAllDelegations( void ) throw();
 
@@ -51,8 +51,8 @@ namespace glite {
 
 	  //const int DELEGATION_EXPIRATION_THRESHOLD_TIME;
 
-	  iceCommandDelegationRenewal( );
-	  virtual ~iceCommandDelegationRenewal( );
+	  IceCommandDelegationRenewal( );
+	  virtual ~IceCommandDelegationRenewal( );
 	  void execute( const std::string& ) throw();
 	  
 	  std::string get_grid_job_id() const;// { return ""; }

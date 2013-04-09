@@ -14,7 +14,7 @@ add_custom_target(ICECOMMANDS
   IceCommandCancel.cpp
   iceCommandStatusPoller.cpp
   Request_source_purger.cpp
-  iceCommandDelegationRenewal.cpp
+  IceCommandDelegationRenewal.cpp
   iceCommandEventQuery.cpp
   iceCommandLBLogging.cpp
   iceCommandReschedule.cpp
@@ -26,7 +26,7 @@ add_library(glite_wms_IceCommands
   IceCommandCancel.cpp
   iceCommandStatusPoller.cpp
   Request_source_purger.cpp
-  iceCommandDelegationRenewal.cpp
+  IceCommandDelegationRenewal.cpp
   iceCommandEventQuery.cpp
   iceCommandLBLogging.cpp
   iceCommandReschedule.cpp

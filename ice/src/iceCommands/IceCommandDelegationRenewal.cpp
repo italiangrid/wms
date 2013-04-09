@@ -19,7 +19,7 @@ limitations under the License.
 END LICENSE */
 
 #include "iceCommandLBLogging.h"
-#include "iceCommandDelegationRenewal.h"
+#include "IceCommandDelegationRenewal.h"
 #include "iceUtils/DelegationManager.h"
 #include "iceUtils/CreamProxyMethod.h"
 #include "iceUtils/DNProxyManager.h"
@@ -63,7 +63,7 @@ using namespace glite::wms::ice::util;
 #define DELEGATION_EXPIRATION_THRESHOLD_TIME 3600
 
 //______________________________________________________________________________
-iceCommandDelegationRenewal::iceCommandDelegationRenewal( ) :
+IceCommandDelegationRenewal::IceCommandDelegationRenewal( ) :
     IceAbstractCommand( "iceCommandDelegationRenewal", "" ),
     m_log_dev( cream_api::util::creamApiLogger::instance()->getLogger() ),
     m_ctx( NULL )
@@ -71,12 +71,12 @@ iceCommandDelegationRenewal::iceCommandDelegationRenewal( ) :
 }
 
 //______________________________________________________________________________
-iceCommandDelegationRenewal::~iceCommandDelegationRenewal( )
+IceCommandDelegationRenewal::~IceCommandDelegationRenewal( )
 {
 }
 
 //______________________________________________________________________________
-string iceCommandDelegationRenewal::get_grid_job_id( ) const
+string IceCommandDelegationRenewal::get_grid_job_id( ) const
 {
   ostringstream randid( "" );
   struct timeval T;
@@ -86,19 +86,19 @@ string iceCommandDelegationRenewal::get_grid_job_id( ) const
 }
 
 //______________________________________________________________________________
-void iceCommandDelegationRenewal::execute( const std::string& tid ) throw()
+void IceCommandDelegationRenewal::execute( const std::string& tid ) throw()
 {  
 #ifdef ICE_PROFILE
-  ice_timer timer("iceCommandDelegationRenewal::execute");
+  ice_timer timer("IceCommandDelegationRenewal::execute");
 #endif
   this->renewAllDelegations();
     
 }
 
 //______________________________________________________________________________
-void iceCommandDelegationRenewal::renewAllDelegations( void ) throw() 
+void IceCommandDelegationRenewal::renewAllDelegations( void ) throw() 
 {
-    static const char* method_name = "iceCommandDelegationRenewal::renewAllDelegations() - ";
+    static const char* method_name = "IceCommandDelegationRenewal::renewAllDelegations() - ";
     
     /**
        Now, let's check all delegations for expiration and renew them
@@ -433,7 +433,7 @@ void iceCommandDelegationRenewal::renewAllDelegations( void ) throw()
 	pair<bool, time_t> result_validity = IceUtils::is_good_proxy( thisBetterPrx.get<0>() );
 	if(!result_validity.first) {
 	  CREAM_SAFE_LOG(m_log_dev->errorStream() 
-			 << "iceCommandProxyRenewal::renewAllDelegations() - "
+			 << "IceCommandDelegationRenewal::renewAllDelegations() - "
 			 << "iceUtil::isgood() function reported an error while" 
 			 << " parsing proxy [" << thisBetterPrx.get<0>() 
 			 << "]. Skipping renew of delegation ["
@@ -469,8 +469,8 @@ void iceCommandDelegationRenewal::renewAllDelegations( void ) throw()
 //	    list<pair<string, string> > clause;
 //	    clause.push_back( make_pair( util::CreamJob::user_dn_field(), thisUserDN) );
 //	    clause.push_back( make_pair( util::CreamJob::myproxy_address_field(), thisMyPR) );
-	    //db::GetJobs getter( clause, toRemove, "iceCommandDelegationRenewal::renewAllDelegations" );
-	    db::GetJobsByDNMyProxy getter( toRemove, thisUserDN, thisMyPR, "iceCommandDelegationRenewal::renewAllDelegations" );
+	    //db::GetJobs getter( clause, toRemove, "IceCommandDelegationRenewal::renewAllDelegations" );
+	    db::GetJobsByDNMyProxy getter( toRemove, thisUserDN, thisMyPR, "IceCommandDelegationRenewal::renewAllDelegations" );
 	    db::Transaction tnx(false, false);
 	    tnx.execute( &getter );
 	  }
@@ -503,7 +503,7 @@ void iceCommandDelegationRenewal::renewAllDelegations( void ) throw()
 	*/
 	if( !(proxy_time_end > thisExpTime)) {
 	  CREAM_SAFE_LOG(m_log_dev->warnStream() 
-			 << "iceCommandProxyRenewal::renewAllDelegations() - "
+			 << "IceCommandDelegationRenewal::renewAllDelegations() - "
 			 << "The better proxy ["
 			 << thisBetterPrx.get<0>() << "] is expiring NOT AFTER the current delegation ["
 			 << thisDelegID << "]. Skipping ... "

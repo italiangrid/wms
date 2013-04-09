@@ -26,7 +26,7 @@ END LICENSE */
 #include "ice/IceCore.h"
 #include "proxyRenewal.h"
 #include "iceUtils/IceConfManager.h"
-#include "iceCommands/iceCommandDelegationRenewal.h"
+#include "iceCommands/IceCommandDelegationRenewal.h"
 
 
 /**
@@ -73,7 +73,7 @@ void proxyRenewal::body( void )
                        << "proxyRenewal::body() - new iteration"
                        );
         
-	iceCommandDelegationRenewal().execute( "" );
+	IceCommandDelegationRenewal().execute( "" );
 
 	if(m_delay<=10) 
 	  sleep( m_delay );
