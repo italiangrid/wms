@@ -18,27 +18,27 @@ limitations under the License.
 
 END LICENSE */
 
-#ifndef __GLITE_WMS_ICE_ICECOMMANDTRANSIENT_EX_H__
-#define __GLITE_WMS_ICE_ICECOMMANDTRANSIENT_EX_H__
+#ifndef __GLITE_WMS_ICE_ICECOMMANDFATAL_EX_H__
+#define __GLITE_WMS_ICE_ICECOMMANDFATAL_EX_H__
 
-#include "iceCommand_ex.h"
+#include "IceCommandException.h"
 
 namespace glite {
-    namespace wms {
+    namespace wms{
         namespace ice {
 
             /**
-             * This class represents a transient exception thrown
-             * during the execution of ICE commands (submit or
-             * cancel).  A transient exception means that the command
-             * failed, but resubmitting it another time <em>may</em>
-             * result in a command success or failure.
+             * This class represents a fatal exception thrown during
+             * the execution of ICE commands (submit or cancel).  A
+             * fatal exception means that the command is permanently
+             * failed, which means that submitting the command another
+             * time will invariably result in another failure.
              */
-            class IceCommandTransientException : public iceCommand_ex {
+            class IceCommandFatalException : public IceCommandException {
             public:
-                IceCommandTransientException( const std::string& c ) throw() : 
-                    iceCommand_ex( c ) { }
-                virtual ~IceCommandTransientException() throw() { }
+                IceCommandFatalException( const std::string& c ) throw() : 
+                    IceCommandException( c ) { }
+                virtual ~IceCommandFatalException() throw() { }
             };
 
 

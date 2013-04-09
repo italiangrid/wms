@@ -12,29 +12,29 @@ add_custom_target(ICECOMMANDS
   DEPENDS 
   IceCommandSubmit.cpp
   IceCommandCancel.cpp
-  iceCommandStatusPoller.cpp
+  IceCommandStatusPoller.cpp
   Request_source_purger.cpp
   IceCommandDelegationRenewal.cpp
-  iceCommandEventQuery.cpp
-  iceCommandLBLogging.cpp
-  iceCommandReschedule.cpp
+  IceCommandEventQuery.cpp
+  IceCommandLBLogging.cpp
+  IceCommandReschedule.cpp
 )
 
-add_library(glite_wms_IceCommands
+add_library(glite_wms_ice_commands
   SHARED 
   IceCommandSubmit.cpp
   IceCommandCancel.cpp
-  iceCommandStatusPoller.cpp
+  IceCommandStatusPoller.cpp
   Request_source_purger.cpp
   IceCommandDelegationRenewal.cpp
-  iceCommandEventQuery.cpp
-  iceCommandLBLogging.cpp
-  iceCommandReschedule.cpp
+  IceCommandEventQuery.cpp
+  IceCommandLBLogging.cpp
+  IceCommandReschedule.cpp
   )
 
-set_target_properties(glite_wms_IceCommands PROPERTIES VERSION 0.0.0 SOVERSION 0)
+set_target_properties(glite_wms_ice_commands PROPERTIES VERSION 0.0.0 SOVERSION 0)
 
-install(TARGETS glite_wms_IceCommands
+install(TARGETS glite_wms_ice_commands
   LIBRARY 
   DESTINATION 
   ${PREFIX}/usr/${LIBDIR}

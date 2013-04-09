@@ -20,8 +20,8 @@ END LICENSE */
 // ICE includes
 #include "ice/IceCore.h"
 #include "eventStatusPoller.h"
-#include "iceCommands/iceCommandStatusPoller.h"
-#include "iceCommands/iceCommandEventQuery.h"
+#include "commands/IceCommandStatusPoller.h"
+#include "commands/IceCommandEventQuery.h"
 
 #include "iceDb/GetAllDN.h"
 #include "iceDb/GetCEUrl.h"
@@ -172,7 +172,7 @@ void eventStatusPoller::body( void )
  			    << *ceit << ") to the thread pool..."
  			    );
       
-        m_threadPool->add_request( new iceCommandEventQuery( m_iceManager, *dnit , *ceit ) );
+        m_threadPool->add_request( new IceCommandEventQuery( m_iceManager, *dnit , *ceit ) );
       
         while( m_threadPool->get_command_count( ) > 0 )
 	  sleep(5);

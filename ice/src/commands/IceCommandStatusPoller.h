@@ -50,7 +50,7 @@ namespace glite {
 	//	class jobCache;
 	class IceConfManager;
 
-	class iceCommandStatusPoller : public IceAbstractCommand {
+	class IceCommandStatusPoller : public IceAbstractCommand {
 
           log4cpp::Category                           *m_log_dev;
           glite::wms::ice::util::iceLBLogger          *m_lb_logger;
@@ -99,7 +99,7 @@ namespace glite {
 	  /**
            * Prevents copying
            */
-          //iceCommandStatusPoller( const iceCommandStatusPoller& ) : m_max_chunk_size( 0 ) { } // keep the compiler happy
+          //IceCommandStatusPoller( const IceCommandStatusPoller& ) : m_max_chunk_size( 0 ) { } // keep the compiler happy
 
           /**
            *
@@ -145,11 +145,11 @@ namespace glite {
             \throw eventStatusPoller_ex& if the creation of the internal cream communication client failed
             \sa ice
           */
-          iceCommandStatusPoller( IceCore*, 
+          IceCommandStatusPoller( IceCore*, 
 				  const std::pair<std::string, std::string>&,
 				  bool poll_all_jobs = false ); //throw(glite::wms::ice::util::eventStatusPoller_ex&, glite::wms::ice::util::ConfigurationManager_ex&);
           
-          virtual ~iceCommandStatusPoller() throw() { } 
+          virtual ~IceCommandStatusPoller() throw() { } 
 
 	  void execute( const std::string& ) throw();
 	  

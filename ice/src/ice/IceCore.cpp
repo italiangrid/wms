@@ -31,9 +31,9 @@ END LICENSE */
 #include "iceUtils/iceLBEventFactory.h"
 #include "iceUtils/iceLBLogger.h"
 #include "iceUtils/CreamProxyMethod.h"
-#include "iceCommands/iceCommandReschedule.h"
-#include "iceCommands/IceCommandSubmit.h"
-#include "iceCommands/IceCommandCancel.h"
+#include "commands/IceCommandReschedule.h"
+#include "commands/IceCommandSubmit.h"
+#include "commands/IceCommandCancel.h"
 #include "iceUtils/Request_source_jobdir.h"
 #include "iceUtils/Request.h"
 #include "iceUtils/RequestParser.h"
@@ -1002,7 +1002,7 @@ int IceCore::main_loop( void ) {
 	    }
 		
 	    if( boost::algorithm::iequals( parser.get_command( ), "reschedule" ) ) {
-	      cmd = new glite::wms::ice::iceCommandReschedule( *it, theJob );
+	      cmd = new glite::wms::ice::IceCommandReschedule( *it, theJob );
 	    }
 		
 	    this->get_requests_pool()->add_request( cmd );

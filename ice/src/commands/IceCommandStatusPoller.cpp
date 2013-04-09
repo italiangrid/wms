@@ -20,8 +20,8 @@ END LICENSE */
 
 
 // ICE Headers
-#include "iceCommandStatusPoller.h"
-#include "iceCommandLBLogging.h"
+#include "IceCommandStatusPoller.h"
+#include "IceCommandLBLogging.h"
 #include "iceUtils/iceLBEventFactory.h"
 #include "iceUtils/CreamProxyMethod.h"
 #include "iceUtils/IceConfManager.h"
@@ -68,11 +68,11 @@ using namespace glite::wms::ice::util;
 using namespace std;
 
 //____________________________________________________________________________
-iceCommandStatusPoller::iceCommandStatusPoller( glite::wms::ice::IceCore* theIce, 
+IceCommandStatusPoller::IceCommandStatusPoller( glite::wms::ice::IceCore* theIce, 
 						const pair<string, string>& dnce,
 						bool poll_all_jobs
 						) :
-  IceAbstractCommand( "iceCommandStatusPoller", "" ),
+  IceAbstractCommand( "IceCommandStatusPoller", "" ),
   m_log_dev( cream_api::util::creamApiLogger::instance()->getLogger() ),
   m_lb_logger( iceLBLogger::instance() ),
   m_iceManager( theIce ),
@@ -88,11 +88,11 @@ iceCommandStatusPoller::iceCommandStatusPoller( glite::wms::ice::IceCore* theIce
 }
 
 //____________________________________________________________________________
-void iceCommandStatusPoller::get_jobs_to_poll( list< CreamJob >& result,
+void IceCommandStatusPoller::get_jobs_to_poll( list< CreamJob >& result,
 					       const std::string& userdn, 
 					       const std::string& creamurl) throw()
 {
-    static const char* method_name = "iceCommandStatusPoller::get_jobs_to_poll() - ";
+    static const char* method_name = "IceCommandStatusPoller::get_jobs_to_poll() - ";
 
     CREAM_SAFE_LOG(m_log_dev->debugStream() << method_name
                    << "Collecting jobs to poll for userdn=[" 
@@ -100,7 +100,7 @@ void iceCommandStatusPoller::get_jobs_to_poll( list< CreamJob >& result,
 		   << creamurl << "]. LIMIT set to [" << m_max_chunk_size << "]..."
     		);
     {
-      glite::wms::ice::db::GetJobsToPoll getter( &result, userdn, creamurl, m_poll_all_jobs,"iceCommandStatusPoller::get_jobs_to_poll", m_max_chunk_size );
+      glite::wms::ice::db::GetJobsToPoll getter( &result, userdn, creamurl, m_poll_all_jobs,"IceCommandStatusPoller::get_jobs_to_poll", m_max_chunk_size );
       glite::wms::ice::db::Transaction tnx(false, false);
       //tnx.begin( );
       tnx.execute( &getter );
@@ -113,7 +113,7 @@ void iceCommandStatusPoller::get_jobs_to_poll( list< CreamJob >& result,
 
 //____________________________________________________________________________
 list< soap_proxy::JobInfoWrapper > 
-iceCommandStatusPoller::check_multiple_jobs( const string& proxy,
+IceCommandStatusPoller::check_multiple_jobs( const string& proxy,
 					     const string& user_dn,
                                              const string& cream_url, 
                                              const list< CreamJob >& cream_job_ids ) 
@@ -121,7 +121,7 @@ iceCommandStatusPoller::check_multiple_jobs( const string& proxy,
 {
     
 
-    static const char* method_name = "iceCommandStatusPoller::check_multiple_jobs() - ";
+    static const char* method_name = "IceCommandStatusPoller::check_multiple_jobs() - ";
 
     for( list< CreamJob >::const_iterator thisJob = cream_job_ids.begin(); 
          thisJob != cream_job_ids.end(); 
@@ -223,7 +223,7 @@ iceCommandStatusPoller::check_multiple_jobs( const string& proxy,
 		CreamJob theJob;
 		string gid = infoIt->second.get<1>().getGridJobId();
 		{
-		  db::GetJobByGid getter( gid/*infoIt->first*/, "iceCommandStatusPoller::check_multiple_jobs" );
+		  db::GetJobByGid getter( gid/*infoIt->first*/, "IceCommandStatusPoller::check_multiple_jobs" );
 		  db::Transaction tnx(false, false);
 		  tnx.execute( &getter );
 		  found = getter.found();
@@ -235,7 +235,7 @@ iceCommandStatusPoller::check_multiple_jobs( const string& proxy,
 		  {
 		    if( theJob.proxy_renewable() )
 		      DNProxyManager::getInstance()->decrementUserProxyCounter( theJob.user_dn(), theJob.myproxy_address() );
-		    db::RemoveJobByGid remover( gid /*infoIt->first*/, "iceCommandStatusPoller::check_multiple_jobs" );
+		    db::RemoveJobByGid remover( gid /*infoIt->first*/, "IceCommandStatusPoller::check_multiple_jobs" );
 		    db::Transaction tnx(false, false);
 		    tnx.execute( &remover );
 		  }
@@ -293,27 +293,27 @@ iceCommandStatusPoller::check_multiple_jobs( const string& proxy,
 }
 
 //----------------------------------------------------------------------------
-void iceCommandStatusPoller::updateJobCache( const list< soap_proxy::JobInfoWrapper >& info_list ) throw()
+void IceCommandStatusPoller::updateJobCache( const list< soap_proxy::JobInfoWrapper >& info_list ) throw()
 {
   if(m_stopped) {
-    CREAM_SAFE_LOG(m_log_dev->debugStream() << "iceCommandStatusPoller::updateJobCache() - "
+    CREAM_SAFE_LOG(m_log_dev->debugStream() << "IceCommandStatusPoller::updateJobCache() - "
 		   << "EMERGENCY CALLED STOP. Returning without polling..."
 		   );
     return;
   }
     for_each( info_list.begin(), 
               info_list.end(), 
-              boost::bind1st( boost::mem_fn( &iceCommandStatusPoller::update_single_job ), this ));
+              boost::bind1st( boost::mem_fn( &IceCommandStatusPoller::update_single_job ), this ));
     
 }
 
 //____________________________________________________________________________
-void iceCommandStatusPoller::update_single_job( const soap_proxy::JobInfoWrapper& info_obj ) throw()
+void IceCommandStatusPoller::update_single_job( const soap_proxy::JobInfoWrapper& info_obj ) throw()
 {
-    static const char* method_name = "iceCommandStatusPoller::update_single_job() - ";
+    static const char* method_name = "IceCommandStatusPoller::update_single_job() - ";
     
     if(m_stopped) {
-      CREAM_SAFE_LOG(m_log_dev->debugStream() << "iceCommandStatusPoller::updateJobCache() - "
+      CREAM_SAFE_LOG(m_log_dev->debugStream() << "IceCommandStatusPoller::updateJobCache() - "
 		     << "EMERGENCY CALLED STOP. Returning without polling..."
 		     );
       return;
@@ -340,7 +340,7 @@ void iceCommandStatusPoller::update_single_job( const soap_proxy::JobInfoWrapper
 
     CreamJob tmp_job;
     {
-      glite::wms::ice::db::GetJobByGid getter( info_obj.getGridJobId() /*completeJobID*/, "iceCommandStatusPoller::update_single_job" );
+      glite::wms::ice::db::GetJobByGid getter( info_obj.getGridJobId() /*completeJobID*/, "IceCommandStatusPoller::update_single_job" );
       glite::wms::ice::db::Transaction tnx(false, false);
       tnx.execute( &getter );
       if( !getter.found() )
@@ -376,7 +376,7 @@ void iceCommandStatusPoller::update_single_job( const soap_proxy::JobInfoWrapper
 	  {
 	    if( tmp_job.proxy_renewable() )
 	      DNProxyManager::getInstance()->decrementUserProxyCounter( tmp_job.user_dn(), tmp_job.myproxy_address() );
-	    glite::wms::ice::db::RemoveJobByGid remover( tmp_job.grid_jobid( )/*tmp_job.complete_cream_jobid()*/, "iceCommandStatusPoller::update_single_job" );
+	    glite::wms::ice::db::RemoveJobByGid remover( tmp_job.grid_jobid( )/*tmp_job.complete_cream_jobid()*/, "IceCommandStatusPoller::update_single_job" );
 	    glite::wms::ice::db::Transaction tnx(false, false);
 	    tnx.execute( &remover );
 	  }
@@ -430,7 +430,7 @@ void iceCommandStatusPoller::update_single_job( const soap_proxy::JobInfoWrapper
 	  }
 	  tmp_job.set_num_logged_status_changes( count );
 	  {
-	    db::UpdateJob updater( tmp_job, "iceCommandStatusPoller::update_single_job");
+	    db::UpdateJob updater( tmp_job, "IceCommandStatusPoller::update_single_job");
 	    db::Transaction tnx(false, false);
 	    tnx.execute( &updater );
 	  }
@@ -471,12 +471,12 @@ void iceCommandStatusPoller::update_single_job( const soap_proxy::JobInfoWrapper
 }
 
 //____________________________________________________________________________
-void iceCommandStatusPoller::execute( const std::string& tid ) throw()
+void IceCommandStatusPoller::execute( const std::string& tid ) throw()
 {
 
   m_thread_id = tid;
 
-  static const char* method_name = "iceCommandStatusPoller::execute() - ";
+  static const char* method_name = "IceCommandStatusPoller::execute() - ";
 
   list< CreamJob > jobList;
   
@@ -533,7 +533,7 @@ void iceCommandStatusPoller::execute( const std::string& tid ) throw()
       while( IceCore::instance()->get_ice_lblog_pool()->get_command_count() > 2 )
         sleep(2);
       
-      IceCore::instance()->get_ice_lblog_pool()->add_request( new iceCommandLBLogging( toRemove ) );
+      IceCore::instance()->get_ice_lblog_pool()->add_request( new IceCommandLBLogging( toRemove ) );
     //Ice::instance()->delete_jobs_by_dn( userdn );
     return;//continue;
   }  
@@ -564,7 +564,7 @@ void iceCommandStatusPoller::execute( const std::string& tid ) throw()
       while( IceCore::instance()->get_ice_lblog_pool()->get_command_count() > 2 )
         sleep(2);
       
-      IceCore::instance()->get_ice_lblog_pool()->add_request( new iceCommandLBLogging( toRemove ) );
+      IceCore::instance()->get_ice_lblog_pool()->add_request( new IceCommandLBLogging( toRemove ) );
     //Ice::instance()->delete_jobs_by_dn( userdn );
 
     return;//continue;
@@ -595,7 +595,7 @@ void iceCommandStatusPoller::execute( const std::string& tid ) throw()
       it->set_last_empty_notification_time( time(0) );
       it->set_last_poller_visited( time(0) );
 
-      db::UpdateJob updater( *it, "iceCommandStatusPoller::execute" );
+      db::UpdateJob updater( *it, "IceCommandStatusPoller::execute" );
       db::Transaction tnx(false, false);
       //tnx.begin_exclusive( );
       tnx.execute( &updater );

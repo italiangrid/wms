@@ -25,9 +25,9 @@ END LICENSE */
 #include "glite/wms/common/configuration/Configuration.h"
 #include "common/src/configuration/ICEConfiguration.h"
 
-#include "iceCommandStatusPoller.h"
-#include "iceCommandEventQuery.h"
-#include "iceCommandLBLogging.h"
+#include "IceCommandStatusPoller.h"
+#include "IceCommandEventQuery.h"
+#include "IceCommandLBLogging.h"
 #include "iceUtils/iceLBEventFactory.h"
 #include "iceUtils/CreamProxyMethod.h"
 #include "iceUtils/DNProxyManager.h"
@@ -90,15 +90,15 @@ namespace {
 
 
 //______________________________________________________________________________
-ice::util::iceCommandEventQuery::~iceCommandEventQuery( ) throw()
+ice::util::IceCommandEventQuery::~IceCommandEventQuery( ) throw()
 {
 }
 
 //______________________________________________________________________________
-ice::util::iceCommandEventQuery::iceCommandEventQuery( ice::IceCore* theIce,
+ice::util::IceCommandEventQuery::IceCommandEventQuery( ice::IceCore* theIce,
 						       const std::string& dn,
 						       const std::string& ce)
-  : IceAbstractCommand( "iceCommandEventQuery", "" ),
+  : IceAbstractCommand( "IceCommandEventQuery", "" ),
     m_log_dev( cream_api::util::creamApiLogger::instance()->getLogger() ),
     m_lb_logger( ice::util::iceLBLogger::instance() ),
     m_iceManager( theIce ),
@@ -111,7 +111,7 @@ ice::util::iceCommandEventQuery::iceCommandEventQuery( ice::IceCore* theIce,
 }
 
 //______________________________________________________________________________
-std::string ice::util::iceCommandEventQuery::get_grid_job_id() const
+std::string ice::util::IceCommandEventQuery::get_grid_job_id() const
 {
   ostringstream randid( "" );
   struct timeval T;
@@ -121,10 +121,10 @@ std::string ice::util::iceCommandEventQuery::get_grid_job_id() const
 }
 
 //______________________________________________________________________________
-void ice::util::iceCommandEventQuery::execute( const std::string& tid) throw()
+void ice::util::IceCommandEventQuery::execute( const std::string& tid) throw()
 {
  m_thread_id = tid;
-  static const char* method_name = "iceCommandEventQuery::execute - ";
+  static const char* method_name = "IceCommandEventQuery::execute - ";
 
     list<soap_proxy::EventWrapper*> events;
     cleanup cleaner( &events );
@@ -186,7 +186,7 @@ void ice::util::iceCommandEventQuery::execute( const std::string& tid) throw()
       while( IceCore::instance()->get_ice_lblog_pool()->get_command_count() > 2 )
         sleep(2);
       
-      IceCore::instance()->get_ice_lblog_pool()->add_request( new iceCommandLBLogging( toRemove ) );
+      IceCore::instance()->get_ice_lblog_pool()->add_request( new IceCommandLBLogging( toRemove ) );
       
       return;
       
@@ -218,7 +218,7 @@ void ice::util::iceCommandEventQuery::execute( const std::string& tid) throw()
       while( IceCore::instance()->get_ice_lblog_pool()->get_command_count() > 2 )
         sleep(2);
       
-      IceCore::instance()->get_ice_lblog_pool()->add_request( new iceCommandLBLogging( toRemove ) );
+      IceCore::instance()->get_ice_lblog_pool()->add_request( new IceCommandLBLogging( toRemove ) );
       //Ice::instance()->delete_jobs_by_dn( m_dn );
       
       return;
@@ -243,7 +243,7 @@ void ice::util::iceCommandEventQuery::execute( const std::string& tid) throw()
                       ); 
  
     try {
-      api_util::scoped_timer Tot( string("iceCommandEventQuery::execute() - SOAP Connection for QueryEvent - ") + "TID=[" + getThreadID() + "]" );
+      api_util::scoped_timer Tot( string("IceCommandEventQuery::execute() - SOAP Connection for QueryEvent - ") + "TID=[" + getThreadID() + "]" );
       vector<pair<string, string> > states;
 
       if( !thisEventID ) // EventID ZERO means ICE has been scratched
@@ -312,7 +312,7 @@ void ice::util::iceCommandEventQuery::execute( const std::string& tid) throw()
 		     << m_ce << "]. Falling back to old-style StatusPoller."
 		     );
 
-	iceCommandStatusPoller( m_iceManager, make_pair( m_dn, m_ce), false ).execute( m_thread_id );
+	IceCommandStatusPoller( m_iceManager, make_pair( m_dn, m_ce), false ).execute( m_thread_id );
       }
 
       return ;
@@ -348,7 +348,7 @@ void ice::util::iceCommandEventQuery::execute( const std::string& tid) throw()
 		     );
       
       {
-	db::SetEventIDForCE setter( m_ce, 0, "iceCommandEventQuery::execute" );
+	db::SetEventIDForCE setter( m_ce, 0, "IceCommandEventQuery::execute" );
 	db::Transaction tnx(false, false);
 	tnx.execute( &setter );
       }
@@ -372,7 +372,7 @@ void ice::util::iceCommandEventQuery::execute( const std::string& tid) throw()
       while( IceCore::instance()->get_ice_lblog_pool()->get_command_count() > 2 )
 	sleep(2);
       
-      IceCore::instance()->get_ice_lblog_pool()->add_request( new iceCommandLBLogging( toRemove ) );
+      IceCore::instance()->get_ice_lblog_pool()->add_request( new IceCommandLBLogging( toRemove ) );
       
       return;
     } // if( !this->checkDatabaseID..... )
@@ -411,9 +411,9 @@ void ice::util::iceCommandEventQuery::execute( const std::string& tid) throw()
 
 //______________________________________________________________________________
 long long 
-ice::util::iceCommandEventQuery::getEventID( const string& dn, const string& ce)
+ice::util::IceCommandEventQuery::getEventID( const string& dn, const string& ce)
 {
-  db::GetEventID getter( dn, ce, "iceCommandEventQuery::getEventID" );
+  db::GetEventID getter( dn, ce, "IceCommandEventQuery::getEventID" );
   db::Transaction tnx(false, false);
   tnx.execute( &getter );
   if( getter.found() )
@@ -424,11 +424,11 @@ ice::util::iceCommandEventQuery::getEventID( const string& dn, const string& ce)
 
 //______________________________________________________________________________
 void 
-ice::util::iceCommandEventQuery::set_event_id( const std::string& dn, 
+ice::util::IceCommandEventQuery::set_event_id( const std::string& dn, 
 					       const std::string& ce, 
 					       const long long id)
 {
-  CREAM_SAFE_LOG(m_log_dev->debugStream() << "iceCommandEventQuery::set_event_id - " 
+  CREAM_SAFE_LOG(m_log_dev->debugStream() << "IceCommandEventQuery::set_event_id - " 
 		 << " TID=[" << getThreadID() << "] "
 		 << "Setting EventID for UserDN ["
 		 << dn <<"] CEUrl ["
@@ -436,28 +436,28 @@ ice::util::iceCommandEventQuery::set_event_id( const std::string& dn,
 		 << id << "]"
 		 );
 
-  db::SetEventID setter( dn, ce, id, "iceCommandEventQuery::setEventID" );
+  db::SetEventID setter( dn, ce, id, "IceCommandEventQuery::setEventID" );
   db::Transaction tnx(false, false);
   tnx.execute( &setter );
 }
 
 //______________________________________________________________________________
 void 
-ice::util::iceCommandEventQuery::getJobsByDbID( std::list<ice::util::CreamJob>& jobs, 
+ice::util::IceCommandEventQuery::getJobsByDbID( std::list<ice::util::CreamJob>& jobs, 
 						const long long db_id )
 {
-  db::GetJobsByDbID getter( jobs, db_id, "iceCommandEventQuery::getJobsByDbID" );
+  db::GetJobsByDbID getter( jobs, db_id, "IceCommandEventQuery::getJobsByDbID" );
   db::Transaction tnx(false, false);
   tnx.execute( &getter );
 }
 
 //______________________________________________________________________________
 bool
-ice::util::iceCommandEventQuery::checkDatabaseID( const string& ceurl,
+ice::util::IceCommandEventQuery::checkDatabaseID( const string& ceurl,
 						  const long long dbid,
 						  long long& olddbid )
 {
-  db::GetDbID getter( ceurl, "iceCommandEventQuery::checkDatabaseID" );
+  db::GetDbID getter( ceurl, "IceCommandEventQuery::checkDatabaseID" );
   {
     db::Transaction tnx(false, false);
     tnx.execute( &getter);
@@ -468,7 +468,7 @@ ice::util::iceCommandEventQuery::checkDatabaseID( const string& ceurl,
 	 There's not yet association CEUrl -> DB_ID
 	 Must be created ex-novo.
       */
-      db::SetDbID setter( ceurl, dbid, "iceCommandEventQuery::checkDatabaseID" );
+      db::SetDbID setter( ceurl, dbid, "IceCommandEventQuery::checkDatabaseID" );
       db::Transaction tnx(false, false);
       tnx.execute( &setter );
     }
@@ -486,7 +486,7 @@ ice::util::iceCommandEventQuery::checkDatabaseID( const string& ceurl,
 	   previously saved DB_ID differs
 	   from this one
 	*/
-	db::SetDbID setter( ceurl, dbid, "iceCommandEventQuery::checkDatabaseID" );
+	db::SetDbID setter( ceurl, dbid, "IceCommandEventQuery::checkDatabaseID" );
 	db::Transaction tnx(false, false);
 	tnx.execute( &setter );
 	return false;
@@ -500,12 +500,12 @@ ice::util::iceCommandEventQuery::checkDatabaseID( const string& ceurl,
 
 //______________________________________________________________________________
 long long
-ice::util::iceCommandEventQuery::processEvents( const std::string& endpoint, 
+ice::util::IceCommandEventQuery::processEvents( const std::string& endpoint, 
 						list<soap_proxy::EventWrapper*>& events,
 						const pair<string, string>& dnce )
 {
 
-  api_util::scoped_timer procTimeEvents( string("iceCommandEventQuery::processEvents() - TID=[") + getThreadID() + "] All Events Proc Time" );
+  api_util::scoped_timer procTimeEvents( string("IceCommandEventQuery::processEvents() - TID=[") + getThreadID() + "] All Events Proc Time" );
   /**
      Group the events per GridJobID
   */
@@ -516,7 +516,7 @@ ice::util::iceCommandEventQuery::processEvents( const std::string& endpoint,
   list<soap_proxy::EventWrapper*>::const_iterator it;// = events.begin();
   for(  it = events.begin();  it != events.end(); ++it ) {
 
-    CREAM_SAFE_LOG( m_log_dev->debugStream() << "iceCommandEventQuery::processEvents - "  << " TID=[" << getThreadID() << "] "
+    CREAM_SAFE_LOG( m_log_dev->debugStream() << "IceCommandEventQuery::processEvents - "  << " TID=[" << getThreadID() << "] "
 		    << "Received Event ID=[" << (*it)->id.c_str() << "] for DN ["
 		    << dnce.first << "] and CE URL ["
 		    << dnce.second << "]"
@@ -541,12 +541,12 @@ ice::util::iceCommandEventQuery::processEvents( const std::string& endpoint,
 
 //______________________________________________________________________________
 void
-ice::util::iceCommandEventQuery::processEventsForJob( const string& CID, 
+ice::util::IceCommandEventQuery::processEventsForJob( const string& CID, 
 						      const list<soap_proxy::EventWrapper*>& ev )
 {
   
 
-  static const char* method_name = "iceCommandEventQuery::processEventsForJob() - ";
+  static const char* method_name = "IceCommandEventQuery::processEventsForJob() - ";
 
   //if(GID=="N/A") return;
 
@@ -604,13 +604,13 @@ ice::util::iceCommandEventQuery::processEventsForJob( const string& CID,
 
 //______________________________________________________________________________
 void 
-ice::util::iceCommandEventQuery::processSingleEvent( CreamJob& theJob, 
+ice::util::IceCommandEventQuery::processSingleEvent( CreamJob& theJob, 
 						     soap_proxy::EventWrapper* event,
 						     const bool is_last_event,
 						     bool& removed )
 {
-  api_util::scoped_timer procTimeEvents( string("iceCommandEventQuery::processSingleEvent - TID=[") + getThreadID() + "] Entire method" );
-  static const char* method_name = "iceCommandEventQuery::processSingleEvent() - ";
+  api_util::scoped_timer procTimeEvents( string("IceCommandEventQuery::processSingleEvent - TID=[") + getThreadID() + "] Entire method" );
+  static const char* method_name = "IceCommandEventQuery::processSingleEvent() - ";
 
   string jobdesc( theJob.describe() );
 
@@ -625,7 +625,7 @@ ice::util::iceCommandEventQuery::processSingleEvent( CreamJob& theJob,
 
 #ifdef GLITE_WMS_ICE_ENABLE_STATS
   {
-    db::InsertStat inserter( time(0), event->timestamp,(short)status, "iceCommandEventQuery::processSingleEvent" );
+    db::InsertStat inserter( time(0), event->timestamp,(short)status, "IceCommandEventQuery::processSingleEvent" );
     db::Transaction tnx(false, false);
     tnx.execute( &inserter );
   }
@@ -639,7 +639,7 @@ ice::util::iceCommandEventQuery::processSingleEvent( CreamJob& theJob,
     {
       if( theJob.proxy_renewable() )
 	DNProxyManager::getInstance()->decrementUserProxyCounter( theJob.user_dn(), theJob.myproxy_address() );
-      db::RemoveJobByGid remover( theJob.grid_jobid( ), "iceCommandEventQuery::processSingleEvent" );
+      db::RemoveJobByGid remover( theJob.grid_jobid( ), "IceCommandEventQuery::processSingleEvent" );
       db::Transaction tnx(false, false);
       tnx.execute( &remover );
     }
@@ -678,9 +678,9 @@ ice::util::iceCommandEventQuery::processSingleEvent( CreamJob& theJob,
 		   << " description = [" << description << "]"
 		   );
 
-    //api_util::scoped_timer updatetimer( string("iceCommandEventQuery::processSingleEvent - TID=[") + getThreadID() + "] ICE DB Update" );
+    //api_util::scoped_timer updatetimer( string("IceCommandEventQuery::processSingleEvent - TID=[") + getThreadID() + "] ICE DB Update" );
     
-    db::UpdateJob updater( theJob, "iceCommandEventQuery::processSingleEvent");
+    db::UpdateJob updater( theJob, "IceCommandEventQuery::processSingleEvent");
     db::Transaction tnx(false, false);
     tnx.execute( &updater );
   }
@@ -705,7 +705,7 @@ ice::util::iceCommandEventQuery::processSingleEvent( CreamJob& theJob,
      only if a new status has been received
   */
   if(is_last_event) {
-    //api_util::scoped_timer resubtimer( string("iceCommandEventQuery::processSingleEvent - TID=[") + getThreadID() + "] RESUBMIT_OR_PURGE_JOB" );
+    //api_util::scoped_timer resubtimer( string("IceCommandEventQuery::processSingleEvent - TID=[") + getThreadID() + "] RESUBMIT_OR_PURGE_JOB" );
     removed = m_iceManager->resubmit_or_purge_job( &theJob );
   }
   else
@@ -714,7 +714,7 @@ ice::util::iceCommandEventQuery::processSingleEvent( CreamJob& theJob,
 
 //______________________________________________________________________________
 // void 
-// ice::util::iceCommandEventQuery::deleteJobsByDN( void ) throw( )
+// ice::util::IceCommandEventQuery::deleteJobsByDN( void ) throw( )
 // {
 
 //   list< CreamJob > results;
@@ -722,7 +722,7 @@ ice::util::iceCommandEventQuery::processSingleEvent( CreamJob& theJob,
 //     list<pair<string, string> > clause;
 //     clause.push_back( make_pair( util::CreamJob::user_dn_field(), m_dn ) );
     
-//     db::GetJobs getter( clause, results, "iceCommandEventQuery::deleteJobsForDN" );
+//     db::GetJobs getter( clause, results, "IceCommandEventQuery::deleteJobsForDN" );
 //     db::Transaction tnx( false, false );
 //     tnx.execute( &getter );
 //   }
@@ -745,7 +745,7 @@ ice::util::iceCommandEventQuery::processSingleEvent( CreamJob& theJob,
 //   }
 
 //   {
-//     db::RemoveJobByUserDN remover( m_dn, "iceCommandEventQuery::deleteJobsForDN" );
+//     db::RemoveJobByUserDN remover( m_dn, "IceCommandEventQuery::deleteJobsForDN" );
 //     db::Transaction tnx( false, false );
 //     tnx.execute( &remover );
 //   }
@@ -754,12 +754,12 @@ ice::util::iceCommandEventQuery::processSingleEvent( CreamJob& theJob,
 
 //______________________________________________________________________________
 // bool 
-// ice::util::iceCommandEventQuery::ignore_job( const string& CID, 
+// ice::util::IceCommandEventQuery::ignore_job( const string& CID, 
 // 					     CreamJob& tmp_job, string& reason ) 
 // {
 //    
 //   
-//     glite::wms::ice::db::GetJobByCid getter( CID, "iceCommandEventQuery::processEventsForJob" );
+//     glite::wms::ice::db::GetJobByCid getter( CID, "IceCommandEventQuery::processEventsForJob" );
 //     glite::wms::ice::db::Transaction tnx(false, false);
 //     tnx.execute( &getter );
 //     if( !getter.found() )

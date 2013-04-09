@@ -22,7 +22,7 @@ END LICENSE */
 
 #undef soapStub_H
 #include "iceThread.h"
-#include "iceCommands/iceCommandStatusPoller.h"
+#include "commands/IceCommandStatusPoller.h"
 
 namespace log4cpp {
     class Category;

@@ -18,7 +18,7 @@ limitations under the License.
 
 END LICENSE */
 
-#include "iceCommandLBLogging.h"
+#include "IceCommandLBLogging.h"
 #include "IceCommandDelegationRenewal.h"
 #include "iceUtils/DelegationManager.h"
 #include "iceUtils/CreamProxyMethod.h"
@@ -488,7 +488,7 @@ void IceCommandDelegationRenewal::renewAllDelegations( void ) throw()
 	  while( IceCore::instance()->get_ice_lblog_pool()->get_command_count() > 2 )
 	    sleep(2);
 	  
-	  IceCore::instance()->get_ice_lblog_pool()->add_request( new iceCommandLBLogging( toRemove ) );
+	  IceCore::instance()->get_ice_lblog_pool()->add_request( new IceCommandLBLogging( toRemove ) );
 	  
 	  // TODO: Bisogna loggare un aborted per tutti i job relativi a questa delega
 	  // che non verra' piu' rinnovata ed e' stata rimossa dal DB di ICE.

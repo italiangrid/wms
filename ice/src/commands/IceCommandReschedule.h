@@ -53,16 +53,16 @@ namespace util {
 }
      
   
- class iceCommandReschedule : public IceCommandSubmit {
+ class IceCommandReschedule : public IceCommandSubmit {
      
  private:
      void  doSubscription( const glite::wms::ice::util::CreamJob& );
      
  public:
-     iceCommandReschedule( util::Request* request, 
+     IceCommandReschedule( util::Request* request, 
 		           const util::CreamJob& aJob ) : IceCommandSubmit( request, aJob ) { };
      
-     virtual ~iceCommandReschedule() { }
+     virtual ~IceCommandReschedule() { }
      
      /**
       * This method is invoked to execute this command.

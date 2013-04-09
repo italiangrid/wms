@@ -26,7 +26,7 @@ END LICENSE */
 #include "ice/IceCore.h"
 #include "proxyRenewal.h"
 #include "iceUtils/IceConfManager.h"
-#include "iceCommands/IceCommandDelegationRenewal.h"
+#include "commands/IceCommandDelegationRenewal.h"
 
 
 /**

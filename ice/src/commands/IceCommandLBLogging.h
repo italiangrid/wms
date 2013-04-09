@@ -39,20 +39,20 @@ namespace glite {
 	
 	class iceLBLogger;
 	
-	class iceCommandLBLogging : public IceAbstractCommand {
+	class IceCommandLBLogging : public IceAbstractCommand {
 	  
 	  log4cpp::Category			*m_log_dev;
 	  std::list<CreamJob> 			 m_jobs_to_remove;
 	  glite::wms::ice::util::iceLBLogger    *m_lb_logger;
 	  
-	  iceCommandLBLogging( const iceCommandLBLogging& ) : IceAbstractCommand("", "") {}
+	  IceCommandLBLogging( const IceCommandLBLogging& ) : IceAbstractCommand("", "") {}
 	  
 	  //void renewAllDelegations( void ) throw();
 
 	public:
 
-	  iceCommandLBLogging( const std::list<CreamJob>& );
-	  virtual ~iceCommandLBLogging( );
+	  IceCommandLBLogging( const std::list<CreamJob>& );
+	  virtual ~IceCommandLBLogging( );
 	  void execute( const std::string& ) throw();
 	  
 	  std::string get_grid_job_id() const;// { return ""; }

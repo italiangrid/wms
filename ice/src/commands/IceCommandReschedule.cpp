@@ -18,7 +18,7 @@ limitations under the License.
 
 END LICENSE */
 
-#include "iceCommandReschedule.h"
+#include "IceCommandReschedule.h"
 
 #include "iceDb/RemoveJobByGid.h"
 #include "iceDb/Transaction.h"
@@ -30,7 +30,7 @@ using namespace glite::wms::ice;
 //
 //
 //____________________________________________________________________________
-void iceCommandReschedule::execute( const std::string& tid ) 
+void IceCommandReschedule::execute( const std::string& tid ) 
   throw( IceCommandFatalException&, IceCommandTransientException& )
 {
   m_thread_id = tid;
@@ -38,7 +38,7 @@ void iceCommandReschedule::execute( const std::string& tid )
   boost::recursive_mutex::scoped_lock M_reschedule( glite::wms::ice::util::CreamJob::s_reschedule_mutex );
   CREAM_SAFE_LOG(
                    m_log_dev->infoStream()
-                   << "iceCommandReschedule::execute - TID=[" << getThreadID() << "] "
+                   << "IceCommandReschedule::execute - TID=[" << getThreadID() << "] "
                    << "This request is a Reschedule for GridJobID ["
 		   << m_theJob.grid_jobid( ) << "]. Checking token file ["
 		   << m_theJob.token_file( ) << "]"
@@ -48,7 +48,7 @@ void iceCommandReschedule::execute( const std::string& tid )
   
     CREAM_SAFE_LOG(
                    m_log_dev->warnStream()
-                   << "iceCommandReschedule::execute - TID=[" << getThreadID() << "] "
+                   << "IceCommandReschedule::execute - TID=[" << getThreadID() << "] "
                    << "Missing token file ["
 		   << m_theJob.token_file( ) << "]"
 		   << " for GridJobID ["
@@ -63,11 +63,11 @@ void iceCommandReschedule::execute( const std::string& tid )
     boost::recursive_mutex::scoped_lock M_reschedule( glite::wms::ice::util::CreamJob::s_reschedule_mutex );
     CREAM_SAFE_LOG(
                    m_log_dev->debugStream()
-                   << "iceCommandReschedule::execute -  TID=[" << getThreadID() << "] "
+                   << "IceCommandReschedule::execute -  TID=[" << getThreadID() << "] "
                    << "Ok, token file is there . Removing job from ICE's database and submitting job ["
 		   << m_theJob.grid_jobid( ) << "]"
                    );
-    db::RemoveJobByGid remover( m_theJob.grid_jobid(), "iceCommandReschedule::execute" );
+    db::RemoveJobByGid remover( m_theJob.grid_jobid(), "IceCommandReschedule::execute" );
     db::Transaction tnx( false, false );
     tnx.execute( &remover );
   }

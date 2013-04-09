@@ -18,7 +18,7 @@ limitations under the License.
 
 END LICENSE */
 
-#include "iceCommandLBLogging.h"
+#include "IceCommandLBLogging.h"
 #include "iceUtils/IceUtils.h"
 #include "iceDb/GetJobByGid.h"
 #include "iceDb/Transaction.h"
@@ -59,8 +59,8 @@ using namespace std;
 using namespace glite::wms::ice;
 
 //______________________________________________________________________________
-util::iceCommandLBLogging::iceCommandLBLogging( const list<CreamJob>& jobs ) :
-    IceAbstractCommand( "iceCommandLBLogging", "" ),
+util::IceCommandLBLogging::IceCommandLBLogging( const list<CreamJob>& jobs ) :
+    IceAbstractCommand( "IceCommandLBLogging", "" ),
     m_log_dev( cream_api::util::creamApiLogger::instance()->getLogger() ),
     m_jobs_to_remove( jobs ),
     m_lb_logger( ice::util::iceLBLogger::instance() )
@@ -68,12 +68,12 @@ util::iceCommandLBLogging::iceCommandLBLogging( const list<CreamJob>& jobs ) :
 }
 
 //______________________________________________________________________________
-util::iceCommandLBLogging::~iceCommandLBLogging( )
+util::IceCommandLBLogging::~IceCommandLBLogging( )
 {
 }
 
 //______________________________________________________________________________
-string util::iceCommandLBLogging::get_grid_job_id( ) const
+string util::IceCommandLBLogging::get_grid_job_id( ) const
 {
   string randid( "" );
   struct timeval T;
@@ -83,7 +83,7 @@ string util::iceCommandLBLogging::get_grid_job_id( ) const
 }
 
 //______________________________________________________________________________
-void util::iceCommandLBLogging::execute( const std::string& tid ) throw()
+void util::IceCommandLBLogging::execute( const std::string& tid ) throw()
 {  
   list<CreamJob>::iterator jobit;
   
@@ -96,7 +96,7 @@ void util::iceCommandLBLogging::execute( const std::string& tid ) throw()
     CreamJob _tmp;
     string ignore_reason;
     if( glite::wms::ice::util::IceUtils::ignore_job( jobit->complete_cream_jobid(), _tmp, ignore_reason ) ) {
-      CREAM_SAFE_LOG(m_log_dev->debugStream() << "iceCommandLBLogging::execute - TID=[" << getThreadID() << "] "
+      CREAM_SAFE_LOG(m_log_dev->debugStream() << "IceCommandLBLogging::execute - TID=[" << getThreadID() << "] "
                       << "Will not LOG anything to LB for Job ["
 		      << jobit->grid_jobid() << "] for reason: "
 		      << ignore_reason
@@ -114,13 +114,13 @@ void util::iceCommandLBLogging::execute( const std::string& tid ) throw()
 	cream_api::job_statuses::CANCELLED == jobit->status() ||
 	cream_api::job_statuses::ABORTED == jobit->status() )
       {	
-	CREAM_SAFE_LOG(m_log_dev->debugStream() << "iceCommandLBLogging::execute - TID=[" << getThreadID() << "] "
+	CREAM_SAFE_LOG(m_log_dev->debugStream() << "IceCommandLBLogging::execute - TID=[" << getThreadID() << "] "
 		       << "Removing job [" << jobit->grid_jobid( )
 		       << "] from ICE's database"
 		       );
 	
 	{
-	  db::RemoveJobByGid remover( jobit->grid_jobid(), "iceCommandLBLogging::execute" );
+	  db::RemoveJobByGid remover( jobit->grid_jobid(), "IceCommandLBLogging::execute" );
 	  db::Transaction tnx( false, false );
 	  tnx.execute( &remover );
 	  if( jobit->proxy_renewable() )

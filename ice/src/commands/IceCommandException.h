@@ -28,10 +28,10 @@ namespace glite {
     namespace wms {
         namespace ice {
 
-            class iceCommand_ex : public std::exception {
+            class IceCommandException : public std::exception {
             public:
-                iceCommand_ex( const std::string& c ) throw() : _cause( c ) { }
-                virtual ~iceCommand_ex() throw() { }
+                IceCommandException( const std::string& c ) throw() : _cause( c ) { }
+                virtual ~IceCommandException() throw() { }
                 const char* what() const throw() { return _cause.c_str(); }
             protected:
                 std::string _cause;                

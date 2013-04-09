@@ -60,7 +60,7 @@ namespace glite {
         class iceLBLogger;
 	class IceConfManager;
 
-	class iceCommandEventQuery : public IceAbstractCommand {
+	class IceCommandEventQuery : public IceAbstractCommand {
 
           log4cpp::Category                     *m_log_dev;
           glite::wms::ice::util::iceLBLogger    *m_lb_logger;
@@ -89,8 +89,8 @@ namespace glite {
 	  //	  void deleteJobsByDN( void ) throw();
 
 	public:
-	  iceCommandEventQuery( IceCore*, const std::string& dn, const std::string& ce );
-	  ~iceCommandEventQuery( ) throw();// {}
+	  IceCommandEventQuery( IceCore*, const std::string& dn, const std::string& ce );
+	  ~IceCommandEventQuery( ) throw();// {}
 	  
 	  void execute( const std::string& ) throw();
 	  
