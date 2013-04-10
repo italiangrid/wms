@@ -113,7 +113,7 @@ long long Main::check_my_mem( const pid_t pid )
   while (fgets(used_rss_mem, 64, in) != NULL)
     edglog(debug) 
 //    CREAM_SAFE_LOG( m_log_dev->debugStream()
-		    << "Main::check_my_mem - Used RSS Memory: "
+		    << "Used RSS Memory: "
 		    << used_rss_mem << endl;
 //		    );
   pclose(in);
