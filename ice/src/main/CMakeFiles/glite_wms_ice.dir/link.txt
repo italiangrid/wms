@@ -1,0 +1,1 @@
+/usr/bin/c++  -fPIC   -shared -Wl,-soname,libglite_wms_ice.so.0 -o libglite_wms_ice.so.0.0.0 CMakeFiles/glite_wms_ice.dir/Main.cpp.o 
