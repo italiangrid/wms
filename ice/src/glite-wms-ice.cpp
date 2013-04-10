@@ -26,7 +26,7 @@ END LICENSE */
 #include <cstdlib>              // atoi()
 #include <csignal>
 
-#include "glite/ce/cream-client-api-c/creamApiLogger.h"
+//#include "glite/ce/cream-client-api-c/creamApiLogger.h"
 
 #include "common/src/configuration/ICEConfiguration.h"
 #include "common/src/configuration/WMConfiguration.h"
@@ -49,6 +49,11 @@ END LICENSE */
 
 #include <list>
 
+// Logging
+#include "utils/logging.h"
+#include "glite/wms/common/logger/edglog.h"
+#include "glite/wms/common/logger/manipulators.h"
+
 /* workaround for gsoap 2.7.13 */
 #include "glite/ce/cream-client-api-c/cream_client_soapH.h"
 SOAP_NMAC struct Namespace namespaces[] = {};
@@ -62,25 +67,21 @@ namespace po        = boost::program_options;
 namespace fs        = boost::filesystem;
 namespace api_util  = glite::ce::cream_client_api::util;
 namespace cream_api = glite::ce::cream_client_api::soap_proxy;
+namespace logger    = glite::wms::common::logger;
+
+// #define edglog(level) glite::wms::common::logger::threadsafe::edglog<<glite::wms::common::logger::setlevel(glite::wms::common::logger::level)
+// #define edglog_fn(name) glite::wms::common::logger::StatePusher pusher(glite::wms::common::logger::threadsafe::edglog, "PID: " + boost::lexical_cast<std::string>(getpid()) + " - " + #name)
+// #define glitelogTag(level) glite::wms::common::logger::threadsafe::edglog<<glite::wms::common::logger::setlevel(glite::wms::common::logger::level)<<"*********"
+// #define glitelogHead(level) glite::wms::common::logger::threadsafe::edglog<<glite::wms::common::logger::setlevel(glite::wms::common::logger::level)<<"* Error *"
+// #define glitelogBody(level) glite::wms::common::logger::threadsafe::edglog<<glite::wms::common::logger::setlevel(glite::wms::common::logger::level)<<"*       *"
+
+
 
 #define MAX_ICE_MEM 550000LL
 
 long long check_my_mem( const pid_t pid ) throw();
 
-/*
-void sigusr1_handle(int x) { 
-  exit(2);
-}
-
-void sigusr2_handle(int x) { 
-  exit(3);
-}
-*/
 void sigpipe_handle(int x) { 
-/*  CREAM_SAFE_LOG(util::creamApiLogger::instance()->getLogger()->debugStream() 
-		 << "glite-wms-ice::sigpipe_handle: Captured SIGPIPE. x argument=["
-		 << x 
-		 << "]" );*/
 }
 
 // change the uid and gid to those of user no-op if user corresponds
@@ -112,7 +113,8 @@ int main(int argc, char*argv[])
 {
     string opt_pid_file;
     string opt_conf_file;
-
+    fstream edglog_stream;
+    
     int cache_dump_delay = 900;
 
     if( getenv("GLITE_WMS_ICE_CACHEDUMP_DELAY" ) ) {
@@ -121,7 +123,7 @@ int main(int argc, char*argv[])
 	cache_dump_delay = 300;
     }
 
-    static const char* method_name = "glite-wms-ice::main() - ";
+   // static const char* method_name = "glite-wms-ice::main() - ";
     
     po::options_description desc("Usage");
     desc.add_options()
@@ -236,23 +238,37 @@ int main(int argc, char*argv[])
     /*****************************************************************************
      * Sets the log file
      ****************************************************************************/
-    api_util::creamApiLogger* logger_instance = api_util::creamApiLogger::instance();
-    log4cpp::Category* log_dev = logger_instance->getLogger();
-
-    log_dev->setPriority( conf->ice()->ice_log_level() );
-    logger_instance->setLogfileEnabled( conf->ice()->log_on_file() );
-    logger_instance->setConsoleEnabled( conf->ice()->log_on_console() );
-    logger_instance->setMaxLogFileSize( -1 );
-    //logger_instance->setMaxLogFileRotations( conf->ice()->max_logfile_rotations() );
-    string logfile = conf->ice()->logfile();
+    string log_file = conf->ice()->logfile();//conf.wmp_config->log_file();
+    if (!log_file.empty()) {
+      if (!ifstream(log_file.c_str())) {
+            ofstream(log_file.c_str());
+      }
+      edglog_stream.open(log_file.c_str(), ios::in | ios::out | ios::ate);
+    }
+    if (edglog_stream) {
+      logger::threadsafe::edglog.open(edglog_stream, static_cast<logger::level_t>(-1 + conf->ice()->ice_log_level()/100));
+    }
+    edglog_fn("wmproxy::main");
+      
+//     api_util::creamApiLogger* logger_instance = api_util::creamApiLogger::instance();
+//     log4cpp::Category* log_dev = logger_instance->getLogger();
+// 
+//     log_dev->setPriority( conf->ice()->ice_log_level() );
+//     logger_instance->setLogfileEnabled( conf->ice()->log_on_file() );
+//     logger_instance->setConsoleEnabled( conf->ice()->log_on_console() );
+//     logger_instance->setMaxLogFileSize( -1 );
+//     //logger_instance->setMaxLogFileRotations( conf->ice()->max_logfile_rotations() );
+//     string logfile = conf->ice()->logfile();
     string hostcert = conf->ice()->ice_host_cert();
 
-    logger_instance->setLogFile(logfile.c_str());
-    CREAM_SAFE_LOG(log_dev->debugStream() 
-		   << "ICE VersionID is [" << ICE_VERSIONID << "] ProcessID=["
-		   << ::getpid() << "]"
-		   );
-    cout << "Logfile is [" << logfile << "]" << endl;
+    //logger_instance->setLogFile(logfile.c_str());
+//     CREAM_SAFE_LOG(log_dev->debugStream() 
+// 		   << "ICE VersionID is [" << ICE_VERSIONID << "] ProcessID=["
+// 		   << ::getpid() << "]"
+// 		   );
+    edglog(debug) << "ICE VersionID is [" << ICE_VERSIONID << "] ProcessID=["<< ::getpid() << "]" << endl;
+    
+    cout << "Logfile is [" << log_file << "]" << endl;
 
     signal(SIGPIPE, sigpipe_handle);
 
@@ -260,14 +276,14 @@ int main(int argc, char*argv[])
      * Gets the distinguished name from the host proxy certificate
      ****************************************************************************/
 
-    CREAM_SAFE_LOG(
-                   log_dev->infoStream()
-                   << method_name
-                   << "Host certificate is [" << hostcert << "]" 
-                   
-                   );
+//     CREAM_SAFE_LOG(
+//                    log_dev->infoStream()
+//                    << method_name
+//                    << "Host certificate is [" << hostcert << "]" 
+//                    
+//                    );
 
-
+    edglog(info) << "Host certificate is [" << hostcert << "]" << endl;
 
     /**
      * Now the cache is ready and filled with all job's information

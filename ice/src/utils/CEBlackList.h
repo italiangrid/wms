@@ -26,9 +26,9 @@ END LICENSE */
 #include <map>
 #include "boost/thread/recursive_mutex.hpp"
 
-namespace log4cpp {
-    class Category;
-}
+//namespace log4cpp {
+//    class Category;//
+//}
 
 namespace glite {
 namespace wms {
@@ -68,7 +68,7 @@ namespace util {
         static CEBlackList* s_instance; ///< Singleton instance of this blacklist
         static boost::recursive_mutex m_mutex; ///< Mutex
 
-        log4cpp::Category* m_log_dev;
+        //log4cpp::Category* m_log_dev;
         std::size_t m_operation_count; ///< number of operations on the blacklist
         std::size_t m_operation_count_max; ///< max number of operations before the blacklist is purged from stale entries
         std::size_t m_max_blacklist_time; ///< max time (in seconds) an entry is kept in the blacklist

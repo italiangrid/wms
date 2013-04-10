@@ -24,9 +24,9 @@ END LICENSE */
 #include "IceThread.h"
 #include "utils/CreamJob.h"
 
-namespace log4cpp {    
-  class Category;
-};
+// namespace log4cpp {    
+//   class Category;
+// };
 
 namespace glite {
   namespace wms {
@@ -37,7 +37,7 @@ namespace glite {
           class DelegationRenewal : public IceThread {
           protected:
 
-              log4cpp::Category* m_log_dev;
+              //log4cpp::Category* m_log_dev;
               time_t m_delay;
 
           public: 

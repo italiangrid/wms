@@ -21,7 +21,7 @@ END LICENSE */
 
 #include "ICECreamProxyFactory.h"
 #include "glite/ce/cream-client-api-c/CreamProxyFactory.h"
-#include "glite/ce/cream-client-api-c/creamApiLogger.h"
+//#include "glite/ce/cream-client-api-c/creamApiLogger.h"
 #include "glite/wms/common/configuration/Configuration.h"
 #include "glite/wms/common/configuration/ICEConfiguration.h"
 

@@ -28,6 +28,10 @@ END LICENSE */
 #include "IceCommandFatalException.h"
 #include "IceCommandTransientException.h"
 
+#include "utils/logging.h"
+#include "glite/wms/common/logger/edglog.h"
+#include "glite/wms/common/logger/manipulators.h"
+
 // forward declaration
 namespace glite {
     namespace ce {

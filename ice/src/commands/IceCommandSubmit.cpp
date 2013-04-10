@@ -66,6 +66,10 @@ END LICENSE */
 // C++ stuff
 #include <ctime>
 
+#include "utils/logging.h"
+#include "glite/wms/common/logger/edglog.h"
+#include "glite/wms/common/logger/manipulators.h"
+
 using namespace std;
 namespace ceurl_util    = glite::ce::cream_client_api::util::CEUrl;
 namespace cream_api     = glite::ce::cream_client_api::soap_proxy;
@@ -126,7 +130,7 @@ IceCommandSubmit::IceCommandSubmit( iceUtil::Request* request,
     m_theIce( Main::instance() ),
     m_myname( IceUtils::get_host_name( ) ),
     m_theJob( aJob ),
-    m_log_dev( api_util::creamApiLogger::instance()->getLogger()),
+    //m_log_dev( api_util::creamApiLogger::instance()->getLogger()),
     m_configuration( iceUtil::IceConfManager::instance()->getConfiguration() ),
     m_lb_logger( iceUtil::IceLBLogger::instance() ),
     m_request( request )  
@@ -147,14 +151,14 @@ void IceCommandSubmit::execute( const std::string& tid ) throw( IceCommandFatalE
 {
   m_thread_id = tid;
   
-    static const char* method_name="IceCommandSubmit::execute() - ";
-
-    CREAM_SAFE_LOG(
-                   m_log_dev->infoStream()
-                   << method_name << " TID=[" << getThreadID() << "] "
+//    static const char* method_name="IceCommandSubmit::execute() - ";
+ 	edglog_fn("IceCommandSubmit::execute");
+    //CREAM_SAFE_LOG(
+          //         m_log_dev->infoStream()
+            edglog(info)  << " TID=[" << getThreadID() << "] "
                    << "This request is a Submission for job ["
-		   << m_theJob.grid_jobid() << "]"
-                   );   
+		   << m_theJob.grid_jobid() << "]" << endl;
+        //           );   
     
     Request_source_purger purger_f( m_request );
     wms_utils::scope_guard remove_request_guard( purger_f );
@@ -203,13 +207,14 @@ void IceCommandSubmit::execute( const std::string& tid ) throw( IceCommandFatalE
 	default:
 	  // ICE has been restarted/crashed after a JobStart has finished
 	  // we shall ignore the request
-	  CREAM_SAFE_LOG( m_log_dev->warnStream()
-			<< method_name << " TID=[" << getThreadID() << "] "
+	  //CREAM_SAFE_LOG( m_log_dev->warnStream()
+			//<< method_name 
+			edglog(warning)<< " TID=[" << getThreadID() << "] "
 			<< "Submit request for job GridJobID=["
 			<< _gid
 			<< "] is related to a job already in ICE's database that has been already submitted. "
-			<< "Removing the request and going ahead."
-			);
+			<< "Removing the request and going ahead." << endl;
+			//);
 	  return;
 	  break;
 	}// switch
@@ -263,12 +268,12 @@ void IceCommandSubmit::execute( const std::string& tid ) throw( IceCommandFatalE
     try {
         try_to_submit( only_start );        
     } catch( const IceCommandFatalException& ex ) {
-        CREAM_SAFE_LOG(
-                       m_log_dev->errorStream() 
-                       << method_name  << " TID=[" << getThreadID() << "] "
+        //CREAM_SAFE_LOG(
+          //             m_log_dev->errorStream() 
+                       edglog(error)  << " TID=[" << getThreadID() << "] "
                        << "Error during submission of jdl=" << m_jdl
-                       << " Fatal Exception is:" << ex.what()
-                       );
+                       << " Fatal Exception is:" << ex.what() << endl;
+                       //);
         m_theJob = m_lb_logger->logEvent( new iceUtil::cream_transfer_fail_event( m_theJob, boost::str( boost::format( "Transfer to CREAM failed due to exception: %1%") % ex.what() ) ), false, true );
 	string reason = boost::str( boost::format( "Transfer to CREAM [%1%] failed due to exception: %2%") % m_theJob.cream_address() % ex.what() );
         m_theJob.set_failure_reason( reason );
@@ -286,12 +291,12 @@ void IceCommandSubmit::execute( const std::string& tid ) throw( IceCommandFatalE
         // status info JC+LM log transfer-fail / aborted in case of
         // condor transfers fail
 	
-	CREAM_SAFE_LOG(
-                       m_log_dev->errorStream() 
-                       << method_name  << " TID=[" << getThreadID() << "] "
+//	CREAM_SAFE_LOG(
+  //                     m_log_dev->errorStream() 
+                       edglog(error)<< " TID=[" << getThreadID() << "] "
                        << "Error during submission of jdl=" << m_jdl
-                       << " Transient Exception is:" << ex.what()
-                       );
+                       << " Transient Exception is:" << ex.what() << endl;
+                       //);
 	
       string reason = boost::str( boost::format( "Transfer to CREAM failed due to exception: %1%" ) % ex.what() );
       m_theJob.set_failure_reason( reason );
@@ -335,7 +340,8 @@ void IceCommandSubmit::try_to_submit( const bool only_start )
   
   string _gid( m_theJob.grid_jobid() );
   
-  static const char* method_name = "IceCommandSubmit::try_to_submit() - ";
+  //static const char* method_name = "IceCommandSubmit::try_to_submit() - ";
+  edglog_fn("IceCommandSubmit::try_to_submit");
   /**
    * Retrieve all usefull cert info.  In order to make the userDN an
    * index in the BDb's secondary database it must be available
@@ -360,24 +366,24 @@ void IceCommandSubmit::try_to_submit( const bool only_start )
     
     string _ceurl( m_theJob.cream_address() );
     
-    CREAM_SAFE_LOG(
-                   m_log_dev->debugStream() 
-                   << method_name  << " TID=[" << getThreadID() << "] "<< "Submitting JDL " 
+    //CREAM_SAFE_LOG(
+                  // m_log_dev->debugStream() 
+                   edglog(debug)  << " TID=[" << getThreadID() << "] "<< "Submitting JDL " 
 		   << m_theJob.modified_jdl() << " to [" 
                    << _ceurl <<"] ["
-                   << m_theJob.cream_deleg_address() << "]"
-                   );
+                   << m_theJob.cream_deleg_address() << "]" << endl;
+                   //);
     
     jobdesc = m_theJob.describe();
     
-    CREAM_SAFE_LOG(
-                   m_log_dev->debugStream()
-                   << method_name << " TID=[" << getThreadID() << "] "
+   // CREAM_SAFE_LOG(
+                  // m_log_dev->debugStream()
+                  edglog(debug) << " TID=[" << getThreadID() << "] "
                    << "Sequence code for job ["
                    << jobdesc
                    << "] is "
-                   << m_theJob.sequence_code()
-                   );
+                   << m_theJob.sequence_code() << endl;
+                  // );
     
     bool is_lease_enabled = ( m_configuration->ice()->lease_delta_time() > 0 );
     string  delegation;
@@ -442,11 +448,12 @@ void IceCommandSubmit::try_to_submit( const bool only_start )
     // m_theJob.getCreamURL() ?!?  If it is not it's VERY severe
     // server error, and I think it is not our businness
     
-    CREAM_SAFE_LOG( m_log_dev->infoStream() << method_name << " TID=[" << getThreadID() << "] "
+//    CREAM_SAFE_LOG( m_log_dev->infoStream() << method_name 
+		    edglog(info) << " TID=[" << getThreadID() << "] "
                     << "For GridJobID [" << _gid << "]" 
                     << " CREAM Returned CREAM-JOBID [" << completeid <<"] DB_ID ["
-		    << dbid << "]"
-		    );
+		    << dbid << "]" << endl;
+	//	    );
    
     {
       db::InsertStartedJob inserter( time(0), __creamURL, _gid, jobId, "IceCommandSubmit::try_to_submit" );
@@ -485,10 +492,11 @@ void IceCommandSubmit::try_to_submit( const bool only_start )
       }
     }
     
-    CREAM_SAFE_LOG( m_log_dev->infoStream() << method_name << " TID=[" << getThreadID() << "] "
+//    CREAM_SAFE_LOG( m_log_dev->infoStream() << method_name 
+		    edglog(info) << " TID=[" << getThreadID() << "] "
                     << "GridJobID [" << _gid << "]" 
-                    << " has already been REGISTERED. Will only START it..."
-		    );
+                    << " has already been REGISTERED. Will only START it..." << endl;
+	//	    );
 
   } // else -> if(!only_start)
   
@@ -501,11 +509,12 @@ void IceCommandSubmit::try_to_submit( const bool only_start )
   }
 
   try {
-    CREAM_SAFE_LOG( m_log_dev->debugStream() << method_name << " TID=[" << getThreadID() << "] "
+//    CREAM_SAFE_LOG( m_log_dev->debugStream() << method_name 
+		    edglog(debug)<< " TID=[" << getThreadID() << "] "
 		    << "Going to START CreamJobID ["
 		    << completeid <<"] related to GridJobID ["
-		    << _gid << "]..."
-		    );
+		    << _gid << "]..." << endl;
+	//	    );
     
     vector<cream_api::JobIdWrapper> toStart;
     toStart.push_back( cream_api::JobIdWrapper( (const string&)jobId, 
@@ -541,10 +550,11 @@ void IceCommandSubmit::try_to_submit( const bool only_start )
     pair<cream_api::JobIdWrapper, string> wrong = *( tmp.begin() ); // we trust there's only one element because we've started ONLY ONE job
     string errMex = wrong.second;
     
-    CREAM_SAFE_LOG(m_log_dev->errorStream() << method_name << " TID=[" << getThreadID() << "] "
+//    CREAM_SAFE_LOG(m_log_dev->errorStream() << method_name 
+		   edglog(error)<< " TID=[" << getThreadID() << "] "
 		   << "Cannot start job [" << jobdesc
-		   << "]. Reason is: " << errMex
-		   );
+		   << "]. Reason is: " << errMex << endl;
+	//	   );
     
     throw IceCommandTransientException( boost::str( boost::format( "CREAM Start failed due to error %1%") % errMex ) );
   }
@@ -727,18 +737,20 @@ void IceCommandSubmit::process_lease( const bool force_lease,
 				      string& lease_id )
   throw( IceCommandFatalException&, IceCommandTransientException& )
 {
-  const char* method_name = "IceCommandSubmit::process_lease() - ";
-
+  //const char* method_name = "IceCommandSubmit::process_lease() - ";
+  edglog_fn("IceCommandSubmit::process_lease");
   if ( force_lease ) {
-    CREAM_SAFE_LOG( m_log_dev->infoStream() << method_name << " TID=[" << getThreadID() << "] "
+   // CREAM_SAFE_LOG( m_log_dev->infoStream() << method_name 
+   		edglog(info)	<< " TID=[" << getThreadID() << "] "
 		    << "Lease is enabled, enforcing creation of a new lease "
-		    << "for job [" << jobdesc << "]"
-		    );        
+		    << "for job [" << jobdesc << "]"<<endl;
+		   // );        
   } else {
-    CREAM_SAFE_LOG( m_log_dev->infoStream() << method_name << " TID=[" << getThreadID() << "] "
+   // CREAM_SAFE_LOG( m_log_dev->infoStream() << method_name
+    		edglog(info) << " TID=[" << getThreadID() << "] "
 		    << "Lease is enabled, trying to get lease "
-		    << "for job [" << jobdesc << "]"
-		    );        
+		    << "for job [" << jobdesc << "]" << endl;
+		  //  );        
   }
   
   //
@@ -750,24 +762,24 @@ void IceCommandSubmit::process_lease( const bool force_lease,
     // something was wrong with the lease creation step. 
     string err_msg( boost::str( boost::format( "Failed to get lease_id for job %1%. Exception is %2%" ) % _gid % ex.what() ) );
     
-    CREAM_SAFE_LOG( m_log_dev->errorStream()
-		    << method_name << err_msg );
+    //CREAM_SAFE_LOG( m_log_dev->errorStream()
+		   edglog(error) << err_msg<<endl;// );
     throw( IceCommandTransientException( err_msg ) );
 
   } catch( ... ) {
 
     string err_msg( boost::str( boost::format( "Failed to get lease_id for job %1% due to unknown exception" ) % _gid ) );
-    CREAM_SAFE_LOG( m_log_dev->errorStream()
-		    << method_name << err_msg );
+    //CREAM_SAFE_LOG( m_log_dev->errorStream()
+		 edglog(error) << err_msg<<endl;// );
     throw( IceCommandTransientException( err_msg ) );
 
   }
   
   // lease creation OK
-  CREAM_SAFE_LOG( m_log_dev->debugStream() << method_name
-		  << "Using lease ID " << lease_id << " for job ["
-		  << jobdesc << "]"
-		  );
+//  CREAM_SAFE_LOG( m_log_dev->debugStream() << method_name
+		edglog(debug)  << "Using lease ID " << lease_id << " for job ["
+		  << jobdesc << "]" << endl;
+		//  );
 }
 
 //______________________________________________________________________________
@@ -781,9 +793,9 @@ void IceCommandSubmit::handle_delegation( string& delegation,
 
   boost::recursive_mutex::scoped_lock delegM( s_localMutexForDelegations );
 
-  const char* method_name = "IceCommandSubmit::handle_delegation() - ";
+  //const char* method_name = "IceCommandSubmit::handle_delegation() - ";
   boost::tuple<string, time_t, long long int> SBP;
-
+  edglog_fn("IceCommandSubmit::handle_delegation");
   if( m_theJob.proxy_renewable() ) {
     SBP = iceUtil::DNProxyManager::getInstance()->getExactBetterProxyByDN( m_theJob.user_dn(), m_theJob.myproxy_address());
     
@@ -792,13 +804,14 @@ void IceCommandSubmit::handle_delegation( string& delegation,
 	 NO SuperBetterProxy for DN.
 	 must use that one in the ISB as SBP
       */
-      CREAM_SAFE_LOG( m_log_dev->debugStream() << method_name << " TID=[" << getThreadID() << "] "
+      //CREAM_SAFE_LOG( m_log_dev->debugStream() << method_name 
+      		      edglog(debug) << " TID=[" << getThreadID() << "] "
 		      << "Setting new better proxy for userdn ["
 		      << m_theJob.user_dn() << "] MyProxy server ["
 		      << m_theJob.myproxy_address() << "] Job ["
-		      << jobdesc 
-		      << "]"
-		      ); 
+		      << jobdesc  
+		      << "]" << endl;
+		      //); 
       iceUtil::DNProxyManager::getInstance()->setBetterProxy( m_theJob.user_dn(), 
 							      m_theJob.user_proxyfile(),
 							      m_theJob.myproxy_address(),
@@ -813,7 +826,8 @@ void IceCommandSubmit::handle_delegation( string& delegation,
       */
       if( m_theJob.isbproxy_time_end() > SBP.get<1>() ) {
 	boost::tuple<string, time_t, long long int> newPrx = boost::make_tuple( m_theJob.user_proxyfile(), m_theJob.isbproxy_time_end(), SBP.get<2>() );
-	CREAM_SAFE_LOG( m_log_dev->debugStream() << method_name << " TID=[" << getThreadID() << "] "
+	//CREAM_SAFE_LOG( m_log_dev->debugStream() << method_name 
+			edglog(debug) << " TID=[" << getThreadID() << "] "
 			<< "Updating better proxy for userdn ["
 			<< m_theJob.user_dn() << "] MyProxy server ["
 			<< m_theJob.myproxy_address() << "] Job ["
@@ -821,8 +835,8 @@ void IceCommandSubmit::handle_delegation( string& delegation,
 			<< "] Proxy Expiration time ["
 			<< newPrx.get<1>() << "] Counter ["
 			<< newPrx.get<2>()
-			<< "] because this one is more long-living..."
-			); 
+			<< "] because this one is more long-living..." << endl;
+			//); 
 	iceUtil::DNProxyManager::getInstance()->updateBetterProxy( m_theJob.user_dn(),
 								   m_theJob.myproxy_address(),
 								   newPrx );
@@ -861,16 +875,17 @@ bool IceCommandSubmit::register_job( const bool is_lease_enabled,
 				     cream_api::AbsCreamProxy::RegisterArrayResult& res)
   throw( BlackListFailJob_ex&, IceCommandTransientException&, IceCommandFatalException& )
 {
-  const char* method_name = "IceCommandSubmit::register_job() - ";
-
+  //const char* method_name = "IceCommandSubmit::register_job() - ";
+  edglog_fn("IceCommandSubmit::register_job");
   try {
     
-    CREAM_SAFE_LOG( m_log_dev->debugStream() << method_name << " TID=[" << getThreadID() << "] "
+    //CREAM_SAFE_LOG( m_log_dev->debugStream() << method_name 
+    		 edglog(debug)   << " TID=[" << getThreadID() << "] "
 		    << "Going to REGISTER Job ["
 		    << jobdesc << "] with delegation ID ["
 		    << delegation << "] to CREAM [" << m_theJob.cream_address()
-		    << "]..."
-		    );
+		    << "]..." << endl;
+		   // );
     
     cream_api::AbsCreamProxy::RegisterArrayRequest req;
     
@@ -922,12 +937,13 @@ bool IceCommandSubmit::register_job( const bool is_lease_enabled,
 
   } catch ( glite::ce::cream_client_api::cream_exceptions::DelegationException& ex ) {
     if ( !force_delegation ) {
-      CREAM_SAFE_LOG( m_log_dev->warnStream() << method_name << " TID=[" << getThreadID() << "] "
+     // CREAM_SAFE_LOG( m_log_dev->warnStream() << method_name 
+     		      edglog(warning) << " TID=[" << getThreadID() << "] "
 		      << "Cannot register GridJobID ["
 		      << _gid 
 		      << "] due to Delegation Exception: " 
-		      << ex.what() << ". Will retry once..."
-		      );
+		      << ex.what() << ". Will retry once..." << endl;
+//		      );
       force_delegation = true;
       return false;
     } else {
@@ -935,24 +951,26 @@ bool IceCommandSubmit::register_job( const bool is_lease_enabled,
     }
   } catch ( glite::ce::cream_client_api::cream_exceptions::GenericException& ex ) {
     if ( is_lease_enabled && !force_lease ) {
-      CREAM_SAFE_LOG( m_log_dev->warnStream() << method_name << " TID=[" << getThreadID() << "] "
+      //CREAM_SAFE_LOG( m_log_dev->warnStream() << method_name 
+      		      edglog(warning)<< " TID=[" << getThreadID() << "] "
 		      << "Cannot register GridJobID ["
 		      << _gid 
 		      << "] due to Generic Fault: " 
-		      << ex.what() << ". Will retry once by enforcing creation of a new lease ID..."
-		      );
+		      << ex.what() << ". Will retry once by enforcing creation of a new lease ID..." << endl;
+		     // );
       force_lease = true;
       return false;//continue;
     } else {
       throw( IceCommandTransientException( boost::str( boost::format( "CREAM Register raised GenericFault %1%") % ex.what() ) ) ); // Rethrow
     }                        
   } catch ( exception& ex ) {
-    CREAM_SAFE_LOG( m_log_dev->warnStream() << method_name << " TID=[" << getThreadID() << "] "
+    //CREAM_SAFE_LOG( m_log_dev->warnStream() << method_name 
+    		   edglog(warning) << " TID=[" << getThreadID() << "] "
 		    << "Cannot register GridJobID ["
 		    << _gid 
 		    << "] due to std::exception: " 
-		    << ex.what() << "."
-		    );
+		    << ex.what() << "." << endl;
+	//	    );
     throw( IceCommandTransientException( boost::str( boost::format( "CREAM Register raised std::exception %1%") % ex.what() ) ) ); // Rethrow
   } catch( ... ) {
     throw( IceCommandTransientException( "Unknown exception catched" ) );
@@ -969,8 +987,8 @@ void IceCommandSubmit::process_result( bool& retry,
 				       const cream_api::AbsCreamProxy::RegisterArrayResult& res )
   throw( IceCommandTransientException& )
 {
-  const char* method_name = "IceCommandSubmit::process_result() - ";
-
+  //const char* method_name = "IceCommandSubmit::process_result() - ";
+  edglog_fn("IceCommandSubmit::process_result");
   cream_api::JobIdWrapper::RESULT result = res.begin()->second.get<0>();
   string err = res.begin()->second.get<2>();
   
@@ -981,12 +999,13 @@ void IceCommandSubmit::process_result( bool& retry,
   case cream_api::JobIdWrapper::DELEGATIONIDMISMATCH:
   case cream_api::JobIdWrapper::DELEGATIONPROXYERROR:
     if ( !force_delegation ) {
-      CREAM_SAFE_LOG( m_log_dev->warnStream() << method_name << " TID=[" << getThreadID() << "] "
+      //CREAM_SAFE_LOG( m_log_dev->warnStream() << method_name 
+      		edglog(warning)	<< " TID=[" << getThreadID() << "] "
 		      << "Cannot register GridJobID ["
 		      << _gid 
 		      << "] due to Delegation Error: " 
-		      << err << ". Will retry once..."
-		      );
+		      << err << ". Will retry once..." << endl;
+		      //);
       force_delegation = true;
     } else {
       throw( IceCommandTransientException( boost::str( boost::format( "CREAM Register returned delegation error \"%1%\"") % err ) ) );
@@ -994,24 +1013,26 @@ void IceCommandSubmit::process_result( bool& retry,
     break;
   case cream_api::JobIdWrapper::LEASEIDMISMATCH:
     if ( is_lease_enabled && !force_lease ) {
-      CREAM_SAFE_LOG( m_log_dev->warnStream() << method_name << " TID=[" << getThreadID() << "] "
+     // CREAM_SAFE_LOG( m_log_dev->warnStream() << method_name 
+     		      edglog(warning)<< " TID=[" << getThreadID() << "] "
 		      << "Cannot register GridJobID ["
 		      << _gid 
 		      << "] due to Lease Error: " 
-		      << err << ". Will retry once by enforcing creation of a new lease ID..."
-		      );
+		      << err << ". Will retry once by enforcing creation of a new lease ID..." << endl;
+		     // );
       force_lease = true;
     } else {
       throw( IceCommandTransientException( boost::str( boost::format( "CREAM Register returned lease id mismatch \"%1%\"") % err ) ) );
     }     
     break;                               
   default:
-    CREAM_SAFE_LOG( m_log_dev->errorStream() << method_name << " TID=[" << getThreadID() << "] "
+    //CREAM_SAFE_LOG( m_log_dev->errorStream() << method_name 
+    		  edglog(error)  << " TID=[" << getThreadID() << "] "
 		    << "Error while registering GridJobID ["
 		    << _gid 
 		    << "] due to Error: " 
-		    << err
-		    );
+		    << err << endl;
+		    //);
     throw( IceCommandTransientException( boost::str( boost::format( "CREAM Register returned error \"%1%\"") % err ) ) ); 
   }
 }

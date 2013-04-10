@@ -34,9 +34,6 @@ END LICENSE */
 #include<string>
 #include<list>
 
-namespace log4cpp {
-  class Category;
-};
 
 namespace glite {
   namespace wms {
@@ -52,7 +49,7 @@ namespace glite {
 
 	class IceCommandStatusPoller : public IceAbstractCommand {
 
-          log4cpp::Category                           *m_log_dev;
+          //log4cpp::Category                           *m_log_dev;
           glite::wms::ice::util::IceLBLogger          *m_lb_logger;
           Main					      *m_iceManager;
 	  time_t                                       m_threshold;

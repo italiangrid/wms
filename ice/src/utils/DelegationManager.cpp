@@ -21,7 +21,7 @@ END LICENSE */
 #include "DelegationManager.h"
 #include "DNProxyManager.h"
 #include "CreamProxyMethod.h"
-#include "glite/ce/cream-client-api-c/creamApiLogger.h"
+//#include "glite/ce/cream-client-api-c/creamApiLogger.h"
 #include "glite/ce/cream-client-api-c/VOMSWrapper.h"
 #include "glite/ce/cream-client-api-c/certUtil.h"
 #include "glite/ce/cream-client-api-c/CreamProxyFactory.h"
@@ -42,6 +42,10 @@ END LICENSE */
 
 #include <boost/lexical_cast.hpp>
 
+#include "utils/logging.h"
+#include "glite/wms/common/logger/edglog.h"
+#include "glite/wms/common/logger/manipulators.h"
+
 namespace cream_api = glite::ce::cream_client_api::soap_proxy;
 namespace api_util = glite::ce::cream_client_api::util;
 using namespace glite::wms::ice;
@@ -55,7 +59,7 @@ typedef map<string, boost::tuple<string, string, time_t, int, string,bool,string
 
 //______________________________________________________________________________
 util::Delegation_manager::Delegation_manager( ) :
-    m_log_dev( api_util::creamApiLogger::instance()->getLogger()),
+//    m_log_dev( api_util::creamApiLogger::instance()->getLogger()),
     m_operation_count( 0 ),
     m_max_size( 1000 ), // FIXME: Hardcoded default
     m_operation_count_max( 2000 ) // FIXME: hardcoded default
@@ -79,13 +83,13 @@ util::Delegation_manager::delegate( const CreamJob& job,
   throw( std::exception& )
 {
     boost::recursive_mutex::scoped_lock L( s_mutex );
-    static const char* method_name = "Delegation_manager::delegate() - ";
-
+   // static const char* method_name = "Delegation_manager::delegate() - ";
+  edglog_fn("Delegation_manager::delegate");
     if( force )
-      CREAM_SAFE_LOG( m_log_dev->debugStream()
-		      << method_name
-		      << "WARNING: force_delegation is set to TRUE." 
-		      );  
+     // CREAM_SAFE_LOG( m_log_dev->debugStream()
+		    //  << method_name
+		    edglog(debug)  << "WARNING: force_delegation is set to TRUE." <<endl;
+		     // );  
 
     string myproxy_address = job.myproxy_address();
 
@@ -98,11 +102,11 @@ util::Delegation_manager::delegate( const CreamJob& job,
     string str_sha1_digest;
 
     if(USE_NEW) {
-      CREAM_SAFE_LOG( m_log_dev->debugStream()
-		      << method_name
-		      << "Using new delegation method, DNFQAN=[" 
-		      << job.user_dn() << "]"
-		      );  
+    //  CREAM_SAFE_LOG( m_log_dev->debugStream()
+		     // << method_name
+		    edglog(debug)  << "Using new delegation method, DNFQAN=[" 
+		      << job.user_dn() << "]" << endl;
+		      //);  
       str_sha1_digest = job.user_dn();
     }
     else {
@@ -110,17 +114,17 @@ util::Delegation_manager::delegate( const CreamJob& job,
     }
 
     
-    CREAM_SAFE_LOG( m_log_dev->debugStream()
-		    << method_name
+   // CREAM_SAFE_LOG( m_log_dev->debugStream()
+		   edglog(debug)  //<< method_name
 		    << "Searching for delegation with key [" 
 		    << str_sha1_digest << "] && CREAM_URL ["
-		    << cream_url << "]"
-		    );  
-
+		    << cream_url << "]"<< endl;
+		 //   );  
+//
     bool found = false;
     table_entry deleg_info("", "", 0, 0, "", "", 0, "");
     try {
-      db::GetDelegation getter( str_sha1_digest, cream_url, myproxy_address, method_name );
+      db::GetDelegation getter( str_sha1_digest, cream_url, myproxy_address, "Delegation_manager::delegate" );
       db::Transaction tnx(false, false);
       //tnx.begin();
       tnx.execute( &getter );
@@ -133,7 +137,7 @@ util::Delegation_manager::delegate( const CreamJob& job,
     
     if( force && found ) {
       try {
-	db::RemoveDelegation remover( str_sha1_digest, cream_url, myproxy_address, method_name );
+	db::RemoveDelegation remover( str_sha1_digest, cream_url, myproxy_address, "Delegation_manager::delegate" );
 	db::Transaction tnx(false, false);
 	tnx.execute( &remover );
       } catch( db::DbOperationException& ex ) {
@@ -154,9 +158,9 @@ util::Delegation_manager::delegate( const CreamJob& job,
       expiration_time = job.isbproxy_time_end(); 
       duration        = job.isbproxy_time_end() - time(0);
       
-        CREAM_SAFE_LOG( m_log_dev->debugStream()
-                        << method_name
-                        << "Creating new delegation "
+       // CREAM_SAFE_LOG( m_log_dev->debugStream()
+                     //   << method_name
+                     edglog(debug)     << "Creating new delegation "
                         << "with delegation id ["
                         << delegation_id
                         << "] CREAM URL ["
@@ -169,8 +173,8 @@ util::Delegation_manager::delegate( const CreamJob& job,
                         << str_sha1_digest
 			<< "] MyProxy Server ["
 			<< myproxy_address << "] Expiring on [" 
-			<< IceUtils::time_t_to_string( expiration_time ) << "]"
-                         );
+			<< IceUtils::time_t_to_string( expiration_time ) << "]" << endl;
+                       //  );
         
         try {
 	  // Gets the proxy expiration time
@@ -179,9 +183,9 @@ util::Delegation_manager::delegate( const CreamJob& job,
 	  CreamProxy_Delegate( cream_deleg_url, certfile, delegation_id ).execute( 3 );
         } catch( exception& ex ) {
 	  // Delegation failed
-	  CREAM_SAFE_LOG( m_log_dev->errorStream()
-			  << method_name
-			  << "FAILED Creation of a new delegation "
+	//  CREAM_SAFE_LOG( m_log_dev->errorStream()
+			 // << method_name
+			 edglog(error)   << "FAILED Creation of a new delegation "
 			  << "with delegation id ["
 			  << delegation_id
 			  << "] CREAM URL ["
@@ -194,14 +198,14 @@ util::Delegation_manager::delegate( const CreamJob& job,
 			  << str_sha1_digest
 			  << "] MyProxy Server ["
 			  << myproxy_address << "] - ERROR is: ["
-			  << ex.what() << "]"
-			  );
+			  << ex.what() << "]" << endl;
+			 // );
 	  throw runtime_error(ex.what());
         }  catch( ... ) {
             // Delegation failed
-            CREAM_SAFE_LOG( m_log_dev->errorStream()
-                            << method_name
-                            << "FAILED Creation of a new delegation "
+         //   CREAM_SAFE_LOG( m_log_dev->errorStream()
+                         //   << method_name
+                      edglog(error)        << "FAILED Creation of a new delegation "
                             << "with delegation id ["
                             << delegation_id
                             << "] CREAM URL ["
@@ -213,8 +217,8 @@ util::Delegation_manager::delegate( const CreamJob& job,
                             << "] proxy hash ["
                             << str_sha1_digest << "]"
 			    << " MyProxy Server ["
-			    << myproxy_address << "]"
-                             );
+			    << myproxy_address << "]" << endl;
+                          //   );
             throw runtime_error( "Delegation failed" );
         }     
         // Inserts the new delegation ID into the delegation set
@@ -230,7 +234,7 @@ util::Delegation_manager::delegate( const CreamJob& job,
 					job.user_dn(), 
 					USE_NEW, 
 					myproxy_address,
-					method_name);
+					"Delegation_manager::delegate");
 	  db::Transaction tnx(false, false);
 	  tnx.execute( &creator );
 	} catch( db::DbOperationException& ex ) {
@@ -248,18 +252,18 @@ util::Delegation_manager::delegate( const CreamJob& job,
       
  
 
-      CREAM_SAFE_LOG( m_log_dev->debugStream()
-		      << method_name
-		      << "FOUND delegation with key [" 
-		      << str_sha1_digest << "]"
-		      );
+      //CREAM_SAFE_LOG( m_log_dev->debugStream()
+		     // << method_name
+		  edglog(debug)    << "FOUND delegation with key [" 
+		      << str_sha1_digest << "]" << endl;
+		     // );
 
         // Delegation id FOUND. Returns it
         delegation_id   = deleg_info.m_delegation_id;
 
-        CREAM_SAFE_LOG( m_log_dev->debugStream()
-                        << method_name
-                        << "Using existing delegation id ["
+       // CREAM_SAFE_LOG( m_log_dev->debugStream()
+                       // << method_name
+                      edglog(debug)    << "Using existing delegation id ["
                         << delegation_id
                         << "] for CREAM URL ["
                         << cream_url
@@ -267,8 +271,8 @@ util::Delegation_manager::delegate( const CreamJob& job,
                         << cream_deleg_url
                         << "] user DN ["
                         << job.user_dn() <<"] MyProxy Server ["
-			<< myproxy_address << "]"
-                         );
+			<< myproxy_address << "]" << endl;
+                      //   );
     }
       
     //return make_pair(delegation_id, expiration_time);
@@ -283,14 +287,14 @@ void
 util::Delegation_manager::updateDelegation( const boost::tuple<string, time_t, int>& newDeleg )
   throw( std::exception& )
 {
-  const char* method_name = "Delegation_manager::updateDelegation() - ";
-
+  //const char* method_name = "Delegation_manager::updateDelegation() - ";
+edglog_fn("Delegation_manager::updateDelegation");
   boost::recursive_mutex::scoped_lock L( s_mutex );
   
   bool found = false;
   table_entry tb;
   try {
-    db::GetDelegationByID getter( newDeleg.get<0>(), method_name );
+    db::GetDelegationByID getter( newDeleg.get<0>(), "Delegation_manager::delegate" );
     db::Transaction tnx(false, false);
     //tnx.begin();
     tnx.execute( &getter );
@@ -303,25 +307,25 @@ util::Delegation_manager::updateDelegation( const boost::tuple<string, time_t, i
 
   if( found )
     {
-      CREAM_SAFE_LOG( m_log_dev->debugStream()
-		      << method_name
-		      << "Old Delegation was: ID=[" 
+      //CREAM_SAFE_LOG( m_log_dev->debugStream()
+		     // << method_name
+		     edglog(debug)   << "Old Delegation was: ID=[" 
 		      << tb.m_delegation_id << "] user_dn=["
 		      << tb.m_user_dn << "] expiration time=["
 		      << IceUtils::time_t_to_string(tb.m_expiration_time) << "] CEUrl=["
-		      << tb.m_cream_url << "]"
-		      );
+		      << tb.m_cream_url << "]" << endl;
+		    //  );
       
-      CREAM_SAFE_LOG( m_log_dev->debugStream()
-		      << method_name
-		      << "New Delegation id: ID=[" 
+      //CREAM_SAFE_LOG( m_log_dev->debugStream()
+		     // << method_name
+		     edglog(debug)   << "New Delegation id: ID=[" 
 		      << tb.m_delegation_id << "] user_dn=["
 		      << tb.m_user_dn << "] expiration time=["
 		      << IceUtils::time_t_to_string(newDeleg.get<1>()) << "] CEUrl=["
-		      << tb.m_cream_url << "]"
-		      );
+		      << tb.m_cream_url << "]" << endl;
+		    //  );
       try {
-	db::UpdateDelegationTimesByID updater( newDeleg.get<0>(), newDeleg.get<1>(), newDeleg.get<2>(), method_name );
+	db::UpdateDelegationTimesByID updater( newDeleg.get<0>(), newDeleg.get<1>(), newDeleg.get<2>(), "Delegation_manager::updateDelegation" );
 	db::Transaction tnx(false, false);
 	//tnx.begin_exclusive( );
 	tnx.execute( &updater );
@@ -337,12 +341,12 @@ void util::Delegation_manager::removeDelegation( const string& delegToRemove )
   throw( std::exception& )
 {
   boost::recursive_mutex::scoped_lock L( s_mutex );
-
-  CREAM_SAFE_LOG( m_log_dev->debugStream()
-		  << "Delegation_manager::removeDelegation() - "
+edglog_fn("Delegation_manager::removeDelegation");
+ // CREAM_SAFE_LOG( m_log_dev->debugStream()
+		 edglog(debug) 
 		  << "Removing Delegation ID [" 
-		  << delegToRemove << "]"
-		  );
+		  << delegToRemove << "]" << endl;
+		  //);
 
   try {
     db::RemoveDelegationByID remover( delegToRemove, "Delegation_manager::removeDelegation" );
@@ -361,13 +365,13 @@ void util::Delegation_manager::removeDelegation( const string& userDN,
   throw( std::exception& )
 {
   boost::recursive_mutex::scoped_lock L( s_mutex );
-
-  CREAM_SAFE_LOG( m_log_dev->debugStream()
-		  << "Delegation_manager::removeDelegation() - "
+  edglog_fn("Delegation_manager::removeDelegation");
+ // CREAM_SAFE_LOG( m_log_dev->debugStream()
+		 edglog(debug)  
 		  << "Removing Delegation for DN [" 
 		  << userDN << "] MyProxy URL ["
-		  << myproxyurl << "]"
-		  );
+		  << myproxyurl << "]" << endl;
+		//  );
 
   try {
     db::RemoveDelegationByDNMyProxy remover( userDN, myproxyurl, "Delegation_manager::removeDelegation" );
@@ -386,7 +390,7 @@ int util::Delegation_manager::getDelegationEntries( vector< table_entry >& targe
   throw( std::exception& )
 {
   boost::recursive_mutex::scoped_lock L( s_mutex );
-
+//edglog_fn("Delegation_manager::getDelegationEntries");
   vector< table_entry > allDelegations;
   try {
     db::GetAllDelegation getter( only_renewable,  "Delegation_manager::getDelegationEntries" );
@@ -417,12 +421,12 @@ void util::Delegation_manager::redelegate( const string& certfile,
 {
     boost::recursive_mutex::scoped_lock L( s_mutex );
 
-    static const char* method_name = "Delegation_manager::redelegate() - ";
-
+    //static const char* method_name = "Delegation_manager::redelegate() - ";
+edglog_fn("Delegation_manager::redelegate");
 
     bool found = false;
     try {
-      db::CheckDelegationByID checker( delegation_id, method_name );
+      db::CheckDelegationByID checker( delegation_id, "Delegation_manager::redelegate" );
       db::Transaction tnx(false, false);
       //tnx.begin();
       tnx.execute( &checker );
@@ -432,10 +436,10 @@ void util::Delegation_manager::redelegate( const string& certfile,
     }
 
     if(!found) {
-      CREAM_SAFE_LOG( m_log_dev->fatalStream() << method_name
-		      << "Could not find delegaion id ["
-		      << delegation_id << "]. Giving up"
-		      );
+    //  CREAM_SAFE_LOG( m_log_dev->fatalStream() << method_name
+		    edglog(fatal)  << "Could not find delegaion id ["
+		      << delegation_id << "]. Giving up" << endl;
+		   //   );
       abort(); // FIXME
     }
 
@@ -443,27 +447,27 @@ void util::Delegation_manager::redelegate( const string& certfile,
         CreamProxy_Delegate( delegation_url, certfile, delegation_id ).execute( 3 );
     } catch( exception& ex ) {
         // Delegation failed. Ignore it, it is supposed to fail
-        CREAM_SAFE_LOG( m_log_dev->warnStream() << method_name
-                        << "Redelegation failed (as probably expected) "
+      //  CREAM_SAFE_LOG( m_log_dev->warnStream() << method_name
+                  edglog(warning)      << "Redelegation failed (as probably expected) "
                         << "with delegation id "
                         << delegation_id
                         << " Delegation URL "
                         << delegation_url
                         << " - ERROR is: ["
                         << ex.what() << "]. "
-                        << "This error will be ignored"
-                        );
+                        << "This error will be ignored" << endl;
+                      //  );
         // ignore error
     }  catch( ... ) {
-        CREAM_SAFE_LOG( m_log_dev->warnStream() << method_name
-                        << "Redelegation failed (as probably expected) "
+       // CREAM_SAFE_LOG( m_log_dev->warnStream() << method_name
+                  edglog(warning)      << "Redelegation failed (as probably expected) "
                         << "with delegation id "
                         << delegation_id
                         << " Delegation URL "
                         << delegation_url
                         << " - Unknown exception. " 
-                        << "This error will be ignored"
-                        );
+                        << "This error will be ignored" << endl;
+                      //  );
         // throw runtime_error( "Delegation failed" );
     }     
 

@@ -34,7 +34,7 @@ END LICENSE */
  * CE and WMS Headers
  *
  */
-#include "glite/ce/cream-client-api-c/creamApiLogger.h"
+//#include "glite/ce/cream-client-api-c/creamApiLogger.h"
 #include "glite/wms/common/configuration/Configuration.h"
 #include "common/src/configuration/ICEConfiguration.h"
 
@@ -52,14 +52,23 @@ END LICENSE */
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include "utils/logging.h"
+#include "glite/wms/common/logger/edglog.h"
+#include "glite/wms/common/logger/manipulators.h"
+
+// Logging
+//#include "utilities/logging.h"
+//#include "glite/wms/common/logger/edglog.h"
+//#include "glite/wms/common/logger/manipulators.h"
 
 using namespace glite::wms::ice;
 using namespace std;
+//namespace logger        = glite::wms::common::logger;
 
 //______________________________________________________________________________
 threads::DelegationRenewal::DelegationRenewal() :
-    IceThread( "ICE Proxy Renewer" ),
-    m_log_dev( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger() )
+    IceThread( "ICE Proxy Renewer" )
+    //m_log_dev( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger() )
 {
   m_delay = IceConfManager::instance()->getConfiguration()->ice()->proxy_renewal_frequency();
 }
@@ -68,10 +77,11 @@ threads::DelegationRenewal::DelegationRenewal() :
 //______________________________________________________________________________
 void threads::DelegationRenewal::body( void )
 {
+  edglog_fn("DelegationRenewal::body");
     while( !isStopped() ) {        
-        CREAM_SAFE_LOG(m_log_dev->infoStream()
-                       << "DelegationRenewal::body() - new iteration"
-                       );
+        //CREAM_SAFE_LOG(m_log_dev->infoStream()
+                      edglog(info) << "DelegationRenewal::body() - new iteration"<<endl;
+                       //);
         
 	IceCommandDelegationRenewal().execute( "" );
 
@@ -85,8 +95,6 @@ void threads::DelegationRenewal::body( void )
 	  }
 	  
 	}
-	
-        //sleep( m_delay );
     }
 }
 

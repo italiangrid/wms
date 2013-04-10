@@ -41,9 +41,9 @@ END LICENSE */
 #include <openssl/sha.h> // for using SHA1
 
 
-namespace log4cpp {
-    class Category;
-}
+//namespace log4cpp {
+//    class Category;
+//}
 
 namespace glite {
 namespace wms {
@@ -69,7 +69,7 @@ namespace util {
         static Delegation_manager* s_instance;
         static boost::recursive_mutex s_mutex;
 
-        log4cpp::Category* m_log_dev;
+        //log4cpp::Category* m_log_dev;
         unsigned int m_operation_count;
         const size_t m_max_size; ///< Maximum size of the delegation cache
         const unsigned int m_operation_count_max;

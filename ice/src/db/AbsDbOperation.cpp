@@ -22,8 +22,11 @@ END LICENSE */
 #include "utils/IceUtils.h"
 #include "boost/format.hpp"
 #include "boost/algorithm/string.hpp"
-#include "glite/ce/cream-client-api-c/creamApiLogger.h"
+//#include "glite/ce/cream-client-api-c/creamApiLogger.h"
 #include "glite/ce/cream-client-api-c/scoped_timer.h"
+#include "utils/logging.h"
+#include "glite/wms/common/logger/edglog.h"
+#include "glite/wms/common/logger/manipulators.h"
 
 #include <iostream>
 
@@ -36,7 +39,7 @@ void db::AbsDbOperation::do_query( sqlite3* db, const string& _sqlcmd, sqlite_ca
 
   string encoded_sql( _sqlcmd );
   boost::replace_all( encoded_sql, "'", "''" );
-  
+  edglog_fn("AbsDbOperation::do_query");
   boost::replace_all( encoded_sql, util::IceUtils::get_tmp_name(), "'" );
 
     char* errMsg; 
@@ -45,13 +48,13 @@ void db::AbsDbOperation::do_query( sqlite3* db, const string& _sqlcmd, sqlite_ca
     int s = 2;
     
     if(::getenv("GLITE_WMS_ICE_PRINT_QUERY") )
-    	CREAM_SAFE_LOG(
-		 	api_util::creamApiLogger::instance()->getLogger()->debugStream()
-			<< "AbsDbOperation::do_query - "
+    	//CREAM_SAFE_LOG(
+		 	//api_util::creamApiLogger::instance()->getLogger()->debugStream()
+			edglog(debug)
 			<< "CALLER=["
 			<< get_caller()
 			<< "] is executing query ["
-			<< encoded_sql << "]");
+			<< encoded_sql << "]" << endl;//);
 
 //    cout << "\nSQL=[" << encoded_sql << "]" <<endl<<endl;
 
@@ -76,9 +79,9 @@ void db::AbsDbOperation::do_query( sqlite3* db, const string& _sqlcmd, sqlite_ca
 	//cout << "retrying... " << s << endl;
 	
 	if(retry > 4) {
-	  CREAM_SAFE_LOG(
-		 	api_util::creamApiLogger::instance()->getLogger()->fatalStream()
-			<< "AbsDbOperation::do_query - " << error);
+	  //CREAM_SAFE_LOG(
+		 	//api//_util::creamApiLogger::instance()->getLogger()->fatalStream()
+			edglog(fatal) << error <<endl; //);
 	  exit(1);
           //throw DbOperationException( error );
 	}

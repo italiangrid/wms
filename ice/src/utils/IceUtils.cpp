@@ -55,9 +55,13 @@ END LICENSE */
 #include "common/src/configuration/NSConfiguration.h"
 
 #include "glite/ce/cream-client-api-c/scoped_timer.h"
-#include "glite/ce/cream-client-api-c/creamApiLogger.h"
+//#include "glite/ce/cream-client-api-c/creamApiLogger.h"
 #include "glite/ce/cream-client-api-c/certUtil.h"
 #include "glite/ce/cream-client-api-c/CEUrl.h"
+
+#include "utils/logging.h"
+#include "glite/wms/common/logger/edglog.h"
+#include "glite/wms/common/logger/manipulators.h"
 
 #include "classad_distribution.h"
 
@@ -135,8 +139,9 @@ glite::wms::ice::util::IceUtils::ignore_job( const string& CID,
   try {
     //if(tmp_job.token_file().empty())
     //  return false;
-  
-    glite::wms::ice::db::GetJobByCid getter( CID, "iceCommandEventQuery::processEventsForJob" );
+    edglog_fn("IceUtils::ignore_job");
+    
+    glite::wms::ice::db::GetJobByCid getter( CID, "IceUtils::ignore_job" );
     glite::wms::ice::db::Transaction tnx(false, false);
     tnx.execute( &getter );
     if( !getter.found() )
@@ -174,10 +179,10 @@ glite::wms::ice::util::IceUtils::ignore_job( const string& CID,
     }
     return false;
   } catch(std::out_of_range& ex) {
-    CREAM_SAFE_LOG(
-		   api_util::creamApiLogger::instance()->getLogger()->warnStream() 
-		   << "IceUtils::ignore_job - CATCHED out_of_range exception. Job will not be ignored by caller..."
-		   );
+    //CREAM_SAFE_LOG(
+		//   api_util::creamApiLogger::instance()->getLogger()->warnStream() 
+		edglog(warning)   << "CATCHED out_of_range exception. Job will not be ignored by caller..." <<endl;
+	//	   );
     return false;
   }
 }
@@ -189,12 +194,13 @@ glite::wms::ice::util::IceUtils::exists_subsequent_token( const string& _token_f
   
   string token_file( _token_file );
   
+  edglog_fn("IceUtils::exists_subsequent_token");
   
-  CREAM_SAFE_LOG(
-		   api_util::creamApiLogger::instance()->getLogger()->debugStream() 
-		   << "utilities::exists_subsequent_token - Checking subsequent token files of [" 
-		   << token_file << "]"
-		   );
+  //CREAM_SAFE_LOG(
+	//	   api_util::creamApiLogger::instance()->getLogger()->debugStream() 
+		edglog(debug)   << "Checking subsequent token files of [" 
+		   << token_file << "]" <<endl;
+//		   );
 
   string base_token_file( basename( (char*)token_file.c_str() ) );
   
@@ -215,11 +221,11 @@ glite::wms::ice::util::IceUtils::exists_subsequent_token( const string& _token_f
   try {
     for( boost::filesystem::directory_iterator i( tokPath ); i != end_itr; ++i ) {
       if( boost::regex_match( i->leaf(), my_filter ) ) {
-        CREAM_SAFE_LOG(
-		   api_util::creamApiLogger::instance()->getLogger()->debugStream() 
-		   << "utilities::exists_subsequent_token - FOUND TOKEN FILE [" 
-		   << i->string() << "]"
-		   );
+        //CREAM_SAFE_LOG(
+		  // api_util::creamApiLogger::instance()->getLogger()->debugStream() 
+		  edglog(debug) << "FOUND TOKEN FILE [" 
+		   << i->string() << "]" << endl;
+		//   );
         new_token = i->string();
         return true;
       }
@@ -227,10 +233,10 @@ glite::wms::ice::util::IceUtils::exists_subsequent_token( const string& _token_f
     
   
   } catch( exception& ex ) {
-    CREAM_SAFE_LOG(
- 		   api_util::creamApiLogger::instance()->getLogger()->errorStream() 
- 		   << "utilities::exists_subsequent_token - " << ex.what()   
- 		   );
+    //CREAM_SAFE_LOG(
+ 		//   api_util::creamApiLogger::instance()->getLogger()->errorStream() 
+ 		  edglog(error)  << ex.what() << endl;  
+ 	//	   );
      return false;
   }
   
@@ -303,7 +309,10 @@ void glite::wms::ice::util::IceUtils::cream_jdl_helper( const string& oldJdl,
 int glite::wms::ice::util::IceUtils::update_isb_list( classad::ClassAd* jdl )
 { 
   // synchronized block because the caller is Classad-mutex synchronized
-  const static char* method_name = "iceCommandSubmit::updateIsbList() - ";
+  //const static char* method_name = "iceCommandSubmit::updateIsbList() - ";
+  
+  edglog_fn("IceUtils::update_isb_list");
+  
   string default_isbURI = "gsiftp://";
   default_isbURI.append( get_host_name() );
   default_isbURI.push_back( '/' );
@@ -311,11 +320,11 @@ int glite::wms::ice::util::IceUtils::update_isb_list( classad::ClassAd* jdl )
   if ( jdl->EvaluateAttrString( "InputSandboxPath", isbPath ) ) {
     default_isbURI.append( isbPath );
   } else {
-    CREAM_SAFE_LOG( api_util::creamApiLogger::instance()->getLogger()->warnStream() << method_name
-		    << "\"InputSandboxPath\" attribute in the JDL. "
-		    << "Hope this is correct..."
+    //CREAM_SAFE_LOG( api_util::creamApiLogger::instance()->getLogger()->warnStream() << method_name
+		edglog(warning)    << "\"InputSandboxPath\" attribute in the JDL. "
+		    << "Hope this is correct..." << endl;
 			    
-		    );     
+	//	    );     
   }
 	  
   // If the InputSandboxBaseURI attribute is defined, remove it
@@ -372,9 +381,9 @@ int glite::wms::ice::util::IceUtils::update_isb_list( classad::ClassAd* jdl )
 	  break;
 	}                
       }
-      CREAM_SAFE_LOG(api_util::creamApiLogger::instance()->getLogger()->debugStream() << method_name
-		     << s << " became " << newPath
-		     );
+      //CREAM_SAFE_LOG(api_util::creamApiLogger::instance()->getLogger()->debugStream() << method_name
+		 edglog( debug )   << s << " became " << newPath << endl;
+	//	     );
 	      
       // Builds a new value
       classad::Value newV;
@@ -399,6 +408,8 @@ int glite::wms::ice::util::IceUtils::update_osb_list( classad::ClassAd* jdl )
   if ( 0 == jdl->Lookup( "OutputSandbox" ) )
     return 1;
 	  
+  edglog_fn("IceUtils::update_osb_list");  
+	 
   string default_osbdURI = "gsiftp://";
   default_osbdURI.append( get_host_name() );
   default_osbdURI.push_back( '/' );
@@ -406,11 +417,11 @@ int glite::wms::ice::util::IceUtils::update_osb_list( classad::ClassAd* jdl )
   if ( jdl->EvaluateAttrString( "OutputSandboxPath", osbPath ) ) {
     default_osbdURI.append( osbPath );
   } else {
-    CREAM_SAFE_LOG(api_util::creamApiLogger::instance()->getLogger()->warnStream()
-		   << "util::updateOsbList() - found no "
+    //CREAM_SAFE_LOG(api_util::creamApiLogger::instance()->getLogger()->warnStream()
+		  edglog(warning) << "found no "
 		   << "\"OutputSandboxPath\" attribute in the JDL. "
-		   << "Hope this is correct..."
-		   );        
+		   << "Hope this is correct..." << endl;
+		   	//	   );        
   }
 	  
   if ( 0 != jdl->Lookup( "OutputSandboxDestURI" ) ) {
@@ -458,10 +469,10 @@ int glite::wms::ice::util::IceUtils::update_osb_list( classad::ClassAd* jdl )
 	  }                
 	}
 		
-	CREAM_SAFE_LOG(api_util::creamApiLogger::instance()->getLogger()->debugStream()
-		       << "util::updateOsbList() - After input sandbox manipulation, "
-		       << s << " became " << newPath
-		       );        
+	//CREAM_SAFE_LOG(api_util::creamApiLogger::instance()->getLogger()->debugStream()
+		      edglog(debug) << "After input sandbox manipulation, "
+		       << s << " became " << newPath << endl;
+		      // );        
 		
 	// Builds a new value
 	classad::Value newV;
@@ -494,15 +505,17 @@ glite::wms::ice::util::pathName::pathName( const string& p ) :
   m_fullName( p ),
   m_pathType( invalid )
 {
+  edglog_fn("pathName::pathName");
+
   boost::regex uri_match( "gsiftp://[^/]+(:[0-9]+)?/([^/]+/)*([^/]+)" );
   boost::regex rel_match( "([^/]+/)*([^/]+)" );
   boost::regex abs_match( "(file://)?/([^/]+/)*([^/]+)" );
   boost::smatch what;
 	  
-  CREAM_SAFE_LOG(
-		 api_util::creamApiLogger::instance()->getLogger()->debugStream()
-		 << "util::pathName::CTOR() - Trying to unparse " << p
-		 );
+//  CREAM_SAFE_LOG(
+//		 api_util::creamApiLogger::instance()->getLogger()->debugStream()
+	edglog(debug)	 << "Trying to unparse " << p << endl;
+//		 );
 	  
   if ( boost::regex_match( p, what, uri_match ) ) {
     // is a uri
@@ -532,26 +545,27 @@ glite::wms::ice::util::pathName::pathName( const string& p ) :
     m_pathName.append( m_fileName );
   }
 	  
-  CREAM_SAFE_LOG(
-		 api_util::creamApiLogger::instance()->getLogger()->debugStream()
-		 << "util::pathName::CTOR() - "
+  //CREAM_SAFE_LOG(
+		// api_util::creamApiLogger::instance()->getLogger()->debugStream()
+		edglog( debug) 
 		 << "Unparsed as follows: filename=[" 
 		 << m_fileName << "] pathname=["
-		 << m_pathName << "]"
-		 );
+		 << m_pathName << "]" << endl;
+		// );
 	  
 }
 
 //______________________________________________________________________________
 pair<bool, time_t> glite::wms::ice::util::IceUtils::is_good_proxy( const std::string& proxyfile ) throw() {
   X509* x;
+  edglog_fn("IceUtils::is_good_proxy");
   try {
     x = glite::ce::cream_client_api::certUtil::read_BIO(proxyfile);
   } catch(glite::ce::cream_client_api::soap_proxy::auth_ex& ex) {
-    CREAM_SAFE_LOG(
-		   api_util::creamApiLogger::instance()->getLogger()->errorStream()
-		   << "util::isgood() - " << ex.what();
-		   )
+//    CREAM_SAFE_LOG(
+//		   api_util::creamApiLogger::instance()->getLogger()->errorStream()
+		   edglog(error) << ex.what()<<endl;
+//		   )
       return make_pair(false, (time_t)0);
   }
 	  
@@ -569,10 +583,10 @@ pair<bool, time_t> glite::wms::ice::util::IceUtils::is_valid_proxy( const std::s
   try {
     x = glite::ce::cream_client_api::certUtil::read_BIO(proxyfile);
   } catch(glite::ce::cream_client_api::soap_proxy::auth_ex& ex) {
-    CREAM_SAFE_LOG(
-		   api_util::creamApiLogger::instance()->getLogger()->errorStream()
-		   << "util::isvalid() - " << ex.what();
-		   )
+//    CREAM_SAFE_LOG(
+//		   api_util::creamApiLogger::instance()->getLogger()->errorStream()
+		   edglog(error)<< ex.what() << endl;
+//		   )
       return make_pair(false, (time_t)0);
   }
 	  
@@ -616,8 +630,10 @@ string glite::wms::ice::util::IceUtils::bin_to_string( unsigned char* buf, size_
 	
 //______________________________________________________________________________
 string glite::wms::ice::util::IceUtils::compute_sha1_digest( const string& proxyfile ) throw(runtime_error&) {
-  static const char* method_name = "util::computeSHA1Digest() - ";
-	  
+  //static const char* method_name = "util::computeSHA1Digest() - ";
+  
+  edglog_fn("IceUtils::compute_sha1_digest");
+  	  
   unsigned char bin_sha1_digest[SHA_DIGEST_LENGTH];
   char buffer[ 1024 ]; // buffer for file data
   SHA_CTX ctx;
@@ -628,11 +644,11 @@ string glite::wms::ice::util::IceUtils::compute_sha1_digest( const string& proxy
 	  
   if ( fd < 0 ) {
     int saveerr = errno;
-    CREAM_SAFE_LOG( api_util::creamApiLogger::instance()->getLogger()->errorStream()
-		    << method_name
-		    << "Cannot open proxy file ["
-		    << proxyfile << "]: " << strerror(saveerr)
-		    );  
+    //CREAM_SAFE_LOG( api_util::creamApiLogger::instance()->getLogger()->errorStream()
+		    //<< method_name
+		    edglog(error)<< "Cannot open proxy file ["
+		    << proxyfile << "]: " << strerror(saveerr) << endl;
+		    //);  
     throw runtime_error( string( "Cannot open proxy file [" + proxyfile + "]: " + strerror(saveerr) ) );
   }
 	  

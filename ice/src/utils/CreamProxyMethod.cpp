@@ -23,11 +23,15 @@ END LICENSE */
 #include "common/src/configuration/ICEConfiguration.h"
 
 #include "CreamProxyMethod.h"
-#include "glite/ce/cream-client-api-c/creamApiLogger.h"
+//#include "glite/ce/cream-client-api-c/creamApiLogger.h"
 #include "IceConfManager.h"
 #include "BlackListFailJob_ex.h"
 
 #include <boost/scoped_ptr.hpp>
+
+#include "utils/logging.h"
+#include "glite/wms/common/logger/edglog.h"
+#include "glite/wms/common/logger/manipulators.h"
 
 namespace soap_proxy = glite::ce::cream_client_api::soap_proxy;
 namespace cream_ex = glite::ce::cream_client_api::cream_exceptions;
@@ -46,8 +50,9 @@ CreamProxyMethod::CreamProxyMethod( const string& creamurl, const bool honor_bla
 
 void CreamProxyMethod::execute( int ntries ) // can throw anything
 {
-    static const char* method_name = "CreamProxyMethod::execute() - ";
-    log4cpp::Category* m_log_dev( api_util::creamApiLogger::instance()->getLogger() );
+    //static const char* method_name = "CreamProxyMethod::execute() - ";
+    edglog_fn("CreamProxyMethod::execute");
+    //log4cpp::Category* m_log_dev( api_util::creamApiLogger::instance()->getLogger() );
     bool do_retry = true;
     int retry_count = 1;
     int conn_timeout = IceConfManager::instance()->getConfiguration()->ice()->soap_timeout(); // Timeout to set for each try
@@ -73,25 +78,25 @@ void CreamProxyMethod::execute( int ntries ) // can throw anything
             do_retry = false; // if everything goes well, do not retry
         } catch( cream_ex::ConnectionTimeoutException& ex ) {
             if ( retry_count < ntries ) {
-                CREAM_SAFE_LOG( m_log_dev->warnStream()
-                                << method_name 
+                //CREAM_SAFE_LOG( m_log_dev->warnStream()
+                               edglog(warning) //<< method_name 
                                 << "Connection timed out to CREAM [" << m_service<<" ]: \""
                                 << ex.what()
                                 << "\" on try " << retry_count << "/" << ntries
-                                << ". Trying again in " << delay << " sec..."
-                                 );
+                                << ". Trying again in " << delay << " sec..." << endl;
+                               //  );
                 do_retry = true; // superfluous
                 sleep( delay );
                 delay += 2; // increments delay for each try
                 conn_timeout += conn_timeout_delta;
             } else {
-                CREAM_SAFE_LOG( m_log_dev->errorStream()
-                                << method_name << "Connection timed out to CREAM: \""
+              //  CREAM_SAFE_LOG( m_log_dev->errorStream()
+                              edglog(error)<< "Connection timed out to CREAM: \""
                                 << ex.what()
                                 << "\" on try " << retry_count << "/" << ntries
                                 << ". Blacklisting endpoint [" 
-				<< m_service << "] and giving up."
-                                 );
+				<< m_service << "] and giving up." << endl;
+                                // );
                 m_blacklist->blacklist_endpoint( m_service );
 		if (IceConfManager::instance()->getConfiguration()->ice()->fail_job_blacklisted_ce()) {
 	          // FAIL THE JOB!!

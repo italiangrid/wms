@@ -36,7 +36,7 @@ END LICENSE */
  * Cream Client API C++ Headers
  *
  */
-#include "glite/ce/cream-client-api-c/creamApiLogger.h"
+//#include "glite/ce/cream-client-api-c/creamApiLogger.h"
 #include "glite/ce/cream-client-api-c/CEUrl.h"
 #include "glite/ce/cream-client-api-c/VOMSWrapper.h"
 
@@ -55,6 +55,10 @@ END LICENSE */
 
 #include <boost/algorithm/string/predicate.hpp>
 
+#include "utils/logging.h"
+#include "glite/wms/common/logger/edglog.h"
+#include "glite/wms/common/logger/manipulators.h"
+
 namespace cream_api = glite::ce::cream_client_api;
 
 using namespace std;
@@ -65,7 +69,7 @@ using namespace glite::wms::ice::util;
 //______________________________________________________________________________
 IceCommandDelegationRenewal::IceCommandDelegationRenewal( ) :
     IceAbstractCommand( "iceCommandDelegationRenewal", "" ),
-    m_log_dev( cream_api::util::creamApiLogger::instance()->getLogger() ),
+    //m_log_dev( cream_api::util::creamApiLogger::instance()->getLogger() ),
     m_ctx( NULL )
 {
 }
@@ -98,8 +102,8 @@ void IceCommandDelegationRenewal::execute( const std::string& tid ) throw()
 //______________________________________________________________________________
 void IceCommandDelegationRenewal::renewAllDelegations( void ) throw() 
 {
-    static const char* method_name = "IceCommandDelegationRenewal::renewAllDelegations() - ";
-    
+    //static const char* method_name = "IceCommandDelegationRenewal::renewAllDelegations() - ";
+    edglog_fn("IceCommandDelegationRenewal::renewAllDelegations");
     /**
        Now, let's check all delegations for expiration and renew them
     */
@@ -110,10 +114,10 @@ void IceCommandDelegationRenewal::renewAllDelegations( void ) throw()
     
     map<string, pair<time_t, int> > mapDelegTime; // delegationID -> (Expiration time, Absolute Duration)
     
-    CREAM_SAFE_LOG( m_log_dev->debugStream() << method_name
-                    << "There are [" << alldeleg_size
-                    << "] Delegation(s) to check..."
-                    );
+    //CREAM_SAFE_LOG( m_log_dev->debugStream() << method_name
+               edglog(debug)     << "There are [" << alldeleg_size
+                    << "] Delegation(s) to check..." << endl;
+                    //);
     
     if( alldeleg_size == 0 ) return;
     
@@ -133,13 +137,13 @@ void IceCommandDelegationRenewal::renewAllDelegations( void ) throw()
 	if( (remainingTime > 0.2 * thisDuration) && 
 	    (remainingTime > DELEGATION_EXPIRATION_THRESHOLD_TIME) )
 	  {
-	    CREAM_SAFE_LOG( m_log_dev->debugStream() << method_name
-			    << "Delegation ID ["
+	    //CREAM_SAFE_LOG( m_log_dev->debugStream() << method_name
+			edglog(debug)    << "Delegation ID ["
 			    << thisDelegID << "] will expire in ["
 			    << remainingTime << "] seconds (on ["
 			    << IceUtils::time_t_to_string(thisExpTime) << "]). Duration is ["
-			    << thisDuration << "] seconds. Will NOT renew it now..."
-			    );
+			    << thisDuration << "] seconds. Will NOT renew it now..." << endl;
+			   // );
 	    mapDelegTime.erase( thisDelegID );
 	    continue;
 	    
@@ -153,22 +157,22 @@ void IceCommandDelegationRenewal::renewAllDelegations( void ) throw()
 	boost::tuple<string, time_t, long long int> SBP( DNProxyManager::getInstance()->getExactBetterProxyByDN(it->m_user_dn, it->m_myproxyserver) );
 	string certfile( SBP.get<0>() );
 	if( certfile.empty() ) {
-	  CREAM_SAFE_LOG( m_log_dev->errorStream() << method_name
-			  << "There is NOT a better proxy for user [" 
+	 // CREAM_SAFE_LOG( m_log_dev->errorStream() << method_name
+			edglog(error)  << "There is NOT a better proxy for user [" 
 			  << it->m_user_dn << "] related to current delegation id to check [" 
-			  << it->m_delegation_id <<"]. Skipping this delegation renewal check..."
-			  );
+			  << it->m_delegation_id <<"]. Skipping this delegation renewal check..." << endl;
+			 // );
 	  mapDelegTime.erase( thisDelegID );
 	  continue;
 	}
 	int timeout = IceConfManager::instance()->getConfiguration()->ice( )->proxy_renewal_timeout( );
 	string timeoutStr( boost::lexical_cast<string>(timeout) );
-	CREAM_SAFE_LOG( m_log_dev->debugStream() << method_name
-			<< "Contacting MyProxy server [" 
+	//CREAM_SAFE_LOG( m_log_dev->debugStream() << method_name
+			edglog(debug)<< "Contacting MyProxy server [" 
 			<< it->m_myproxyserver << "] for user dn ["
 			<< it->m_user_dn << "] with proxy certificate ["
-			<< certfile << "] to renew it..."
-			);
+			<< certfile << "] to renew it..." << endl;
+			//);
 
         string newcert = certfile+".renewed";
 
@@ -195,22 +199,22 @@ void IceCommandDelegationRenewal::renewAllDelegations( void ) throw()
 
 	pid_t renewal_process_pid = fork();
 	if(renewal_process_pid == -1 ) {
-	  CREAM_SAFE_LOG( m_log_dev->errorStream() << method_name
-			  << "fork returned error: [" 		  
+	//  CREAM_SAFE_LOG( m_log_dev->errorStream() << method_name
+			edglog(error)  << "fork returned error: [" 		  
 			  << strerror(errno) << "]"
 			  << ". Cannot get a fresh proxy for user ["
-			  << it->m_user_dn << "]."
-			  );
+			  << it->m_user_dn << "]." << endl;
+			 // );
 	} else {
 	  if(renewal_process_pid == 0 ) {
 	    // child that has to do execve
 	    ::execve( "/usr/bin/glite-wms-ice-proxy-renew", renewal_args, renewal_envs );
-	    CREAM_SAFE_LOG( m_log_dev->errorStream() << method_name
-			  << "execve returned error: [" 		  
+	  ///  CREAM_SAFE_LOG( m_log_dev->errorStream() << method_name
+			edglog(error)  << "execve returned error: [" 		  
 			  << strerror(errno) << "]"
 			  << ". Cannot get a fresh proxy for user ["
-			  << it->m_user_dn << "]."
-			  );
+			  << it->m_user_dn << "]." << endl;
+			//  );
 	  } else {
 	    // parent that has to wait for the child termination
 	    int status;
@@ -232,10 +236,10 @@ void IceCommandDelegationRenewal::renewAllDelegations( void ) throw()
 	       *
 	       */
 	      if(boost::starts_with(renewal_command_output, "ERROR")) {
-	        CREAM_SAFE_LOG( m_log_dev->errorStream() << method_name
-			        << "Proxy renewal failed: [" 		  
-			        << renewal_command_output << "]"
-			      );
+	      //  CREAM_SAFE_LOG( m_log_dev->errorStream() << method_name
+			 edglog(error)       << "Proxy renewal failed: [" 		  
+			        << renewal_command_output << "]" << endl;
+			    //  );
 	      }
 	      
 	      /**
@@ -244,27 +248,27 @@ void IceCommandDelegationRenewal::renewAllDelegations( void ) throw()
 	       *
 	       */
 	      if(boost::starts_with(renewal_command_output, "OK")) {
-	        CREAM_SAFE_LOG( m_log_dev->debugStream() << method_name
-			    << "Proxy renewal successful for DN=["
+	      //  CREAM_SAFE_LOG( m_log_dev->debugStream() << method_name
+			 edglog(debug)   << "Proxy renewal successful for DN=["
 			    << it->m_user_dn
 			    <<"] MyProxyURL=["
 			    << it->m_myproxyserver
 			    << "]: new proxy is [" 		  
-			    << newcert << "]. It will overwrite the better one..."
-			    );
+			    << newcert << "]. It will overwrite the better one..." << endl;
+			 //   );
 	        /**
 	           Must substitute old better proxy with new downloaded one, if it's more long-living 
 	         */
 	        cream_api::soap_proxy::VOMSWrapper V( certfile + ".renewed", !::getenv("GLITE_WMS_ICE_DISABLE_ACVER") );
 	        if( !V.IsValid( ) ) {
-	          CREAM_SAFE_LOG(m_log_dev->errorStream() 
-		   	     << method_name
+	         // CREAM_SAFE_LOG(m_log_dev->errorStream() 
+		   	  edglog(error)   
 			     << "Cannot parse downloaded new proxy ["
 			     << certfile + ".renewed" << "] from MyProxy Service ["
 			     << it->m_myproxyserver << "]. Error is: "
-			     << V.getErrorMessage()
-			     );
-	      
+			     << V.getErrorMessage() << endl;
+			    // );
+	      //
 	        } else {
 	      
 	        /** SUBSTITUTE old better proxy with downloaded one. 
@@ -281,98 +285,6 @@ void IceCommandDelegationRenewal::renewAllDelegations( void ) throw()
 	  }
 
 	}
-	
-	/**
-	 *
-	 * CODE to POPEN to glite-wms-ice-proxy-renew
-	 *
-	 */
-// 	string output;
-// 	string command = "export X509_USER_CERT=" + IceConfManager::instance()->getConfiguration()->common()->host_proxy_file();
-// 	command += "; export X509_USER_KEY=" + IceConfManager::instance()->getConfiguration()->common()->host_proxy_file();
-//         timeout = IceConfManager::instance()->getConfiguration()->ice( )->proxy_renewal_timeout( );
-// 	command += "; /usr/bin/glite-wms-ice-proxy-renew --timeout " + boost::lexical_cast<string>(timeout);
-// 	command += " -s " + it->m_myproxyserver;
-// 	command += " -p " + certfile;
-// 	command += " -o " + certfile + ".renewed";
-// 
-// 	CREAM_SAFE_LOG( m_log_dev->debugStream() << method_name
-// 			<< "Executing command [" 
-// 			<< command << "]..."
-// 			);
-// 
-// 	FILE *res = popen(command.c_str(), "r");
-// 	if(!res) {
-// 	  CREAM_SAFE_LOG( m_log_dev->errorStream() << method_name
-// 			  << "Couldn't popen command [" 		  
-// 			  << command << "]: " << strerror(errno)
-// 			  << ". Skipping this delegation renew..."
-// 			  );
-// 	} else {
-// 
-// 	  while(!feof(res)) {
-// 	    output += fgetc(res);
-// 	  }
-// 
-// 	  int pcloseret = pclose( res );
-// 
-// // 	  CREAM_SAFE_LOG( m_log_dev->debugStream() << method_name
-// // 			  << "Command output is ["
-// // 			  << output << "]"
-// // 			  );
-// 
-// 	  if( pcloseret == -1 ) // the call to pclose failed for some reason
-// 	    {
-// 	      CREAM_SAFE_LOG( m_log_dev->errorStream() << method_name
-// 			  << "pclose failed for error: " 		  
-// 			  << strerror(errno)
-// 			  << ". Cannot determine if proxy has been correctly renewed..."
-// 			  );
-// 	    }
-// 	  if( pcloseret != 0 ) {
-// 	    CREAM_SAFE_LOG( m_log_dev->errorStream() << method_name
-// 			  << "Proxy renewal failed: [" 		  
-// 			    << output << "]"
-// 			  );	    
-// 	  }
-// 
-// 	  if( pcloseret == 0 ) {
-// 	    CREAM_SAFE_LOG( m_log_dev->debugStream() << method_name
-// 			    << "Proxy renewal successful for DN=["
-// 			    << it->m_user_dn
-// 			    <<"] MyProxyURL=["
-// 			    << it->m_myproxyserver
-// 			    << "]: new proxy is [" 		  
-// 			    << certfile + ".renewed" << "]. It will overwrite the better one..."
-// 			    );
-// 	    /**
-// 	       Must substitute old better proxy with new downloaded one, if it's more long-living 
-// 	    */
-// 	    cream_api::soap_proxy::VOMSWrapper V( certfile + ".renewed", !::getenv("GLITE_WMS_ICE_DISABLE_ACVER") );
-// 	    if( !V.IsValid( ) ) {
-// 	      CREAM_SAFE_LOG(m_log_dev->errorStream() 
-// 			     << method_name
-// 			     << "Cannot parse downloaded new proxy ["
-// 			     << certfile + ".renewed" << "] from MyProxy Service ["
-// 			     << it->m_myproxyserver << "]. Error is: "
-// 			     << V.getErrorMessage()
-// 			     );
-// 	      
-// 	    } else {
-// 	      
-// 	      /** SUBSTITUTE old better proxy with downloaded one. 
-// 	       */
-// 	      boost::tuple<string, time_t, long long int> newPrx = boost::make_tuple( certfile + ".renewed", V.getProxyTimeEnd(), (long long int)-1 ); // -1 means to not modify the job counter
-// 	      DNProxyManager::getInstance()->updateBetterProxy( it->m_user_dn,
-// 								it->m_myproxyserver,
-// 								newPrx );
-// 	      ::unlink( (certfile + ".renewed").c_str() );
-// 	      
-// 	    }
-// 	    
-// 	    
-// 	  }
-// 	}
 	
 	mapDelegTime[ thisDelegID ] = make_pair(thisExpTime, thisDuration);
 	
@@ -394,12 +306,12 @@ void IceCommandDelegationRenewal::renewAllDelegations( void ) throw()
 	   2. as the ICE-calculated better proxy (calculated at each submission)
 	*/
 	
-	CREAM_SAFE_LOG(m_log_dev->debugStream() 
-		       << method_name
+	//CREAM_SAFE_LOG(m_log_dev->debugStream() 
+		  edglog(debug)   
 		       << "Looking for the better proxy for DN ["
 		       << thisUserDN << "] MyProxy Server name ["
-		       << thisMyPR << "]..."
-		       );
+		       << thisMyPR << "]..." << endl;
+		     //  );
 	
 	boost::tuple<string, time_t, long long int> thisBetterPrx = DNProxyManager::getInstance()->getExactBetterProxyByDN( thisUserDN, thisMyPR );
 	
@@ -408,13 +320,13 @@ void IceCommandDelegationRenewal::renewAllDelegations( void ) throw()
 	   Remove the delegation
 	*/
 	if(thisBetterPrx.get<0>().empty()) {
-	  CREAM_SAFE_LOG(m_log_dev->debugStream() 
-			 << method_name
+	//  CREAM_SAFE_LOG(m_log_dev->debugStream() 
+			edglog(debug) 
 			 << "DNProxyManager::getExactBetterProxyByDN didn't return any better proxy for DN ["
 			 << thisUserDN << "] and MyProxy Server name ["
 			 << thisMyPR << "]... Skipping renew of this delegation ["
-			 << thisDelegID << "]."
-			 );
+			 << thisDelegID << "]." << endl;
+			// );
 	  mapDelegTime.erase( thisDelegID );
 
 	  Delegation_manager::instance()->removeDelegation( thisDelegID );
@@ -432,13 +344,13 @@ void IceCommandDelegationRenewal::renewAllDelegations( void ) throw()
 
 	pair<bool, time_t> result_validity = IceUtils::is_good_proxy( thisBetterPrx.get<0>() );
 	if(!result_validity.first) {
-	  CREAM_SAFE_LOG(m_log_dev->errorStream() 
-			 << "IceCommandDelegationRenewal::renewAllDelegations() - "
+	//  CREAM_SAFE_LOG(m_log_dev->errorStream() 
+			edglog(error) << "IceCommandDelegationRenewal::renewAllDelegations() - "
 			 << "iceUtil::isgood() function reported an error while" 
 			 << " parsing proxy [" << thisBetterPrx.get<0>() 
 			 << "]. Skipping renew of delegation ["
-			 << thisDelegID <<"]..."
-			 );
+			 << thisDelegID <<"]..." << endl;
+			// );
 	  mapDelegTime.erase( thisDelegID );
 	  continue;
 	}
@@ -452,13 +364,13 @@ void IceCommandDelegationRenewal::renewAllDelegations( void ) throw()
 	   have failed... then we can remove the delegatiob ID from memory.
 	*/
 	if( proxy_time_end <= (time(0)-5) ) {
-	  CREAM_SAFE_LOG( m_log_dev->errorStream() << method_name
-			  << "For current Delegation ID [" << thisDelegID 
+	 // CREAM_SAFE_LOG( m_log_dev->errorStream() << method_name
+			edglog(error)  << "For current Delegation ID [" << thisDelegID 
 			  <<"] DNProxyManager returned the Better Proxy ["
 			  << thisBetterPrx.get<0>() 
 			  << "] that is EXPIRED! Removing this delegation ID from "
-			  << "Delegation_manager, removing proxy from DNProxyManager's cache, won't renew delegation ..."
-			  );
+			  << "Delegation_manager, removing proxy from DNProxyManager's cache, won't renew delegation ..." << endl;
+			//  );
 	  
 	  Delegation_manager::instance()->removeDelegation( thisDelegID );
 	  
@@ -502,24 +414,24 @@ void IceCommandDelegationRenewal::renewAllDelegations( void ) throw()
 	   let's continue with next delegation...
 	*/
 	if( !(proxy_time_end > thisExpTime)) {
-	  CREAM_SAFE_LOG(m_log_dev->warnStream() 
-			 << "IceCommandDelegationRenewal::renewAllDelegations() - "
+	//  CREAM_SAFE_LOG(m_log_dev->warnStream() 
+			edglog(warning) << "IceCommandDelegationRenewal::renewAllDelegations() - "
 			 << "The better proxy ["
 			 << thisBetterPrx.get<0>() << "] is expiring NOT AFTER the current delegation ["
-			 << thisDelegID << "]. Skipping ... "
-			 );
+			 << thisDelegID << "]. Skipping ... " << endl;
+			// );
 	  
 	  mapDelegTime.erase( thisDelegID );
 	  continue;
 	}
 
-	CREAM_SAFE_LOG( m_log_dev->infoStream() << method_name
-			<< "Will Renew Delegation ID ["
+	//CREAM_SAFE_LOG( m_log_dev->infoStream() << method_name
+		edglog(info)	<< "Will Renew Delegation ID ["
 			<< thisDelegID << "] with BetterProxy ["
 			<< thisBetterPrx.get<0>()
 			<< "] that will expire on ["
-			<< IceUtils::time_t_to_string(thisBetterPrx.get<1>()) << "]"
-			);
+			<< IceUtils::time_t_to_string(thisBetterPrx.get<1>()) << "]" << endl;
+			//);
 	try {
 	  
 	  string thisDelegUrl = thisCEUrl;
@@ -537,10 +449,10 @@ void IceCommandDelegationRenewal::renewAllDelegations( void ) throw()
 	  mapDelegTime[ thisDelegID ] = make_pair(thisBetterPrx.get<1>(), thisBetterPrx.get<1>() - time(0) );
 	  
 	} catch( exception& ex ) {
-	  CREAM_SAFE_LOG( m_log_dev->errorStream() << method_name
-			  << "Proxy renew for delegation ID ["
-			  << thisDelegID << "] failed: " << ex.what() 
-			  );
+	//  CREAM_SAFE_LOG( m_log_dev->errorStream() << method_name
+		edglog(error)	  << "Proxy renew for delegation ID ["
+			  << thisDelegID << "] failed: " << ex.what()  << endl;
+			  //);
 	  
 	  mapDelegTime.erase( thisDelegID );
 	  continue;

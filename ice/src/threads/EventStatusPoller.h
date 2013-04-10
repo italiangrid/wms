@@ -24,9 +24,9 @@ END LICENSE */
 #include "IceThread.h"
 #include "commands/IceCommandStatusPoller.h"
 
-namespace log4cpp {
-    class Category;
-};
+// namespace log4cpp {
+//     class Category;
+// };
 
 namespace glite {
 namespace wms {
@@ -51,7 +51,7 @@ namespace ice {
 
 	  int m_delay;
 	  Main		     *m_iceManager;
-	  log4cpp::Category  *m_log_dev;
+	  //log4cpp::Category  *m_log_dev;
           IceThreadPool	     *m_threadPool;
 
           /**

@@ -33,9 +33,9 @@ END LICENSE */
 #include<utility>
 #include<list>
 
-namespace log4cpp {
-  class Category;
-};
+#include "utils/logging.h"
+#include "glite/wms/common/logger/edglog.h"
+#include "glite/wms/common/logger/manipulators.h"
 
 namespace glite {
   namespace ce {
@@ -62,7 +62,7 @@ namespace glite {
 
 	class IceCommandEventQuery : public IceAbstractCommand {
 
-          log4cpp::Category                     *m_log_dev;
+          //log4cpp::Category                     *m_log_dev;
           glite::wms::ice::util::IceLBLogger    *m_lb_logger;
           Main                                  *m_iceManager;
 	  glite::wms::ice::util::IceConfManager *m_conf;

@@ -33,9 +33,9 @@ END LICENSE */
 #include "IceUtils.h"
 #include "CreamJob.h"
 
-namespace log4cpp {
-  class Category;
-};
+//namespace log4cpp {
+//  class Category;
+//};
 
 namespace glite {
 namespace wms {
@@ -51,7 +51,7 @@ namespace util {
          */
         
 	std::map< std::string, std::set< std::string> > m_temp_dnproxy_Map;
-        log4cpp::Category *m_log_dev;
+        //log4cpp::Category *m_log_dev;
         
     protected:
         

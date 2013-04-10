@@ -37,9 +37,9 @@ namespace boost {
   class thread;
 };
 
-namespace log4cpp {
-  class Category;
-};
+// namespace log4cpp {
+//   class Category;
+// };
 
 namespace glite {
 namespace wms {
@@ -116,7 +116,7 @@ namespace ice {
             const std::string m_name; //! The name of this thread (can be any string)
             boost::thread* m_thread; //! The dynamically created thread object. 
             boost::shared_ptr< glite::wms::ice::threads::IceThread > m_ptr_thread; //! Used to instantiate the thread.
-            log4cpp::Category* m_log_dev; //! Logging device
+            //log4cpp::Category* m_log_dev; //! Logging device
 
         };
 
@@ -133,7 +133,7 @@ namespace ice {
         glite::wms::ice::util::Request_source* m_ice_input_queue; ///< Input queue for ICE
 	int m_reqnum;
 
-        log4cpp::Category* m_log_dev;
+        //log4cpp::Category* m_log_dev;
         
         util::IceLBLogger* m_lb_logger;
         glite::wms::common::configuration::Configuration* m_configuration;

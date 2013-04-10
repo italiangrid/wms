@@ -30,9 +30,9 @@ END LICENSE */
 #include "CreamJob.h"
 
 // Forward declaration
-namespace log4cpp {
-    class Category;
-};
+// namespace log4cpp {
+//     class Category;
+// };
 
 typedef  struct _edg_wll_Context  *edg_wll_Context;
 
@@ -90,7 +90,7 @@ namespace glite {
 		
                     bool                m_el_hostProxy;
                     unsigned int        m_el_count;
-                    log4cpp::Category  *m_log_dev;
+                    //log4cpp::Category  *m_log_dev;
 
                     static unsigned int s_el_s_retries, 
 		                        s_el_s_sleep;

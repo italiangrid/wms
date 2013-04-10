@@ -28,9 +28,9 @@ END LICENSE */
 #include "CreamJob.h"
 
 // Forward declaration
-namespace log4cpp {
-    class Category;
-};
+// namespace log4cpp {
+//     class Category;
+// };
 
 namespace glite {
     namespace wms {
@@ -78,7 +78,7 @@ namespace glite {
                     IceLBLogger( );
 
                     static IceLBLogger* s_instance;
-                    log4cpp::Category* m_log_dev;
+                    //log4cpp::Category* m_log_dev;
                     bool m_lb_enabled;
                 };
 

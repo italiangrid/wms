@@ -26,8 +26,12 @@ END LICENSE */
 #include "IceAbstractCommand.h"
 #include "IceCommandFatalException.h"
 #include "IceCommandTransientException.h"
-#include "glite/ce/cream-client-api-c/creamApiLogger.h"
+//#include "glite/ce/cream-client-api-c/creamApiLogger.h"
 #include <boost/scoped_ptr.hpp>
+
+#include "utils/logging.h"
+#include "glite/wms/common/logger/edglog.h"
+#include "glite/wms/common/logger/manipulators.h"
 
 namespace glite {
 namespace wms {
@@ -53,7 +57,7 @@ namespace ice {
         std::string m_gridJobId;
 	std::string m_seq_code;
         std::string m_sequence_code;
-        log4cpp::Category* m_log_dev;
+        //log4cpp::Category* m_log_dev;
         util::IceLBLogger *m_lb_logger;
         util::Request* m_request;
     };

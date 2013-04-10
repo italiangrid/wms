@@ -22,6 +22,9 @@ END LICENSE */
 #include "EventStatusPoller.h"
 #include "commands/IceCommandStatusPoller.h"
 #include "commands/IceCommandEventQuery.h"
+#include "utils/logging.h"
+#include "glite/wms/common/logger/edglog.h"
+#include "glite/wms/common/logger/manipulators.h"
 
 #include "db/GetAllDN.h"
 #include "db/GetCEUrl.h"
@@ -29,7 +32,7 @@ END LICENSE */
 #include "db/DNHasJobs.h"
 
 // other glite includes
-#include "glite/ce/cream-client-api-c/creamApiLogger.h"
+//#include "glite/ce/cream-client-api-c/creamApiLogger.h"
 #include "glite/wms/common/configuration/Configuration.h"
 #include "common/src/configuration/ICEConfiguration.h"
 
@@ -55,16 +58,17 @@ threads::EventStatusPoller::EventStatusPoller( glite::wms::ice::Main* manager, i
     : IceThread( "event status poller" ),
       m_delay( d ),
       m_iceManager( manager ),
-      m_log_dev( cream_api::util::creamApiLogger::instance()->getLogger() ),
+      //m_log_dev( cream_api::util::creamApiLogger::instance()->getLogger() ),
       m_threadPool( manager->get_ice_commands_pool() )
 {
+  edglog_fn("EventStatusPoller::EventStatusPoller");
   sigset_t set;
   ::sigemptyset(&set);
   ::sigaddset(&set, SIGCHLD);
   if(::pthread_sigmask( SIG_BLOCK, &set, 0 ) < 0 ) 
-    CREAM_SAFE_LOG( m_log_dev->fatalStream() << "EventStatusPoller::CTOR"
-  	                                     << "pthread_sigmask failed. This could compromise correct working"
-                	                     << " of ICE's threads..." );
+    //CREAM_SAFE_LOG( m_log_dev->fatalStream() << "EventStatusPoller::CTOR"
+  	                               edglog(fatal)      << "pthread_sigmask failed. This could compromise correct working"
+                	                     << " of ICE's threads..."<<endl;// );
              
 }
 
@@ -77,7 +81,7 @@ threads::EventStatusPoller::~EventStatusPoller()
 //____________________________________________________________________________
 void threads::EventStatusPoller::body( void )
 {
-
+ edglog_fn("EventStatusPoller::body");
   while( !isStopped() ) {
     
     /**
@@ -98,9 +102,9 @@ void threads::EventStatusPoller::body( void )
     
     // Thread wakes up
     
-    CREAM_SAFE_LOG( m_log_dev->infoStream()
-		    << "EventStatusPoller::body - New iteration"
-		    );
+    //CREAM_SAFE_LOG( m_log_dev->infoStream()
+		   edglog(info) << "EventStatusPoller::body - New iteration" << endl;
+		   // );
     
     set< string > dns;
     {
@@ -127,9 +131,9 @@ void threads::EventStatusPoller::body( void )
     for( dnit = dns.begin(); dnit != dns.end(); ++dnit ) {
     
       if(  dnit->empty() ) {
-	CREAM_SAFE_LOG(m_log_dev->debugStream() << "EventStatusPoller::body - "
-		       << "Empty DN string! Skipping..."
-		       );
+//	CREAM_SAFE_LOG(m_log_dev->debugStream() << "EventStatusPoller::body - "
+		     edglog(debug)  << "Empty DN string! Skipping..." << endl;
+		       //);
 	continue;// next CE
       }
       
@@ -137,9 +141,9 @@ void threads::EventStatusPoller::body( void )
       //for( dnit = dns.begin(); dnit != dns.end(); ++dnit ) {
 	
         if( ceit->empty() ) {
-          CREAM_SAFE_LOG(m_log_dev->debugStream() << "EventStatusPoller::body - "
-			 << "Empty CE string! Skipping... "
-			 );
+       //   CREAM_SAFE_LOG(m_log_dev->debugStream() << "EventStatusPoller::body - "
+			edglog(debug) << "Empty CE string! Skipping... " << endl;
+			// );
 	  continue; // next DN
         }
 	
@@ -148,29 +152,29 @@ void threads::EventStatusPoller::body( void )
           db::Transaction tnx(false, false);
           tnx.execute( &hasjob );
           if( !hasjob.found( ) ) {
-            CREAM_SAFE_LOG(m_log_dev->debugStream() << "EventStatusPoller::body - "
-		           << "DN [" 
+           // CREAM_SAFE_LOG(m_log_dev->debugStream() << "EventStatusPoller::body - "
+		    edglog(debug)       << "DN [" 
 		           << *dnit << "] has not job on the CE ["
-			   << *ceit << "] in the ICE's database at the moment. Skipping query..."
-		           );
+			   << *ceit << "] in the ICE's database at the moment. Skipping query..."<<endl;
+		        //   );
 	    continue;
           }
         }
       
         while( m_threadPool->get_command_count( ) >= 10 ) {
-	  CREAM_SAFE_LOG( m_log_dev->debugStream()
-	  		  << "EventStatusPoller::body - "
-			  << "Too many commands in the queue. Waiting 10 seconds..."
-			  );
+	  //CREAM_SAFE_LOG( m_log_dev->debugStream()
+	  		 edglog(debug) << "EventStatusPoller::body - "
+			  << "Too many commands in the queue. Waiting 10 seconds..." << endl;
+			  //);
 	  sleep( 10 );
 	}
       
-        CREAM_SAFE_LOG( m_log_dev->debugStream()
- 			    << "EventStatusPoller::body - "
+        //CREAM_SAFE_LOG( m_log_dev->debugStream()
+ 			 edglog(debug)   << "EventStatusPoller::body - "
  			    << "Adding EventQuery command for couple (" 
  			    << *dnit << ", "
- 			    << *ceit << ") to the thread pool..."
- 			    );
+ 			    << *ceit << ") to the thread pool..." << endl;
+ 			   // );
       
         m_threadPool->add_request( new IceCommandEventQuery( m_iceManager, *dnit , *ceit ) );
       

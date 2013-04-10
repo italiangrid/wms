@@ -20,13 +20,16 @@ END LICENSE */
 
 #include "Transaction.h"
 #include "AbsDbOperation.h"
+#include "utils/logging.h"
+#include "glite/wms/common/logger/edglog.h"
+#include "glite/wms/common/logger/manipulators.h"
 
 #include "common/src/configuration/ICEConfiguration.h"
 #include "common/src/configuration/WMConfiguration.h"
 #include "common/src/configuration/CommonConfiguration.h"
 #include "utils/IceConfManager.h" // iceConfManager
 #include "utils/CreamJob.h"
-#include "glite/ce/cream-client-api-c/creamApiLogger.h"
+//#include "glite/ce/cream-client-api-c/creamApiLogger.h"
 #include "boost/filesystem/operations.hpp"
 #include "boost/filesystem/convenience.hpp"
 
@@ -58,7 +61,8 @@ namespace {
       virtual ~CreateDb() { };
     
       
-        virtual void execute( sqlite3* db ) throw() {            
+        virtual void execute( sqlite3* db ) throw() {   
+	    edglog_fn("Transaction::CreateDb::execute");         
             try {
 	      string sqlcmd( "CREATE TABLE IF NOT EXISTS jobs ( " );
 	      sqlcmd += iceUtil::CreamJob::get_createdb_query();
@@ -68,11 +72,11 @@ namespace {
 		
 	    } catch( DbOperationException& ex ) {
 	    
-	      CREAM_SAFE_LOG( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()->fatalStream()
-			      << "CreateDb::execute() - "
+	      //CREAM_SAFE_LOG( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()->fatalStream()
+			     edglog(fatal)
 			      << "Error creating database table jobs: "
-			      << ex.what() << ". STOP!"
-			      );
+			      << ex.what() << ". STOP!"<<endl;
+			      //);
 	      abort();
 	    
             }
@@ -86,11 +90,11 @@ namespace {
 
 	    } catch( DbOperationException& ex ) {
 	    
-	      CREAM_SAFE_LOG( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()->fatalStream()
-			      << "CreateDb::execute() - "
+	      //CREAM_SAFE_LOG( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()->fatalStream()
+			     edglog(fatal) 
 			      << "Error creating database table ce_dbid: "
-			      << ex.what() << ". STOP!"
-			      );
+			      << ex.what() << ". STOP!"<<endl;
+			     // );
 	      abort();
 	      
 	    }
@@ -105,11 +109,11 @@ namespace {
 
 	    } catch( DbOperationException& ex ) {
 	    
-	      CREAM_SAFE_LOG( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()->fatalStream()
-			      << "CreateDb::execute() - "
+	      //CREAM_SAFE_LOG( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()->fatalStream()
+			    edglog(fatal) 
 			      << "Error creating database table event_id: "
-			      << ex.what() << ". STOP!"
-			      );
+			      << ex.what() << ". STOP!"<<endl;
+			     // );
 	      abort();
 	      
 	    }
@@ -127,11 +131,11 @@ namespace {
 
 	    } catch( DbOperationException& ex ) {
 	    
-	      CREAM_SAFE_LOG( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()->fatalStream()
-			      << "CreateDb::execute() - "
+	      //CREAM_SAFE_LOG( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()->fatalStream()
+			    edglog(fatal) 
 			      << "Error creating database table proxy: "
-			      << ex.what() << ". STOP!"
-			      );
+			      << ex.what() << ". STOP!"<<endl;
+			      //);
 	      abort();
 	      
 	    }
@@ -151,11 +155,11 @@ namespace {
 	      
 	    } catch( DbOperationException& ex ) {
 	    
-	      CREAM_SAFE_LOG( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()->fatalStream()
-                        << "CreateDb::execute() - "
+	      //CREAM_SAFE_LOG( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()->fatalStream()
+                        edglog(fatal)
 			<< "Error creating database table delegation: "
-			<< ex.what() << ". STOP!"
-                        );
+			<< ex.what() << ". STOP!"<<endl;
+                       // );
 	      abort();
 	      
 	    }
@@ -171,11 +175,11 @@ namespace {
 	      
 	    } catch( DbOperationException& ex ) {
 	    
-	      CREAM_SAFE_LOG( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()->fatalStream()
-			      << "CreateDb::execute() - "
+	      //CREAM_SAFE_LOG( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()->fatalStream()
+			     edglog(fatal) 
 			      << "Error creating database table lease: "
-			      << ex.what() << ". STOP!"
-			      );
+			      << ex.what() << ". STOP!"<<endl;
+			      //);
 	      abort();
 	      
 	    }
@@ -190,11 +194,11 @@ namespace {
 	      
 	    } catch( DbOperationException& ex ) {
 	    
-	      CREAM_SAFE_LOG( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()->fatalStream()
-			      << "CreateDb::execute() - "
+	      //CREAM_SAFE_LOG( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()->fatalStream()
+			       edglog(fatal)
 			      << "Error creating database table stats: "
-			      << ex.what() << ". STOP!"
-			      );
+			      << ex.what() << ". STOP!"<<endl;
+			     // );
 	      abort();
 	      
 	    }
@@ -211,11 +215,11 @@ namespace {
 
             } catch( DbOperationException& ex ) {
 
-              CREAM_SAFE_LOG( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()->fatalStream()
-                              << "CreateDb::execute() - "
+              //CREAM_SAFE_LOG( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()->fatalStream()
+                            edglog(fatal) 
                               << "Error creating database table started_jobs: "
-                              << ex.what() << ". STOP!"
-                              );
+                              << ex.what() << ". STOP!"<<endl;
+                             // );
               abort();
 
             }
@@ -226,11 +230,11 @@ namespace {
               do_query( db, sqlcmd );
             } catch( DbOperationException& ex ) {
 
-              CREAM_SAFE_LOG( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()->fatalStream()
-                              << "CreateDb::execute() - "
+              //CREAM_SAFE_LOG( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()->fatalStream()
+                            edglog(fatal) 
                               << "Error creating index timestamp_startedjobs_index on table started_jobs: "
-                              << ex.what() << ". STOP!"
-                              );
+                              << ex.what() << ". STOP!" << endl;
+                             // );
               abort();
 
             }
@@ -241,11 +245,11 @@ namespace {
 	      do_query( db, sqlcmd );
             } catch( DbOperationException& ex ) {
 	      
-	      CREAM_SAFE_LOG( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()->fatalStream()
-			      << "CreateDb::execute() - "
+	      //CREAM_SAFE_LOG( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()->fatalStream()
+			      edglog(fatal)
 			      << "Error creating index gid_index on table jobs: "
-			      << ex.what() << ". STOP!"
-			      );
+			      << ex.what() << ". STOP!"<<endl;
+			    //  );
 	      abort();
 	      
             }
@@ -255,11 +259,11 @@ namespace {
 	      do_query( db, sqlcmd );
             } catch( DbOperationException& ex ) {
 	    
-	      CREAM_SAFE_LOG( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()->fatalStream()
-			      << "CreateDb::execute() - "
+	      //CREAM_SAFE_LOG( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()->fatalStream()
+			     edglog(fatal) 
 			      << "Error creating index dbid_index on table jobs: "
-			      << ex.what() << ". STOP!"
-			      );
+			      << ex.what() << ". STOP!"<<endl;
+			     // );
 	      abort();
 	      
             }
@@ -269,11 +273,11 @@ namespace {
 	      do_query( db, sqlcmd );
             } catch( DbOperationException& ex ) {
 	    
-	      CREAM_SAFE_LOG( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()->fatalStream()
-			      << "CreateDb::execute() - "
+	      //CREAM_SAFE_LOG( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()->fatalStream()
+			     edglog(fatal) 
 			      << "Error creating index cid_index on table jobs: "
-			      << ex.what() << ". STOP!"
-			      );
+			      << ex.what() << ". STOP!" << endl;
+			     // );
 	      abort();
 	      
             }
@@ -283,11 +287,11 @@ namespace {
               do_query( db, sqlcmd );
             } catch( DbOperationException& ex ) {
 	      
-	      CREAM_SAFE_LOG( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()->fatalStream()
-			      << "CreateDb::execute() - "
+	     // CREAM_SAFE_LOG( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()->fatalStream()
+			      edglog(fatal)
 			      << "Error creating index ccid_index on table jobs: "
-			      << ex.what() << ". STOP!"
-			      );
+			      << ex.what() << ". STOP!" << endl;
+			     // );
 	      abort();
 	    
             }
@@ -297,11 +301,11 @@ namespace {
               do_query( db, sqlcmd );
             } catch(DbOperationException& ex ) {
 	      
-	      CREAM_SAFE_LOG(glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()->fatalStream()
-			     << "CreateDb::execute() - "
+	      //CREAM_SAFE_LOG(glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()->fatalStream()
+			    edglog(fatal)
 			     << "Error creating index lastseen on table jobs: "
-			     << ex.what() << ". STOP!"
-			     );
+			     << ex.what() << ". STOP!" << endl;
+			    // );
 	      abort();
 	    
             }
@@ -311,11 +315,11 @@ namespace {
               do_query( db, sqlcmd );
             } catch( DbOperationException& ex ) {
 	      
-	      CREAM_SAFE_LOG( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()->fatalStream() 
-			      << "CreateDb::execute() - "
+	     // CREAM_SAFE_LOG( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()->fatalStream() 
+			      edglog(fatal)
 			      << "Error creating index lastemptynotification on table jobs: "
-			      << ex.what() << ". STOP!"
-			      );
+			      << ex.what() << ". STOP!" << endl;
+			  //    );
 	      abort();
 	      
             }
@@ -325,11 +329,11 @@ namespace {
               do_query( db, sqlcmd );
             } catch( DbOperationException& ex ) {
 	      
-	      CREAM_SAFE_LOG( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()->fatalStream()
-			      << "CreateDb::execute() - "
+	     // CREAM_SAFE_LOG( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()->fatalStream()
+			    edglog(fatal) 
 			      << "Error creating index stat on table jobs: "
-			      << ex.what() << ". STOP!"
-			      );
+			      << ex.what() << ". STOP!" << endl;
+			     // );
 	      abort();
 	    
             }
@@ -339,11 +343,11 @@ namespace {
               do_query( db, sqlcmd );
             } catch( DbOperationException& ex ) {
 	      
-	      CREAM_SAFE_LOG( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()->fatalStream()
-			      << "CreateDb::execute() - "
+	      //CREAM_SAFE_LOG( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()->fatalStream()
+			    edglog(fatal) 
 			      << "Error creating index udn on table jobs: "
-			      << ex.what() << ". STOP!"
-			      );
+			      << ex.what() << ". STOP!" << endl;
+			     // );
 	      abort();
 	    
             }
@@ -353,11 +357,11 @@ namespace {
               do_query( db, sqlcmd );
             } catch( DbOperationException& ex ) {
 	      
-	      CREAM_SAFE_LOG( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()->fatalStream()
-			      << "CreateDb::execute() - "
+	      //CREAM_SAFE_LOG( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()->fatalStream()
+			    edglog(fatal) 
 			      << "Error creating index curl on table jobs: "
-			      << ex.what() << ". STOP!"
-			      );
+			      << ex.what() << ". STOP!" << endl;
+			  //    );
 	      abort();
 	    
             }
@@ -368,11 +372,11 @@ namespace {
               do_query( db, sqlcmd );
             } catch( DbOperationException& ex ) {
 	      
-	      CREAM_SAFE_LOG( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()->fatalStream()
-			      << "CreateDb::execute() - "
+	     // CREAM_SAFE_LOG( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()->fatalStream()
+			   edglog(fatal) 
 			      << "Error creating index lastpollervisit on table jobs: "
-			      << ex.what() << ". STOP!"
-			      );
+			      << ex.what() << ". STOP!" << endl;
+			     // );
 	      abort();
 	    
             }
@@ -382,11 +386,11 @@ namespace {
               do_query( db, sqlcmd );
             } catch( DbOperationException& ex ) {
 	    
-	      CREAM_SAFE_LOG( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()->fatalStream() 
-			      << "CreateDb::execute() - "
+	     // CREAM_SAFE_LOG( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()->fatalStream() 
+			    edglog(fatal) 
 			      << "Error creating index killedbyice on table jobs: "
-			      << ex.what() << ". STOP!"
-			      );
+			      << ex.what() << ". STOP!" << endl;
+			      //);
 	      abort();
 	    
             }
@@ -396,11 +400,11 @@ namespace {
 	      do_query( db, sqlcmd );
 	    } catch(DbOperationException& ex ) {
 	      
-	      CREAM_SAFE_LOG( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()->fatalStream() 
-			      << "CreateDb::execute() - "
+	     // CREAM_SAFE_LOG( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()->fatalStream() 
+			     edglog(fatal) 
 			      << "Error creating index userdn_index on table proxy: "
-			      << ex.what() << ". STOP!"
-			      );
+			      << ex.what() << ". STOP!" << endl;
+			    //  );
 	      abort();
 	    
 	    }
@@ -410,11 +414,11 @@ namespace {
 	      do_query( db, sqlcmd );
 	    } catch( DbOperationException& ex ) {
 	      
-	      CREAM_SAFE_LOG( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()->fatalStream() 
-			      << "CreateDb::execute() - "
+	     // CREAM_SAFE_LOG( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()->fatalStream() 
+			    edglog(fatal) 
 			      << "Error creating index delegkey on table delegation: "
-			      << ex.what() << ". STOP!"
-			      );
+			      << ex.what() << ". STOP!" << endl;
+			 //     );
 	      abort();
 	    
 	    }
@@ -424,11 +428,11 @@ namespace {
 	      do_query( db, sqlcmd );
 	    } catch( DbOperationException& ex ) {
 	    
-	      CREAM_SAFE_LOG( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()->fatalStream() 
-			      << "CreateDb::execute() - "
+	     // CREAM_SAFE_LOG( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()->fatalStream() 
+			   edglog(fatal) 
 			      << "Error creating index leasekey on table lease: "
-			      << ex.what() << ". STOP!"
-			      );
+			      << ex.what() << ". STOP!" << endl;
+			     // );
 	      abort();
 	      
 	    }	    
@@ -438,11 +442,11 @@ namespace {
 	      do_query( db, sqlcmd );
 	    } catch( DbOperationException& ex ) {
 	    
-	      CREAM_SAFE_LOG( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()->fatalStream() 
-			      << "CreateDb::execute() - "
+	      //CREAM_SAFE_LOG( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()->fatalStream() 
+			    edglog(fatal)  
 			      << "Error creating index udnce on table event_id: "
-			      << ex.what() << ". STOP!"
-			      );
+			      << ex.what() << ". STOP!" << endl;
+			//      );
 	      abort();
 	      
 	    }
@@ -452,11 +456,11 @@ namespace {
 	      do_query( db, sqlcmd );
 	    } catch( DbOperationException& ex ) {
 	    
-	      CREAM_SAFE_LOG( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()->fatalStream() 
-			      << "CreateDb::execute() - "
+	    //  CREAM_SAFE_LOG( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()->fatalStream() 
+			    edglog(fatal)   << "CreateDb::execute() - "
 			      << "Error creating index ce on table ce_dbid: "
-			      << ex.what() << ". STOP!"
-			      );
+			      << ex.what() << ". STOP!" << endl;
+			   //   );
 	      abort();
 	      
 	    }
@@ -470,7 +474,7 @@ namespace {
               CREAM_SAFE_LOG( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()->fatalStream()
                               << "CreateDb::execute() - "
                               << "Error creating index status_gid_index on table stats: "
-                              << ex.what() << ". STOP!"
+                              << ex.what() << ". STOP!" << endl;
                               );
               abort();
 
@@ -482,11 +486,11 @@ namespace {
 	      do_query( db, sqlcmd );
 	    } catch( DbOperationException& ex ) {
 	      
-	      CREAM_SAFE_LOG( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()->fatalStream() 
-			      << "CreateDb::execute() - "
+	     // CREAM_SAFE_LOG( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()->fatalStream() 
+			    edglog(fatal)   
 			      << "Error setting database's default cache size: "
-			      << ex.what() << ". STOP!"
-			      );
+			      << ex.what() << ". STOP!" << endl;
+			    //  );
 	      abort();
 	      
 	    }
@@ -497,11 +501,11 @@ namespace {
 	      do_query( db, sqlcmd );
 	    } catch( DbOperationException& ex ) {
 	      
-	      CREAM_SAFE_LOG( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()->fatalStream() 
-			      << "CreateDb::execute() - "
+	    //  CREAM_SAFE_LOG( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()->fatalStream() 
+			    edglog(fatal)    
 			      << "Error setting database's synchronous: "
-			      << ex.what() << ". STOP!"
-			      );
+			      << ex.what() << ". STOP!" << endl;
+			     // );
 	      abort();
 	      
 	    }
@@ -512,11 +516,11 @@ namespace {
 	      do_query( db, sqlcmd );
 	    } catch( DbOperationException& ex ) {
 	      
-	      CREAM_SAFE_LOG( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()->fatalStream() 
-			      << "CreateDb::execute() - "
-			      << "Error setting database's temp_store: "
-			      << ex.what() << ". STOP!"
-			      );
+	    //  CREAM_SAFE_LOG( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()->fatalStream() 
+			    edglog(fatal)    <<
+			      "Error setting database's temp_store: "
+			      << ex.what() << ". STOP!" << endl;
+			     // );
 	      abort();
 	      
 	    }
@@ -576,7 +580,7 @@ namespace {
 
 
 Transaction::Transaction( const bool read_only, const bool create_chek ) :
-    m_log_dev( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger() ),
+    //m_log_dev( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger() ),
     m_begin( false ),
     m_commit( true )
 {
@@ -588,53 +592,54 @@ Transaction::Transaction( const bool read_only, const bool create_chek ) :
 
 void Transaction::create_db( const bool read_only, const bool create_check ) 
 {
-    static const char* method_name = "Transaction::create_db() - ";
+    //static const char* method_name = "Transaction::create_db() - ";
+    edglog_fn("Transaction::create_db");
     string persist_dir( iceUtil::IceConfManager::instance()->getConfiguration()->ice()->persist_dir() );
 
     if( create_check ) {
       
       if( !boost::filesystem::exists( boost::filesystem::path(persist_dir, boost::filesystem::native) ) ) {
-        CREAM_SAFE_LOG( m_log_dev->fatalStream() << method_name
-                        << "job DB Path "
+       // CREAM_SAFE_LOG( m_log_dev->fatalStream() << method_name
+                      edglog(fatal)  << "job DB Path "
                         << persist_dir
-                        << " does not exist. Job DB initializatoin failed."
-                        );      
+                        << " does not exist. Job DB initializatoin failed." << endl;  
+                     //   );      
         exit(-1);
       }
       
       if( !boost::filesystem::is_directory( boost::filesystem::path(persist_dir, boost::filesystem::native) ) ) {
-        CREAM_SAFE_LOG( m_log_dev->fatalStream() << method_name
-                        << "Path [" << persist_dir
-                        << "] does exist but it is not a directory"
-                        );
+        //CREAM_SAFE_LOG( m_log_dev->fatalStream() << method_name
+                      edglog(fatal)    << "Path [" << persist_dir
+                        << "] does exist but it is not a directory" << endl;  
+                       // );
         exit(-1);
       }
       
       struct stat buf;
       if( -1==stat( persist_dir.c_str() , &buf) ) {
-        CREAM_SAFE_LOG( m_log_dev->fatalStream() << method_name
-                        << strerror(errno) );
+        //CREAM_SAFE_LOG( m_log_dev->fatalStream() << method_name
+                      edglog(fatal)    << strerror(errno)  << endl;  //);
         exit(-1);
       }
       
       if( !(buf.st_mode & S_IRUSR)) {
-        CREAM_SAFE_LOG( m_log_dev->fatalStream() << method_name
-                        << "Path [" << persist_dir
-                        << "] is not readable by the owner" );
+        //CREAM_SAFE_LOG( m_log_dev->fatalStream() << method_name
+                      edglog(fatal)    << "Path [" << persist_dir
+                        << "] is not readable by the owner"  << endl;  //);
         exit(-1);
       } 
       
       if( !(buf.st_mode & S_IWUSR)) {
-        CREAM_SAFE_LOG( m_log_dev->fatalStream() << method_name
-                        << "Path [" << persist_dir
-                        << "] is not writable by the owner" );
+        //CREAM_SAFE_LOG( m_log_dev->fatalStream() << method_name
+                     edglog(fatal)     << "Path [" << persist_dir
+                        << "] is not writable by the owner"  << endl;  //);
         exit(-1);
       } 
       
       if( !(buf.st_mode & S_IXUSR)) {
-        CREAM_SAFE_LOG( m_log_dev->fatalStream() << method_name
-                        << "Path [" << persist_dir
-                        << "] is not executable by the owner (cannot cd into it)" );
+       // CREAM_SAFE_LOG( m_log_dev->fatalStream() << method_name
+                      edglog(fatal)    << "Path [" << persist_dir
+                        << "] is not executable by the owner (cannot cd into it)"  << endl;  //);
         exit(-1);
       }
     } // if( create_check )
@@ -643,18 +648,18 @@ void Transaction::create_db( const bool read_only, const bool create_check )
       //      SQLITE_OPEN_READONLY
       int rc = sqlite3_open_v2( string(persist_dir + "/ice.db").c_str(), &s_db, SQLITE_OPEN_READONLY, 0 );
       if ( SQLITE_OK != rc ) {
-        CREAM_SAFE_LOG( m_log_dev->fatalStream() << method_name
-                        << "Failed to open/create DB. Error message is "
-                        << sqlite3_errmsg( s_db ) );
+       // CREAM_SAFE_LOG( m_log_dev->fatalStream() << method_name
+                    edglog(fatal)      << "Failed to open/create DB. Error message is "
+                        << sqlite3_errmsg( s_db )  << endl;  //);
         exit(-1);
       }
     } else {
       
       int rc = sqlite3_open( string(persist_dir + "/ice.db").c_str(), &s_db );
       if ( SQLITE_OK != rc ) {
-        CREAM_SAFE_LOG( m_log_dev->fatalStream() << method_name
-                        << "Failed to open/create DB. Error message is "
-                        << sqlite3_errmsg( s_db ) );
+        //CREAM_SAFE_LOG( m_log_dev->fatalStream() << method_name
+                      edglog(fatal)    << "Failed to open/create DB. Error message is "
+                        << sqlite3_errmsg( s_db )  << endl;  //);
         exit(-1);
       }
       sqlite3_soft_heap_limit( 10485760 );
@@ -696,7 +701,8 @@ Transaction& Transaction::execute( AbsDbOperation* op ) throw( DbOperationExcept
   if ( !op ) 
     return *this; // nothing to do
   
-  static const char* method_name = "Transaction::execute() - ";
+  edglog_fn("Transaction::execute");
+  //static const char* method_name = "Transaction::execute() - ";
   int retry_cnt = 1;
   //const int retry_cnt_max = 5;
   while( 1 ) {
@@ -708,9 +714,9 @@ Transaction& Transaction::execute( AbsDbOperation* op ) throw( DbOperationExcept
       return *this; // normal termination
     } catch ( DbLockedException& ex ) {
       
-      CREAM_SAFE_LOG( m_log_dev->warnStream() << method_name
-		      << "Database is locked; retrying operation"
-		      << " in " << retry_cnt << " seconds" );
+      //CREAM_SAFE_LOG( m_log_dev->warnStream() << method_name
+		    edglog(warning)  << "Database is locked; retrying operation"
+		      << " in " << retry_cnt << " seconds" << endl;  // );
       sleep( retry_cnt++ );
       
     }
@@ -720,7 +726,9 @@ Transaction& Transaction::execute( AbsDbOperation* op ) throw( DbOperationExcept
 
 Transaction::~Transaction( ) 
 {
-    static const char* method_name = "Transaction::~Transaction() - ";
+//    static const char* method_name = "Transaction::~Transaction() - ";
+
+    edglog_fn("Transaction::~Transaction");
 
     // If the user started a transaction, we need to either
     // commit or rollback it
@@ -733,9 +741,9 @@ Transaction::~Transaction( )
                 RollbackTransaction().execute( s_db );           
             }
         } catch( DbOperationException& ex ) {
-            CREAM_SAFE_LOG( m_log_dev->fatalStream() << method_name
-                            << "End transaction failed: "
-                            << ex.what() );
+            //CREAM_SAFE_LOG( m_log_dev->fatalStream() << method_name
+                      edglog(fatal)      << "End transaction failed: "
+                            << ex.what() << endl; //);
             abort();
         }
     }

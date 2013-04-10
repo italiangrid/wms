@@ -27,7 +27,7 @@ END LICENSE */
 #include "utils/BlackListFailJob_ex.h"
 #include "utils/CreamJob.h"
 
-#include "glite/ce/cream-client-api-c/creamApiLogger.h"
+//#include "glite/ce/cream-client-api-c/creamApiLogger.h"
 #include "glite/ce/cream-client-api-c/AbsCreamProxy.h"
 #include "glite/ce/cream-client-api-c/VOMSWrapper.h"
 
@@ -35,6 +35,10 @@ END LICENSE */
 #include "classad_distribution.h"
 
 #include <boost/scoped_ptr.hpp>
+
+#include "utils/logging.h"
+#include "glite/wms/common/logger/edglog.h"
+#include "glite/wms/common/logger/manipulators.h"
 
 namespace glite {
 namespace wms {
@@ -125,7 +129,7 @@ namespace util {
      std::string m_myname;	
      std::string m_jdl;
      util::CreamJob m_theJob;
-     log4cpp::Category* m_log_dev;
+     //log4cpp::Category* m_log_dev;
      glite::wms::common::configuration::Configuration* m_configuration;
      std::string m_myname_url;
      util::IceLBLogger *m_lb_logger;

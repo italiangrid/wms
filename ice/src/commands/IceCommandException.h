@@ -24,6 +24,10 @@ END LICENSE */
 #include <exception>
 #include <string>
 
+#include "utils/logging.h"
+#include "glite/wms/common/logger/edglog.h"
+#include "glite/wms/common/logger/manipulators.h"
+
 namespace glite {
     namespace wms {
         namespace ice {

@@ -40,7 +40,7 @@ END LICENSE */
 #include "db/GetJobsByDN.h"
 
 // Cream Client API Headers
-#include "glite/ce/cream-client-api-c/creamApiLogger.h"
+//#include "glite/ce/cream-client-api-c/creamApiLogger.h"
 #include "glite/ce/cream-client-api-c/JobFilterWrapper.h"
 //#include "glite/ce/cream-client-api-c/scoped_timer.h"
 
@@ -58,6 +58,10 @@ END LICENSE */
 #include <algorithm>
 #include <cstdlib>
 
+#include "utils/logging.h"
+#include "glite/wms/common/logger/edglog.h"
+#include "glite/wms/common/logger/manipulators.h"
+
 namespace cream_api  = glite::ce::cream_client_api;
 namespace soap_proxy = glite::ce::cream_client_api::soap_proxy;
 namespace jobstat    = glite::ce::cream_client_api::job_statuses;
@@ -73,7 +77,7 @@ IceCommandStatusPoller::IceCommandStatusPoller( glite::wms::ice::Main* theIce,
 						bool poll_all_jobs
 						) :
   IceAbstractCommand( "IceCommandStatusPoller", "" ),
-  m_log_dev( cream_api::util::creamApiLogger::instance()->getLogger() ),
+  //m_log_dev( cream_api::util::creamApiLogger::instance()->getLogger() ),
   m_lb_logger( IceLBLogger::instance() ),
   m_iceManager( theIce ),
   m_threshold( IceConfManager::instance()->getConfiguration()->ice()->poller_status_threshold_time() ),
@@ -92,13 +96,13 @@ void IceCommandStatusPoller::get_jobs_to_poll( list< CreamJob >& result,
 					       const std::string& userdn, 
 					       const std::string& creamurl) throw()
 {
-    static const char* method_name = "IceCommandStatusPoller::get_jobs_to_poll() - ";
-
-    CREAM_SAFE_LOG(m_log_dev->debugStream() << method_name
-                   << "Collecting jobs to poll for userdn=[" 
+   // static const char* method_name = "IceCommandStatusPoller::get_jobs_to_poll() - ";
+    edglog_fn("IceCommandStatusPoller::get_jobs_to_poll");
+    //CREAM_SAFE_LOG(m_log_dev->debugStream() << method_name
+                   edglog(debug)<< "Collecting jobs to poll for userdn=[" 
 		   << userdn << "] creamurl=[" 
-		   << creamurl << "]. LIMIT set to [" << m_max_chunk_size << "]..."
-    		);
+		   << creamurl << "]. LIMIT set to [" << m_max_chunk_size << "]..." << endl;
+//    		);
     {
       glite::wms::ice::db::GetJobsToPoll getter( &result, userdn, creamurl, m_poll_all_jobs,"IceCommandStatusPoller::get_jobs_to_poll", m_max_chunk_size );
       glite::wms::ice::db::Transaction tnx(false, false);
@@ -106,9 +110,9 @@ void IceCommandStatusPoller::get_jobs_to_poll( list< CreamJob >& result,
       tnx.execute( &getter );
       //result = getter.get_jobs();
     }
-    CREAM_SAFE_LOG(m_log_dev->debugStream() << method_name
-                   << "Finished collecting jobs to poll. [" << result.size() << "] jobs are to poll."
-    		);
+   // CREAM_SAFE_LOG(m_log_dev->debugStream() << method_name
+                  edglog(debug) << "Finished collecting jobs to poll. [" << result.size() << "] jobs are to poll." << endl;
+    		//);
 }
 
 //____________________________________________________________________________
@@ -121,16 +125,16 @@ IceCommandStatusPoller::check_multiple_jobs( const string& proxy,
 {
     
 
-    static const char* method_name = "IceCommandStatusPoller::check_multiple_jobs() - ";
-
+    //static const char* method_name = "IceCommandStatusPoller::check_multiple_jobs() - ";
+	edglog_fn("IceCommandStatusPoller::check_multiple_jobs");
     for( list< CreamJob >::const_iterator thisJob = cream_job_ids.begin(); 
          thisJob != cream_job_ids.end(); 
          ++thisJob) 
       {
-	CREAM_SAFE_LOG(m_log_dev->debugStream() << method_name
-		       << "Will poll job with CREAM job id = ["
-		       << thisJob->complete_cream_jobid() << "]"
-		       );
+	//CREAM_SAFE_LOG(m_log_dev->debugStream() << method_name
+		     edglog(debug)  << "Will poll job with CREAM job id = ["
+		       << thisJob->complete_cream_jobid() << "]" << endl;
+		       //);
       }    
 
     // Following a discussion on 2008-11-12, we decided not to remove
@@ -156,9 +160,9 @@ IceCommandStatusPoller::check_multiple_jobs( const string& proxy,
     
     try {
         
-        CREAM_SAFE_LOG(m_log_dev->infoStream() << method_name
-                       << "Connecting to [" << cream_url << "]"
-                       );
+       // CREAM_SAFE_LOG(m_log_dev->infoStream() << method_name
+                     edglog(info)  << "Connecting to [" << cream_url << "]" << endl;
+                     //  );
         
         soap_proxy::AbsCreamProxy::InfoArrayResult res;        
         {
@@ -180,9 +184,9 @@ IceCommandStatusPoller::check_multiple_jobs( const string& proxy,
             
             
             if(m_stopped) {
-	      CREAM_SAFE_LOG(m_log_dev->debugStream() << method_name
-			     << "EMERGENCY CALLED STOP. Returning without polling..."
-			     );
+	     // CREAM_SAFE_LOG(m_log_dev->debugStream() << method_name
+			   edglog(debug)  << "EMERGENCY CALLED STOP. Returning without polling..." << endl;
+			    // );
 	      return list<soap_proxy::JobInfoWrapper>();
 	    }
              CreamProxy_Info( cream_url, 
@@ -209,13 +213,13 @@ IceCommandStatusPoller::check_multiple_jobs( const string& proxy,
                 
             } else {
                 
-                CREAM_SAFE_LOG(m_log_dev->errorStream() << method_name
-                               << "CREAM didn't return information for the Job=["
+                //CREAM_SAFE_LOG(m_log_dev->errorStream() << method_name
+                             edglog(error)  << "CREAM didn't return information for the Job=["
                                << infoIt->first << "] - DN=[" << user_dn
                                << "] - ProxyFile=[" << proxy
                                << "]. Error is: " << thisInfo.get<2>() 
-                               << ". Removing this job from the database"
-                               );
+                               << ". Removing this job from the database" << endl;
+                               //);
 		/**
 		   Must get the entire job by the Complete Cream JOB ID
 		*/
@@ -244,27 +248,27 @@ IceCommandStatusPoller::check_multiple_jobs( const string& proxy,
 
     } catch(soap_proxy::auth_ex& ex) {
       
-        CREAM_SAFE_LOG(m_log_dev->errorStream() << method_name
-                       << "Cannot query status job for DN=["
-                       << user_dn << "]. Exception is [" << ex.what() << "]"
-                       );
+       // CREAM_SAFE_LOG(m_log_dev->errorStream() << method_name
+                    edglog(error)     << "Cannot query status job for DN=["
+                       << user_dn << "]. Exception is [" << ex.what() << "]" << endl;
+                       //);
         sleep(1);
 
     } catch(soap_proxy::soap_ex& ex) {
         
-        CREAM_SAFE_LOG(m_log_dev->errorStream() << method_name
-                       << "Cannot query status job for DN=["
-                       << user_dn << "]. Exception is ["  << ex.what() << "]"
-                       );
+      //  CREAM_SAFE_LOG(m_log_dev->errorStream() << method_name
+                    edglog(error)     << "Cannot query status job for DN=["
+                       << user_dn << "]. Exception is ["  << ex.what() << "]" << endl;
+                      // );
         // remove_f.set_reason( ex.what() );
         sleep(1);
 
     } catch(cream_api::cream_exceptions::InternalException& ex) {
       
-        CREAM_SAFE_LOG(m_log_dev->errorStream() << method_name
-                       << "Cannot query status job for DN=["
-                       << user_dn << "]. Exception is [" << ex.what() << "]"
-                       );
+       // CREAM_SAFE_LOG(m_log_dev->errorStream() << method_name
+                  edglog(error)       << "Cannot query status job for DN=["
+                       << user_dn << "]. Exception is [" << ex.what() << "]" << endl;
+                       //);
         // remove_f.set_reason( ex.what() );
         
         // this ex can be raised if the remote service is not
@@ -275,18 +279,18 @@ IceCommandStatusPoller::check_multiple_jobs( const string& proxy,
         
     } catch(exception& ex) {
         
-        CREAM_SAFE_LOG(m_log_dev->errorStream() << method_name
-                       << "Cannot query status job for DN=["
-                       << user_dn << "]. Exception is [" << ex.what() << "]"
-                       );
+        //CREAM_SAFE_LOG(m_log_dev->errorStream() << method_name
+                 edglog(error)        << "Cannot query status job for DN=["
+                       << user_dn << "]. Exception is [" << ex.what() << "]" << endl;
+                       //);
         // remove_f.set_reason( ex.what() );
 
     } catch(...) {
         
-        CREAM_SAFE_LOG(m_log_dev->errorStream() << method_name
-                       << "Cannot query status job for DN=["
-                       << user_dn << "]. Unknown exception catched"
-                       );
+       // CREAM_SAFE_LOG(m_log_dev->errorStream() << method_name
+                    edglog(error)     << "Cannot query status job for DN=["
+                       << user_dn << "]. Unknown exception catched" << endl;
+                    //   );
         
     }
     return the_job_status;
@@ -296,9 +300,9 @@ IceCommandStatusPoller::check_multiple_jobs( const string& proxy,
 void IceCommandStatusPoller::updateJobCache( const list< soap_proxy::JobInfoWrapper >& info_list ) throw()
 {
   if(m_stopped) {
-    CREAM_SAFE_LOG(m_log_dev->debugStream() << "IceCommandStatusPoller::updateJobCache() - "
-		   << "EMERGENCY CALLED STOP. Returning without polling..."
-		   );
+    //CREAM_SAFE_LOG(m_log_dev->debugStream() << "IceCommandStatusPoller::updateJobCache() - "
+		edglog(debug)   << "EMERGENCY CALLED STOP. Returning without polling..." << endl;
+		   //);
     return;
   }
     for_each( info_list.begin(), 
@@ -310,12 +314,12 @@ void IceCommandStatusPoller::updateJobCache( const list< soap_proxy::JobInfoWrap
 //____________________________________________________________________________
 void IceCommandStatusPoller::update_single_job( const soap_proxy::JobInfoWrapper& info_obj ) throw()
 {
-    static const char* method_name = "IceCommandStatusPoller::update_single_job() - ";
-    
+    //static const char* method_name = "IceCommandStatusPoller::update_single_job() - ";
+    edglog_fn("IceCommandStatusPoller::update_single_job");
     if(m_stopped) {
-      CREAM_SAFE_LOG(m_log_dev->debugStream() << "IceCommandStatusPoller::updateJobCache() - "
-		     << "EMERGENCY CALLED STOP. Returning without polling..."
-		     );
+     // CREAM_SAFE_LOG(m_log_dev->debugStream() << "IceCommandStatusPoller::updateJobCache() - "
+		   edglog(debug)   << "EMERGENCY CALLED STOP. Returning without polling..." << endl;
+		   //  );
       return;
     }
 
@@ -329,11 +333,11 @@ void IceCommandStatusPoller::update_single_job( const soap_proxy::JobInfoWrapper
     
     completeJobID += "/" + info_obj.getCreamJobID();
     
-    CREAM_SAFE_LOG( m_log_dev->debugStream() << method_name
-                    << "Updating status for CREAM Job ID ["
+    //CREAM_SAFE_LOG( m_log_dev->debugStream() << method_name
+                edglog(debug)     << "Updating status for CREAM Job ID ["
                     << info_obj.getCreamJobID() << "] CREAM URL ["
-                    << info_obj.getCreamURL() << "]"
-                    );
+                    << info_obj.getCreamURL() << "]" << endl;
+                  //  );
     
     int count;
     vector< soap_proxy::JobStatusWrapper >::const_iterator it;
@@ -345,10 +349,10 @@ void IceCommandStatusPoller::update_single_job( const soap_proxy::JobInfoWrapper
       tnx.execute( &getter );
       if( !getter.found() )
       {
-        CREAM_SAFE_LOG(m_log_dev->errorStream() << method_name 
-    		       << "cream_jobid [" << completeJobID 
-		       << "] disappeared!"
-		       );
+      //  CREAM_SAFE_LOG(m_log_dev->errorStream() << method_name 
+    		    edglog(error)   << "cream_jobid [" << completeJobID 
+		       << "] disappeared!" << endl;
+		      // );
 	return;
       }
       
@@ -369,10 +373,10 @@ void IceCommandStatusPoller::update_single_job( const soap_proxy::JobInfoWrapper
 	   remove from the cache and forget about it.
 	*/
 	if ( stNum == jobstat::PURGED ) {
-	  CREAM_SAFE_LOG(m_log_dev->warnStream() << method_name
-			 << "Job " << tmp_job.describe()
-			 << " is reported as PURGED. Removing from database"
-			 ); 
+	 // CREAM_SAFE_LOG(m_log_dev->warnStream() << method_name
+			edglog(warning)  << "Job " << tmp_job.describe()
+			 << " is reported as PURGED. Removing from database" << endl;
+			// ); 
 	  {
 	    if( tmp_job.proxy_renewable() )
 	      DNProxyManager::getInstance()->decrementUserProxyCounter( tmp_job.user_dn(), tmp_job.myproxy_address() );
@@ -394,13 +398,13 @@ void IceCommandStatusPoller::update_single_job( const soap_proxy::JobInfoWrapper
 	  
 	  string exitCode( it->getExitCode() );
 	  
-	  CREAM_SAFE_LOG(m_log_dev->debugStream() << method_name
-			 << "Updating ICE's database for " << tmp_job.describe()
+	 // CREAM_SAFE_LOG(m_log_dev->debugStream() << method_name
+			edglog(debug)  << "Updating ICE's database for " << tmp_job.describe()
 			 << " status = [" << it->getStatusName() << "]"
 			 << " exit_code = [" << exitCode << "]"
 			 << " failure_reason = [" << it->getFailureReason() << "]"
-			 << " description = [" << it->getDescription() << "]"
-			 );
+			 << " description = [" << it->getDescription() << "]" << endl;
+			// );
 	  tmp_job.set_status( stNum );
 	  
 #ifdef GLITE_WMS_ICE_ENABLE_STATS
@@ -441,10 +445,11 @@ void IceCommandStatusPoller::update_single_job( const soap_proxy::JobInfoWrapper
 	    CreamJob _tmp;
 	    string ignore_reason;
 	    if( util::IceUtils::ignore_job( tmp_job.complete_cream_jobid(), _tmp, ignore_reason ) ) {
-	      CREAM_SAFE_LOG( m_log_dev->warnStream() << method_name  << " TID=[" << getThreadID() << "] "
-      		      << "IGNORING CreamJobID ["
-		      << tmp_job.complete_cream_jobid() << "] for reason: " << ignore_reason
-		      );
+	     // CREAM_SAFE_LOG( m_log_dev->warnStream() << method_name  
+	          edglog(warning)  << " TID=[" << getThreadID() << "] "
+      		     << "IGNORING CreamJobID ["
+		      << tmp_job.complete_cream_jobid() << "] for reason: " << ignore_reason << endl;
+		     // );
 		      	       
 	      return;
 	    }
@@ -476,20 +481,20 @@ void IceCommandStatusPoller::execute( const std::string& tid ) throw()
 
   m_thread_id = tid;
 
-  static const char* method_name = "IceCommandStatusPoller::execute() - ";
-
+//  static const char* method_name = "IceCommandStatusPoller::execute() - ";
+  edglog_fn("IceCommandStatusPoller::execute");
   list< CreamJob > jobList;
   
   string userdn   = m_dnce.first;//it->at(0);
   string creamurl = m_dnce.second;//it->at(1);
   
-  CREAM_SAFE_LOG(m_log_dev->infoStream() << method_name
-		 << "Getting ["
+//  CREAM_SAFE_LOG(m_log_dev->infoStream() << method_name
+		edglog(info) << "Getting ["
 		 << m_max_chunk_size
 		 << "] jobs to poll for user ["
 		 << userdn << "] creamurl ["
-		 << creamurl << "]"
-		 );
+		 << creamurl << "]" << endl;
+		// );
   
   /**
      This method locks ICE because interrogates the ICE's database.
@@ -508,19 +513,19 @@ void IceCommandStatusPoller::execute( const std::string& tid ) throw()
   */
   string proxy( DNProxyManager::getInstance()->getAnyBetterProxyByDN( userdn ).get<0>() );
   if ( proxy.empty() ) {
-    CREAM_SAFE_LOG(m_log_dev->errorStream() << method_name
-		   << "A valid proxy file for DN [" << userdn
+   // CREAM_SAFE_LOG(m_log_dev->errorStream() << method_name
+		edglog(error)   << "A valid proxy file for DN [" << userdn
 		   << "] CREAM-URL ["
 		   << creamurl << "] is not available. Skipping polling for this user and "
-		   << "deleting all his/her jobs" 
-		   );
+		   << "deleting all his/her jobs" << endl; 
+		  // );
     list< CreamJob > toRemove;
       {
 //    	list<pair<string, string> > clause;
 //    	clause.push_back( make_pair( util::CreamJob::user_dn_field(), userdn ) );
     
     	//db::GetJobs getter( clause, toRemove, method_name );
-	db::GetJobsByDN getter( toRemove, userdn, method_name );
+	db::GetJobsByDN getter( toRemove, userdn, "IceCommandStatusPoller::execute" );
     	db::Transaction tnx( false, false );
     	tnx.execute( &getter );
       }
@@ -538,20 +543,20 @@ void IceCommandStatusPoller::execute( const std::string& tid ) throw()
     return;//continue;
   }  
   if( !(IceUtils::is_valid_proxy( proxy ).first) ) {
-    CREAM_SAFE_LOG(m_log_dev->errorStream() << method_name
-		   << "Proxy ["
+    //CREAM_SAFE_LOG(m_log_dev->errorStream() << method_name
+		edglog(error)   << "Proxy ["
 		   << proxy << "] for user ["
 		   << userdn 
 		   << "] is expired! Skipping polling for this user "
-		   << "and deletegin all his/her jobs..."
-		   );
+		   << "and deletegin all his/her jobs..." << endl;
+		  // );
     list< CreamJob > toRemove;
       {
 //    	list<pair<string, string> > clause;
 //    	clause.push_back( make_pair( util::CreamJob::user_dn_field(), userdn ) );
     
     	//db::GetJobs getter( clause, toRemove, method_name );
-	db::GetJobsByDN getter( toRemove, userdn, method_name );
+	db::GetJobsByDN getter( toRemove, userdn, "IceCommandStatusPoller::execute" );
     	db::Transaction tnx( false, false );
     	tnx.execute( &getter );
       }
@@ -570,10 +575,10 @@ void IceCommandStatusPoller::execute( const std::string& tid ) throw()
     return;//continue;
   }
   
-  CREAM_SAFE_LOG(m_log_dev->infoStream() << method_name
-		 << "Authenticating with proxy [" << proxy << "] for userdn [" 
-		 << userdn << "]..."
-		 );
+ // CREAM_SAFE_LOG(m_log_dev->infoStream() << method_name
+		edglog(info) << "Authenticating with proxy [" << proxy << "] for userdn [" 
+		 << userdn << "]..." << endl;
+		// );
   
   /**
      The following method 'check_multiple_jobs' will connect to the CREAM service

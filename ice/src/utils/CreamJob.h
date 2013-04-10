@@ -51,7 +51,7 @@ END LICENSE */
  */
 #include "gssapi.h"
 
-#include "glite/ce/cream-client-api-c/creamApiLogger.h"
+//#include "glite/ce/cream-client-api-c/creamApiLogger.h"
 #include "glite/ce/cream-client-api-c/job_statuses.h"
 #include "glite/ce/cream-client-api-c/VOMSWrapper.h"
 #include "glite/ce/cream-client-api-c/certUtil.h"

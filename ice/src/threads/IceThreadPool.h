@@ -26,9 +26,9 @@ END LICENSE */
 #include <string>
 
 // Forward declaration
-namespace log4cpp {
-    class Category;
-}
+// namespace log4cpp {
+//     class Category;
+// }
 
 namespace glite {
 namespace wms {
@@ -102,12 +102,12 @@ namespace threads {
             
             IceThreadPoolState* m_state;
             const int m_threadNum; //!< the id of this thread
-            log4cpp::Category* m_log_dev;
+            //log4cpp::Category* m_log_dev;
         };
         
         boost::scoped_ptr< IceThreadPoolState > m_state;
         boost::thread_group m_all_threads;
-        log4cpp::Category* m_log_dev;
+        //log4cpp::Category* m_log_dev;
     };
     
 } // namespace util

@@ -21,7 +21,7 @@ END LICENSE */
 #include "CheckGridJobID.h"
 #include "utils/CreamJob.h"
 
-#include "glite/ce/cream-client-api-c/creamApiLogger.h"
+//#include "glite/ce/cream-client-api-c/creamApiLogger.h"
 
 using namespace glite::wms::ice;
 

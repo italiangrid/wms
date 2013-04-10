@@ -47,15 +47,15 @@ END LICENSE */
 #include "db/RemoveJobByUserDN.h"
 #include "utils/IceConfManager.h"
 #include "glite/wms/common/configuration/Configuration.h"
-
+#include "utils/logging.h"
 
 #include "glite/ce/cream-client-api-c/job_statuses.h"
 #include "glite/ce/cream-client-api-c/ResultWrapper.h"
 #include "glite/ce/cream-client-api-c/JobIdWrapper.h"
 #include "glite/ce/cream-client-api-c/JobFilterWrapper.h"
-#include "glite/ce/cream-client-api-c/creamApiLogger.h"
+//#include "glite/ce/cream-client-api-c/creamApiLogger.h"
 #include "glite/ce/cream-client-api-c/AbsCreamProxy.h"
-#include "glite/ce/cream-client-api-c/creamApiLogger.h"
+//#include "glite/ce/cream-client-api-c/creamApiLogger.h"
 
 #include "glite/ce/cream-client-api-c/certUtil.h"
 
@@ -69,6 +69,9 @@ END LICENSE */
 #include "common/src/configuration/ICEConfiguration.h"
 #include "common/src/configuration/WMConfiguration.h"
 #include "common/src/configuration/CommonConfiguration.h"
+//#include "glite/wms/common/logger/edglog.h"
+#include "glite/wms/common/logger/edglog.h"
+#include "glite/wms/common/logger/manipulators.h"
 
 #include <boost/thread/thread.hpp>
 #include <boost/bind.hpp>
@@ -95,6 +98,8 @@ boost::recursive_mutex  Main::s_mutex;
 //______________________________________________________________________________
 long long Main::check_my_mem( const pid_t pid )
 {
+  edglog_fn("Main::check_my_mem");
+
   char cmd[128];
   char used_rss_mem[64];
   memset((void*) cmd, 0, 64);
@@ -106,10 +111,11 @@ long long Main::check_my_mem( const pid_t pid )
   if(!in) return (long long)0;
   
   while (fgets(used_rss_mem, 64, in) != NULL)
-    CREAM_SAFE_LOG( m_log_dev->debugStream()
+    edglog(debug) 
+//    CREAM_SAFE_LOG( m_log_dev->debugStream()
 		    << "Main::check_my_mem - Used RSS Memory: "
-		    << used_rss_mem 
-		    );
+		    << used_rss_mem << endl;
+//		    );
   pclose(in);
 
   return atoll(used_rss_mem);
@@ -126,8 +132,8 @@ public:
 //____________________________________________________________________________
 Main::IceThreadHelper::IceThreadHelper( const std::string& name ) :
     m_name( name ),
-    m_thread( 0 ),
-    m_log_dev( cream_api::util::creamApiLogger::instance()->getLogger() )
+    m_thread( 0 )
+    //m_log_dev( cream_api::util::creamApiLogger::instance()->getLogger() )
 {
 }
 
@@ -158,48 +164,50 @@ bool Main::IceThreadHelper::is_started( void ) const
 //____________________________________________________________________________
 void Main::IceThreadHelper::stop( void )
 {
+  edglog_fn("Main::IceThreadHelper::stop");
   if( m_thread && m_ptr_thread->isRunning() ) {
-    CREAM_SAFE_LOG( 
-		   m_log_dev->debugStream()
+//    CREAM_SAFE_LOG( m_log_dev->debugStream()
+	edglog(debug)
 		   << "Main::IceThreadHelper::stop() - Waiting for thread " 
 		   << m_name 
-		   << " termination..."
+		   << " termination..."<<endl;
                    
-		   );
+//		   );
     m_ptr_thread->stop();
     m_thread->join();
-    CREAM_SAFE_LOG(
-		   m_log_dev->debugStream()
+//    CREAM_SAFE_LOG( m_log_dev->debugStream()
+	edglog (debug)	   
 		   << "Main::IceThreadHelper::stop() - Thread " 
-		   << m_name << " finished"
-		   );
+		   << m_name << " finished"<<endl;
+//		   );
   }
 }
 
 //____________________________________________________________________________
 Main* Main::instance( void )
 {
-    log4cpp::Category* m_log_dev = cream_api::util::creamApiLogger::instance()->getLogger();
+  edglog_fn("Main::instance");
+
+    //log4cpp::Category* m_log_dev = cream_api::util::creamApiLogger::instance()->getLogger();
 
     if ( 0 == s_instance ) {
         try {
             s_instance = new Main( ); // may throw IceInitException
 
         } catch(IceInitException& ex) {
-            CREAM_SAFE_LOG(
-                           m_log_dev->fatalStream() 
+//            CREAM_SAFE_LOG( m_log_dev->fatalStream() 
+                          edglog (fatal)
                            << "Main::instance() - " 
-                           << ex.what()
+                           << ex.what() << endl;
                            
-                           );
+//                           );
             abort();
         } catch(...) {
-            CREAM_SAFE_LOG(
-                           m_log_dev->fatalStream() 
-                           << "Main::instance() - " 
-                           << "Catched unknown exception"
+//            CREAM_SAFE_LOG( m_log_dev->fatalStream() 
+                 edglog  (fatal)         << "Main::instance() - " 
+                           << "Catched unknown exception" << endl;
                            
-                           );
+//                           );
             abort();
         }
         s_instance->init( );    
@@ -214,7 +222,7 @@ Main::Main( ) throw(IceInitException&) :
     m_wms_input_queue( new Request_source_jobdir( IceConfManager::instance()->getConfiguration()->wm()->input(), true ) /*util::Request_source_factory::make_source_input_wm()*/ ),
     m_ice_input_queue( new Request_source_jobdir( IceConfManager::instance()->getConfiguration()->ice()->input(), true ) /*util::Request_source_factory::make_source_input_ice()*/ ),
     m_reqnum(util::IceConfManager::instance()->getConfiguration()->ice()->max_ice_threads()),
-    m_log_dev( cream_api::util::creamApiLogger::instance()->getLogger() ),
+    //m_log_dev( cream_api::util::creamApiLogger::instance()->getLogger() ),
     m_lb_logger( util::IceLBLogger::instance() ),
     m_configuration( util::IceConfManager::instance()->getConfiguration() ),
     m_times_too_queue_full( 0 )
@@ -224,6 +232,9 @@ Main::Main( ) throw(IceInitException&) :
      Query calls must be done with fromDate = 'now', because ICE is not
      intersted in old jobs/events that has been removed from its database
   */
+  
+  edglog_fn("Main::Main");
+  
   m_start_time = time(0)-600;
 
   if(m_reqnum < 5) m_reqnum = 5;
@@ -246,11 +257,11 @@ Main::Main( ) throw(IceInitException&) :
 
     } catch( glite::ce::cream_client_api::soap_proxy::auth_ex& ex ) {
       string hostcert = m_configuration->ice()->ice_host_cert();
-        CREAM_SAFE_LOG( m_log_dev->fatalStream()
-                        << "Main::CTOR() - Unable to extract user DN from ["
+//        CREAM_SAFE_LOG( m_log_dev->fatalStream()
+                       edglog(fatal) << "Main::CTOR() - Unable to extract user DN from ["
                         <<  hostcert << "]"
-                        << ". Cannot perform JobRegister and cannot start Listener. Stop!"
-                        );
+                        << ". Cannot perform JobRegister and cannot start Listener. Stop!"<<endl;
+                     //   );
         exit(1);
     }
 }
@@ -294,13 +305,15 @@ void Main::init( void )
 //____________________________________________________________________________
 void Main::startPoller( void )
 {
+  edglog_fn("Main::startPoller");
+
     if ( ! m_configuration->ice()->start_poller() ) {
-        CREAM_SAFE_LOG( m_log_dev->warnStream()
-                        << "Main::startPoller() - "
+//        CREAM_SAFE_LOG( m_log_dev->warnStream()
+                       edglog(warning) << "Main::startPoller() - "
                         << "Poller disabled in configuration file. "
-                        << "Not started"
+                        << "Not started"<<endl;
                         
-                        );
+//                        );
         return;
     }
     
@@ -333,13 +346,14 @@ void Main::startPoller( void )
 //-----------------------------------------------------------------------------
 void Main::startProxyRenewer( void ) 
 {
+  edglog_fn("Main::startProxyRenewer");
   if ( !m_configuration->ice()->start_proxy_renewer() ) {
-    CREAM_SAFE_LOG( m_log_dev->warnStream()
-		    << "Main::startProxyRenewer() - "
+//    CREAM_SAFE_LOG( m_log_dev->warnStream()
+		   edglog(warning) << "Main::startProxyRenewer() - "
 		    << "Delegation Renewal disabled in configuration file. "
-		    << "Not started"
+		    << "Not started"<<endl;
 		    
-		    );
+		    //);
     return;
   }
   threads::DelegationRenewal* proxy_renewer = new threads::DelegationRenewal( );
@@ -416,23 +430,25 @@ bool Main::is_proxy_renewer_started( void ) const
 //____________________________________________________________________________
 void Main::resubmit_job( util::CreamJob* the_job, const string& reason ) throw()
 {
+
+  edglog_fn("Main::resubmit_job");
   if( ::getenv( "GLITE_WMS_ICE_NORESUBMIT" ) ) {
 
-     CREAM_SAFE_LOG( m_log_dev->warnStream() 
-                    << "Main::resubmit_job() - RESUBMISSION DISABLED."
-                    );
+//     CREAM_SAFE_LOG( m_log_dev->warnStream() 
+                   edglog(warning) << "Main::resubmit_job() - RESUBMISSION DISABLED."<<endl;
+                  //  );
      return;
   }
 
   cream_api::soap_proxy::VOMSWrapper V( the_job->user_proxyfile(),  !::getenv("GLITE_WMS_ICE_DISABLE_ACVER") );
   
   if ( V.getProxyTimeEnd( ) <= time(0)+300) {
-    CREAM_SAFE_LOG( m_log_dev->errorStream() 
-		    << "Main::resubmit_job() - Will NOT resubmit job ["
+//    CREAM_SAFE_LOG( m_log_dev->errorStream() 
+		edglog(error)    << "Main::resubmit_job() - Will NOT resubmit job ["
 		    << the_job->describe() << "] " 
 		    << "because it's Input Sandbox proxy file is expired: "
-		    << V.getErrorMessage()
-		    );
+		    << V.getErrorMessage()<<endl;
+//		    );
     IceLBEvent* ev = new job_aborted_event( *the_job );
     if ( ev ) {
       
@@ -475,21 +491,21 @@ void Main::resubmit_job( util::CreamJob* the_job, const string& reason ) throw()
 	  unparser.Unparse( resub_request, &command );        
 	} // releasing classad mutex
 
-        CREAM_SAFE_LOG(
-                       m_log_dev->infoStream()
-                       << "Main::resubmit_job() - Putting ["
-                       << resub_request << "] to WM's Input file"
+//        CREAM_SAFE_LOG(
+                   //    m_log_dev->infoStream()
+                   edglog(info)    << "Main::resubmit_job() - Putting ["
+                       << resub_request << "] to WM's Input file"<<endl;
                        
-                       );
+                    //   );
 
         m_wms_input_queue->put_request( resub_request );
         _the_job = m_lb_logger->logEvent( new util::ns_enqueued_ok_event( _the_job, m_wms_input_queue->get_name() ), false, true );
 	
     } catch(std::exception& ex) {
-        CREAM_SAFE_LOG( m_log_dev->errorStream() 
-			<< "Main::resubmit_job() - "
-                        << ex.what() 
-                         );
+//        CREAM_SAFE_LOG( m_log_dev->errorStream() 
+			edglog(error)<< "Main::resubmit_job() - "
+                        << ex.what() << endl;
+//                         );
 
         m_lb_logger->logEvent( new util::ns_enqueued_fail_event( _the_job, m_wms_input_queue->get_name(), ex.what() ), false, true );
 	_the_job.set_failure_reason( string("resubmission failed: ") + ex.what() );
@@ -503,8 +519,8 @@ void Main::purge_job( const util::CreamJob* theJob ,
 		     const string& reason )
   throw() 
 {
-    static const char* method_name = "Main::purge_job() - ";
-
+    //static const char* method_name = "Main::purge_job() - ";
+    edglog_fn("Main::purge_job");
     string jobdesc( theJob->describe() );
     string _gid(  theJob->grid_jobid() );
 
@@ -523,10 +539,10 @@ void Main::purge_job( const util::CreamJob* theJob ,
 	 - remove job from ICE's database
 	 - return
       */
-      CREAM_SAFE_LOG(m_log_dev->infoStream() << method_name
-		     << "JobPurge is DISABLED, will not Purge job ["
-		     << jobdesc << "]."
-		     );
+//      CREAM_SAFE_LOG(m_log_dev->infoStream() << method_name
+		    edglog(info) << "JobPurge is DISABLED, will not Purge job ["
+		     << jobdesc << "]." << endl;
+		    // );
       return;
     }
       
@@ -544,12 +560,12 @@ void Main::purge_job( const util::CreamJob* theJob ,
     string better_proxy = util::DNProxyManager::getInstance()->getAnyBetterProxyByDN( theJob->user_dn() ).get<0>();
 
     if( better_proxy.empty() ) {
-      CREAM_SAFE_LOG( m_log_dev->warnStream() << method_name
-		      << "DNProxyManager returned an empty string for BetterProxy of user DN ["
+//      CREAM_SAFE_LOG( m_log_dev->warnStream() << method_name
+		     edglog(warning) << "DNProxyManager returned an empty string for BetterProxy of user DN ["
 		      << "] for job ["
 		      << jobdesc
-		      << "]. Using the Job's proxy." 
-		      );
+		      << "]. Using the Job's proxy." << endl;
+		     // );
 
       better_proxy = theJob->user_proxyfile();
     }
@@ -563,21 +579,21 @@ void Main::purge_job( const util::CreamJob* theJob ,
 	 and DO NOT decrement the job counter
 	 of the 'super' better proxy.
       */
-      CREAM_SAFE_LOG( m_log_dev->errorStream() << method_name
-		      << "Unable to purge job ["
+ //     CREAM_SAFE_LOG( m_log_dev->errorStream() << method_name
+		    edglog(error)  << "Unable to purge job ["
 		      << jobdesc
 		      << "] due to authentication error: " 
-		      << V.getErrorMessage()
-		      );
+		      << V.getErrorMessage() << endl;
+		     // );
       return;// jit;
     }
 
     try {
         
-      CREAM_SAFE_LOG(m_log_dev->infoStream() << method_name
-		     << "Calling JobPurge for job ["
-		     << jobdesc << "]"
-		     );
+//      CREAM_SAFE_LOG(m_log_dev->infoStream() << method_name
+		   edglog(info)  << "Calling JobPurge for job ["
+		     << jobdesc << "]" << endl;
+		     //);
       // We cannot accumulate more jobs to purge in a
       // vector because we must authenticate different
       // jobs with different user certificates.
@@ -605,10 +621,10 @@ void Main::purge_job( const util::CreamJob* theJob ,
 	pair<cream_api::soap_proxy::JobIdWrapper, string> wrong = *( tmp.begin() ); // we trust there's only one element because we've purged ONLY ONE job
 	string errMex = wrong.second;
 	
-	CREAM_SAFE_LOG(m_log_dev->errorStream() << method_name
-		       << "Cannot purge job [" << jobdesc 
-		       << "] - Reason is: " << errMex
-		       );
+//	CREAM_SAFE_LOG(m_log_dev->errorStream() << method_name
+		     edglog(error)  << "Cannot purge job [" << jobdesc 
+		       << "] - Reason is: " << errMex << endl;
+		    //   );
 	
 	/**
 	   Another poll will be tried again
@@ -622,37 +638,37 @@ void Main::purge_job( const util::CreamJob* theJob ,
        * this exception should not be raised because
        * the CreamJob is created from another valid one
        */
-      CREAM_SAFE_LOG(m_log_dev->fatalStream() << method_name
-		     << "Fatal error: CreamJob creation failed "
-		     << "copying from a valid one!!!"
-		     );
+//      CREAM_SAFE_LOG(m_log_dev->fatalStream() << method_name
+		    edglog(fatal) << "Fatal error: CreamJob creation failed "
+		     << "copying from a valid one!!!" << endl;
+		    // );
       abort();
     } catch(cream_api::soap_proxy::auth_ex& ex) {
-      CREAM_SAFE_LOG(m_log_dev->errorStream() << method_name
-		     << "Cannot purge job [" << jobdesc
-		     << "]. Reason is: " << ex.what()
-		     );
+//      CREAM_SAFE_LOG(m_log_dev->errorStream() << method_name
+		   edglog(error)  << "Cannot purge job [" << jobdesc
+		     << "]. Reason is: " << ex.what() << endl;
+		    // );
     } catch(cream_api::cream_exceptions::BaseException& ex) {
-      CREAM_SAFE_LOG(m_log_dev->errorStream() << method_name
-		     << "Cannot purge job [" << jobdesc
-		     << "]. Reason is BaseException: " << ex.what()
-		     );
+//      CREAM_SAFE_LOG(m_log_dev->errorStream() << method_name
+		    edglog(error) << "Cannot purge job [" << jobdesc
+		     << "]. Reason is BaseException: " << ex.what()<<endl;
+		    // );
     } catch(cream_api::cream_exceptions::InternalException& ex) {
-      CREAM_SAFE_LOG(m_log_dev->errorStream() << method_name
-		     << "Cannot purge job [" << jobdesc
-		     << "]. Reason is InternalException: " << ex.what()
-		     );
+//      CREAM_SAFE_LOG(m_log_dev->errorStream() << method_name
+		  edglog(error)   << "Cannot purge job [" << jobdesc
+		     << "]. Reason is InternalException: " << ex.what()<<endl;
+		   //  );
     } catch( std::exception& ex ) {
-      CREAM_SAFE_LOG(m_log_dev->errorStream() << method_name
-		     << "Cannot purge job [" << jobdesc
-		     << "]. Reason is an exception: " << ex.what()
+//      CREAM_SAFE_LOG(m_log_dev->errorStream() << method_name
+		   edglog(error)  << "Cannot purge job [" << jobdesc
+		     << "]. Reason is an exception: " << ex.what() << endl;
 		     
-		     );
+		   //  );
     } catch( ... ) {
-      CREAM_SAFE_LOG(m_log_dev->errorStream() << method_name
-		     << "Cannot purge job [" << jobdesc
-		     << "]. Reason is an unknown exception"
-		     );
+//      CREAM_SAFE_LOG(m_log_dev->errorStream() << method_name
+		  edglog(error)   << "Cannot purge job [" << jobdesc
+		     << "]. Reason is an unknown exception" << endl;
+		    // );
     }
 }
 
@@ -660,48 +676,49 @@ void Main::purge_job( const util::CreamJob* theJob ,
 //____________________________________________________________________________
 void Main::deregister_proxy_renewal( const util::CreamJob* job ) throw()
 {
+  edglog_fn("Main::deregister_proxy_renewal");
   string jobdesc( job->describe() );
     if ( !::getenv( "ICE_DISABLE_DEREGISTER") ) {
         // must deregister proxy renewal
         int      err = 0;
         
-        CREAM_SAFE_LOG(
-                       m_log_dev->infoStream()
-                       << "Main::deregister_proxy_renewal() - "
+//        CREAM_SAFE_LOG(
+                      // m_log_dev->infoStream()
+                     edglog(info)  << "Main::deregister_proxy_renewal() - "
                        << "Unregistering Proxy for job ["
-                       << jobdesc << "]"
-                       );
+                       << jobdesc << "]" << endl;
+                     //  );
         
         err = glite_renewal_UnregisterProxy( job->grid_jobid().c_str(), NULL );
         
         if ( err && (err != EDG_WLPR_PROXY_NOT_REGISTERED) ) {
 	    const char* errmex = edg_wlpr_GetErrorText(err);
-            CREAM_SAFE_LOG(
-                           m_log_dev->errorStream()
-                           << "Main::deregister_proxy_renewal() - "
+   //         CREAM_SAFE_LOG(
+                        //   m_log_dev->errorStream()
+                        edglog(error)   << "Main::deregister_proxy_renewal() - "
                            << "ICE cannot unregister the proxy " 
                            << "for job [" << jobdesc
                            << "]. Reason: \"" << errmex
-                           << "\"."
-                           );
+                           << "\"." << endl;
+                      //     );
         } else {
             if ( err == EDG_WLPR_PROXY_NOT_REGISTERED ) {
-                CREAM_SAFE_LOG(
-                               m_log_dev->warnStream()
-                               << "Main::deregister_proxy_renewal() - "
+            //    CREAM_SAFE_LOG(
+                            //   m_log_dev->warnStream()
+                           edglog(warning)    << "Main::deregister_proxy_renewal() - "
                                << "Job proxy not registered for job ["
                                << jobdesc 
-                               << "]. Going ahead." 
-                               );
+                               << "]. Going ahead." << endl;
+                            //   );
             }
         }
     } else {
-        CREAM_SAFE_LOG(
-                       m_log_dev->warnStream()
-                       << "Main::deregister_proxy_renewal() - "
+   //     CREAM_SAFE_LOG(
+                   //    m_log_dev->warnStream()
+                    edglog(warning)   << "Main::deregister_proxy_renewal() - "
                        << "Proxy unregistration disable. To reenable, " 
-                       << "unset the environment variable ICE_DISABLE_DEREGISTER"
-                       );
+                       << "unset the environment variable ICE_DISABLE_DEREGISTER"<<endl;
+                    //   );
     }
 }
 
@@ -709,17 +726,17 @@ void Main::deregister_proxy_renewal( const util::CreamJob* job ) throw()
 //____________________________________________________________________________
 void Main::purge_wms_storage( const util::CreamJob* job ) throw()
 {
-
+  edglog_fn("Main::purge_wms_storage");
   string jobdesc( job->describe() );
     if ( !::getenv( "ICE_DISABLE_PURGER" ) ) {
         try {
-            CREAM_SAFE_LOG(
-                           m_log_dev->infoStream()
-                           << "Main::purge_wms_storage() - "
+       //     CREAM_SAFE_LOG(
+                        //   m_log_dev->infoStream()
+                         edglog(info)  << "Main::purge_wms_storage() - "
                            << "Purging storage for job ["
-                           << jobdesc << "]"
+                           << jobdesc << "]" << endl;
                            
-                           );
+                         //  );
 #ifdef HAVE_GLITE_JOBID
             glite::jobid::JobId j_id( job->grid_jobid() );
 #else        
@@ -730,24 +747,24 @@ void Main::purge_wms_storage( const util::CreamJob* job ) throw()
             the_purger(j_id);
 
         } catch( std::exception& ex ) {
-            CREAM_SAFE_LOG(
-                           m_log_dev->errorStream()
-                           << "Main::purge_wms_storage() - "
+           // CREAM_SAFE_LOG(
+                           //m_log_dev->errorStream()
+                           edglog(error) << "Main::purge_wms_storage() - "
                            << "Cannot purge storage for job ["
                            << jobdesc
-                           << "]. Reason is: " << ex.what()
+                           << "]. Reason is: " << ex.what() << endl;
                            
-                           );
+                           //);
             
         }
     } else {
-        CREAM_SAFE_LOG(
-                       m_log_dev->warnStream()
-                       << "Main::purge_wms_storage() - "
+        //CREAM_SAFE_LOG(
+                   //    m_log_dev->warnStream()
+                   edglog(warning)    << "Main::purge_wms_storage() - "
                        << "WMS job purger disabled in ICE. To reenable "
-                       << "unset the environment variable ICE_DISABLE_PURGER"
+                       << "unset the environment variable ICE_DISABLE_PURGER"<< endl;
                        
-                       );
+                    //   );
     }
 }
 
@@ -757,6 +774,8 @@ bool Main::resubmit_or_purge_job( util::CreamJob* tmp_job )
 throw() 
 {
   cream_api::job_statuses::job_status st = (cream_api::job_statuses::job_status)tmp_job->status();
+  
+  edglog_fn("Main::resubmit_or_purge_job");
   
   bool ok = false;
   
@@ -777,10 +796,10 @@ throw()
        cream_api::job_statuses::DONE_FAILED == st ||
        cream_api::job_statuses::ABORTED == st ) 
   {
-    CREAM_SAFE_LOG(m_log_dev->debugStream() << "Main::resubmit_or_purge_job() - "
- 	  	   << "Removing purged job [" << tmp_job->describe()
- 		   << "] from ICE's database"
- 		   );
+    //CREAM_SAFE_LOG(m_log_dev->debugStream() << "Main::resubmit_or_purge_job() - "
+ 	  	  edglog(debug) << "Removing purged job [" << tmp_job->describe()
+ 		   << "] from ICE's database"<<endl;
+ 		   //);
 
     if(tmp_job->proxy_renewable())
       util::DNProxyManager::getInstance()->decrementUserProxyCounter( tmp_job->user_dn(), tmp_job->myproxy_address() );
@@ -823,8 +842,8 @@ throw()
 //____________________________________________________________________________
 int Main::main_loop( void ) {
 
-  static const char* method_name = "Main::main_loop";
-
+//  static const char* method_name = "Main::main_loop";
+edglog_fn("Main::main_loop");
   /**
    *
    * Prepares a list that will contains requests fetched from 
@@ -842,11 +861,11 @@ int Main::main_loop( void ) {
    
   long long max_ice_mem = m_configuration->ice()->max_ice_mem();
    
-  CREAM_SAFE_LOG(m_log_dev->debugStream()
-		 << method_name
+ // CREAM_SAFE_LOG(m_log_dev->debugStream()
+		edglog(debug) 
 		 << " - Max ICE memory threshold set to "
-		 << max_ice_mem << " kB"   
-		 );
+		 << max_ice_mem << " kB" <<endl;  
+		 //);
    
   pid_t myPid = ::getpid();
    
@@ -866,13 +885,13 @@ int Main::main_loop( void ) {
     unsigned int command_count( this->get_requests_pool()->get_command_count() );
 
     if ( command_count > m_configuration->ice()->max_ice_threads() ) {
-      CREAM_SAFE_LOG(m_log_dev->debugStream()
-		     << method_name
+    //  CREAM_SAFE_LOG(m_log_dev->debugStream()
+		    edglog(debug) 
 		     << " - There are currently too many requests ("
 		     << command_count
 		     << ") in the internal command queue. "
-		     << "Will check again in 1 second."
-		     );
+		     << "Will check again in 1 second." << endl;
+		    // );
 		     
       m_times_too_queue_full++;
       // if after 3600 secs (1 h) the queue is still full
@@ -883,10 +902,10 @@ int Main::main_loop( void ) {
         this->get_ice_commands_pool()->stopAllThreads();
         this->get_ice_lblog_pool( )->stopAllThreads();
 
-        CREAM_SAFE_LOG( m_log_dev->fatalStream()
-                        << method_name
-                        << " - The thread pool is full since too much time (1 hour). Need self-restarting..."
-                        );
+    //    CREAM_SAFE_LOG( m_log_dev->fatalStream()
+                     edglog(fatal)  
+                        << " - The thread pool is full since too much time (1 hour). Need self-restarting..."<<endl;
+                        //);
                 
         return 2; // return special code '2' to main. 
 		  // It means max mem reached, 
@@ -902,12 +921,12 @@ int Main::main_loop( void ) {
       this->getNextRequests( requests );
 	  
       if( !requests.empty() )
-	CREAM_SAFE_LOG(
-		       m_log_dev->infoStream()
-		       << method_name 
-		       << " - *** Found " << requests.size() << " new request(s)"
+	//CREAM_SAFE_LOG(
+		     //  m_log_dev->infoStream()
+		     edglog(info)  
+		       << " - *** Found " << requests.size() << " new request(s)" << endl;
                            
-		       );
+		    //   );
 	  
       for( list< glite::wms::ice::util::Request* >::iterator it = requests.begin();
 	   it != requests.end(); ++it ) 
@@ -916,13 +935,13 @@ int Main::main_loop( void ) {
 
 	      
 
-	  CREAM_SAFE_LOG(
-			 m_log_dev->debugStream()
-			 << method_name
+	//  CREAM_SAFE_LOG(
+			// m_log_dev->debugStream()
+			edglog(debug)
 			 << " - *** Unparsing request <"
 			 << reqstr
-			 << ">"  
-			 );
+			 << ">"  <<endl;
+			// );
 
 	  util::RequestParser parser( *it );
 	  glite::wms::ice::util::CreamJob theJob;
@@ -944,8 +963,8 @@ int Main::main_loop( void ) {
 	
 	    glite::ce::cream_client_api::soap_proxy::VOMSWrapper V( theJob.user_proxyfile(),  !::getenv("GLITE_WMS_ICE_DISABLE_ACVER") );
 	    if( !V.IsValid( ) ) {
-	      CREAM_SAFE_LOG( m_log_dev->errorStream()
-			      << method_name
+	     // CREAM_SAFE_LOG( m_log_dev->errorStream()
+			     edglog(error)
 			      << " - For job ["
 			      << theJob.grid_jobid() << "]"
 			      << " the proxyfile ["
@@ -953,8 +972,8 @@ int Main::main_loop( void ) {
 			      << "] is not valid: "
 			      << V.getErrorMessage()
 			      << ". Skipping processing of this job. "
-			      << "Logging an abort and removing request from filelist/jobdir"
-			      );
+			      << "Logging an abort and removing request from filelist/jobdir" << endl;
+			  //    );
 			
 	      theJob.set_failure_reason( V.getErrorMessage() );
 	      theJob.set_status( glite::ce::cream_client_api::job_statuses::ABORTED ); 
@@ -968,12 +987,12 @@ int Main::main_loop( void ) {
 	        bool log_with_cancel_seqcode = (theJob.status( ) == glite::ce::cream_client_api::job_statuses::CANCELLED) && (!theJob.cancel_sequence_code( ).empty( ));
 		theJob = glite::wms::ice::util::IceLBLogger::instance()->logEvent( ev, log_with_cancel_seqcode, false );
 	      } else {
-		CREAM_SAFE_LOG( m_log_dev->errorStream()
-				<< method_name
+		//CREAM_SAFE_LOG( m_log_dev->errorStream()
+				edglog(error)
 				<< " - For job ["
 				<< theJob.grid_jobid() 
-				<< "Couldn't log abort event."
-				);
+				<< "Couldn't log abort event."<<endl;
+				//);
 	      }
 	      this->removeRequest( *it );
 	      delete( *it );
@@ -994,11 +1013,11 @@ int Main::main_loop( void ) {
 	    this->get_requests_pool()->add_request( cmd );
 
 	  } catch( std::exception& ex ) {
-	    CREAM_SAFE_LOG( m_log_dev->errorStream()
-			    << method_name
+	 //   CREAM_SAFE_LOG( m_log_dev->errorStream()
+			  edglog(error) 
 			    << " - Got exception \"" << ex.what()
-			    << "\". Removing BAD request..." 
-			    );
+			    << "\". Removing BAD request..." << endl;
+			  //  );
 
 	    this->removeRequest( *it );
 	    delete( *it );
@@ -1025,11 +1044,11 @@ int Main::main_loop( void ) {
 	this->get_ice_commands_pool()->stopAllThreads();
 	this->get_ice_lblog_pool( )->stopAllThreads();
 
-	CREAM_SAFE_LOG( m_log_dev->fatalStream()
-			<< method_name
+	//CREAM_SAFE_LOG( m_log_dev->fatalStream()
+		edglog(fatal)
 			<< " - Max memory reached ["
-			<< mem_now << " kB] ! EXIT!"
-			);
+			<< mem_now << " kB] ! EXIT!" << endl;
+		//	);
 		
 	return 2; // return special code '2' to main. It means max mem reached.
       }

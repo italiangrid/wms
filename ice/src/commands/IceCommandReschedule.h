@@ -26,7 +26,7 @@ END LICENSE */
 #include "IceCommandTransientException.h"
 #include "utils/CreamJob.h"
 
-#include "glite/ce/cream-client-api-c/creamApiLogger.h"
+//#include "glite/ce/cream-client-api-c/creamApiLogger.h"
 #include "glite/ce/cream-client-api-c/AbsCreamProxy.h"
 #include "glite/ce/cream-client-api-c/VOMSWrapper.h"
 

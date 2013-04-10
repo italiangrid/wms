@@ -23,7 +23,11 @@ END LICENSE */
 #include "IceLBContext.h"
 #include "IceLBEvent.h"
 #include "glite/ce/cream-client-api-c/scoped_timer.h"
-#include "glite/ce/cream-client-api-c/creamApiLogger.h"
+//#include "glite/ce/cream-client-api-c/creamApiLogger.h"
+
+#include "utils/logging.h"
+#include "glite/wms/common/logger/edglog.h"
+#include "glite/wms/common/logger/manipulators.h"
 
 #include "db/UpdateJob.h"
 #include "db/Transaction.h"
@@ -55,7 +59,7 @@ IceLBLogger* IceLBLogger::instance( void )
 }
 
 IceLBLogger::IceLBLogger( void ) :
-    m_log_dev( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger() ),
+ //   m_log_dev( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger() ),
     m_lb_enabled( true )
 {
     //
@@ -78,16 +82,17 @@ IceLBLogger::~IceLBLogger( void )
 
 CreamJob IceLBLogger::logEvent( IceLBEvent* ev, const bool use_cancel_sequence_code, const bool updatedb )
 {
-    static const char* method_name = "IceLBLogger::logEvent() - ";
+    //static const char* method_name = "IceLBLogger::logEvent() - ";
+    edglog_fn("IceLBLogger::logEvent");
 #ifdef ICE_PROFILE_ENABLE
     api_util::scoped_timer T( "IceLBLogger::logEvent()" );
 #endif
     // Aborts if trying to log the NULL event
     if ( ! ev ) {
-        CREAM_SAFE_LOG(m_log_dev->fatalStream()
-                       << method_name
-		       << "Cannot log a NULL event"
-                       );
+        //CREAM_SAFE_LOG(m_log_dev->fatalStream()
+            //           << method_name
+		edglog(fatal)       << "Cannot log a NULL event" << endl;
+          //             );
         abort();        
     }
 
@@ -102,12 +107,12 @@ CreamJob IceLBLogger::logEvent( IceLBEvent* ev, const bool use_cancel_sequence_c
     try {
         m_ctx->setLoggingJob( ev->getJob(), ev->getSrc(), use_cancel_sequence_code );
     } catch( IceLBException& ex ) {
-        CREAM_SAFE_LOG(m_log_dev->errorStream()
-                       << method_name
-                       << ev->describe()
+        //CREAM_SAFE_LOG(m_log_dev->errorStream()
+                       //<< method_name
+                      edglog(error) << ev->describe()
                        << " - [" << ev->getJob().describe() << "]"
-                       << ". Caught exception " << ex.what()
-                       );
+                       << ". Caught exception " << ex.what() << endl;
+                       //);
         return ev->getJob();
     }
     
@@ -115,11 +120,11 @@ CreamJob IceLBLogger::logEvent( IceLBEvent* ev, const bool use_cancel_sequence_c
 
     int res = 0;
     do {
-        CREAM_SAFE_LOG(m_log_dev->infoStream() 
-                       << method_name
-                       << ev->describe( )
-                       << " - [" << ev->getJob().describe() << "]"
-                       );
+       // CREAM_SAFE_LOG(m_log_dev->infoStream() 
+                       //<< method_name
+                      edglog(info) << ev->describe( )
+                       << " - [" << ev->getJob().describe() << "]" << endl;
+                      // );
         if ( m_lb_enabled ) {
 
 	  //api_util::scoped_timer T( "logEvent::ev->execute()" );
@@ -154,13 +159,13 @@ CreamJob IceLBLogger::logEvent( IceLBEvent* ev, const bool use_cancel_sequence_c
 	  
         } catch( db::DbOperationException& ex ) {
 	  
-	  CREAM_SAFE_LOG(m_log_dev->errorStream()
-			 << method_name
-			 << "Error setting new sequence code for job ["
+	  //CREAM_SAFE_LOG(m_log_dev->errorStream()
+			// << method_name
+			edglog(error) << "Error setting new sequence code for job ["
 			 << ev->getJob().describe()
 			 << "]: "
-			 << ex.what()
-			 );
+			 << ex.what() << endl;
+			 //);
 	}
     } else {
       return ev->getJob(); // Make the compiler happy

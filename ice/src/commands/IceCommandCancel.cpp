@@ -47,6 +47,10 @@ END LICENSE */
 
 #include <boost/algorithm/string.hpp>
 
+#include "utils/logging.h"
+#include "glite/wms/common/logger/edglog.h"
+#include "glite/wms/common/logger/manipulators.h"
+
 namespace cream_api = glite::ce::cream_client_api::soap_proxy;
 namespace cream_ex  = glite::ce::cream_client_api::cream_exceptions;
 namespace wms_utils = glite::wms::common::utilities;
@@ -59,12 +63,12 @@ using namespace glite::wms::ice;
 IceCommandCancel::IceCommandCancel( util::Request* request ) 
   throw(util::ClassadSyntax_ex&, util::JobRequest_ex&) :
   IceAbstractCommand( "IceCommandCancel", "" ),
-  m_log_dev(glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()),
+  //m_log_dev(glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()),
   m_lb_logger( util::IceLBLogger::instance() ),
   m_request( request )
 {
 
-  
+  edglog_fn("IceCommandCancel::IceCommandCancel");
   string commandStr;
   string protocolStr;
 
@@ -106,12 +110,12 @@ IceCommandCancel::IceCommandCancel( util::Request* request )
     // Look for "lb_sequence_code" attribute inside "Arguments"
     if ( !argumentsAD->EvaluateAttrString( "sequencecode", m_sequence_code ) ) {
       // FIXME: This should be an error to throw. For now, we try anyway...
-      CREAM_SAFE_LOG( m_log_dev->warnStream()
-		      << "IceCommandCancel::execute() - Cancel request does not have a "
+    //  CREAM_SAFE_LOG( m_log_dev->warnStream()
+		    edglog(warning)  << "Cancel request does not have a "
 		      << "\"sequencecode\" attribute. "
-		      << "Fine for now, should not happen in the future"
+		      << "Fine for now, should not happen in the future" << endl;
 		      
-		      );
+		     // );
     } else {
       boost::trim_if(m_sequence_code, boost::is_any_of("\""));        
     }
@@ -129,12 +133,12 @@ void IceCommandCancel::execute( const std::string& tid ) throw ( IceCommandFatal
 #endif
 
     m_thread_id = tid;
-
-    CREAM_SAFE_LOG( 
-                   m_log_dev->infoStream()
-                   << "IceCommandCancel::execute() - This request is a Cancel..."
+     edglog_fn("IceCommandCancel::execute");
+    //CREAM_SAFE_LOG( 
+      //             m_log_dev->infoStream()
+        edglog(info)           << "This request is a Cancel..." << endl;
                    
-                   );
+//                   );
 
     Request_source_purger r( m_request );
     wms_utils::scope_guard remove_request_guard( r );
@@ -144,12 +148,12 @@ void IceCommandCancel::execute( const std::string& tid ) throw ( IceCommandFatal
       tnx.execute( &get );
       
       if( !get.found() ) {
-	CREAM_SAFE_LOG( 
-		       m_log_dev->errorStream()
-		       << "IceCommandCancel::execute() - Cancel operation cannot locate jobid=["
+	//CREAM_SAFE_LOG( 
+		     //  m_log_dev->errorStream()
+		    edglog(error)   << "Cancel operation cannot locate jobid=["
 		       << m_gridJobId 
-		       << "] in the database. Giving up"
-		       );
+		       << "] in the database. Giving up" << endl;
+		       //);
 	
 	
 	throw IceCommandFatalException( string("ICE cannot cancel job with grid job id=[") 
@@ -186,12 +190,12 @@ void IceCommandCancel::execute( const std::string& tid ) throw ( IceCommandFatal
     
     string jobdesc( theJob.describe()  );
 
-    CREAM_SAFE_LOG(    
-                   m_log_dev->infoStream()
-                   << "IceCommandCancel::execute() - Sending cancellation request to ["
+    //CREAM_SAFE_LOG(    
+                  // m_log_dev->infoStream()
+                  edglog(info) << "Sending cancellation request to ["
                    << theJob.cream_address() << "] for GridJobID ["
-	 	   << theJob.grid_jobid( ) << "]"
-                   );
+	 	   << theJob.grid_jobid( ) << "]" << endl;
+                  // );
 
     /**
      * Getting betterproxy for current job. Note that this betterproxy should be there
@@ -204,12 +208,12 @@ void IceCommandCancel::execute( const std::string& tid ) throw ( IceCommandFatal
     betterproxy = util::DNProxyManager::getInstance()->getAnyBetterProxyByDN( theJob.user_dn() ).get<0>();
 
     if( betterproxy.empty() ) {
-      CREAM_SAFE_LOG( m_log_dev->warnStream()
-		      << "IceCommandCancel::execute() - DNProxyManager returned an empty string for BetterProxy of user DN ["
+    //  CREAM_SAFE_LOG( m_log_dev->warnStream()
+		   edglog(warning)   << "DNProxyManager returned an empty string for BetterProxy of user DN ["
 		      << "] for job ["
 		      << jobdesc
-		      << "]. Using the Job's proxy." 
-		      );
+		      << "]. Using the Job's proxy."  << endl;
+		     // );
 
       betterproxy = theJob.user_proxyfile();
     }
@@ -264,10 +268,11 @@ void IceCommandCancel::execute( const std::string& tid ) throw ( IceCommandFatal
 	  errMex += jobdesc + "] failed: [";
 	  errMex += errorJob.second + "]";
 	  
-	  CREAM_SAFE_LOG(    
-			 m_log_dev->errorStream() << "IceCommandCancel::execute - "
-			 << errMex
-			 );
+	  //CREAM_SAFE_LOG(    
+			 //m_log_dev->errorStream() 
+			 edglog(error)
+			 << errMex << endl;
+			// );
 	  
 	  m_lb_logger->logEvent( new util::cream_cancel_refuse_event( theJob, string("Error: ") + errMex ), true, true );
 	  throw IceCommandFatalException( errMex );

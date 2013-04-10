@@ -19,12 +19,14 @@ limitations under the License.
 END LICENSE */
 #include "IceThread.h"
 #include "utils/IceUtils.h"
-#include "glite/ce/cream-client-api-c/creamApiLogger.h"
-
+//#include "glite/ce/cream-client-api-c/creamApiLogger.h"
+#include "utils/logging.h"
 #include <boost/lexical_cast.hpp>
+#include "glite/wms/common/logger/edglog.h"
+#include "glite/wms/common/logger/manipulators.h"
 
 using namespace glite::wms::ice;
-namespace apiLogger = glite::ce::cream_client_api::util;
+//namespace apiLogger = glite::ce::cream_client_api::util;
 
 threads::IceThread::IceThread( const std::string& name ) :
     m_name( name ),
@@ -53,8 +55,9 @@ void threads::IceThread::operator()()
 
 void threads::IceThread::stop() 
 {
+  edglog_fn("IceThread::stop");
   m_stopped = true;
-  CREAM_SAFE_LOG(apiLogger::creamApiLogger::instance()->getLogger()->debugStream()
-		 << "IceThread::stop() - Thread [" << getName() << "] Called STOP."
-		 );
+//  CREAM_SAFE_LOG(apiLogger::creamApiLogger::instance()->getLogger()->debugStream()
+		edglog(debug) << "Thread [" << getName() << "] Called STOP." << std::endl;
+//		 );
 }

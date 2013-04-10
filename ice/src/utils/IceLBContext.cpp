@@ -40,13 +40,17 @@ namespace fs = boost::filesystem;
 #include "IceLBContext.h"
 #include "DNProxyManager.h"
 #include "IceConfManager.h"
-#include "glite/ce/cream-client-api-c/creamApiLogger.h"
+//#include "glite/ce/cream-client-api-c/creamApiLogger.h"
 
 #include "glite/wms/common/configuration/Configuration.h"
 #include "common/src/configuration/ICEConfiguration.h"
 #include "common/src/configuration/CommonConfiguration.h"
 // #include "jobCache.h"
 #include "IceUtils.h"
+
+#include "utils/logging.h"
+#include "glite/wms/common/logger/edglog.h"
+#include "glite/wms/common/logger/manipulators.h"
 
 //#include <netdb.h>
 
@@ -124,8 +128,8 @@ IceLBContext::IceLBContext( void ) :
     el_context( new edg_wll_Context ), 
     el_s_localhost_name( ),
     m_el_hostProxy( false ),
-    m_el_count( 0 ), 
-    m_log_dev( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger() )
+    m_el_count( 0 )//, 
+    //m_log_dev( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger() )
     // m_cache( jobCache::getInstance() )
 {
 
@@ -142,10 +146,10 @@ IceLBContext::IceLBContext( void ) :
         el_s_localhost_name = s_localHostName;
       }
     } catch( runtime_error& ex) {
-        CREAM_SAFE_LOG(m_log_dev->errorStream() 
-                       << "IceLBContext::CTOR - getHostName() returned an ERROR: "
-                       << ex.what()
-                       );
+        //CREAM_SAFE_LOG(m_log_dev->errorStream() 
+            edglog(error)           << "IceLBContext::CTOR - getHostName() returned an ERROR: "
+                       << ex.what() << endl;
+          //             );
         el_s_localhost_name = "(unknown host name )"; 
 	s_localHostName = "";
     }
@@ -176,10 +180,12 @@ string IceLBContext::getLoggingError( const char *preamble )
 
 void IceLBContext::testCode( int &code, bool retry )
 {
+    edglog_fn("IceLBContext::testCode");
     if ( code != 0 ) {
         string err( getLoggingError( 0 ) );
-        CREAM_SAFE_LOG(m_log_dev->errorStream() << "IceLBContext::testCode - Got error " << err
-		       );
+        //CREAM_SAFE_LOG(m_log_dev->errorStream() 
+	edglog(error) << "IceLBContext::testCode - Got error " << err << endl;
+		//       );
         
     }
 
@@ -192,55 +198,55 @@ void IceLBContext::testCode( int &code, bool retry )
 
         switch( code ) {
         case EINVAL:
-	  CREAM_SAFE_LOG(m_log_dev->errorStream()
-			 << "IceLBContext::testCode - Critical error in L&B calls: EINVAL. "
-			 << "Cause = \"" << cause << "\"."
-			 );
+	 // CREAM_SAFE_LOG(m_log_dev->errorStream()
+			edglog(error) << "Critical error in L&B calls: EINVAL. "
+			 << "Cause = \"" << cause << "\"." << endl;
+			 //);
             
             code = 0; // Don't retry...
             break;
         case EDG_WLL_ERROR_GSS:
-	  CREAM_SAFE_LOG(m_log_dev->errorStream()
-			 << "IceLBContext::testCode - Severe error in GSS layer while communicating with L&B daemons. " 
-			 << "Cause = \"" << cause << "\"." 
-			 );
+	  //CREAM_SAFE_LOG(m_log_dev->errorStream()
+			edglog(error) << "Severe error in GSS layer while communicating with L&B daemons. " 
+			 << "Cause = \"" << cause << "\"."  << endl;
+			 //);
 
             if( this->m_el_hostProxy ) {
-	      CREAM_SAFE_LOG(m_log_dev->debugStream()
-			     << "IceLBContext::testCode - The log with the host certificate has just been done. Giving up." 
-			     );
+	    //  CREAM_SAFE_LOG(m_log_dev->debugStream()
+			   edglog(debug)  << "The log with the host certificate has just been done. Giving up." << endl;
+			    // );
                 
                 code = 0; // Don't retry...
             }
             else {
 	      host_proxy = conf->ice_host_cert();
 
-                CREAM_SAFE_LOG(m_log_dev->debugStream()
-			       << "Retrying using host proxy certificate [" 
-			       << host_proxy << "]" 
-			       );
+                //CREAM_SAFE_LOG(m_log_dev->debugStream()
+			    edglog(debug)   << "Retrying using host proxy certificate [" 
+			       << host_proxy << "]"  << endl;
+			    //   );
 
 
                 if( host_proxy.length() == 0 ) {
-		  CREAM_SAFE_LOG(m_log_dev->warnStream()
-				 << "IceLBContext::testCode - Host proxy file not set inside configuration file. " 
-				 << "Trying with a default NULL and hoping for the best." 
-				 );
+		 // CREAM_SAFE_LOG(m_log_dev->warnStream()
+				edglog(warning) << "Host proxy file not set inside configuration file. " 
+				 << "Trying with a default NULL and hoping for the best." << endl;
+				// );
 
                     ret = edg_wll_SetParam( *el_context, EDG_WLL_PARAM_X509_PROXY, NULL );
                 }
                 else {
-		  CREAM_SAFE_LOG(m_log_dev->debugStream()
-				 << "IceLBContext::testCode - Host proxy file found = [" << host_proxy << "]."
-				 );
+		//  CREAM_SAFE_LOG(m_log_dev->debugStream()
+				edglog(debug) << "Host proxy file found = [" << host_proxy << "]." << endl;
+				// );
 
                     ret = edg_wll_SetParam( *el_context, EDG_WLL_PARAM_X509_PROXY, host_proxy.c_str() );
                 }
 
                 if( ret ) {
-		  CREAM_SAFE_LOG(m_log_dev->errorStream()
-				 << "IceLBContext::testCode - Cannot set the host proxy inside the context. Giving up." 
-				 );
+		//  CREAM_SAFE_LOG(m_log_dev->errorStream()
+			edglog(error)	 << "Cannot set the host proxy inside the context. Giving up."  << endl;
+				// );
 
                     code = 0; // Don't retry.
                 }
@@ -250,18 +256,18 @@ void IceLBContext::testCode( int &code, bool retry )
             break;
         default:
             if( ++this->m_el_count > s_el_s_retries ) {
-	      CREAM_SAFE_LOG(m_log_dev->errorStream()
-			     << "IceLBContext::testCode - L&B call retried " << this->m_el_count << " times always failed. "
-			     << "Ignoring." 
-			     );
+	     // CREAM_SAFE_LOG(m_log_dev->errorStream()
+			 edglog(error) << "L&B call retried " << this->m_el_count << " times always failed. "
+			     << "Ignoring." << endl;
+			     //);
 
                 code = 0; // Don't retry anymore
             }
             else {
-	      CREAM_SAFE_LOG(m_log_dev->warnStream()
-			     << "IceLBContext::testCode - L&B call got a transient error (code=" << code << "). Waiting " << s_el_s_sleep << " seconds and trying again. " 
-			     << "Try n. " << this->m_el_count << "/" << s_el_s_retries 
-			     );
+	      //CREAM_SAFE_LOG(m_log_dev->warnStream()
+			     edglog(warning)<< "L&B call got a transient error (code=" << code << "). Waiting " << s_el_s_sleep << " seconds and trying again. " 
+			     << "Try n. " << this->m_el_count << "/" << s_el_s_retries <<endl;
+			   //  );
 
                 sleep( s_el_s_sleep );
             }
@@ -269,9 +275,9 @@ void IceLBContext::testCode( int &code, bool retry )
         }
     }
     else // The logging call worked fine, do nothing
-      CREAM_SAFE_LOG(m_log_dev->debugStream() 
-		     << "IceLBContext::testCode - L&B call succeeded." 
-		     );
+     // CREAM_SAFE_LOG(m_log_dev->debugStream() 
+		   // edglog(debug) << "L&B call succeeded." << endl;
+		    // );
 
     return;
 
@@ -279,7 +285,8 @@ void IceLBContext::testCode( int &code, bool retry )
 
 void IceLBContext::setLoggingJob( const util::CreamJob& theJob, edg_wll_Source src, const bool use_cancel_seq_code ) throw ( IceLBException& )
 {
-    static const char* method_name = "IceLBContext::setLoggingJob - ";
+    //static const char* method_name = "IceLBContext::setLoggingJob - ";
+    edglog_fn("IceLBContext::setLoggingJob");
     string _gid( theJob.grid_jobid() );
     edg_wlc_JobId   id;
     int res = 0;
@@ -304,12 +311,12 @@ void IceLBContext::setLoggingJob( const util::CreamJob& theJob, edg_wll_Source s
       seq_code = theJob.sequence_code( );
     }
     
-    CREAM_SAFE_LOG(m_log_dev->infoStream() << method_name
-		   << "Setting log job to jobid=[" << _gid << "] "
+    //CREAM_SAFE_LOG(m_log_dev->infoStream() << method_name
+		  edglog(info) << "Setting log job to jobid=[" << _gid << "] "
 		   << "LB server=[" << lbserver << ":" << lbport << "] SEQUENCE CODE ["
 		   << seq_code <<"]"
-		   << "(port is not used, actually...)"
-		   );
+		   << "(port is not used, actually...)" << endl;
+		  // );
 		   
     if ( lbserver ) free( lbserver );
 		   
@@ -325,12 +332,12 @@ void IceLBContext::setLoggingJob( const util::CreamJob& theJob, edg_wll_Source s
     edg_wlc_JobIdFree( id );
 
     if( res != 0 ) {
-        CREAM_SAFE_LOG(m_log_dev->errorStream() << method_name
-		     << "Unable to set logging job to jobid=["
+       // CREAM_SAFE_LOG(m_log_dev->errorStream() << method_name
+		edglog(error)     << "Unable to set logging job to jobid=["
 		     << _gid
 		     << "]. LB error is "
-		     << getLoggingError( 0 )
-		     );
+		     << getLoggingError( 0 ) << endl;
+		    // );
         throw IceLBException( this->getLoggingError("Cannot set logging job:") );
     }
 
@@ -344,22 +351,22 @@ void IceLBContext::setLoggingJob( const util::CreamJob& theJob, edg_wll_Source s
                                 betterproxy.c_str() );
 
         if( res ) {
-            CREAM_SAFE_LOG(m_log_dev->errorStream() << method_name
-			 << "Unable to set logging job to jobid=["
+           // CREAM_SAFE_LOG(m_log_dev->errorStream() << method_name
+			edglog(error) << "Unable to set logging job to jobid=["
 			 << _gid
 			 << "]. "
-			 << getLoggingError( 0 )
-			 );
+			 << getLoggingError( 0 ) << endl;
+			// );
             throw IceLBException( this->getLoggingError("Cannot set proxyfile path inside context:") );
         }
     } else {
-        CREAM_SAFE_LOG(m_log_dev->errorStream() << method_name
-		     << "Unable to set logging job to jobid=["
+      //  CREAM_SAFE_LOG(m_log_dev->errorStream() << method_name
+		edglog(error)     << "Unable to set logging job to jobid=["
 		     << _gid
 		     << "]. Proxy file ["
 		     << betterproxy
 		     << "] does not exist. "
-		     << "Trying to use the host proxy cert, and hoping for the best..."
-		     );
+		     << "Trying to use the host proxy cert, and hoping for the best..." << endl;
+		   //  );
     }
 }

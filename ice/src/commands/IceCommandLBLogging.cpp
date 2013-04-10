@@ -34,7 +34,7 @@ END LICENSE */
  * Cream Client API C++ Headers
  *
  */
-#include "glite/ce/cream-client-api-c/creamApiLogger.h"
+//#include "glite/ce/cream-client-api-c/creamApiLogger.h"
 #include "glite/ce/cream-client-api-c/job_statuses.h"
 
 #include "utils/DNProxyManager.h"
@@ -51,6 +51,10 @@ END LICENSE */
 #include <ctime>
 #include <cerrno>
 
+#include "utils/logging.h"
+#include "glite/wms/common/logger/edglog.h"
+#include "glite/wms/common/logger/manipulators.h"
+
 //extern int errno;
 
 namespace cream_api = glite::ce::cream_client_api;
@@ -61,7 +65,7 @@ using namespace glite::wms::ice;
 //______________________________________________________________________________
 util::IceCommandLBLogging::IceCommandLBLogging( const list<CreamJob>& jobs ) :
     IceAbstractCommand( "IceCommandLBLogging", "" ),
-    m_log_dev( cream_api::util::creamApiLogger::instance()->getLogger() ),
+    //m_log_dev( cream_api::util::creamApiLogger::instance()->getLogger() ),
     m_jobs_to_remove( jobs ),
     m_lb_logger( ice::util::IceLBLogger::instance() )
 {
@@ -86,7 +90,7 @@ string util::IceCommandLBLogging::get_grid_job_id( ) const
 void util::IceCommandLBLogging::execute( const std::string& tid ) throw()
 {  
   list<CreamJob>::iterator jobit;
-  
+  edglog_fn("IceCommandLBLogging::execute");
   for( jobit = m_jobs_to_remove.begin(); jobit != m_jobs_to_remove.end(); ++jobit ) {
     
     /**
@@ -96,11 +100,12 @@ void util::IceCommandLBLogging::execute( const std::string& tid ) throw()
     CreamJob _tmp;
     string ignore_reason;
     if( glite::wms::ice::util::IceUtils::ignore_job( jobit->complete_cream_jobid(), _tmp, ignore_reason ) ) {
-      CREAM_SAFE_LOG(m_log_dev->debugStream() << "IceCommandLBLogging::execute - TID=[" << getThreadID() << "] "
+     // CREAM_SAFE_LOG(m_log_dev->debugStream() 
+     		   edglog(debug)  << "TID=[" << getThreadID() << "] "
                       << "Will not LOG anything to LB for Job ["
 		      << jobit->grid_jobid() << "] for reason: "
-		      << ignore_reason
-		      );
+		      << ignore_reason<<endl;
+		    //  );
       continue;
     }
       
@@ -114,10 +119,11 @@ void util::IceCommandLBLogging::execute( const std::string& tid ) throw()
 	cream_api::job_statuses::CANCELLED == jobit->status() ||
 	cream_api::job_statuses::ABORTED == jobit->status() )
       {	
-	CREAM_SAFE_LOG(m_log_dev->debugStream() << "IceCommandLBLogging::execute - TID=[" << getThreadID() << "] "
+	//CREAM_SAFE_LOG(m_log_dev->debugStream() 
+			edglog(debug)<< "TID=[" << getThreadID() << "] "
 		       << "Removing job [" << jobit->grid_jobid( )
-		       << "] from ICE's database"
-		       );
+		       << "] from ICE's database" << endl;
+		       //);
 	
 	{
 	  db::RemoveJobByGid remover( jobit->grid_jobid(), "IceCommandLBLogging::execute" );

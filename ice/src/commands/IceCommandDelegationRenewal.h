@@ -30,9 +30,10 @@ END LICENSE */
 #include<string>
 #include<list>
 
-namespace log4cpp {
-  class Category;
-};
+#include "utils/logging.h"
+#include "glite/wms/common/logger/edglog.h"
+#include "glite/wms/common/logger/manipulators.h"
+
 
 namespace glite {
   namespace wms {
@@ -40,7 +41,7 @@ namespace glite {
       namespace util {
 	
 	class IceCommandDelegationRenewal : public IceAbstractCommand {
-	  log4cpp::Category* m_log_dev;
+	  //log4cpp::Category* m_log_dev;
 	  glite_renewal_core_context m_ctx;
 
 	  IceCommandDelegationRenewal( const IceCommandDelegationRenewal& ) : IceAbstractCommand("", "") {}

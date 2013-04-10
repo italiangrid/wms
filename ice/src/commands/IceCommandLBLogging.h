@@ -28,9 +28,10 @@ END LICENSE */
 #include<string>
 #include<list>
 
-namespace log4cpp {
-  class Category;
-};
+#include "utils/logging.h"
+#include "glite/wms/common/logger/edglog.h"
+#include "glite/wms/common/logger/manipulators.h"
+
 
 namespace glite {
   namespace wms {
@@ -41,7 +42,7 @@ namespace glite {
 	
 	class IceCommandLBLogging : public IceAbstractCommand {
 	  
-	  log4cpp::Category			*m_log_dev;
+	  //log4cpp::Category			*m_log_dev;
 	  std::list<CreamJob> 			 m_jobs_to_remove;
 	  glite::wms::ice::util::IceLBLogger    *m_lb_logger;
 	  

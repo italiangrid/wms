@@ -34,7 +34,7 @@ END LICENSE */
 #include "db/GetAllProxyInfo.h"
 
 #include "glite/ce/cream-client-api-c/VOMSWrapper.h"
-#include "glite/ce/cream-client-api-c/creamApiLogger.h"
+//#include "glite/ce/cream-client-api-c/creamApiLogger.h"
 
 #include <iostream>
 #include <fstream>
@@ -53,6 +53,10 @@ END LICENSE */
 
 #include <boost/filesystem/operations.hpp>
 #include <boost/tuple/tuple.hpp>
+
+#include "utils/logging.h"
+#include "glite/wms/common/logger/edglog.h"
+#include "glite/wms/common/logger/manipulators.h"
 
 namespace iceUtil = glite::wms::ice::util;
 namespace cream_api = glite::ce::cream_client_api;
@@ -74,7 +78,7 @@ iceUtil::DNProxyManager* iceUtil::DNProxyManager::getInstance() throw()
 //______________________________________________________________________________
 iceUtil::DNProxyManager::DNProxyManager( void ) throw()
 {
-  m_log_dev = cream_api::util::creamApiLogger::instance()->getLogger();
+//  m_log_dev = cream_api::util::creamApiLogger::instance()->getLogger();
   
 }
 
@@ -98,15 +102,15 @@ iceUtil::DNProxyManager::setUserProxyIfLonger_Legacy( const string& prx )
   throw()
 { 
   boost::recursive_mutex::scoped_lock M( s_mutex );
-  
+  edglog_fn("DNProxyManager::setUserProxyIfLonger_Legacy");
   cream_api::soap_proxy::VOMSWrapper V( prx,  !::getenv("GLITE_WMS_ICE_DISABLE_ACVER") );
   if( !V.IsValid( ) ) {
-    CREAM_SAFE_LOG(m_log_dev->errorStream() 
-		   << "DNProxyManager::setUserProxyIfLonger_Legacy() - "
+   // CREAM_SAFE_LOG(m_log_dev->errorStream() 
+		edglog(error)   
 		   << "Cannot read the proxy ["
 		   << prx << "]. ICE will continue to use the old better proxy. Error is: "
-		   << V.getErrorMessage()
-		   );
+		   << V.getErrorMessage()<<endl;
+		 //  );
     return false;
   }
   
@@ -121,7 +125,7 @@ iceUtil::DNProxyManager::setUserProxyIfLonger_Legacy( const string& dn,
   throw()
 {
   boost::recursive_mutex::scoped_lock M( s_mutex );
-
+  edglog_fn("DNProxyManager::setUserProxyIfLonger_Legacy");
   time_t newT;
 
   try {
@@ -129,12 +133,12 @@ iceUtil::DNProxyManager::setUserProxyIfLonger_Legacy( const string& dn,
     newT= glite::ce::cream_client_api::certUtil::getProxyTimeLeft( prx );
 
   } catch(exception& ex) {
-    CREAM_SAFE_LOG(m_log_dev->errorStream() 
-		   << "DNProxyManager::setUserProxyIfLonger_Legacy() - "
-		   << "Cannot retrieve time left for proxy ["
+   // CREAM_SAFE_LOG(m_log_dev->errorStream() 
+		   
+		   edglog(error)<< "Cannot retrieve time left for proxy ["
 		   << prx << "]. ICE will continue to use the old better proxy. Error is: "
-		   << ex.what()
-		   );
+		   << ex.what()<<endl;
+		  // );
     
     return false;
   }
@@ -151,7 +155,7 @@ iceUtil::DNProxyManager::setUserProxyIfLonger_Legacy(
   throw()
 { 
   boost::recursive_mutex::scoped_lock M( s_mutex );
-  
+  edglog_fn("DNProxyManager::setUserProxyIfLonger_Legacy");
   string localProxy = iceUtil::IceConfManager::instance()->getConfiguration()->ice()->persist_dir() + "/" + IceUtils::compressed_string( dn ) + ".proxy";
   
   
@@ -166,13 +170,13 @@ iceUtil::DNProxyManager::setUserProxyIfLonger_Legacy(
       proxy_info = getter.get_info();
   } catch( db::DbOperationException& ex ) {
 
-    CREAM_SAFE_LOG(m_log_dev->errorStream() 
-		   << "DNProxyManager::setUserProxyIfLonger_Legacy() - "
+   // CREAM_SAFE_LOG(m_log_dev->errorStream() 
+		  edglog(error) 
 		   << "Error setting longest proxy "
 		   << " for userdn [" << dn 
 		   << "]: "
-		   << ex.what()
-		   );
+		   << ex.what() << endl;
+		 //  );
     return false;
   }
 
@@ -183,24 +187,23 @@ iceUtil::DNProxyManager::setUserProxyIfLonger_Legacy(
       this->copyProxy( prx, localProxy );
       
     } catch(CopyProxyException& ex) {
-      CREAM_SAFE_LOG(m_log_dev->errorStream() 
-		     << "DNProxyManager::setUserProxyIfLonger_Legacy() - Error copying proxy ["
+   //   CREAM_SAFE_LOG(m_log_dev->errorStream() 
+		   edglog(error)  << "Error copying proxy ["
 		     << prx << "] to ["
-		     << localProxy << "]: " << ex.what()
-		     );
+		     << localProxy << "]: " << ex.what() << endl;
+		    // );
       
       return false;
       
     }
     
-    CREAM_SAFE_LOG(m_log_dev->debugStream() 
-		   << "DNProxyManager::setUserProxyIfLonger_Legacy() - "
-		   << "DN ["
+   // CREAM_SAFE_LOG(m_log_dev->debugStream() 
+		  edglog(debug) << "DN ["
 		   << dn << "] not found. Inserting the new proxy ["
 		   << prx << "]. Will be Copied into ["
 		   << localProxy << "] - New Expiration Time is ["
-		   << IceUtils::time_t_to_string(exptime) << "]"
-		   );
+		   << IceUtils::time_t_to_string(exptime) << "]" << endl;
+		 //  );
     
     try {
       db::CreateProxyField creator( dn, "", localProxy, exptime, 0, "DNProxyManager::setUserProxyIfLonger_Legacy" );
@@ -208,13 +211,12 @@ iceUtil::DNProxyManager::setUserProxyIfLonger_Legacy(
       tnx.execute( &creator );
     } catch( db::DbOperationException& ex ) {
       
-      CREAM_SAFE_LOG(m_log_dev->errorStream() 
-		     << "DNProxyManager::setUserProxyIfLonger_Legacy() - "
-		     << "Error setting longest proxy "
+    //  CREAM_SAFE_LOG(m_log_dev->errorStream() 
+		    edglog(error) << "Error setting longest proxy "
 		     << " for userdn [" << dn 
 		     << "]: "
-		     << ex.what()
-		     );
+		     << ex.what() << endl;
+		  //   );
       return false;
     }
     
@@ -230,34 +232,32 @@ iceUtil::DNProxyManager::setUserProxyIfLonger_Legacy(
     try {
       this->copyProxy( prx, localProxy );
     } catch(CopyProxyException& ex) {
-      CREAM_SAFE_LOG(m_log_dev->errorStream() 
-     		     << "DNProxyManager::setUserProxyIfLonger_Legacy() - Error copying proxy ["
+   //   CREAM_SAFE_LOG(m_log_dev->errorStream() 
+     		 edglog(error)    << "Error copying proxy ["
 		     << prx << "] to ["
-		     << localProxy << "]: " << ex.what()
-     		     );
+		     << localProxy << "]: " << ex.what() << endl;
+     		    // );
       return false;
     }
 
-    CREAM_SAFE_LOG(m_log_dev->debugStream() 
-		   << "DNProxyManager::setUserProxyIfLonger_Legacy() - "
-		   << "New proxy ["
+  ///  CREAM_SAFE_LOG(m_log_dev->debugStream() 
+		 edglog(debug) << "New proxy ["
 		   << prx << "] has been copied into ["
 		   << localProxy << "] - New Expiration Time is ["
-		   << IceUtils::time_t_to_string(exptime) << "]"
-		   );
+		   << IceUtils::time_t_to_string(exptime) << "]" << endl;
+		 //  );
     try {
       db::CreateProxyField creator( dn, "", localProxy, exptime, 0,"DNProxyManager::setUserProxyIfLonger_Legacy" );
       db::Transaction tnx(false, false);
       tnx.execute( &creator );
     } catch( db::DbOperationException& ex ) {
       
-      CREAM_SAFE_LOG(m_log_dev->errorStream() 
-		     << "DNProxyManager::setUserProxyIfLonger_Legacy() - "
-		     << "Error setting longest proxy "
+    //  CREAM_SAFE_LOG(m_log_dev->errorStream() 
+		edglog(error)     << "Error setting longest proxy "
 		     << " for userdn [" << dn 
 		     << "]: "
-		     << ex.what()
-		     );
+		     << ex.what() << endl;
+		 //    );
       return false;
     }
 
@@ -265,34 +265,34 @@ iceUtil::DNProxyManager::setUserProxyIfLonger_Legacy(
   }
   
   if(newT > oldT) {
-    CREAM_SAFE_LOG(m_log_dev->infoStream() 
-		   << "DNProxyManager::setUserProxyIfLonger_Legacy() - "
+ //   CREAM_SAFE_LOG(m_log_dev->infoStream() 
+		 edglog(info)  
 		   << "Setting user proxy to ["
 		   << prx
 		   << "] copied to " << localProxy 
-		   << "] because the old one is less long-lived."
-		   );
+		   << "] because the old one is less long-lived." << endl;
+	//	   );
 
     try {
 
       this->copyProxy( prx, localProxy );
 
     } catch(CopyProxyException& ex) {
-      CREAM_SAFE_LOG(m_log_dev->errorStream() 
-		     << "DNProxyManager::setUserProxyIfLonger_Legacy() - Error copying proxy ["
+  //    CREAM_SAFE_LOG(m_log_dev->errorStream() 
+		    edglog(error) << "Error copying proxy ["
 		     << prx << "] to ["
-		     << localProxy << "]: " << ex.what()
-		     );
+		     << localProxy << "]: " << ex.what() << endl;
+		//     );
 	return false;
     }
 
-    CREAM_SAFE_LOG(m_log_dev->debugStream() 
-		   << "DNProxyManager::setUserProxyIfLonger_Legacy() - "
+  //  CREAM_SAFE_LOG(m_log_dev->debugStream() 
+		edglog(debug)   
 		   << "New proxy ["
 		   << prx << "] has been copied into ["
 		   << localProxy << "] - New Expiration Time is ["
-		   << IceUtils::time_t_to_string(newT) << "]"
-		   );
+		   << IceUtils::time_t_to_string(newT) << "]" << endl;
+		//   );
 
     try {
       db::CreateProxyField creator( dn, "",localProxy, exptime, 0, "DNProxyManager::setUserProxyIfLonger_Legacy" );
@@ -300,13 +300,13 @@ iceUtil::DNProxyManager::setUserProxyIfLonger_Legacy(
       tnx.execute( &creator );
     } catch( db::DbOperationException& ex ) {
       
-      CREAM_SAFE_LOG(m_log_dev->errorStream() 
-		     << "DNProxyManager::setUserProxyIfLonger_Legacy() - "
+    //  CREAM_SAFE_LOG(m_log_dev->errorStream() 
+		  edglog(error) 
 		     << "Error setting longest proxy "
 		     << " for userdn [" << dn 
 		     << "]: "
-		     << ex.what()
-		     );
+		     << ex.what() << endl;
+		//     );
       return false;
     }
     return true;
@@ -322,11 +322,6 @@ void iceUtil::DNProxyManager::copyProxy( const string& source, const string& tar
    ::unlink( tmpTarget.c_str( ) );
   
    try {
-//      std::ifstream in (source.c_str());
-//      std::ofstream out(tmpTarget.c_str());
-//      out << in.rdbuf();
-//      out.close();
-//      in.close();
      boost::filesystem::copy_file( boost::filesystem::path(source,boost::filesystem::native), boost::filesystem::path(tmpTarget,boost::filesystem::native) );
    } catch( exception& ex ) {
 
@@ -377,13 +372,13 @@ iceUtil::DNProxyManager::removeBetterProxy( const string& userdn, const string& 
   throw()
 {
   boost::recursive_mutex::scoped_lock M( s_mutex );
-
-  CREAM_SAFE_LOG(m_log_dev->debugStream() 
-		 << "DNProxyManager::removeBetterProxy() - "
+  edglog_fn("DNProxyManager::removeBetterProxy");
+ // CREAM_SAFE_LOG(m_log_dev->debugStream() 
+		edglog(debug)
 		 << "Removing from DB better proxy for userdn ["
 		 << userdn << "] MyProxy server ["
-		 << myproxyname << "]"
-		 );
+		 << myproxyname << "]" << endl;
+		// );
 
   try {
     db::RemoveProxyByDN remover( userdn, myproxyname, "DNProxyManager::removeBetterProxy" );
@@ -391,36 +386,35 @@ iceUtil::DNProxyManager::removeBetterProxy( const string& userdn, const string& 
     tnx.execute( &remover );
   } catch( db::DbOperationException& ex ) {
 
-    CREAM_SAFE_LOG(m_log_dev->errorStream() 
-		   << "DNProxyManager::removeBetterProxy() - "
+   // CREAM_SAFE_LOG(m_log_dev->errorStream() 
+		edglog(error)   
 		   << "Error removing better proxy "
 		   << " for userdn [" << userdn 
 		   << "] myproxy ["
 		   << myproxyname << "]: "
-		   << ex.what()
-		   );
+		   << ex.what() << endl;
+		//   );
     return false;
   }
   
   string localProxy = this->make_betterproxy_path(userdn, myproxyname); 
   
-  CREAM_SAFE_LOG(
-		 m_log_dev->debugStream()
-		 << "DNProxyManager::removeBetterProxy() - "
-		 << "Unlinking proxy file ["
-		 << localProxy << "]... "
-		 );
+ // CREAM_SAFE_LOG(
+//		 m_log_dev->debugStream()
+	edglog(debug)<< "Unlinking proxy file ["
+		 << localProxy << "]... " << endl;
+		// );
   
   if(::unlink( localProxy.c_str() ) < 0 )
     {
       int saveerr = errno;
-      CREAM_SAFE_LOG(
-		     m_log_dev->errorStream()
-		     << "DNProxyManager::removeBetterProxy() - "
+   //   CREAM_SAFE_LOG(
+//		     m_log_dev->errorStream()
+		  edglog(error)   
 		     << "Unlink of file ["
 		     << localProxy << "] is failed. Error is: "
-		     << strerror(saveerr);
-		     );
+		     << strerror(saveerr)<<endl;
+		 //    );
     }
   return true;
 }
@@ -433,7 +427,7 @@ iceUtil::DNProxyManager::updateBetterProxy( const string& userDN,
   throw()
 {
   boost::recursive_mutex::scoped_lock M( s_mutex );
-  
+  edglog_fn("DNProxyManager::updateBetterProxy");
   string localProxy = this->make_betterproxy_path(userDN, myproxyname );//iceUtil::iceConfManager::getInstance()->getConfiguration()->ice()->persist_dir() + "/" + compressed_string( this->composite( userDN, myproxyname ) ) + ".betterproxy";
   
 
@@ -443,28 +437,14 @@ iceUtil::DNProxyManager::updateBetterProxy( const string& userDN,
     this->copyProxy( newEntry.get<0>(), localProxy );
     
   } catch(CopyProxyException& ex) {
-    CREAM_SAFE_LOG(m_log_dev->errorStream() 
-		   << "DNProxyManager::updateBetterProxy() - Error copying proxy ["
+  //  CREAM_SAFE_LOG(m_log_dev->errorStream() 
+		   edglog(error) << "Error copying proxy ["
 		   << newEntry.get<0>() << "] to ["
-		   << localProxy << ".tmp]."
-		   );
+		   << localProxy << ".tmp]." << endl;
+	//	   );
     
     return false;
   }
-
-//   try {
-//     boost::filesystem::path pathSrc( localProxy + ".tmp", boost::filesystem::native );
-//     boost::filesystem::path pathTrg( localProxy, boost::filesystem::native );
-//     boost::filesystem::rename( pathSrc, pathTrg );  
-//   } catch(exception& ex) {
-//   
-//     CREAM_SAFE_LOG(m_log_dev->fatalStream() 
-// 		   << "DNProxyManager::updateBetterProxy() - Error renaming ["
-// 		   << localProxy+".tmp" << "] to ["
-// 		   << localProxy << "]: " << ex.what( )
-// 		   );
-//     return false;
-//   }
 
   try {
     db::UpdateProxyFieldsByDN updater( userDN, myproxyname, localProxy, newEntry.get<1>(), "DNProxyManager::updateBetterProxy" );
@@ -472,14 +452,14 @@ iceUtil::DNProxyManager::updateBetterProxy( const string& userDN,
     tnx.execute( &updater );
   } catch( db::DbOperationException& ex ) {
     
-    CREAM_SAFE_LOG(m_log_dev->errorStream() 
-		   << "DNProxyManager::updateBetterProxy() - "
+  //  CREAM_SAFE_LOG(m_log_dev->errorStream() 
+		  edglog(error) 
 		   << "Error updating better proxy "
 		   << " for userdn [" << userDN 
 		   << "] myproxy ["
 		   << myproxyname << "]: "
-		   << ex.what()
-		   );
+		   << ex.what() << endl;
+	//	   );
     return false;
   }
   return true;
@@ -495,7 +475,7 @@ iceUtil::DNProxyManager::setBetterProxy( const string& dn,
   throw()
 {
   boost::recursive_mutex::scoped_lock M( s_mutex );
-  
+  edglog_fn("DNProxyManager::setBetterProxy");
   string localProxy = this->make_betterproxy_path(dn, myproxyname);//iceUtil::iceConfManager::getInstance()->getConfiguration()->ice()->persist_dir() + "/" + compressed_string( this->composite( dn, myproxyname ) ) + ".betterproxy";
   
   try {
@@ -503,11 +483,11 @@ iceUtil::DNProxyManager::setBetterProxy( const string& dn,
     this->copyProxy( proxyfile, localProxy );
     
   } catch(CopyProxyException& ex) {
-    CREAM_SAFE_LOG(m_log_dev->errorStream() 
-		   << "DNProxyManager::setBetterProxy() - Error copying proxy ["
+  //  CREAM_SAFE_LOG(m_log_dev->errorStream() 
+		edglog(error)   << "Error copying proxy ["
 		   << proxyfile<< "] to ["
-		   << localProxy << "]."
-		   );
+		   << localProxy << "]." << endl;
+	//	   );
     
     return false;
     
@@ -515,16 +495,15 @@ iceUtil::DNProxyManager::setBetterProxy( const string& dn,
   
   //string mapKey = this->composite( dn, myproxyname );
 
-  CREAM_SAFE_LOG(m_log_dev->debugStream() 
-		 << "DNProxyManager::setBetterProxy() - "
-		 << "Inserting proxy entry into DB for DN ["
+//  CREAM_SAFE_LOG(m_log_dev->debugStream() 
+		edglog(debug) << "Inserting proxy entry into DB for DN ["
 		 << dn 
 		 << "] and MyProxy ["
 		 << myproxyname
 		 << "] Proxy file ["
 		 << localProxy << "] counter=["
-		 << init_counter << "]"
-		 );
+		 << init_counter << "]" << endl;
+	//	 );
 
   try {
     db::CreateProxyField creator( dn, myproxyname, localProxy, proxy_time_end, init_counter, "DNProxyManager::setBetterProxy" );
@@ -532,14 +511,14 @@ iceUtil::DNProxyManager::setBetterProxy( const string& dn,
     tnx.execute( &creator );    
   } catch( db::DbOperationException& ex ) {
     
-    CREAM_SAFE_LOG(m_log_dev->errorStream() 
-		   << "DNProxyManager::setBetterProxy() - "
+ //   CREAM_SAFE_LOG(m_log_dev->errorStream() 
+		edglog(error)  
 		   << "Error updating better proxy "
 		   << " for userdn [" << dn 
 		   << "] myproxy ["
 		   << myproxyname << "]: "
-		   << ex.what()
-		   );
+		   << ex.what() << endl;
+		//   );
     return false;
   }
 
@@ -555,6 +534,8 @@ iceUtil::DNProxyManager::getAnyBetterProxyByDN( const string& dn )
   
 	// FIXME: controllare la validita' prima di tornare il proxy
 
+  edglog_fn("DNProxyManager::getAnyBetterProxyByDN");
+
   boost::tuple<std::string, time_t, long long int> result;
   try {
     db::GetProxyInfoByDN getter( dn, "DNProxyManager::getAnyBetterProxyByDN");
@@ -565,13 +546,13 @@ iceUtil::DNProxyManager::getAnyBetterProxyByDN( const string& dn )
     result = getter.get_info( );
   } catch( db::DbOperationException& ex ) {
     
-    CREAM_SAFE_LOG(m_log_dev->errorStream() 
-		   << "DNProxyManager::getAnyBetterProxyByDN() - "
+   // CREAM_SAFE_LOG(m_log_dev->errorStream() 
+		  edglog(error)
 		   << "Error getting a proxy"
 		   << " for userdn [" << dn 
 		   << "]: "
-		   << ex.what()
-		   );
+		   << ex.what() << endl;
+	//	   );
     //return false;
   }
   
@@ -587,7 +568,7 @@ iceUtil::DNProxyManager::getExactBetterProxyByDN( const string& dn,
 {
   boost::recursive_mutex::scoped_lock M( s_mutex );
   
-  
+  edglog_fn("DNProxyManager::getExactBetterProxyByDN");
   boost::tuple< string, time_t, long long> proxy_info;
 
   try {
@@ -601,15 +582,15 @@ iceUtil::DNProxyManager::getExactBetterProxyByDN( const string& dn,
     proxy_info = getter.get_info();
   } catch( db::DbOperationException& ex ) {
     
-    CREAM_SAFE_LOG(m_log_dev->errorStream() 
-		   << "DNProxyManager::getExactBetterProxyByDN() - "
+  //  CREAM_SAFE_LOG(m_log_dev->errorStream() 
+		 edglog(error)
 		   << "Error getting a proxy"
 		   << " for userdn [" << dn 
 		   << "] myproxy ["
 		   << myproxyname
 		   << "]: "
-		   << ex.what()
-		   );
+		   << ex.what() << endl;
+	//	   );
     //return false;
   }
 
@@ -624,14 +605,14 @@ iceUtil::DNProxyManager::incrementUserProxyCounter( const CreamJob& aJob,
   throw()
 {
   boost::recursive_mutex::scoped_lock M( s_mutex );
-  
-  CREAM_SAFE_LOG(
-		   m_log_dev->debugStream()
-		   << "DNProxyManager::incrementUserProxyCounter() - "
+  edglog_fn("DNProxyManager::incrementUserProxyCounter");
+ // CREAM_SAFE_LOG(
+		 //  m_log_dev->debugStream()
+		  edglog(debug) 
 		   << "Looking for DN ["
 		   << aJob.user_dn() << "] MyProxy server ["
-		   << aJob.myproxy_address() << "] in the DB..."
-		   );
+		   << aJob.myproxy_address() << "] in the DB..." << endl;
+	//	   );
   
   bool found = false;
   boost::tuple<string, time_t, long long int> proxy_info;
@@ -645,28 +626,28 @@ iceUtil::DNProxyManager::incrementUserProxyCounter( const CreamJob& aJob,
       proxy_info = getter.get_info();
   } catch( db::DbOperationException& ex ) {
     
-    CREAM_SAFE_LOG(m_log_dev->errorStream() 
-		   << "DNProxyManager::incrementUserProxyCounter() - "
+ //   CREAM_SAFE_LOG(m_log_dev->errorStream() 
+		edglog(error)   
 		   << "Error executing GetProxyInfoByDN_MYProxy for userdn ["
 		   << aJob.user_dn()
 		   << "] myproxy ["
 		   << aJob.myproxy_address()
 		   << "]: "
-		   << ex.what()
-		   );
+		   << ex.what() << endl;
+	//	   );
     return false;
   }
 
   if( found ) {
 
-    CREAM_SAFE_LOG(
-		   m_log_dev->debugStream()
-		   << "DNProxyManager::incrementUserProxyCounter() - "
+   // CREAM_SAFE_LOG(
+		 //  m_log_dev->debugStream()
+		 edglog(debug) 
 		   << "Incrementing proxy counter for DN ["
 		   << aJob.user_dn() << "] MyProxy server ["
 		   << aJob.myproxy_address() <<"] from [" << proxy_info.get<2>()
-		   << "] to [" << (proxy_info.get<2>() +1 ) << "]"
-		   );
+		   << "] to [" << (proxy_info.get<2>() +1 ) << "]" << endl;
+	//	   );
 
     try {
       
@@ -676,15 +657,14 @@ iceUtil::DNProxyManager::incrementUserProxyCounter( const CreamJob& aJob,
       
     } catch( db::DbOperationException& ex ) {
       
-      CREAM_SAFE_LOG(m_log_dev->errorStream() 
-		     << "DNProxyManager::incrementUserProxyCounter() - "
-		     << "Error updating proxy counter for userdn ["
+    //  CREAM_SAFE_LOG(m_log_dev->errorStream() 
+		   edglog(error)  << "Error updating proxy counter for userdn ["
 		     << aJob.user_dn()
 		     << "] myproxy ["
 		     << aJob.myproxy_address()
 		     << "]: "
-		     << ex.what()
-		     );
+		     << ex.what() << endl;
+	//	     );
       return false;
     }
     
@@ -707,14 +687,14 @@ iceUtil::DNProxyManager::decrementUserProxyCounter( const string& userDN,
   throw()
 {
   boost::recursive_mutex::scoped_lock M( s_mutex );
-  
-  CREAM_SAFE_LOG(
-		   m_log_dev->debugStream()
-		   << "DNProxyManager::decrementUserProxyCounter() - "
+  edglog_fn("DNProxyManager::decrementUserProxyCounter");
+  //CREAM_SAFE_LOG(
+		 //  m_log_dev->debugStream()
+		  edglog(debug) 
 		   << "Looking for DN ["
 		   << userDN << "] MyProxy server ["
-		   << myproxy_name << "] in the DB..."
-		   );
+		   << myproxy_name << "] in the DB..." << endl;
+		//   );
   
   bool found = false;
   boost::tuple<string, time_t, long long int> proxy_info;
@@ -727,28 +707,27 @@ iceUtil::DNProxyManager::decrementUserProxyCounter( const string& userDN,
       proxy_info = getter.get_info();
   } catch( db::DbOperationException& ex ) {
       
-    CREAM_SAFE_LOG(m_log_dev->errorStream() 
-		   << "DNProxyManager::decrementUserProxyCounter() - "
+  //  CREAM_SAFE_LOG(m_log_dev->errorStream() 
+		edglog(error) 
 		   << "Error executing GetProxyInfoByDN_MYProxy for userdn ["
 		   << userDN
 		   << "] myproxy ["
 		   << myproxy_name
 		   << "]: "
-		   << ex.what()
-		   );
+		   << ex.what() << endl;
+	//	   );
     return false;
   }
   
   if( found ) {
 
-    CREAM_SAFE_LOG(
-		   m_log_dev->debugStream()
-		   << "DNProxyManager::decrementUserProxyCounter() - "
-		   << "Decrementing proxy counter for DN ["
+ //   CREAM_SAFE_LOG(
+		  // m_log_dev->debugStream()
+		  edglog(debug) << "Decrementing proxy counter for DN ["
 		   << userDN << "] MyProxy server ["
 		   << myproxy_name <<"] from [" << proxy_info.get<2>()
-		   << "] to [" << (proxy_info.get<2>() - 1) << "]"
-		   );
+		   << "] to [" << (proxy_info.get<2>() - 1) << "]" << endl;
+		 //  );
 
     try {
       //list<pair<string, string> > params;
@@ -760,30 +739,30 @@ iceUtil::DNProxyManager::decrementUserProxyCounter( const string& userDN,
       tnx.execute( &updater );
     } catch( db::DbOperationException& ex ) {
       
-      CREAM_SAFE_LOG(m_log_dev->errorStream() 
-		     << "DNProxyManager::decrementUserProxyCounter() - "
+  //    CREAM_SAFE_LOG(m_log_dev->errorStream() 
+		   edglog(error) 
 		     << "Error updating proxy counter for userdn ["
 		     << userDN
 		     << "] myproxy ["
 		     << myproxy_name
 		     << "]: "
-		     << ex.what()
-		     );
+		     << ex.what() << endl;
+		 //    );
       return false;
     }
     
 
     if( proxy_info.get<2>() == 1 ) {
 
-      CREAM_SAFE_LOG(
-		   m_log_dev->debugStream()
-		   << "DNProxyManager::decrementUserProxyCounter() - "
+    //  CREAM_SAFE_LOG(
+//		   m_log_dev->debugStream()
+	edglog(debug)	   
 		   << "Proxy Counter is ZERO for DN ["
 		   << userDN << "] MyProxy server ["
 		   << myproxy_name<<"]. Removing better proxy ["
 		   << proxy_info.get<0>()
-		   << "] from persist_dir..."
-		   );
+		   << "] from persist_dir..." << endl;
+		 //  );
       /**
 	 If the counter is 0 deregister the current proxy and clear the map and delete the file.
       */
@@ -794,16 +773,16 @@ iceUtil::DNProxyManager::decrementUserProxyCounter( const string& userDN,
 	iceUtil::Delegation_manager::instance()->removeDelegation( userDN, myproxy_name );
       } catch( std::exception& ex ) {
 	
-	CREAM_SAFE_LOG(m_log_dev->errorStream() 
-		       << "DNProxyManager::decrementUserProxyCounter() - "
+	//CREAM_SAFE_LOG(m_log_dev->errorStream() 
+		     edglog(error)
 		       << "Delegation_manager::removeDelegation returned an error for "
 		       << "userdn ["
 		       << userDN
 		       << "] myproxy ["
 		       << myproxy_name
 		       << "]: "
-		       << ex.what()
-		       );
+		       << ex.what() << endl;
+		     //  );
 	return false;
       }
       

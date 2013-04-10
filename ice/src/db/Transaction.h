@@ -25,9 +25,9 @@ END LICENSE */
 #include "sqlite/sqlite3.h"
 #include "AbsDbOperation.h"
 
-namespace log4cpp {
-    class Category;
-};
+// namespace log4cpp {
+//     class Category;
+// };
 
 namespace glite {
 namespace wms {
@@ -98,7 +98,7 @@ namespace db {
 
     protected:
 
-        log4cpp::Category* m_log_dev;
+        //log4cpp::Category* m_log_dev;
         static sqlite3 *s_db;
         bool m_begin; ///< true iff the user called the begin() method
         bool m_commit; ///< false iff the user called abort(); true otherwise
