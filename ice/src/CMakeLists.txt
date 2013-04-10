@@ -79,8 +79,8 @@ add_executable(glite-wms-ice-proxy-renew 	glite-wms-ice-proxy-renew.cpp)
 target_link_libraries(glite-wms-ice
 glite_wms_ice_commands
 glite_wms_ice_threads
-glite_wms_iceUtils
-glite_wms_iceDb
+glite_wms_ice_utils
+glite_wms_ice_db
 glite_wms_ice_main
 glite_wms_logger
 glite_wms_conf
@@ -112,7 +112,7 @@ target_link_libraries(glite-wms-ice-query-db
 glite_wms_ice_commands 
 glite_wms_ice_threads 
 glite_wms_ice_utils 
-glite_wms_iceDb 
+glite_wms_ice_db
 glite_wms_ice_main
 glite_wms_logger
 glite_wms_conf
