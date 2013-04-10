@@ -43,9 +43,9 @@ namespace glite {
 
                 /**
                  * This class implements ICE LB logger.
-                 * The iceLBLogger is a singleton class 
+                 * The IceLBLogger is a singleton class 
                  */
-                class iceLBLogger {
+                class IceLBLogger {
                 public:
 
                     /**
@@ -53,7 +53,7 @@ namespace glite {
                      *
                      * @return the singleton instance of this class
                      */
-                    static iceLBLogger* instance( void );
+                    static IceLBLogger* instance( void );
 
                     /**
                      * Logs an event to the LB service. Caller
@@ -73,11 +73,11 @@ namespace glite {
                      */
                     CreamJob logEvent( IceLBEvent* ev, const bool use_cancel_sequence_code, const bool updatedb );
 
-                    ~iceLBLogger( void );
+                    ~IceLBLogger( void );
                 protected:
-                    iceLBLogger( );
+                    IceLBLogger( );
 
-                    static iceLBLogger* s_instance;
+                    static IceLBLogger* s_instance;
                     log4cpp::Category* m_log_dev;
                     bool m_lb_enabled;
                 };

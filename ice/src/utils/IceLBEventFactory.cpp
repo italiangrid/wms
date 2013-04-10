@@ -19,7 +19,7 @@ limitations under the License.
 END LICENSE */
 
 
-#include "iceLBEventFactory.h"
+#include "IceLBEventFactory.h"
 #include "IceLBEvent.h"
 
 #include <string>
@@ -28,7 +28,7 @@ using namespace glite::wms::ice::util;
 namespace jobstat = glite::ce::cream_client_api::job_statuses;
 
 //------------------------------------------------------------------------------
-IceLBEvent* iceLBEventFactory::mkEvent( const CreamJob& theJob,
+IceLBEvent* IceLBEventFactory::mkEvent( const CreamJob& theJob,
 					const bool force_donefailed )
 {
     switch( theJob.status() ) {

@@ -22,13 +22,13 @@ END LICENSE */
 
 #include "Main.h"
 #include "utils/IceConfManager.h"
-#include "utils/iceLBLogger.h"
+#include "utils/IceLBLogger.h"
 #include "utils/IceLBEvent.h"
 #include "threads/eventStatusPoller.h"
 #include "threads/delegationRenewal.h"
 #include "utils/IceLBEvent.h"
-#include "utils/iceLBEventFactory.h"
-#include "utils/iceLBLogger.h"
+#include "utils/IceLBEventFactory.h"
+#include "utils/IceLBLogger.h"
 #include "utils/CreamProxyMethod.h"
 #include "commands/IceCommandReschedule.h"
 #include "commands/IceCommandSubmit.h"
@@ -215,7 +215,7 @@ Main::Main( ) throw(IceInitException&) :
     m_ice_input_queue( new Request_source_jobdir( IceConfManager::instance()->getConfiguration()->ice()->input(), true ) /*util::Request_source_factory::make_source_input_ice()*/ ),
     m_reqnum(util::IceConfManager::instance()->getConfiguration()->ice()->max_ice_threads()),
     m_log_dev( cream_api::util::creamApiLogger::instance()->getLogger() ),
-    m_lb_logger( util::iceLBLogger::instance() ),
+    m_lb_logger( util::IceLBLogger::instance() ),
     m_configuration( util::IceConfManager::instance()->getConfiguration() ),
     m_times_too_queue_full( 0 )
 {
@@ -963,10 +963,10 @@ int Main::main_loop( void ) {
 		 in fact logEvent just does an SQL UPDATE ... WHERE grid_jobid = ''.
 		 So if the gridjobid is not there the UPDATE does not take place.
 	      */
-	      glite::wms::ice::util::IceLBEvent* ev = glite::wms::ice::util::iceLBEventFactory::mkEvent( theJob );
+	      glite::wms::ice::util::IceLBEvent* ev = glite::wms::ice::util::IceLBEventFactory::mkEvent( theJob );
 	      if ( ev ) {
 	        bool log_with_cancel_seqcode = (theJob.status( ) == glite::ce::cream_client_api::job_statuses::CANCELLED) && (!theJob.cancel_sequence_code( ).empty( ));
-		theJob = glite::wms::ice::util::iceLBLogger::instance()->logEvent( ev, log_with_cancel_seqcode, false );
+		theJob = glite::wms::ice::util::IceLBLogger::instance()->logEvent( ev, log_with_cancel_seqcode, false );
 	      } else {
 		CREAM_SAFE_LOG( m_log_dev->errorStream()
 				<< method_name

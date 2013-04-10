@@ -18,9 +18,9 @@ add_custom_target(ICEUTILS
   CreamProxyMethod.cpp 
   IceConfManager.cpp 
   IceLBContext.cpp 
-  iceLBEventFactory.cpp 
+  IceLBEventFactory.cpp 
   IceLBEvent.cpp 
-  iceLBLogger.cpp 
+  IceLBLogger.cpp 
   Request_jobdir.cpp 
   Request_source_jobdir.cpp 
   RequestParser.cpp 
@@ -37,9 +37,9 @@ add_library(glite_wms_ice_utils
   CreamProxyMethod.cpp 
   IceConfManager.cpp 
   IceLBContext.cpp 
-  iceLBEventFactory.cpp 
+  IceLBEventFactory.cpp 
   IceLBEvent.cpp 
-  iceLBLogger.cpp 
+  IceLBLogger.cpp 
   Request_jobdir.cpp 
   Request_source_jobdir.cpp 
   RequestParser.cpp 

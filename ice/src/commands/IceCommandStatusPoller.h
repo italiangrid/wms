@@ -46,14 +46,14 @@ namespace glite {
 
       namespace util {
         
-        class iceLBLogger;
+        class IceLBLogger;
 	//	class jobCache;
 	class IceConfManager;
 
 	class IceCommandStatusPoller : public IceAbstractCommand {
 
           log4cpp::Category                           *m_log_dev;
-          glite::wms::ice::util::iceLBLogger          *m_lb_logger;
+          glite::wms::ice::util::IceLBLogger          *m_lb_logger;
           Main					      *m_iceManager;
 	  time_t                                       m_threshold;
           const unsigned int                           m_max_chunk_size; ///< maximum number of jobs which will be used in a cumulative request to CREAM
@@ -147,7 +147,7 @@ namespace glite {
           */
           IceCommandStatusPoller( Main*, 
 				  const std::pair<std::string, std::string>&,
-				  bool poll_all_jobs = false ); //throw(glite::wms::ice::util::eventStatusPoller_ex&, glite::wms::ice::util::ConfigurationManager_ex&);
+				  bool poll_all_jobs = false ); //throw(glite::wms::ice::util::eventStatusPoller_ex&, glite::wms::ice::util::ConfigurationManagerException&);
           
           virtual ~IceCommandStatusPoller() throw() { } 
 

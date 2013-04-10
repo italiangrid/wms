@@ -22,11 +22,11 @@ END LICENSE */
 // ICE Headers
 #include "IceCommandStatusPoller.h"
 #include "IceCommandLBLogging.h"
-#include "utils/iceLBEventFactory.h"
+#include "utils/IceLBEventFactory.h"
 #include "utils/CreamProxyMethod.h"
 #include "utils/IceConfManager.h"
 #include "utils/DNProxyManager.h"
-#include "utils/iceLBLogger.h"
+#include "utils/IceLBLogger.h"
 #include "utils/IceLBEvent.h"
 #include "main/Main.h"
 #include "utils/IceUtils.h"
@@ -74,7 +74,7 @@ IceCommandStatusPoller::IceCommandStatusPoller( glite::wms::ice::Main* theIce,
 						) :
   IceAbstractCommand( "IceCommandStatusPoller", "" ),
   m_log_dev( cream_api::util::creamApiLogger::instance()->getLogger() ),
-  m_lb_logger( iceLBLogger::instance() ),
+  m_lb_logger( IceLBLogger::instance() ),
   m_iceManager( theIce ),
   m_threshold( IceConfManager::instance()->getConfiguration()->ice()->poller_status_threshold_time() ),
   m_max_chunk_size( IceConfManager::instance()->getConfiguration()->ice()->bulk_query_size() ), 
@@ -452,7 +452,7 @@ void IceCommandStatusPoller::update_single_job( const soap_proxy::JobInfoWrapper
   	  }
 	  
 	  // Log to L&B
-	  IceLBEvent* ev = iceLBEventFactory::mkEvent( tmp_job, true );
+	  IceLBEvent* ev = IceLBEventFactory::mkEvent( tmp_job, true );
 	  if ( ev ) {
 	    bool log_with_cancel_seqcode = (tmp_job.status( ) == glite::ce::cream_client_api::job_statuses::CANCELLED) && (!tmp_job.cancel_sequence_code( ).empty( ));
 	    tmp_job = m_lb_logger->logEvent( ev, log_with_cancel_seqcode, true );

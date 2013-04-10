@@ -49,7 +49,7 @@ namespace ice {
      
 // Forward declarations
 namespace util {                
-    class iceLBLogger;
+    class IceLBLogger;
     class Request;
 }
      
@@ -128,7 +128,7 @@ namespace util {
      log4cpp::Category* m_log_dev;
      glite::wms::common::configuration::Configuration* m_configuration;
      std::string m_myname_url;
-     util::iceLBLogger *m_lb_logger;
+     util::IceLBLogger *m_lb_logger;
      util::Request* m_request;
 };
 

@@ -34,7 +34,7 @@ namespace wms {
 namespace ice {
 
     namespace util {
-        class iceLBLogger;                 // Forward declaration
+        class IceLBLogger;                 // Forward declaration
         class Request;
     };
 
@@ -54,7 +54,7 @@ namespace ice {
 	std::string m_seq_code;
         std::string m_sequence_code;
         log4cpp::Category* m_log_dev;
-        util::iceLBLogger *m_lb_logger;
+        util::IceLBLogger *m_lb_logger;
         util::Request* m_request;
     };
 

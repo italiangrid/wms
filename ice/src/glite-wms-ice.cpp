@@ -184,7 +184,7 @@ int main(int argc, char*argv[])
     try{
         glite::wms::ice::util::IceConfManager::instance();
     }
-    catch(glite::wms::ice::util::ConfigurationManager_ex& ex) {
+    catch(glite::wms::ice::util::ConfigurationManagerException& ex) {
         cerr << "glite-wms-ice::main() - ERROR: " << ex.what() << endl;
         exit(1);
     }

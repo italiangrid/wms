@@ -23,9 +23,9 @@ END LICENSE */
 #include "db/GetJobByGid.h"
 #include "db/Transaction.h"
 #include "db/RemoveJobByGid.h"
-#include "utils/iceLBLogger.h"
+#include "utils/IceLBLogger.h"
 #include "utils/IceLBEvent.h"
-#include "utils/iceLBEventFactory.h"
+#include "utils/IceLBEventFactory.h"
 #include "glite/security/proxyrenewal/renewal.h"
 #include "common/src/configuration/ICEConfiguration.h"
 #include "common/src/configuration/CommonConfiguration.h"
@@ -63,7 +63,7 @@ util::IceCommandLBLogging::IceCommandLBLogging( const list<CreamJob>& jobs ) :
     IceAbstractCommand( "IceCommandLBLogging", "" ),
     m_log_dev( cream_api::util::creamApiLogger::instance()->getLogger() ),
     m_jobs_to_remove( jobs ),
-    m_lb_logger( ice::util::iceLBLogger::instance() )
+    m_lb_logger( ice::util::IceLBLogger::instance() )
 {
 }
 
@@ -104,7 +104,7 @@ void util::IceCommandLBLogging::execute( const std::string& tid ) throw()
       continue;
     }
       
-    IceLBEvent* ev = iceLBEventFactory::mkEvent( *jobit );
+    IceLBEvent* ev = IceLBEventFactory::mkEvent( *jobit );
     if ( ev ) {
       m_lb_logger->logEvent( ev, false, false );
     }

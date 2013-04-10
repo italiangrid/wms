@@ -57,13 +57,13 @@ namespace glite {
 
       namespace util {
         
-        class iceLBLogger;
+        class IceLBLogger;
 	class IceConfManager;
 
 	class IceCommandEventQuery : public IceAbstractCommand {
 
           log4cpp::Category                     *m_log_dev;
-          glite::wms::ice::util::iceLBLogger    *m_lb_logger;
+          glite::wms::ice::util::IceLBLogger    *m_lb_logger;
           Main                                  *m_iceManager;
 	  glite::wms::ice::util::IceConfManager *m_conf;
 	  bool                                   m_stopped;

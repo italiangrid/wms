@@ -27,7 +27,7 @@ END LICENSE */
 
 #include <string>
 #include <ctime>
-#include "ConfigurationManager_ex.h"
+#include "ConfigurationManagerException.h"
 #include <boost/scoped_ptr.hpp>
 #include "glite/wms/common/configuration/Configuration.h"
 
@@ -54,14 +54,14 @@ namespace glite {
 
 	protected:
 	  IceConfManager()
-	    throw (glite::wms::ice::util::ConfigurationManager_ex&);
+	    throw (glite::wms::ice::util::ConfigurationManagerException&);
 	  
 	public:
 	  
 	  virtual ~IceConfManager();
           
 	  static IceConfManager* instance() 
-	    throw (glite::wms::ice::util::ConfigurationManager_ex&);
+	    throw (glite::wms::ice::util::ConfigurationManagerException&);
 	  static void init(const std::string&);
 
           glite::wms::common::configuration::Configuration* getConfiguration() { return m_configuration.get(); }

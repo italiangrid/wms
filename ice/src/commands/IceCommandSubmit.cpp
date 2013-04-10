@@ -22,8 +22,8 @@ END LICENSE */
 #include "utils/IceUtils.h"
 #include "main/Main.h"
 #include "utils/IceLBEvent.h"
-#include "utils/iceLBEventFactory.h"
-#include "utils/iceLBLogger.h"
+#include "utils/IceLBEventFactory.h"
+#include "utils/IceLBLogger.h"
 #include "utils/DNProxyManager.h"
 #include "utils/IceConfManager.h"
 #include "IceCommandSubmit.h"
@@ -128,7 +128,7 @@ IceCommandSubmit::IceCommandSubmit( iceUtil::Request* request,
     m_theJob( aJob ),
     m_log_dev( api_util::creamApiLogger::instance()->getLogger()),
     m_configuration( iceUtil::IceConfManager::instance()->getConfiguration() ),
-    m_lb_logger( iceUtil::iceLBLogger::instance() ),
+    m_lb_logger( iceUtil::IceLBLogger::instance() ),
     m_request( request )  
 {
 
@@ -313,10 +313,10 @@ void IceCommandSubmit::execute( const std::string& tid ) throw( IceCommandFatalE
 				   + m_theJob.cream_address() 
 				   +"] will be aborted immediately as specified in the WMS configuration" );
       m_theJob.set_status( glite::ce::cream_client_api::job_statuses::ABORTED ); 
-      iceUtil::IceLBEvent* ev = iceUtil::iceLBEventFactory::mkEvent( m_theJob );
+      iceUtil::IceLBEvent* ev = iceUtil::IceLBEventFactory::mkEvent( m_theJob );
       if ( ev ) {
 	//bool log_with_cancel_seqcode = (m_theJob.status( ) == glite::ce::cream_client_api::job_statuses::CANCELLED) && (!m_theJob.cancel_sequence_code( ).empty( ));
-	m_theJob = iceUtil::iceLBLogger::instance()->logEvent( ev, 
+	m_theJob = iceUtil::IceLBLogger::instance()->logEvent( ev, 
 							       false, //log_with_cancel_seqcode, 
 							       false );
       }

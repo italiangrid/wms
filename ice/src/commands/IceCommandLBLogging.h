@@ -37,13 +37,13 @@ namespace glite {
     namespace ice {
       namespace util {
 	
-	class iceLBLogger;
+	class IceLBLogger;
 	
 	class IceCommandLBLogging : public IceAbstractCommand {
 	  
 	  log4cpp::Category			*m_log_dev;
 	  std::list<CreamJob> 			 m_jobs_to_remove;
-	  glite::wms::ice::util::iceLBLogger    *m_lb_logger;
+	  glite::wms::ice::util::IceLBLogger    *m_lb_logger;
 	  
 	  IceCommandLBLogging( const IceCommandLBLogging& ) : IceAbstractCommand("", "") {}
 	  

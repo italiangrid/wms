@@ -229,7 +229,7 @@ int main( int argc, char* argv[] )
   try{
     util::IceConfManager::instance();
   }
-  catch(util::ConfigurationManager_ex& ex) {
+  catch(util::ConfigurationManagerException& ex) {
     cerr << ex.what() << endl;
     exit(1);
   }

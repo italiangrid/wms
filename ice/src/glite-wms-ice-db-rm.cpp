@@ -128,7 +128,7 @@ int main(int argc, char*argv[])
   try{
     util::IceConfManager::instance();
   }
-  catch(util::ConfigurationManager_ex& ex) {
+  catch(util::ConfigurationManagerException& ex) {
     cerr << "glite-wms-ice-db-rm::main - ERROR: " << ex.what() << endl;
     exit(1);
   }

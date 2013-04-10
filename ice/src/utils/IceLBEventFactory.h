@@ -34,9 +34,9 @@ namespace glite {
                  * This class is a factory used to build a logging
                  * event corresponding to a job status change.
                  */
-                class iceLBEventFactory {
+                class IceLBEventFactory {
                 public:
-                    virtual ~iceLBEventFactory( ) { };
+                    virtual ~IceLBEventFactory( ) { };
 
                     /**
                      * Factory method used to create an iceLBEvent
@@ -59,7 +59,7 @@ namespace glite {
                     static IceLBEvent* mkEvent( const CreamJob& j, const bool force_donefailed = false );
 
                 protected:
-                    iceLBEventFactory( ) { };
+                    IceLBEventFactory( ) { };
                 };
 
             } // namespace util

@@ -63,7 +63,7 @@ namespace ice {
     };
     
     namespace util {
-        class iceLBLogger;
+        class IceLBLogger;
         class Request_source;
         class Request;
 	class CreamJob;
@@ -135,7 +135,7 @@ namespace ice {
 
         log4cpp::Category* m_log_dev;
         
-        util::iceLBLogger* m_lb_logger;
+        util::IceLBLogger* m_lb_logger;
         glite::wms::common::configuration::Configuration* m_configuration;
 
         // 

@@ -19,7 +19,7 @@ limitations under the License.
 END LICENSE */
 
 
-#include "iceLBLogger.h"
+#include "IceLBLogger.h"
 #include "IceLBContext.h"
 #include "IceLBEvent.h"
 #include "glite/ce/cream-client-api-c/scoped_timer.h"
@@ -39,22 +39,22 @@ namespace api_util = glite::ce::cream_client_api::util;
 using namespace glite::wms::ice::util;
 using namespace std;
 
-iceLBLogger* iceLBLogger::s_instance = 0;
+IceLBLogger* IceLBLogger::s_instance = 0;
 
 //////////////////////////////////////////////////////////////////////////////
 // 
-// iceLBLogger
+// IceLBLogger
 //
 //////////////////////////////////////////////////////////////////////////////
-iceLBLogger* iceLBLogger::instance( void )
+IceLBLogger* IceLBLogger::instance( void )
 {
     if ( 0 == s_instance ) {
-        s_instance = new iceLBLogger();
+        s_instance = new IceLBLogger();
     }
     return s_instance;
 }
 
-iceLBLogger::iceLBLogger( void ) :
+IceLBLogger::IceLBLogger( void ) :
     m_log_dev( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger() ),
     m_lb_enabled( true )
 {
@@ -71,16 +71,16 @@ iceLBLogger::iceLBLogger( void ) :
 }
 
 
-iceLBLogger::~iceLBLogger( void )
+IceLBLogger::~IceLBLogger( void )
 {
 
 }
 
-CreamJob iceLBLogger::logEvent( IceLBEvent* ev, const bool use_cancel_sequence_code, const bool updatedb )
+CreamJob IceLBLogger::logEvent( IceLBEvent* ev, const bool use_cancel_sequence_code, const bool updatedb )
 {
-    static const char* method_name = "iceLBLogger::logEvent() - ";
+    static const char* method_name = "IceLBLogger::logEvent() - ";
 #ifdef ICE_PROFILE_ENABLE
-    api_util::scoped_timer T( "iceLBLogger::logEvent()" );
+    api_util::scoped_timer T( "IceLBLogger::logEvent()" );
 #endif
     // Aborts if trying to log the NULL event
     if ( ! ev ) {
@@ -145,7 +145,7 @@ CreamJob iceLBLogger::logEvent( IceLBEvent* ev, const bool use_cancel_sequence_c
 	    theJob.set_sequence_code( new_seq_code );
 
 	  if(updatedb) {
-	    glite::wms::ice::db::UpdateJob updater( theJob, "iceLBLogger::logEvent" );
+	    glite::wms::ice::db::UpdateJob updater( theJob, "IceLBLogger::logEvent" );
 	    glite::wms::ice::db::Transaction tnx(false, false);
 	    tnx.execute( &updater );
  	  }

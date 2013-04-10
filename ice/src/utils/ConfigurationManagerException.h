@@ -29,19 +29,19 @@ namespace glite {
     namespace ice {
       namespace util {
 
-	//! \class ConfigurationManager_ex An exception for ConfigurationManager errors
-	class ConfigurationManager_ex : public std::exception {
+	//! \class ConfigurationManagerException An exception for ConfigurationManager errors
+	class ConfigurationManagerException : public std::exception {
 	  
 	  std::string cause;
 	  
 	public:
-	  //! ConfigurationManager_ex constructor
+	  //! ConfigurationManagerException constructor
 	  /**!
-	    Creates a ConfigurationManager_ex object
+	    Creates a ConfigurationManagerException object
 	    \param _cause the cause of the error
 	  */
-	  ConfigurationManager_ex(const std::string& _cause) throw() : cause(_cause) {};
-	  virtual ~ConfigurationManager_ex() throw() {}
+	  ConfigurationManagerException(const std::string& _cause) throw() : cause(_cause) {};
+	  virtual ~ConfigurationManagerException() throw() {}
 	  //! Gets the cause of the error
 	  const char* what() const throw() { return cause.c_str(); }
 	  

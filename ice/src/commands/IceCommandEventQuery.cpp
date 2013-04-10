@@ -28,11 +28,11 @@ END LICENSE */
 #include "IceCommandStatusPoller.h"
 #include "IceCommandEventQuery.h"
 #include "IceCommandLBLogging.h"
-#include "utils/iceLBEventFactory.h"
+#include "utils/IceLBEventFactory.h"
 #include "utils/CreamProxyMethod.h"
 #include "utils/DNProxyManager.h"
 #include "utils/IceConfManager.h"
-#include "utils/iceLBLogger.h"
+#include "utils/IceLBLogger.h"
 #include "utils/IceLBEvent.h"
 #include "main/Main.h"
 #include "utils/IceUtils.h"
@@ -100,7 +100,7 @@ ice::util::IceCommandEventQuery::IceCommandEventQuery( ice::Main* theIce,
 						       const std::string& ce)
   : IceAbstractCommand( "IceCommandEventQuery", "" ),
     m_log_dev( cream_api::util::creamApiLogger::instance()->getLogger() ),
-    m_lb_logger( ice::util::iceLBLogger::instance() ),
+    m_lb_logger( ice::util::IceLBLogger::instance() ),
     m_iceManager( theIce ),
     m_conf( ice::util::IceConfManager::instance() ),
     m_stopped( false ),
@@ -691,7 +691,7 @@ ice::util::IceCommandEventQuery::processSingleEvent( CreamJob& theJob,
     the second parameter 'true' forces to log a DONE_FAILED event even when an ABORTED status has been detected
   */
   
-  IceLBEvent* ev = iceLBEventFactory::mkEvent( theJob, true );
+  IceLBEvent* ev = IceLBEventFactory::mkEvent( theJob, true );
   if ( ev ) {
     
     bool log_with_cancel_seqcode = (theJob.status( ) == glite::ce::cream_client_api::job_statuses::CANCELLED) && (!theJob.cancel_sequence_code( ).empty( ));
@@ -733,7 +733,7 @@ ice::util::IceCommandEventQuery::processSingleEvent( CreamJob& theJob,
 //     jit->set_failure_reason( "Job Aborted because proxy expired." );
 //     jit->set_status( cream_api::job_statuses::ABORTED ); 
 //     jit->set_exit_code( 0 );
-//     iceLBEvent* ev = iceLBEventFactory::mkEvent( *jit );
+//     iceLBEvent* ev = IceLBEventFactory::mkEvent( *jit );
 //     if ( ev ) {
 //       m_lb_logger->logEvent( ev );
 //     }

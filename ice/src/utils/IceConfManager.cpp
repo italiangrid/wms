@@ -35,10 +35,10 @@ bool IceConfManager::s_initialized = false;
 
 //____________________________________________________________________________
 IceConfManager* IceConfManager::instance( )
-    throw ( ConfigurationManager_ex&)
+    throw ( ConfigurationManagerException&)
 {
     if( !s_initialized ) {
-        throw ConfigurationManager_ex("ConfigurationManager non initialized: must set the configuration filename before use");
+        throw ConfigurationManagerException("ConfigurationManager non initialized: must set the configuration filename before use");
     }
     if( !s_instance ) {
         s_instance = new IceConfManager( );
@@ -48,13 +48,13 @@ IceConfManager* IceConfManager::instance( )
 
 //____________________________________________________________________________
 IceConfManager::IceConfManager( )
-    throw ( ConfigurationManager_ex& )
+    throw ( ConfigurationManagerException& )
 {
     conf_ns::Configuration* config = 0;
     try {
         config = new conf_ns::Configuration(s_conf_file, conf_ns::ModuleType::interface_cream_environment);
     } catch(exception& ex) {
-        throw ConfigurationManager_ex( ex.what() );
+        throw ConfigurationManagerException( ex.what() );
     }
     m_configuration.reset( config );
 }

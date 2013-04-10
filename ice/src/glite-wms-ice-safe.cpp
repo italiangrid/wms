@@ -113,7 +113,7 @@ int main( int argc, char *argv[]) {
   try{
     iceUtil::IceConfManager::instance();
   }
-  catch(iceUtil::ConfigurationManager_ex& ex) {
+  catch(iceUtil::ConfigurationManagerException& ex) {
     cerr << "glite-wms-ice-safe::main() - ERROR: " << ex.what() << endl;
     exit(1);
   }

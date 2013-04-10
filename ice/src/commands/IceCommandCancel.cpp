@@ -24,7 +24,7 @@ END LICENSE */
  */
 #include "IceCommandCancel.h"
 #include "main/Main.h"
-#include "utils/iceLBLogger.h"
+#include "utils/IceLBLogger.h"
 #include "utils/IceLBEvent.h"
 #include "utils/CreamProxyMethod.h"
 #include "Request_source_purger.h"
@@ -60,7 +60,7 @@ IceCommandCancel::IceCommandCancel( util::Request* request )
   throw(util::ClassadSyntax_ex&, util::JobRequest_ex&) :
   IceAbstractCommand( "IceCommandCancel", "" ),
   m_log_dev(glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger()),
-  m_lb_logger( util::iceLBLogger::instance() ),
+  m_lb_logger( util::IceLBLogger::instance() ),
   m_request( request )
 {
 

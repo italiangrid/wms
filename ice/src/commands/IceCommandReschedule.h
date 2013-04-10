@@ -48,7 +48,7 @@ namespace ice {
      
 // Forward declarations
 namespace util {                
-    class iceLBLogger;
+    class IceLBLogger;
     class Request;
 }
      
