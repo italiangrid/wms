@@ -22,7 +22,7 @@ END LICENSE */
 #define GLITE_WMS_ICE_ICECOMMANDLBLOGGING_H
 
 #include "IceAbstractCommand.h"
-#include "iceUtils/CreamJob.h"
+#include "utils/CreamJob.h"
 #include <boost/scoped_ptr.hpp>
 
 #include<string>

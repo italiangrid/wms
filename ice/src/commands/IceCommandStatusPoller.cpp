@@ -22,22 +22,22 @@ END LICENSE */
 // ICE Headers
 #include "IceCommandStatusPoller.h"
 #include "IceCommandLBLogging.h"
-#include "iceUtils/iceLBEventFactory.h"
-#include "iceUtils/CreamProxyMethod.h"
-#include "iceUtils/IceConfManager.h"
-#include "iceUtils/DNProxyManager.h"
-#include "iceUtils/iceLBLogger.h"
-#include "iceUtils/IceLBEvent.h"
-#include "ice/IceCore.h"
-#include "iceUtils/IceUtils.h"
-#include "iceDb/GetJobByGid.h"
-#include "iceDb/InsertStat.h"
-#include "iceDb/RemoveJobByGid.h"
-#include "iceDb/RemoveJobByCid.h"
-#include "iceDb/Transaction.h"
-#include "iceDb/UpdateJob.h"
-#include "iceDb/RemoveJobByUserDN.h"
-#include "iceDb/GetJobsByDN.h"
+#include "utils/iceLBEventFactory.h"
+#include "utils/CreamProxyMethod.h"
+#include "utils/IceConfManager.h"
+#include "utils/DNProxyManager.h"
+#include "utils/iceLBLogger.h"
+#include "utils/IceLBEvent.h"
+#include "main/Main.h"
+#include "utils/IceUtils.h"
+#include "db/GetJobByGid.h"
+#include "db/InsertStat.h"
+#include "db/RemoveJobByGid.h"
+#include "db/RemoveJobByCid.h"
+#include "db/Transaction.h"
+#include "db/UpdateJob.h"
+#include "db/RemoveJobByUserDN.h"
+#include "db/GetJobsByDN.h"
 
 // Cream Client API Headers
 #include "glite/ce/cream-client-api-c/creamApiLogger.h"
@@ -68,7 +68,7 @@ using namespace glite::wms::ice::util;
 using namespace std;
 
 //____________________________________________________________________________
-IceCommandStatusPoller::IceCommandStatusPoller( glite::wms::ice::IceCore* theIce, 
+IceCommandStatusPoller::IceCommandStatusPoller( glite::wms::ice::Main* theIce, 
 						const pair<string, string>& dnce,
 						bool poll_all_jobs
 						) :
@@ -530,10 +530,10 @@ void IceCommandStatusPoller::execute( const std::string& tid ) throw()
     	jit->set_status( cream_api::job_statuses::ABORTED ); 
     	jit->set_exit_code( 0 );
       }
-      while( IceCore::instance()->get_ice_lblog_pool()->get_command_count() > 2 )
+      while( Main::instance()->get_ice_lblog_pool()->get_command_count() > 2 )
         sleep(2);
       
-      IceCore::instance()->get_ice_lblog_pool()->add_request( new IceCommandLBLogging( toRemove ) );
+      Main::instance()->get_ice_lblog_pool()->add_request( new IceCommandLBLogging( toRemove ) );
     //Ice::instance()->delete_jobs_by_dn( userdn );
     return;//continue;
   }  
@@ -561,10 +561,10 @@ void IceCommandStatusPoller::execute( const std::string& tid ) throw()
     	jit->set_status( cream_api::job_statuses::ABORTED ); 
     	jit->set_exit_code( 0 );
       }
-      while( IceCore::instance()->get_ice_lblog_pool()->get_command_count() > 2 )
+      while( Main::instance()->get_ice_lblog_pool()->get_command_count() > 2 )
         sleep(2);
       
-      IceCore::instance()->get_ice_lblog_pool()->add_request( new IceCommandLBLogging( toRemove ) );
+      Main::instance()->get_ice_lblog_pool()->add_request( new IceCommandLBLogging( toRemove ) );
     //Ice::instance()->delete_jobs_by_dn( userdn );
 
     return;//continue;

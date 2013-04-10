@@ -19,13 +19,13 @@ limitations under the License.
 END LICENSE */
 
 #include "IceCommandLBLogging.h"
-#include "iceUtils/IceUtils.h"
-#include "iceDb/GetJobByGid.h"
-#include "iceDb/Transaction.h"
-#include "iceDb/RemoveJobByGid.h"
-#include "iceUtils/iceLBLogger.h"
-#include "iceUtils/IceLBEvent.h"
-#include "iceUtils/iceLBEventFactory.h"
+#include "utils/IceUtils.h"
+#include "db/GetJobByGid.h"
+#include "db/Transaction.h"
+#include "db/RemoveJobByGid.h"
+#include "utils/iceLBLogger.h"
+#include "utils/IceLBEvent.h"
+#include "utils/iceLBEventFactory.h"
 #include "glite/security/proxyrenewal/renewal.h"
 #include "common/src/configuration/ICEConfiguration.h"
 #include "common/src/configuration/CommonConfiguration.h"
@@ -37,7 +37,7 @@ END LICENSE */
 #include "glite/ce/cream-client-api-c/creamApiLogger.h"
 #include "glite/ce/cream-client-api-c/job_statuses.h"
 
-#include "iceUtils/DNProxyManager.h"
+#include "utils/DNProxyManager.h"
 
 #include <boost/lexical_cast.hpp>
 /**

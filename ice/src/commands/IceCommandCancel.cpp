@@ -23,17 +23,17 @@ END LICENSE */
  *
  */
 #include "IceCommandCancel.h"
-#include "ice/IceCore.h"
-#include "iceUtils/iceLBLogger.h"
-#include "iceUtils/IceLBEvent.h"
-#include "iceUtils/CreamProxyMethod.h"
+#include "main/Main.h"
+#include "utils/iceLBLogger.h"
+#include "utils/IceLBEvent.h"
+#include "utils/CreamProxyMethod.h"
 #include "Request_source_purger.h"
-#include "iceUtils/Request.h"
-#include "iceUtils/DNProxyManager.h"
-#include "iceDb/Transaction.h"
-#include "iceDb/CreateJob.h"
-#include "iceDb/GetJobByGid.h"
-#include "iceDb/UpdateJob.h"
+#include "utils/Request.h"
+#include "utils/DNProxyManager.h"
+#include "db/Transaction.h"
+#include "db/CreateJob.h"
+#include "db/GetJobByGid.h"
+#include "db/UpdateJob.h"
 /**
  *
  * Cream Client API Headers

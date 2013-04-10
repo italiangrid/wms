@@ -21,7 +21,7 @@ END LICENSE */
 #ifndef GLITE_WMS_ICE_REQUEST_SOURCE_PURGER_H
 #define GLITE_WMS_ICE_REQUEST_SOURCE_PURGER_H
 
-#include "ice/IceCore.h"
+#include "main/Main.h"
 
 namespace glite {
 namespace wms {

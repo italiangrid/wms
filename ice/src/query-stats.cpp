@@ -26,9 +26,9 @@ END LICENSE */
 
 #include "glite/ce/cream-client-api-c/job_statuses.h"
 
-#include "iceDb/Transaction.h"
-#include "iceDb/GetStats.h"
-#include "iceUtils/IceConfManager.h"
+#include "db/Transaction.h"
+#include "db/GetStats.h"
+#include "utils/IceConfManager.h"
 
 #include "boost/algorithm/string.hpp"
 #include "boost/regex.hpp"

@@ -18,27 +18,27 @@ limitations under the License.
 
 END LICENSE */
 
-#include "iceUtils/Request.h"
-#include "iceUtils/IceUtils.h"
-#include "ice/IceCore.h"
-#include "iceUtils/IceLBEvent.h"
-#include "iceUtils/iceLBEventFactory.h"
-#include "iceUtils/iceLBLogger.h"
-#include "iceUtils/DNProxyManager.h"
-#include "iceUtils/IceConfManager.h"
+#include "utils/Request.h"
+#include "utils/IceUtils.h"
+#include "main/Main.h"
+#include "utils/IceLBEvent.h"
+#include "utils/iceLBEventFactory.h"
+#include "utils/iceLBLogger.h"
+#include "utils/DNProxyManager.h"
+#include "utils/IceConfManager.h"
 #include "IceCommandSubmit.h"
-#include "iceUtils/CreamProxyMethod.h"
-#include "iceUtils/DelegationManager.h"
-#include "iceUtils/BlackListFailJob_ex.h"
+#include "utils/CreamProxyMethod.h"
+#include "utils/DelegationManager.h"
+#include "utils/BlackListFailJob_ex.h"
 #include "Request_source_purger.h"
 
-#include "iceDb/RemoveJobByGid.h"
-#include "iceDb/Transaction.h"
-#include "iceDb/InsertStat.h"
-#include "iceDb/InsertStartedJob.h"
-#include "iceDb/GetJobByGid.h"
-#include "iceDb/CreateJob.h"
-#include "iceDb/UpdateJob.h"
+#include "db/RemoveJobByGid.h"
+#include "db/Transaction.h"
+#include "db/InsertStat.h"
+#include "db/InsertStartedJob.h"
+#include "db/GetJobByGid.h"
+#include "db/CreateJob.h"
+#include "db/UpdateJob.h"
 
 /**
  *
@@ -123,7 +123,7 @@ namespace { // Anonymous namespace
 IceCommandSubmit::IceCommandSubmit( iceUtil::Request* request, 
 				    const iceUtil::CreamJob& aJob )
   : IceAbstractCommand( "IceCommandSubmit", "" ),
-    m_theIce( IceCore::instance() ),
+    m_theIce( Main::instance() ),
     m_myname( IceUtils::get_host_name( ) ),
     m_theJob( aJob ),
     m_log_dev( api_util::creamApiLogger::instance()->getLogger()),

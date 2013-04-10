@@ -32,7 +32,7 @@ END LICENSE */
 #include "common/src/configuration/ICEConfiguration.h"
 #include "common/src/configuration/WMConfiguration.h"
 #include "common/src/configuration/CommonConfiguration.h"
-#include "iceUtils/IceConfManager.h"
+#include "utils/IceConfManager.h"
 
 #include <boost/program_options.hpp>
 #include <boost/lexical_cast.hpp>

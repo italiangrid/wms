@@ -19,7 +19,7 @@ limitations under the License.
 END LICENSE */
 
 #include "Request_source_purger.h"
-#include "iceUtils/Request.h"
+#include "utils/Request.h"
 #include "glite/ce/cream-client-api-c/creamApiLogger.h"
 #include <boost/scoped_ptr.hpp>
 
@@ -42,7 +42,7 @@ void Request_source_purger::operator()( void )
                    
                    );
     try { 
-        IceCore::instance()->removeRequest( m_req );
+        Main::instance()->removeRequest( m_req );
     } catch(std::exception& ex) {
         if(!getenv("NO_FL_MESS")) 
 	  CREAM_SAFE_LOG(

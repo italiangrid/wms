@@ -19,13 +19,13 @@ limitations under the License.
 END LICENSE */
 
 #include "classad_distribution.h"
-#include "iceUtils/IceConfManager.h"
+#include "utils/IceConfManager.h"
 #include "glite/wms/common/configuration/Configuration.h"
 #include "common/src/configuration/ICEConfiguration.h"
-#include "iceUtils/Request_source_jobdir.h"
-#include "iceUtils/Request_source.h"
-#include "iceUtils/Request.h"
-#include "iceUtils/IceConfManager.h"
+#include "utils/Request_source_jobdir.h"
+#include "utils/Request_source.h"
+#include "utils/Request.h"
+#include "utils/IceConfManager.h"
 
 #include <fstream>
 #include <string>

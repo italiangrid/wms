@@ -27,10 +27,10 @@ END LICENSE */
 
 #include "glite/ce/cream-client-api-c/job_statuses.h"
 
-#include "iceDb/Transaction.h"
-#include "iceDb/GetAllJobs.h"
-#include "iceUtils/IceConfManager.h"
-#include "iceUtils/CreamJob.h"
+#include "db/Transaction.h"
+#include "db/GetAllJobs.h"
+#include "utils/IceConfManager.h"
+#include "utils/CreamJob.h"
 
 #include "boost/algorithm/string.hpp"
 

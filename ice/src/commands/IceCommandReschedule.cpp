@@ -20,10 +20,10 @@ END LICENSE */
 
 #include "IceCommandReschedule.h"
 
-#include "iceDb/RemoveJobByGid.h"
-#include "iceDb/Transaction.h"
+#include "db/RemoveJobByGid.h"
+#include "db/Transaction.h"
 
-#include "iceUtils/DNProxyManager.h"
+#include "utils/DNProxyManager.h"
 
 using namespace glite::wms::ice;
 

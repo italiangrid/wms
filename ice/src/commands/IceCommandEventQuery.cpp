@@ -28,32 +28,32 @@ END LICENSE */
 #include "IceCommandStatusPoller.h"
 #include "IceCommandEventQuery.h"
 #include "IceCommandLBLogging.h"
-#include "iceUtils/iceLBEventFactory.h"
-#include "iceUtils/CreamProxyMethod.h"
-#include "iceUtils/DNProxyManager.h"
-#include "iceUtils/IceConfManager.h"
-#include "iceUtils/iceLBLogger.h"
-#include "iceUtils/IceLBEvent.h"
-#include "ice/IceCore.h"
-#include "iceUtils/IceUtils.h"
+#include "utils/iceLBEventFactory.h"
+#include "utils/CreamProxyMethod.h"
+#include "utils/DNProxyManager.h"
+#include "utils/IceConfManager.h"
+#include "utils/iceLBLogger.h"
+#include "utils/IceLBEvent.h"
+#include "main/Main.h"
+#include "utils/IceUtils.h"
 
-#include "iceDb/GetDbID.h"
-#include "iceDb/SetDbID.h"
-#include "iceDb/GetJobsByDN.h"
-#include "iceDb/DNHasJobs.h"
-#include "iceDb/InsertStat.h"
-#include "iceDb/GetEventID.h"
-#include "iceDb/SetEventID.h"
-#include "iceDb/SetEventIDForCE.h"
-#include "iceDb/GetJobByGid.h"
-#include "iceDb/GetJobByCid.h"
-#include "iceDb/Transaction.h"
-#include "iceDb/GetJobsByDbID.h"
-#include "iceDb/RemoveJobByGid.h"
-#include "iceDb/RemoveJobByCid.h"
-#include "iceDb/UpdateJob.h"
-#include "iceDb/RemoveJobsByDbID.h"
-#include "iceDb/RemoveJobByUserDN.h"
+#include "db/GetDbID.h"
+#include "db/SetDbID.h"
+#include "db/GetJobsByDN.h"
+#include "db/DNHasJobs.h"
+#include "db/InsertStat.h"
+#include "db/GetEventID.h"
+#include "db/SetEventID.h"
+#include "db/SetEventIDForCE.h"
+#include "db/GetJobByGid.h"
+#include "db/GetJobByCid.h"
+#include "db/Transaction.h"
+#include "db/GetJobsByDbID.h"
+#include "db/RemoveJobByGid.h"
+#include "db/RemoveJobByCid.h"
+#include "db/UpdateJob.h"
+#include "db/RemoveJobsByDbID.h"
+#include "db/RemoveJobByUserDN.h"
 
 #include <boost/lexical_cast.hpp>
 #include <boost/functional.hpp>
@@ -95,7 +95,7 @@ ice::util::IceCommandEventQuery::~IceCommandEventQuery( ) throw()
 }
 
 //______________________________________________________________________________
-ice::util::IceCommandEventQuery::IceCommandEventQuery( ice::IceCore* theIce,
+ice::util::IceCommandEventQuery::IceCommandEventQuery( ice::Main* theIce,
 						       const std::string& dn,
 						       const std::string& ce)
   : IceAbstractCommand( "IceCommandEventQuery", "" ),
@@ -183,10 +183,10 @@ void ice::util::IceCommandEventQuery::execute( const std::string& tid) throw()
     	jit->set_status( cream_api::job_statuses::ABORTED ); 
     	jit->set_exit_code( 0 );
       }
-      while( IceCore::instance()->get_ice_lblog_pool()->get_command_count() > 2 )
+      while( Main::instance()->get_ice_lblog_pool()->get_command_count() > 2 )
         sleep(2);
       
-      IceCore::instance()->get_ice_lblog_pool()->add_request( new IceCommandLBLogging( toRemove ) );
+      Main::instance()->get_ice_lblog_pool()->add_request( new IceCommandLBLogging( toRemove ) );
       
       return;
       
@@ -215,10 +215,10 @@ void ice::util::IceCommandEventQuery::execute( const std::string& tid) throw()
     	jit->set_status( cream_api::job_statuses::ABORTED ); 
     	jit->set_exit_code( 0 );
       }
-      while( IceCore::instance()->get_ice_lblog_pool()->get_command_count() > 2 )
+      while( Main::instance()->get_ice_lblog_pool()->get_command_count() > 2 )
         sleep(2);
       
-      IceCore::instance()->get_ice_lblog_pool()->add_request( new IceCommandLBLogging( toRemove ) );
+      Main::instance()->get_ice_lblog_pool()->add_request( new IceCommandLBLogging( toRemove ) );
       //Ice::instance()->delete_jobs_by_dn( m_dn );
       
       return;
@@ -369,10 +369,10 @@ void ice::util::IceCommandEventQuery::execute( const std::string& tid) throw()
 
       }
       
-      while( IceCore::instance()->get_ice_lblog_pool()->get_command_count() > 2 )
+      while( Main::instance()->get_ice_lblog_pool()->get_command_count() > 2 )
 	sleep(2);
       
-      IceCore::instance()->get_ice_lblog_pool()->add_request( new IceCommandLBLogging( toRemove ) );
+      Main::instance()->get_ice_lblog_pool()->add_request( new IceCommandLBLogging( toRemove ) );
       
       return;
     } // if( !this->checkDatabaseID..... )

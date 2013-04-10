@@ -20,15 +20,15 @@ END LICENSE */
 
 #include "IceCommandLBLogging.h"
 #include "IceCommandDelegationRenewal.h"
-#include "iceUtils/DelegationManager.h"
-#include "iceUtils/CreamProxyMethod.h"
-#include "iceUtils/DNProxyManager.h"
-#include "iceUtils/IceConfManager.h"
-#include "ice/IceCore.h"
-#include "iceUtils/IceUtils.h"
-#include "iceDb/GetJobsByDNMyProxy.h"
-#include "iceDb/GetJobByGid.h"
-#include "iceDb/Transaction.h"
+#include "utils/DelegationManager.h"
+#include "utils/CreamProxyMethod.h"
+#include "utils/DNProxyManager.h"
+#include "utils/IceConfManager.h"
+#include "main/Main.h"
+#include "utils/IceUtils.h"
+#include "db/GetJobsByDNMyProxy.h"
+#include "db/GetJobByGid.h"
+#include "db/Transaction.h"
 #include "common/src/configuration/ICEConfiguration.h"
 #include "common/src/configuration/CommonConfiguration.h"
 /**
@@ -485,10 +485,10 @@ void IceCommandDelegationRenewal::renewAllDelegations( void ) throw()
 	  }
 	  
 	  
-	  while( IceCore::instance()->get_ice_lblog_pool()->get_command_count() > 2 )
+	  while( Main::instance()->get_ice_lblog_pool()->get_command_count() > 2 )
 	    sleep(2);
 	  
-	  IceCore::instance()->get_ice_lblog_pool()->add_request( new IceCommandLBLogging( toRemove ) );
+	  Main::instance()->get_ice_lblog_pool()->add_request( new IceCommandLBLogging( toRemove ) );
 	  
 	  // TODO: Bisogna loggare un aborted per tutti i job relativi a questa delega
 	  // che non verra' piu' rinnovata ed e' stata rimossa dal DB di ICE.

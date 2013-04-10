@@ -32,11 +32,11 @@ END LICENSE */
 #include "common/src/configuration/WMConfiguration.h"
 #include "common/src/configuration/CommonConfiguration.h"
 
-#include "ice/IceCore.h"
-#include "iceDb/GetJobByGid.h"
-#include "iceDb/Transaction.h"
-#include "iceUtils/IceConfManager.h"
-#include "iceUtils/DNProxyManager.h"
+#include "main/Main.h"
+#include "db/GetJobByGid.h"
+#include "db/Transaction.h"
+#include "utils/IceConfManager.h"
+#include "utils/DNProxyManager.h"
 #define RUN_ON_LINUX
 #include "segv_handler.h"
 
@@ -55,8 +55,9 @@ SOAP_NMAC struct Namespace namespaces[] = {};
 
 using namespace std;
 using namespace glite::ce::cream_client_api;
+using namespace glite::wms::ice;
 
-namespace iceUtil   = glite::wms::ice::util;
+//namespace iceUtil   = glite::wms::ice::util;
 namespace po        = boost::program_options;
 namespace fs        = boost::filesystem;
 namespace api_util  = glite::ce::cream_client_api::util;
@@ -179,16 +180,16 @@ int main(int argc, char*argv[])
     /*****************************************************************************
      * Initializes configuration manager (that in turn loads configurations)
      ****************************************************************************/
-    iceUtil::IceConfManager::init( opt_conf_file );
+    glite::wms::ice::util::IceConfManager::init( opt_conf_file );
     try{
-        iceUtil::IceConfManager::instance();
+        glite::wms::ice::util::IceConfManager::instance();
     }
-    catch(iceUtil::ConfigurationManager_ex& ex) {
+    catch(glite::wms::ice::util::ConfigurationManager_ex& ex) {
         cerr << "glite-wms-ice::main() - ERROR: " << ex.what() << endl;
         exit(1);
     }
 
-    glite::wms::common::configuration::Configuration* conf = iceUtil::IceConfManager::instance()->getConfiguration();
+    glite::wms::common::configuration::Configuration* conf = glite::wms::ice::util::IceConfManager::instance()->getConfiguration();
 
     //
     // Change user id to become the "dguser" specified in the configuratoin file
@@ -235,7 +236,7 @@ int main(int argc, char*argv[])
     /*****************************************************************************
      * Sets the log file
      ****************************************************************************/
-    util::creamApiLogger* logger_instance = util::creamApiLogger::instance();
+    api_util::creamApiLogger* logger_instance = api_util::creamApiLogger::instance();
     log4cpp::Category* log_dev = logger_instance->getLogger();
 
     log_dev->setPriority( conf->ice()->ice_log_level() );
@@ -273,7 +274,7 @@ int main(int argc, char*argv[])
      * Let's create the DNProxyManager that also load all DN->ProxyFile mappping
      * by scanning the cache
      */
-    iceUtil::DNProxyManager::getInstance();
+    glite::wms::ice::util::DNProxyManager::getInstance();
     
 
     /*****************************************************************************
@@ -292,7 +293,7 @@ int main(int argc, char*argv[])
     /**
      * Get Instance of IceCore component
      */
-    glite::wms::ice::IceCore* iceManager( glite::wms::ice::IceCore::instance( ) );
+    glite::wms::ice::Main* iceManager( glite::wms::ice::Main::instance( ) );
 
     /**
      * Starts status poller and/or listener if specified in the config file

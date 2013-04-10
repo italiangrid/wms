@@ -24,14 +24,14 @@ END LICENSE */
 #include "IceAbstractCommand.h"
 #include "IceCommandFatalException.h"
 #include "IceCommandTransientException.h"
-#include "iceUtils/BlackListFailJob_ex.h"
-#include "iceUtils/CreamJob.h"
+#include "utils/BlackListFailJob_ex.h"
+#include "utils/CreamJob.h"
 
 #include "glite/ce/cream-client-api-c/creamApiLogger.h"
 #include "glite/ce/cream-client-api-c/AbsCreamProxy.h"
 #include "glite/ce/cream-client-api-c/VOMSWrapper.h"
 
-#include "iceUtils/ClassadSyntax_ex.h"
+#include "utils/ClassadSyntax_ex.h"
 #include "classad_distribution.h"
 
 #include <boost/scoped_ptr.hpp>
@@ -59,7 +59,7 @@ namespace util {
  private:
      void  doSubscription( const glite::wms::ice::util::CreamJob& );
      
-     IceCore *m_theIce;
+     Main *m_theIce;
      static boost::recursive_mutex s_localMutexForSubscriptions;
      static boost::recursive_mutex s_localMutexForDelegations;
 

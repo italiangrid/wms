@@ -36,13 +36,13 @@ END LICENSE */
 #include "common/src/configuration/WMConfiguration.h"
 #include "common/src/configuration/CommonConfiguration.h"
 
-#include "iceUtils/CreamJob.h"
-#include "iceDb/GetJobByGid.h"
-#include "iceDb/Transaction.h"
-#include "iceDb/RemoveJobByGid.h"
-#include "iceUtils/IceConfManager.h"
-#include "iceUtils/DNProxyManager.h"
-#include "iceUtils/IceUtils.h"
+#include "utils/CreamJob.h"
+#include "db/GetJobByGid.h"
+#include "db/Transaction.h"
+#include "db/RemoveJobByGid.h"
+#include "utils/IceConfManager.h"
+#include "utils/DNProxyManager.h"
+#include "utils/IceUtils.h"
 
 
 #include <boost/scoped_ptr.hpp>

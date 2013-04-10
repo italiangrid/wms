@@ -24,13 +24,13 @@ END LICENSE */
 #include "IceCommandSubmit.h"
 #include "IceCommandFatalException.h"
 #include "IceCommandTransientException.h"
-#include "iceUtils/CreamJob.h"
+#include "utils/CreamJob.h"
 
 #include "glite/ce/cream-client-api-c/creamApiLogger.h"
 #include "glite/ce/cream-client-api-c/AbsCreamProxy.h"
 #include "glite/ce/cream-client-api-c/VOMSWrapper.h"
 
-#include "iceUtils/ClassadSyntax_ex.h"
+#include "utils/ClassadSyntax_ex.h"
 #include "classad_distribution.h"
 
 #include <boost/scoped_ptr.hpp>
