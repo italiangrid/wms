@@ -32,9 +32,9 @@ namespace glite {
            * components (i.e., ICE threads) should inherit from this
            * class.
            */
-          class iceThread {
+          class IceThread {
           public:
-              virtual ~iceThread( ) { };
+              virtual ~IceThread( ) { };
 
               /**
                * This operator is used by boost threads to start the
@@ -81,8 +81,8 @@ namespace glite {
           protected:
               virtual void body( void ) = 0;
 
-              iceThread( const std::string& name );
-              iceThread( ); // needed by copy costructors...
+              IceThread( const std::string& name );
+              IceThread( ); // needed by copy costructors...
           private:              
               std::string m_name;
 

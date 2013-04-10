@@ -10,18 +10,18 @@ include_directories(${CLASSAD_INCLUDE_DIRS}
 
 add_custom_target(ICETHREADS
   DEPENDS
-  iceThread.cpp
-  eventStatusPoller.cpp
-  iceThreadPool.cpp
-  delegationRenewal.cpp	
+  IceThread.cpp
+  EventStatusPoller.cpp
+  IceThreadPool.cpp
+  DelegationRenewal.cpp	
 )
 
 add_library(glite_wms_ice_threads
   SHARED 
-  iceThread.cpp
-  eventStatusPoller.cpp
-  iceThreadPool.cpp
-  delegationRenewal.cpp
+  IceThread.cpp
+  EventStatusPoller.cpp
+  IceThreadPool.cpp
+  DelegationRenewal.cpp
   )
 
 set_target_properties(glite_wms_ice_threads PROPERTIES VERSION 0.0.0 SOVERSION 0)

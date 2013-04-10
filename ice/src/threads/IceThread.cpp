@@ -17,7 +17,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 END LICENSE */
-#include "iceThread.h"
+#include "IceThread.h"
 #include "utils/IceUtils.h"
 #include "glite/ce/cream-client-api-c/creamApiLogger.h"
 
@@ -26,7 +26,7 @@ END LICENSE */
 using namespace glite::wms::ice;
 namespace apiLogger = glite::ce::cream_client_api::util;
 
-threads::iceThread::iceThread( const std::string& name ) :
+threads::IceThread::IceThread( const std::string& name ) :
     m_name( name ),
     m_running( false ),
     m_stopped( false )
@@ -34,7 +34,7 @@ threads::iceThread::iceThread( const std::string& name ) :
   m_thread_id = boost::lexical_cast<std::string>( (long long)this );//os.str();
 }
 
-threads::iceThread::iceThread( ) :
+threads::IceThread::IceThread( ) :
     m_name( ),
     m_running( false ),
     m_stopped( false )
@@ -42,7 +42,7 @@ threads::iceThread::iceThread( ) :
   m_thread_id = boost::lexical_cast<std::string>( (long long) this ) ;
 }
 
-void threads::iceThread::operator()()
+void threads::IceThread::operator()()
 {
     m_running = true;
 
@@ -51,10 +51,10 @@ void threads::iceThread::operator()()
     m_running = false;
 }
 
-void threads::iceThread::stop() 
+void threads::IceThread::stop() 
 {
   m_stopped = true;
   CREAM_SAFE_LOG(apiLogger::creamApiLogger::instance()->getLogger()->debugStream()
-		 << "iceThread::stop() - Thread [" << getName() << "] Called STOP."
+		 << "IceThread::stop() - Thread [" << getName() << "] Called STOP."
 		 );
 }

@@ -24,7 +24,7 @@ END LICENSE */
  *
  */
 #include "main/Main.h"
-#include "delegationRenewal.h"
+#include "DelegationRenewal.h"
 #include "utils/IceConfManager.h"
 #include "commands/IceCommandDelegationRenewal.h"
 
@@ -57,8 +57,8 @@ using namespace glite::wms::ice;
 using namespace std;
 
 //______________________________________________________________________________
-threads::delegationRenewal::delegationRenewal() :
-    iceThread( "ICE Proxy Renewer" ),
+threads::DelegationRenewal::DelegationRenewal() :
+    IceThread( "ICE Proxy Renewer" ),
     m_log_dev( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger() )
 {
   m_delay = IceConfManager::instance()->getConfiguration()->ice()->proxy_renewal_frequency();
@@ -66,11 +66,11 @@ threads::delegationRenewal::delegationRenewal() :
 
 
 //______________________________________________________________________________
-void threads::delegationRenewal::body( void )
+void threads::DelegationRenewal::body( void )
 {
     while( !isStopped() ) {        
         CREAM_SAFE_LOG(m_log_dev->infoStream()
-                       << "delegationRenewal::body() - new iteration"
+                       << "DelegationRenewal::body() - new iteration"
                        );
         
 	IceCommandDelegationRenewal().execute( "" );

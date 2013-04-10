@@ -21,7 +21,7 @@ END LICENSE */
 #define GLITE_WMS_ICE_UTIL_EVENTSTATUSPOLLER_H
 
 #undef soapStub_H
-#include "iceThread.h"
+#include "IceThread.h"
 #include "commands/IceCommandStatusPoller.h"
 
 namespace log4cpp {
@@ -36,10 +36,10 @@ namespace ice {
 
     namespace threads {
         
-        class iceThreadPool;
+        class IceThreadPool;
 
 	//! A job status poller
-	/*! \class eventStatusPoller 
+	/*! \class EventStatusPoller 
 	  This class is conceived to run as a boost::thread (this is the
 	  motivation of the implementation of the operator()() ).
 	  Its main purpose is to get all status of all jobs ICE has submitted (and that are not finished yet) and whose status notification has not been received since long by the eventStatusListener.
@@ -47,39 +47,39 @@ namespace ice {
 	  The poller also resubmit failed or aborted job by calling the call back ice::doOnJobFailure
 	  \sa ice
 	*/
-	class eventStatusPoller : public iceThread {
+	class EventStatusPoller : public IceThread {
 
 	  int m_delay;
 	  Main		     *m_iceManager;
 	  log4cpp::Category  *m_log_dev;
-          iceThreadPool	     *m_threadPool;
+          IceThreadPool	     *m_threadPool;
 
           /**
            * Prevents copying
            */
-	  eventStatusPoller( const eventStatusPoller& )  { };
+	  EventStatusPoller( const EventStatusPoller& )  { };
 
 	public:
 
 	  //static boost::recursive_mutex s_proxymutex;
 
-	  //! eventStatusPoller constructor
+	  //! EventStatusPoller constructor
 	  /*!
-	    Creates a eventStatusPoller object
+	    Creates a EventStatusPoller object
 	    \param iceManager is the ICE main object (see the ice class) that creates the poller thread. Ownership of this pointer is not transferred
 	    \param D is the delay (default 10 seconds) between two polls
-	    \throw eventStatusPoller_ex& if the creation of the internal cream communication client failed
+	    \throw EventStatusPoller_ex& if the creation of the internal cream communication client failed
 	    \sa ice
 	  */
-	  eventStatusPoller( glite::wms::ice::Main* iceManager, int d=10 );
+	  EventStatusPoller( glite::wms::ice::Main* iceManager, int d=10 );
 	  
-	  virtual ~eventStatusPoller();
+	  virtual ~EventStatusPoller();
 
-	  //! Main poller loop (inherited from iceThread)
+	  //! Main poller loop (inherited from IceThread)
           virtual void body( void );
 
 	  virtual void stop( void ) { 
-	    iceThread::stop();
+	    IceThread::stop();
 	  }
  
 	};

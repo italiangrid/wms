@@ -231,11 +231,11 @@ void IceCommandSubmit::execute( const std::string& tid ) throw( IceCommandFatalE
     if( !only_start ) //here only if the job is UNKNOWN. In this case it has been removed from DB (see above)
     {
 
-      // Must set a mutex to not allow the eventStatusPoller 
+      // Must set a mutex to not allow the EventStatusPoller 
       // to retrieve couples dn,ce before
       // a valid entry has been inserted into the 'proxy'
       // table
-      //boost::recursive_mutex::scoped_lock proxy( glite::wms::ice::util::eventStatusPoller::s_proxymutex );
+      //boost::recursive_mutex::scoped_lock proxy( glite::wms::ice::util::EventStatusPoller::s_proxymutex );
       {
 	db::CreateJob creator( m_theJob, "IceCommandSubmit::execute" );
 	db::Transaction tnx(false, false);
@@ -258,7 +258,7 @@ void IceCommandSubmit::execute( const std::string& tid ) throw( IceCommandFatalE
 	*/
 	iceUtil::DNProxyManager::getInstance()->incrementUserProxyCounter( (const CreamJob&)m_theJob, m_theJob.isbproxy_time_end() );
       }
-    } // releases eventStatusPoller's proxymutex
+    } // releases EventStatusPoller's proxymutex
  
     try {
         try_to_submit( only_start );        

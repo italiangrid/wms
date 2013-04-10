@@ -35,14 +35,14 @@ namespace ice {
 
 namespace threads {
 
-    class iceThreadPoolState {
+    class IceThreadPoolState {
     public:
         /**
          * @param name the name of this thread pool
          *
          * @param n the number of threads in the pool
          */
-        iceThreadPoolState( const std::string& name, int n ) :
+        IceThreadPoolState( const std::string& name, int n ) :
             m_num_running( ( n < 1 ? 1 : n ) ),
             m_name( name )
             { }

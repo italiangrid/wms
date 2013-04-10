@@ -21,7 +21,7 @@ END LICENSE */
 #ifndef GLITE_WMS_ICE_UTIL_PROXYRENEWAL_H
 #define GLITE_WMS_ICE_UTIL_PROXYRENEWAL_H
 
-#include "iceThread.h"
+#include "IceThread.h"
 #include "utils/CreamJob.h"
 
 namespace log4cpp {    
@@ -34,14 +34,14 @@ namespace glite {
       namespace threads {
 
 
-          class delegationRenewal : public iceThread {
+          class DelegationRenewal : public IceThread {
           protected:
 
               log4cpp::Category* m_log_dev;
               time_t m_delay;
 
           public: 
-              delegationRenewal();
+              DelegationRenewal();
               virtual void body( void );
           };
 

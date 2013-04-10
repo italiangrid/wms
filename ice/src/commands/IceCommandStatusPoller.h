@@ -136,18 +136,18 @@ namespace glite {
 
 	public:
 	  
-          //! eventStatusPoller constructor
+          //! EventStatusPoller constructor
           /*!
-            Creates a eventStatusPoller object
+            Creates a EventStatusPoller object
             \param iceManager is the ICE main object (see the ice class) that creates the poller thread. Ownership of this pointer is not trans
 	    ferred
             \param D is the delay (default 10 seconds) between two polls
-            \throw eventStatusPoller_ex& if the creation of the internal cream communication client failed
+            \throw EventStatusPollerException& if the creation of the internal cream communication client failed
             \sa ice
           */
           IceCommandStatusPoller( Main*, 
 				  const std::pair<std::string, std::string>&,
-				  bool poll_all_jobs = false ); //throw(glite::wms::ice::util::eventStatusPoller_ex&, glite::wms::ice::util::ConfigurationManagerException&);
+				  bool poll_all_jobs = false ); //throw(glite::wms::ice::util::EventStatusPollerException&, glite::wms::ice::util::ConfigurationManagerException&);
           
           virtual ~IceCommandStatusPoller() throw() { } 
 

@@ -29,13 +29,13 @@ namespace glite {
     namespace ice {
       namespace util {
 
-	class eventStatusPoller_ex : public std::exception {
+	class EventStatusPollerException : public std::exception {
 	  
 	  std::string cause;
 	  
 	public:
-	  eventStatusPoller_ex(const std::string& _cause) throw() : cause(_cause) {};
-	  virtual ~eventStatusPoller_ex() throw() {}
+	  EventStatusPollerException(const std::string& _cause) throw() : cause(_cause) {};
+	  virtual ~EventStatusPollerException() throw() {}
 	  const char* what() const throw() { return cause.c_str(); }
 	  
 	};

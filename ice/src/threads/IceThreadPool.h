@@ -20,7 +20,7 @@ END LICENSE */
 #ifndef GLITE_WMS_ICE_THREADPOOL_H
 #define GLITE_WMS_ICE_THREADPOOL_H
 
-#include "iceThread.h"
+#include "IceThread.h"
 #include <boost/scoped_ptr.hpp>
 #include <boost/thread.hpp>
 #include <string>
@@ -38,9 +38,9 @@ namespace ice {
     
 namespace threads {
 
-    struct iceThreadPoolState;
+    struct IceThreadPoolState;
     
-    class iceThreadPool {
+    class IceThreadPool {
     public:
 
         /**
@@ -52,9 +52,9 @@ namespace threads {
          * s<1, then the pool will have exactly one thread in the
          * pool.
          */
-        iceThreadPool( const std::string& name, int s );
+        IceThreadPool( const std::string& name, int s );
 
-        virtual ~iceThreadPool( );
+        virtual ~IceThreadPool( );
                 
         /**
          * Adds a request to the thread pool. The request is
@@ -77,15 +77,15 @@ namespace threads {
   
     protected:       
 
-        std::list<iceThread*> m_thread_list;
+        std::list<IceThread*> m_thread_list;
 
         /**
          * The class of worker threads
          */
-        class iceThreadPoolWorker : public iceThread {
+        class IceThreadPoolWorker : public IceThread {
         public:
-            iceThreadPoolWorker( iceThreadPoolState* st, int id );
-            virtual ~iceThreadPoolWorker( );
+            IceThreadPoolWorker( IceThreadPoolState* st, int id );
+            virtual ~IceThreadPoolWorker( );
         protected:
             void body( );
             
@@ -100,12 +100,12 @@ namespace threads {
              */
             std::list< IceAbstractCommand* >::iterator get_first_request( void );
             
-            iceThreadPoolState* m_state;
+            IceThreadPoolState* m_state;
             const int m_threadNum; //!< the id of this thread
             log4cpp::Category* m_log_dev;
         };
         
-        boost::scoped_ptr< iceThreadPoolState > m_state;
+        boost::scoped_ptr< IceThreadPoolState > m_state;
         boost::thread_group m_all_threads;
         log4cpp::Category* m_log_dev;
     };

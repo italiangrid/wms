@@ -17,8 +17,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 END LICENSE */
-#include "iceThreadPool.h"
-#include "iceThreadPoolState.h"
+#include "IceThreadPool.h"
+#include "IceThreadPoolState.h"
 #include "commands/IceAbstractCommand.h"
 #include "main/Main.h"
 #include "commands/IceCommandFatalException.h"
@@ -44,8 +44,8 @@ namespace api_util = glite::ce::cream_client_api::util;
 /**
  * Definition of the inner worker thread class
  */
-threads::iceThreadPool::iceThreadPoolWorker::iceThreadPoolWorker( iceThreadPoolState* st, int id ) :
-    iceThread( boost::str( boost::format( "iceThreadPoolWorker(pool=%1%, id=%2%)" ) % st->m_name % id ) ),
+threads::IceThreadPool::IceThreadPoolWorker::IceThreadPoolWorker( IceThreadPoolState* st, int id ) :
+    IceThread( boost::str( boost::format( "IceThreadPoolWorker(pool=%1%, id=%2%)" ) % st->m_name % id ) ),
     m_state( st ),
     m_threadNum( id ),
     m_log_dev( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger() )
@@ -54,22 +54,22 @@ threads::iceThreadPool::iceThreadPoolWorker::iceThreadPoolWorker( iceThreadPoolS
   ::sigemptyset(&set);
   ::sigaddset(&set, SIGCHLD);
   if(::pthread_sigmask( SIG_BLOCK, &set, 0 ) < 0 ) 
-    CREAM_SAFE_LOG( m_log_dev->fatalStream() << "iceThreadPoolWorker::CTOR"
+    CREAM_SAFE_LOG( m_log_dev->fatalStream() << "IceThreadPoolWorker::CTOR"
   	                                     << "pthread_sigmask failed. This could compromise correct working"
                 	                     << " of ICE's threads..." );
                 
 }
 
 //______________________________________________________________________________
-threads::iceThreadPool::iceThreadPoolWorker::~iceThreadPoolWorker( )
+threads::IceThreadPool::IceThreadPoolWorker::~IceThreadPoolWorker( )
 {
 
 }
 
 //______________________________________________________________________________
-void threads::iceThreadPool::iceThreadPoolWorker::body( )
+void threads::IceThreadPool::IceThreadPoolWorker::body( )
 {
-    static const char* method_name = "iceThreadPoolWorker::body() - ";
+    static const char* method_name = "IceThreadPoolWorker::body() - ";
 
     while( !isStopped() ) {
 
@@ -181,14 +181,14 @@ void threads::iceThreadPool::iceThreadPoolWorker::body( )
     }
     CREAM_SAFE_LOG(
 		   m_log_dev->debugStream()
-		   << "iceThreadPool::iceThreadPoolWorker::body() - Thread ["
+		   << "IceThreadPool::IceThreadPoolWorker::body() - Thread ["
 		   << getName() << "] ENDING ..."
 		   );
 }
 
 //______________________________________________________________________________
 list< glite::wms::ice::IceAbstractCommand* >::iterator
-threads::iceThreadPool::iceThreadPoolWorker::get_first_request( void )
+threads::IceThreadPool::IceThreadPoolWorker::get_first_request( void )
 {
     list< glite::wms::ice::IceAbstractCommand* >::iterator it = m_state->m_requests_queue.begin();
     while ( ( it != m_state->m_requests_queue.end() ) &&
@@ -203,30 +203,30 @@ threads::iceThreadPool::iceThreadPoolWorker::get_first_request( void )
 //______________________________________________________________________________
 /**
  *
- * Implementation of the iceThreadPool class
+ * Implementation of the IceThreadPool class
  *
  */
-threads::iceThreadPool::iceThreadPool( const std::string& name, int s ) :
-    m_state( new iceThreadPoolState(name, s) ),
+threads::IceThreadPool::IceThreadPool( const std::string& name, int s ) :
+    m_state( new IceThreadPoolState(name, s) ),
     m_all_threads( ),
     m_log_dev( glite::ce::cream_client_api::util::creamApiLogger::instance()->getLogger() )
 {
     int n_threads = m_state->m_num_running;
     CREAM_SAFE_LOG( m_log_dev->debugStream()
-                    << "iceThreadPool::iceThreadPool("
+                    << "IceThreadPool::IceThreadPool("
                     << m_state->m_name << ") - "
                     << "Creating " << m_state->m_num_running 
                     << " worker threads"
                     
                     );            
     for ( int i=0; i<n_threads; i++ ) {
-        boost::shared_ptr< threads::iceThread > ptr_thread( new iceThreadPoolWorker( m_state.get(), i ) );
+        boost::shared_ptr< threads::IceThread > ptr_thread( new IceThreadPoolWorker( m_state.get(), i ) );
         boost::thread* thr;
         try {
-            thr = new boost::thread(boost::bind(&threads::iceThread::operator(), ptr_thread ) );
+            thr = new boost::thread(boost::bind(&threads::IceThread::operator(), ptr_thread ) );
         } catch( boost::thread_resource_error& ex ) {
             CREAM_SAFE_LOG( m_log_dev->fatalStream()
-                            << "iceThreadPool::iceThreadPool("
+                            << "IceThreadPool::IceThreadPool("
                             << m_state->m_name << ") -"
                             << "Unable to create worker thread. Giving up."
                             
@@ -241,20 +241,20 @@ threads::iceThreadPool::iceThreadPool( const std::string& name, int s ) :
 }
 
 //______________________________________________________________________________
-threads::iceThreadPool::~iceThreadPool( )
+threads::IceThreadPool::~IceThreadPool( )
 {
 
 }
 
 //______________________________________________________________________________
-void threads::iceThreadPool::stopAllThreads( void ) throw()
+void threads::IceThreadPool::stopAllThreads( void ) throw()
 {
 
-  for(list<iceThread*>::iterator thisThread = m_thread_list.begin();
+  for(list<IceThread*>::iterator thisThread = m_thread_list.begin();
       thisThread != m_thread_list.end();
       ++thisThread) { 
       CREAM_SAFE_LOG( m_log_dev->debugStream()
-		      << "iceThreadPool::stopAllThreads() - "
+		      << "IceThreadPool::stopAllThreads() - "
 		      << "Calling ::stop() on thread ["
 		      << (*thisThread)->getName() << "]"		      
 		      );
@@ -264,21 +264,21 @@ void threads::iceThreadPool::stopAllThreads( void ) throw()
   m_state->m_no_requests_available.notify_all();
  
   CREAM_SAFE_LOG( m_log_dev->debugStream()
-		  << "iceThreadPool::stopAllThreads() - "
+		  << "IceThreadPool::stopAllThreads() - "
 		  << "Waiting for all pool-thread termination ..."  
                   );  
   
   m_all_threads.join_all();
   
   CREAM_SAFE_LOG( m_log_dev->fatalStream()
-		  << "iceThreadPool::stopAllThreads() - "
+		  << "IceThreadPool::stopAllThreads() - "
 		  << "All pool-threads TERMINATED !"
                   );
 
 }
 
 //______________________________________________________________________________
-void threads::iceThreadPool::add_request( glite::wms::ice::IceAbstractCommand* req )
+void threads::IceThreadPool::add_request( glite::wms::ice::IceAbstractCommand* req )
 {
     boost::recursive_mutex::scoped_lock L( m_state->m_mutex );
     m_state->m_requests_queue.push_back( req );
@@ -286,7 +286,7 @@ void threads::iceThreadPool::add_request( glite::wms::ice::IceAbstractCommand* r
 }
 
 //______________________________________________________________________________
-int threads::iceThreadPool::get_command_count( void ) const
+int threads::IceThreadPool::get_command_count( void ) const
 {
     boost::recursive_mutex::scoped_lock L( m_state->m_mutex );
     return m_state->m_requests_queue.size();

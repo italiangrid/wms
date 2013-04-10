@@ -24,8 +24,8 @@ END LICENSE */
 #include "utils/IceConfManager.h"
 #include "utils/IceLBLogger.h"
 #include "utils/IceLBEvent.h"
-#include "threads/eventStatusPoller.h"
-#include "threads/delegationRenewal.h"
+#include "threads/EventStatusPoller.h"
+#include "threads/DelegationRenewal.h"
 #include "utils/IceLBEvent.h"
 #include "utils/IceLBEventFactory.h"
 #include "utils/IceLBLogger.h"
@@ -139,11 +139,11 @@ Main::IceThreadHelper::~IceThreadHelper( )
 }
 
 //____________________________________________________________________________
-void Main::IceThreadHelper::start( threads::iceThread* obj ) throw( IceInitException& )
+void Main::IceThreadHelper::start( threads::IceThread* obj ) throw( IceInitException& )
 {
-  m_ptr_thread = boost::shared_ptr< threads::iceThread >( obj );
+  m_ptr_thread = boost::shared_ptr< threads::IceThread >( obj );
   try {
-    m_thread = new boost::thread(boost::bind(&threads::iceThread::operator(), m_ptr_thread) );
+    m_thread = new boost::thread(boost::bind(&threads::IceThread::operator(), m_ptr_thread) );
   } catch( boost::thread_resource_error& ex ) {
     throw IceInitException( ex.what() );
   }
@@ -236,9 +236,9 @@ Main::Main( ) throw(IceInitException&) :
    else
      poll_tnum = 2;
 
-   m_requests_pool     = new threads::iceThreadPool("ICE Submission Pool", thread_num );
-   m_ice_commands_pool = new threads::iceThreadPool( "ICE Poller Pool", poll_tnum);
-   m_ice_lblog_pool    = new threads::iceThreadPool( "ICE LB Logging Pool", 2);
+   m_requests_pool     = new threads::IceThreadPool("ICE Submission Pool", thread_num );
+   m_ice_commands_pool = new threads::IceThreadPool( "ICE Poller Pool", poll_tnum);
+   m_ice_lblog_pool    = new threads::IceThreadPool( "ICE LB Logging Pool", 2);
 
     try {
 
@@ -266,7 +266,7 @@ void Main::stopAllThreads( void )
 {
   /**
    * The following call to stop() method of IteThreadHelper
-   * causes the call of iceThread::stop() and boost::thread::join()
+   * causes the call of IceThread::stop() and boost::thread::join()
    */
   if(m_poller_thread.is_started())
     m_poller_thread.stop();
@@ -304,12 +304,12 @@ void Main::startPoller( void )
         return;
     }
     
-    threads::eventStatusPoller* poller;
+    threads::EventStatusPoller* poller;
     
     // I removed the try/catch because in the new schema using the
     // iceCommandStatusPoller there is not anymore that exception
     
-    poller = new threads::eventStatusPoller( this, m_configuration->ice()->poller_delay() );
+    poller = new threads::EventStatusPoller( this, m_configuration->ice()->poller_delay() );
     m_poller_thread.start( poller );
 
 }
@@ -342,7 +342,7 @@ void Main::startProxyRenewer( void )
 		    );
     return;
   }
-  threads::delegationRenewal* proxy_renewer = new threads::delegationRenewal( );
+  threads::DelegationRenewal* proxy_renewer = new threads::DelegationRenewal( );
   m_proxy_renewer_thread.start( proxy_renewer );
 }
 

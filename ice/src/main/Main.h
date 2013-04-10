@@ -21,8 +21,8 @@ END LICENSE */
 #ifndef GLITE_WMS_ICE_ICE_CORE_H
 #define GLITE_WMS_ICE_ICE_CORE_H
 
-#include "threads/iceThread.h"
-#include "threads/iceThreadPool.h"
+#include "threads/IceThread.h"
+#include "threads/IceThreadPool.h"
 #include "utils/ClassadSyntax_ex.h"
 
 #include <string>
@@ -82,18 +82,18 @@ namespace ice {
             virtual ~IceThreadHelper( );
             
             /**
-             * Associates a newly created iceThread object
+             * Associates a newly created IceThread object
              * to this thread, and starts it. 
              *
-             * @param obj a pointer to the iceThread object from
+             * @param obj a pointer to the IceThread object from
              * which a thread should be created. The caller
              * transfers ownership of parameter obj.
              */
-            void start( threads::iceThread* obj ) throw( IceInitException& );
+            void start( threads::IceThread* obj ) throw( IceInitException& );
 
             /**
              * Returns true iff this thread started (i.e., iff
-             * this thread as an associated running iceThread
+             * this thread as an associated running IceThread
              * object). False otherwise.
              */
             bool is_started( void ) const;
@@ -115,7 +115,7 @@ namespace ice {
             
             const std::string m_name; //! The name of this thread (can be any string)
             boost::thread* m_thread; //! The dynamically created thread object. 
-            boost::shared_ptr< glite::wms::ice::threads::iceThread > m_ptr_thread; //! Used to instantiate the thread.
+            boost::shared_ptr< glite::wms::ice::threads::IceThread > m_ptr_thread; //! Used to instantiate the thread.
             log4cpp::Category* m_log_dev; //! Logging device
 
         };
@@ -141,9 +141,9 @@ namespace ice {
         // 
         // ICE thread pools
         //
-        glite::wms::ice::threads::iceThreadPool* m_requests_pool; ///< This pool is used to process submission/cancellation requests coming from the input queue
-        glite::wms::ice::threads::iceThreadPool* m_ice_commands_pool; ///< This pool is used to process ICE internal commands (proxy renewal, lease updates and so on)
-	glite::wms::ice::threads::iceThreadPool* m_ice_lblog_pool; ///< This pool is used to process async log to lb
+        glite::wms::ice::threads::IceThreadPool* m_requests_pool; ///< This pool is used to process submission/cancellation requests coming from the input queue
+        glite::wms::ice::threads::IceThreadPool* m_ice_commands_pool; ///< This pool is used to process ICE internal commands (proxy renewal, lease updates and so on)
+	glite::wms::ice::threads::IceThreadPool* m_ice_lblog_pool; ///< This pool is used to process async log to lb
 
         static glite::wms::ice::Main* s_instance; ///< Singleton instance of this class
        
@@ -258,16 +258,16 @@ namespace ice {
          * Returns the thread pool responsible for processing
          * submissions and cancellation requests
          */
-        glite::wms::ice::threads::iceThreadPool* get_requests_pool( void ) { return m_requests_pool; };
+        glite::wms::ice::threads::IceThreadPool* get_requests_pool( void ) { return m_requests_pool; };
 
         /**
          * Returns the thread pool responsible for processing internal
          * ICE commands (i.e., proxy renewal, lease updates and so
          * on).
          */
-        glite::wms::ice::threads::iceThreadPool* get_ice_commands_pool( void ) { return m_ice_commands_pool; };
+        glite::wms::ice::threads::IceThreadPool* get_ice_commands_pool( void ) { return m_ice_commands_pool; };
         
-	glite::wms::ice::threads::iceThreadPool* get_ice_lblog_pool( void ) { return m_ice_lblog_pool; };
+	glite::wms::ice::threads::IceThreadPool* get_ice_lblog_pool( void ) { return m_ice_lblog_pool; };
 	
 	//std::string getHostName( void ) const throw() { return m_myname; }
 
