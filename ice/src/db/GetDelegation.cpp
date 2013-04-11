@@ -75,7 +75,7 @@ void db::GetDelegation::execute( sqlite3* db ) throw ( DbOperationException& )
   if( !tmp.get<0>().empty() ) {
     m_found = true;
 
-    m_result = glite::wms::ice::util::Delegation_manager::table_entry( 
+    m_result = glite::wms::ice::util::DelegationManager::table_entry( 
 								      tmp.get<0>(), 
 								      tmp.get<1>(),
 								      tmp.get<2>(), 

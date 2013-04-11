@@ -35,7 +35,7 @@ namespace glite {
 	 */
 	class GetDelegation : public AbsDbOperation {
 	protected:
-	  glite::wms::ice::util::Delegation_manager::table_entry  m_result;
+	  glite::wms::ice::util::DelegationManager::table_entry  m_result;
 	  const std::string                                       m_digest, m_creamurl;
 	  bool                                                    m_found;
 	  const std::string                                       m_myproxyurl;
@@ -57,7 +57,7 @@ namespace glite {
 	  /**
 	   * Return the list of jobs to poll
 	   */ 
-	  glite::wms::ice::util::Delegation_manager::table_entry
+	  glite::wms::ice::util::DelegationManager::table_entry
 	    get_delegation( void ) const {
               return m_result;
 	    }

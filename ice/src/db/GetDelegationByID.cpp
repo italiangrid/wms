@@ -64,7 +64,7 @@ void db::GetDelegationByID::execute( sqlite3* db ) throw ( DbOperationException&
   
   if( tmp.size() ) {
     m_found = true;
-    m_result = glite::wms::ice::util::Delegation_manager::table_entry( 
+    m_result = glite::wms::ice::util::DelegationManager::table_entry( 
 								      tmp.at(0), 
 								      tmp.at(1),
 								      (time_t)atoi(tmp.at(2).c_str()), 

@@ -73,7 +73,7 @@ void db::GetAllDelegation::execute( sqlite3* db ) throw ( DbOperationException& 
         it != tmp.end();
 	++it)
 	{
-	  glite::wms::ice::util::Delegation_manager::table_entry tb( it->at(0), 
+	  glite::wms::ice::util::DelegationManager::table_entry tb( it->at(0), 
 								     it->at(1), 
 								     (time_t)atoi(it->at(2).c_str()), 
 								     atoi(it->at(3).c_str()), 

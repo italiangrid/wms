@@ -770,12 +770,12 @@ iceUtil::DNProxyManager::decrementUserProxyCounter( const string& userDN,
       bool ok = this->removeBetterProxy( userDN, myproxy_name );
     
       try {
-	iceUtil::Delegation_manager::instance()->removeDelegation( userDN, myproxy_name );
+	iceUtil::DelegationManager::instance()->removeDelegation( userDN, myproxy_name );
       } catch( std::exception& ex ) {
 	
 	//CREAM_SAFE_LOG(m_log_dev->errorStream() 
 		     edglog(error)
-		       << "Delegation_manager::removeDelegation returned an error for "
+		       << "DelegationManager::removeDelegation returned an error for "
 		       << "userdn ["
 		       << userDN
 		       << "] myproxy ["

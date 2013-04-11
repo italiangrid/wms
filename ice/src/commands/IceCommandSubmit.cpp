@@ -845,8 +845,8 @@ void IceCommandSubmit::handle_delegation( string& delegation,
       /** 
 	  Now check the duration of related delegation
       */
-      iceUtil::Delegation_manager::table_entry deleg;
-      deleg = iceUtil::Delegation_manager::instance()->getDelegation(m_theJob.user_dn(),
+      iceUtil::DelegationManager::table_entry deleg;
+      deleg = iceUtil::DelegationManager::instance()->getDelegation(m_theJob.user_dn(),
 								     _ceurl,
 								     m_theJob.myproxy_address()
 								     );
@@ -857,7 +857,7 @@ void IceCommandSubmit::handle_delegation( string& delegation,
   } // if( m_theJob.is_proxy_renewable() ) {
   
   try {
-    delegation = iceUtil::Delegation_manager::instance()->delegate( m_theJob, m_theJob.proxy_renewable(), force_delegation );
+    delegation = iceUtil::DelegationManager::instance()->delegate( m_theJob, m_theJob.proxy_renewable(), force_delegation );
   } catch( const exception& ex ) {
     throw( IceCommandTransientException( boost::str( boost::format( "Failed to create a delegation id for job %1%: reason is %2%" ) % _gid % ex.what() ) ) );
   }
@@ -931,7 +931,7 @@ bool IceCommandSubmit::register_job( const bool is_lease_enabled,
     // We do not trust this fault, and try to redelegate the
     // _same_ delegation ID, hoping for the best.
     
-    iceUtil::Delegation_manager::instance()->redelegate( m_theJob.user_proxyfile(), m_theJob.cream_deleg_address(), delegation );
+    iceUtil::DelegationManager::instance()->redelegate( m_theJob.user_proxyfile(), m_theJob.cream_deleg_address(), delegation );
     // no exception is raised, we simply hope for the best
     return false;
 

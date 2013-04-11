@@ -50,13 +50,13 @@ namespace wms {
 namespace ice {
 namespace util {
 
-    class Delegation_manager {
+    class DelegationManager {
 
     protected:
 
 
       
-      Delegation_manager( );
+      DelegationManager( );
 
         /**
          * Iterates over the delegation set. Removes all entries whose
@@ -66,7 +66,7 @@ namespace util {
 
 	//std::string computeSHA1Digest( const std::string& proxyfile ) throw( std::runtime_error& );
 
-        static Delegation_manager* s_instance;
+        static DelegationManager* s_instance;
         static boost::recursive_mutex s_mutex;
 
         //log4cpp::Category* m_log_dev;
@@ -124,7 +124,7 @@ namespace util {
 	std::string generateDelegationID() throw();
 
     public:
-        ~Delegation_manager( ) { };
+        ~DelegationManager( ) { };
 
         /**
          * Returns the singleton instance of this class. This method
@@ -135,7 +135,7 @@ namespace util {
          * DOES NOT OWN the returned pointer, and must NOT be
          * deallocated.
          */
-        static Delegation_manager* instance( );
+        static DelegationManager* instance( );
 
         /**
          * Delegates a proxy for a given job. 

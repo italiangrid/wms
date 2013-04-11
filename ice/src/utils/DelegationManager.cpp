@@ -51,14 +51,14 @@ namespace api_util = glite::ce::cream_client_api::util;
 using namespace glite::wms::ice;
 using namespace std;
 
-util::Delegation_manager* util::Delegation_manager::s_instance = 0;
-boost::recursive_mutex util::Delegation_manager::s_mutex;
+util::DelegationManager* util::DelegationManager::s_instance = 0;
+boost::recursive_mutex util::DelegationManager::s_mutex;
 
 typedef map<string, boost::tuple<string, string, time_t, int, string,bool,string> > DelegInfo;
 
 
 //______________________________________________________________________________
-util::Delegation_manager::Delegation_manager( ) :
+util::DelegationManager::DelegationManager( ) :
 //    m_log_dev( api_util::creamApiLogger::instance()->getLogger()),
     m_operation_count( 0 ),
     m_max_size( 1000 ), // FIXME: Hardcoded default
@@ -67,24 +67,24 @@ util::Delegation_manager::Delegation_manager( ) :
 }
 
 //______________________________________________________________________________
-util::Delegation_manager* util::Delegation_manager::instance( ) 
+util::DelegationManager* util::DelegationManager::instance( ) 
 {
     boost::recursive_mutex::scoped_lock L( s_mutex );
     if ( 0 == s_instance ) 
-        s_instance = new Delegation_manager( );
+        s_instance = new DelegationManager( );
     return s_instance;
 }
 
 //______________________________________________________________________________
 string 
-util::Delegation_manager::delegate( const CreamJob& job, 
+util::DelegationManager::delegate( const CreamJob& job, 
 			      const bool USE_NEW,
 			      bool force ) 
   throw( std::exception& )
 {
     boost::recursive_mutex::scoped_lock L( s_mutex );
-   // static const char* method_name = "Delegation_manager::delegate() - ";
-  edglog_fn("Delegation_manager::delegate");
+   // static const char* method_name = "DelegationManager::delegate() - ";
+  edglog_fn("DelegationManager::delegate");
     if( force )
      // CREAM_SAFE_LOG( m_log_dev->debugStream()
 		    //  << method_name
@@ -124,7 +124,7 @@ util::Delegation_manager::delegate( const CreamJob& job,
     bool found = false;
     table_entry deleg_info("", "", 0, 0, "", "", 0, "");
     try {
-      db::GetDelegation getter( str_sha1_digest, cream_url, myproxy_address, "Delegation_manager::delegate" );
+      db::GetDelegation getter( str_sha1_digest, cream_url, myproxy_address, "DelegationManager::delegate" );
       db::Transaction tnx(false, false);
       //tnx.begin();
       tnx.execute( &getter );
@@ -137,7 +137,7 @@ util::Delegation_manager::delegate( const CreamJob& job,
     
     if( force && found ) {
       try {
-	db::RemoveDelegation remover( str_sha1_digest, cream_url, myproxy_address, "Delegation_manager::delegate" );
+	db::RemoveDelegation remover( str_sha1_digest, cream_url, myproxy_address, "DelegationManager::delegate" );
 	db::Transaction tnx(false, false);
 	tnx.execute( &remover );
       } catch( db::DbOperationException& ex ) {
@@ -234,7 +234,7 @@ util::Delegation_manager::delegate( const CreamJob& job,
 					job.user_dn(), 
 					USE_NEW, 
 					myproxy_address,
-					"Delegation_manager::delegate");
+					"DelegationManager::delegate");
 	  db::Transaction tnx(false, false);
 	  tnx.execute( &creator );
 	} catch( db::DbOperationException& ex ) {
@@ -284,17 +284,17 @@ util::Delegation_manager::delegate( const CreamJob& job,
 
 //______________________________________________________________________________
 void 
-util::Delegation_manager::updateDelegation( const boost::tuple<string, time_t, int>& newDeleg )
+util::DelegationManager::updateDelegation( const boost::tuple<string, time_t, int>& newDeleg )
   throw( std::exception& )
 {
-  //const char* method_name = "Delegation_manager::updateDelegation() - ";
-edglog_fn("Delegation_manager::updateDelegation");
+  //const char* method_name = "DelegationManager::updateDelegation() - ";
+edglog_fn("DelegationManager::updateDelegation");
   boost::recursive_mutex::scoped_lock L( s_mutex );
   
   bool found = false;
   table_entry tb;
   try {
-    db::GetDelegationByID getter( newDeleg.get<0>(), "Delegation_manager::delegate" );
+    db::GetDelegationByID getter( newDeleg.get<0>(), "DelegationManager::delegate" );
     db::Transaction tnx(false, false);
     //tnx.begin();
     tnx.execute( &getter );
@@ -325,7 +325,7 @@ edglog_fn("Delegation_manager::updateDelegation");
 		      << tb.m_cream_url << "]" << endl;
 		    //  );
       try {
-	db::UpdateDelegationTimesByID updater( newDeleg.get<0>(), newDeleg.get<1>(), newDeleg.get<2>(), "Delegation_manager::updateDelegation" );
+	db::UpdateDelegationTimesByID updater( newDeleg.get<0>(), newDeleg.get<1>(), newDeleg.get<2>(), "DelegationManager::updateDelegation" );
 	db::Transaction tnx(false, false);
 	//tnx.begin_exclusive( );
 	tnx.execute( &updater );
@@ -337,11 +337,11 @@ edglog_fn("Delegation_manager::updateDelegation");
 }
 
 //______________________________________________________________________________
-void util::Delegation_manager::removeDelegation( const string& delegToRemove )
+void util::DelegationManager::removeDelegation( const string& delegToRemove )
   throw( std::exception& )
 {
   boost::recursive_mutex::scoped_lock L( s_mutex );
-edglog_fn("Delegation_manager::removeDelegation");
+edglog_fn("DelegationManager::removeDelegation");
  // CREAM_SAFE_LOG( m_log_dev->debugStream()
 		 edglog(debug) 
 		  << "Removing Delegation ID [" 
@@ -349,7 +349,7 @@ edglog_fn("Delegation_manager::removeDelegation");
 		  //);
 
   try {
-    db::RemoveDelegationByID remover( delegToRemove, "Delegation_manager::removeDelegation" );
+    db::RemoveDelegationByID remover( delegToRemove, "DelegationManager::removeDelegation" );
     db::Transaction tnx(false, false);
     //tnx.begin_exclusive();
     tnx.execute( &remover );
@@ -360,12 +360,12 @@ edglog_fn("Delegation_manager::removeDelegation");
 }
 
 //______________________________________________________________________________
-void util::Delegation_manager::removeDelegation( const string& userDN, 
+void util::DelegationManager::removeDelegation( const string& userDN, 
 					   const string& myproxyurl )
   throw( std::exception& )
 {
   boost::recursive_mutex::scoped_lock L( s_mutex );
-  edglog_fn("Delegation_manager::removeDelegation");
+  edglog_fn("DelegationManager::removeDelegation");
  // CREAM_SAFE_LOG( m_log_dev->debugStream()
 		 edglog(debug)  
 		  << "Removing Delegation for DN [" 
@@ -374,7 +374,7 @@ void util::Delegation_manager::removeDelegation( const string& userDN,
 		//  );
 
   try {
-    db::RemoveDelegationByDNMyProxy remover( userDN, myproxyurl, "Delegation_manager::removeDelegation" );
+    db::RemoveDelegationByDNMyProxy remover( userDN, myproxyurl, "DelegationManager::removeDelegation" );
     db::Transaction tnx(false, false);
     //tnx.begin_exclusive();
     tnx.execute( &remover );
@@ -385,15 +385,15 @@ void util::Delegation_manager::removeDelegation( const string& userDN,
 }
 
 //______________________________________________________________________________
-int util::Delegation_manager::getDelegationEntries( vector< table_entry >& target, 
+int util::DelegationManager::getDelegationEntries( vector< table_entry >& target, 
 					      const bool only_renewable )
   throw( std::exception& )
 {
   boost::recursive_mutex::scoped_lock L( s_mutex );
-//edglog_fn("Delegation_manager::getDelegationEntries");
+//edglog_fn("DelegationManager::getDelegationEntries");
   vector< table_entry > allDelegations;
   try {
-    db::GetAllDelegation getter( only_renewable,  "Delegation_manager::getDelegationEntries" );
+    db::GetAllDelegation getter( only_renewable,  "DelegationManager::getDelegationEntries" );
     db::Transaction tnx(false, false);
     tnx.execute( &getter );
     allDelegations = getter.get_delegations();
@@ -414,19 +414,19 @@ int util::Delegation_manager::getDelegationEntries( vector< table_entry >& targe
 }
 
 //----------------------------------------------------------------------------
-void util::Delegation_manager::redelegate( const string& certfile, 
+void util::DelegationManager::redelegate( const string& certfile, 
                                      const string& delegation_url,
                                      const string& delegation_id )
   throw( std::exception& )
 {
     boost::recursive_mutex::scoped_lock L( s_mutex );
 
-    //static const char* method_name = "Delegation_manager::redelegate() - ";
-edglog_fn("Delegation_manager::redelegate");
+    //static const char* method_name = "DelegationManager::redelegate() - ";
+edglog_fn("DelegationManager::redelegate");
 
     bool found = false;
     try {
-      db::CheckDelegationByID checker( delegation_id, "Delegation_manager::redelegate" );
+      db::CheckDelegationByID checker( delegation_id, "DelegationManager::redelegate" );
       db::Transaction tnx(false, false);
       //tnx.begin();
       tnx.execute( &checker );
@@ -474,8 +474,8 @@ edglog_fn("Delegation_manager::redelegate");
 }
 
 //----------------------------------------------------------------------------
-util::Delegation_manager::table_entry
-util::Delegation_manager::getDelegation( const string& userdn, 
+util::DelegationManager::table_entry
+util::DelegationManager::getDelegation( const string& userdn, 
 				   const string& ceurl, 
 				   const string& myproxy ) 
   throw( std::exception& )
@@ -484,7 +484,7 @@ util::Delegation_manager::getDelegation( const string& userdn,
   table_entry deleg_info("", "", 0, 0, "", "", 0, "");
 
   try {
-    db::GetDelegation getter( userdn, ceurl, myproxy, "Delegation_manager::getDelegation" );
+    db::GetDelegation getter( userdn, ceurl, myproxy, "DelegationManager::getDelegation" );
     db::Transaction tnx(false, false);
     tnx.execute( &getter );
 
@@ -502,7 +502,7 @@ util::Delegation_manager::getDelegation( const string& userdn,
 
 
 //----------------------------------------------------------------------------
-string util::Delegation_manager::generateDelegationID( ) throw()
+string util::DelegationManager::generateDelegationID( ) throw()
 {
   struct timeval T;
   ::gettimeofday( &T, 0 );

@@ -35,7 +35,7 @@ namespace glite {
 	 */
 	class GetAllDelegation : public AbsDbOperation {
 	protected:
-	  std::vector<glite::wms::ice::util::Delegation_manager::table_entry> m_result;
+	  std::vector<glite::wms::ice::util::DelegationManager::table_entry> m_result;
 	  const bool                                                          m_only_renewable;
 	 
 	public:
@@ -46,7 +46,7 @@ namespace glite {
 	  /**
 	   * Return the list of jobs to poll
 	   */ 
-	  std::vector<glite::wms::ice::util::Delegation_manager::table_entry>
+	  std::vector<glite::wms::ice::util::DelegationManager::table_entry>
 	    get_delegations( void ) const {
               return m_result;
 	    }

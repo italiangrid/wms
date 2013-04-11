@@ -108,9 +108,9 @@ void IceCommandDelegationRenewal::renewAllDelegations( void ) throw()
        Now, let's check all delegations for expiration and renew them
     */
     
-    vector< Delegation_manager::table_entry > allDelegations;
+    vector< DelegationManager::table_entry > allDelegations;
     
-    int alldeleg_size = Delegation_manager::instance()->getDelegationEntries( allDelegations, true );
+    int alldeleg_size = DelegationManager::instance()->getDelegationEntries( allDelegations, true );
     
     map<string, pair<time_t, int> > mapDelegTime; // delegationID -> (Expiration time, Absolute Duration)
     
@@ -124,7 +124,7 @@ void IceCommandDelegationRenewal::renewAllDelegations( void ) throw()
     /**
        Loop over all different delegations
     */
-    for( vector<Delegation_manager::table_entry >::const_iterator it = allDelegations.begin();
+    for( vector<DelegationManager::table_entry >::const_iterator it = allDelegations.begin();
 	 it != allDelegations.end(); 
 	 ++it)
       {
@@ -329,7 +329,7 @@ void IceCommandDelegationRenewal::renewAllDelegations( void ) throw()
 			// );
 	  mapDelegTime.erase( thisDelegID );
 
-	  Delegation_manager::instance()->removeDelegation( thisDelegID );
+	  DelegationManager::instance()->removeDelegation( thisDelegID );
 
 	  continue;
 	}
@@ -369,10 +369,10 @@ void IceCommandDelegationRenewal::renewAllDelegations( void ) throw()
 			  <<"] DNProxyManager returned the Better Proxy ["
 			  << thisBetterPrx.get<0>() 
 			  << "] that is EXPIRED! Removing this delegation ID from "
-			  << "Delegation_manager, removing proxy from DNProxyManager's cache, won't renew delegation ..." << endl;
+			  << "DelegationManager, removing proxy from DNProxyManager's cache, won't renew delegation ..." << endl;
 			//  );
 	  
-	  Delegation_manager::instance()->removeDelegation( thisDelegID );
+	  DelegationManager::instance()->removeDelegation( thisDelegID );
 	  
 	  DNProxyManager::getInstance()->removeBetterProxy( thisUserDN, thisMyPR );
 	  
@@ -463,7 +463,7 @@ void IceCommandDelegationRenewal::renewAllDelegations( void ) throw()
     for(map<string, pair<time_t, int> >::iterator it = mapDelegTime.begin();
         it != mapDelegTime.end(); ++it) {
       
-      Delegation_manager::instance()->updateDelegation( boost::make_tuple((*it).first, (*it).second.first, (*it).second.second ) );
+      DelegationManager::instance()->updateDelegation( boost::make_tuple((*it).first, (*it).second.first, (*it).second.second ) );
       
     }    
 }
