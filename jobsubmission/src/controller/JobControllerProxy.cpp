@@ -24,7 +24,7 @@
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
 
-#include <condor/user_log.c++.h>
+#include <user_log.c++.h>
 
 #include "glite/lb/producer.h"
 #include "common/src/configuration/JCConfiguration.h"
