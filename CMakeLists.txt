@@ -272,8 +272,8 @@ them via yum. Please insert your password" )
   EXEC_PROGRAM(sudo ARGS yum -y install 
 argus-pep-api-c
 argus-pep-api-c-devel
-boost
-boost-devel
+boost.x86_64
+boost-devel.x86_64
 c-ares
 c-ares-devel
 chrpath
