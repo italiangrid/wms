@@ -31,7 +31,7 @@
 #include "logmonitor/JobWrapperOutputParser.h"
 
 #include <boost/filesystem/path.hpp>
-#include <condor/user_log.c++.h>
+#include <user_log.c++.h>
 
 #include "JobResubmitter.h"
 

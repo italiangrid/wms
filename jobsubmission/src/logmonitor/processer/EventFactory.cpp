@@ -17,7 +17,7 @@ limitations under the License. */
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/exception.hpp>
 #include <config.h>
-#include <condor/user_log.c++.h>
+#include <user_log.c++.h>
 
 #include "glite/wms/common/configuration/Configuration.h"
 #include "common/src/configuration/LMConfiguration.h"

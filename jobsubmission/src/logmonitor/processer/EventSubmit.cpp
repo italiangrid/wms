@@ -20,7 +20,7 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/regex.hpp>
 
-#include <condor/user_log.c++.h>
+#include <user_log.c++.h>
 
 #include "glite/wms/common/logger/logstream.h"
 #include "glite/wms/common/logger/manipulators.h"

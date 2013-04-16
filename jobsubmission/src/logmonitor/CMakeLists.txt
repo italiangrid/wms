@@ -13,6 +13,7 @@ include_directories(${CLASSAD_INCLUDE_DIRS}
 		    ${PROJECT_SOURCE_DIR}/src/logmonitor/processer
 		    ${LOG4CPP_INCLUDE_DIRS}
 		    /usr/include
+		    ${CONDOR_INCLUDE_DIRS}
 )
 
 link_directories(

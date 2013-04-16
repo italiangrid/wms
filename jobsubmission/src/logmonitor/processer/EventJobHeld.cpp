@@ -21,7 +21,7 @@
 #include <string>
 #include <stdint.h>
 
-#include <condor/user_log.c++.h>
+#include <user_log.c++.h>
 #include <globus/globus_gram_protocol_constants.h>
 
 #include "glite/jobid/JobId.h"

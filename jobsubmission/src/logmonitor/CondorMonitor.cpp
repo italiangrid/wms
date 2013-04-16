@@ -20,7 +20,7 @@
 #include <memory>
 #include <stdint.h>
 
-#include <condor/user_log.c++.h> // condor API for reading log file
+#include <user_log.c++.h> // condor API for reading log file
 
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>

@@ -15,7 +15,7 @@
 
 #include <boost/lexical_cast.hpp>
 
-#include <condor/user_log.c++.h>
+#include <user_log.c++.h>
 
 #include "glite/jobid/JobId.h"
 

@@ -17,7 +17,7 @@ limitations under the License. */
 #define EDG_WORKLOAD_JOBCONTROL_LOGMONITOR_PROCESSER_EVENTJOBRELEASED_H
 
 #include "EventInterface.h"
-#include <condor/user_log.c++.h>
+#include <user_log.c++.h>
 
 JOBCONTROL_NAMESPACE_BEGIN {
 

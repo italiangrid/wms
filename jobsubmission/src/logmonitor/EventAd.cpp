@@ -22,7 +22,7 @@ limitations under the License. */
 #include <boost/lexical_cast.hpp>
 
 #include <classad_distribution.h>
-#include <condor/user_log.c++.h>
+#include <user_log.c++.h>
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
