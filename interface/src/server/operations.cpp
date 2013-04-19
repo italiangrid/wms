@@ -27,6 +27,8 @@ limitations under the License.
 #include <sys/stat.h>
 #include <sys/types.h>
 
+#include <set>
+
 // Boost
 #include <boost/lexical_cast.hpp>
 #include <boost/shared_ptr.hpp>
@@ -88,6 +90,7 @@ using namespace glite::wms::wmproxy::utilities; //Exception
 using namespace glite::wms::wmproxy::eventlogger;
 using namespace glite::wms::common::configuration; // Configuration
 
+namespace utils      = glite::wmsutils::classads;
 namespace logger         = glite::wms::common::logger;
 namespace configuration  = glite::wms::common::configuration;
 namespace wmputilities   = glite::wms::wmproxy::utilities;
@@ -124,6 +127,37 @@ const std::string FILE_SEPARATOR = "/";
 const std::string ALL_PROTOCOLS = "all";
 const std::string DEFAULT_PROTOCOL = "default";
 
+namespace {
+
+// a valid delegated credential is not needed for some operations
+// (retrieve the output and job information in general) but we need to make
+// sure that such information, i.e. the output file list, is returned
+// only for jobs belonging to same DN/FQAN (in principle the file transfer
+// would be denied, in the end, but we don't want people to see each
+// other's file names or job related information either)
+void check_ownership(std::string const& jid) {
+   std::string reg_jdl(
+      wmputilities::readTextFile(wmputilities::getJobJDLExistingStartPath(jid))
+   );
+   boost::scoped_ptr<classad::ClassAd> ad(utils::parse_classad(reg_jdl));
+   // get DN and FQAN from the attributes of the stored JDL 
+   std::string voms_fqan;
+   ad->EvaluateAttrString(JDLPrivate::VOMS_FQAN, voms_fqan);
+   std::string dn;
+   ad->EvaluateAttrString(JDL::CERT_SUBJ, dn);
+   // and compare them with DN and FQAN returned by mod_gridsite (retrieved from the submitter)
+   std::vector<std::string> fqans_v(wmputilities::getGridsiteFQANs());
+   bool matched_fqan(std::find(fqans_v.begin(), fqans_v.end(), voms_fqan) != fqans_v.end());
+  if (dn != wmputilities::getDN_SSL() || !matched_fqan) {
+      string msg("getOutputFileList operation not allowed for presented DN/FQANs");
+      edglog(error) << msg << ": " << jid << endl;
+      throw JobOperationException(__FILE__, __LINE__, "getOutputFileList()",
+                                  wmputilities::WMS_OPERATION_NOT_ALLOWED, msg);
+   }
+}
+
+}
+
 //
 // WM Web Service available operations
 //
@@ -136,7 +170,6 @@ getVersion(getVersionResponse& getVersion_response)
    edglog_fn("wmpoperations::getVersion");
 
    initWMProxyOperation("getVersion");
-   security::do_authZ("getVersion");
    getVersion_response.version = WMP_VERSION;
    edglog(info) << "Version retrieved: "<< getVersion_response.version << endl;
    GLITE_STACK_CATCH();
@@ -150,7 +183,8 @@ getJDL(const std::string& job_id, JdlType jdltype, getJDLResponse& getJDL_respon
    edglog(debug) << "getJDL requested for job: " << job_id <<endl;
 
    initWMProxyOperation("getJDL");
-   security::do_authZ_jobid("getJDL", job_id);
+   check_ownership(job_id);
+
    getJDL_response.jdl = "";
    JobId jid(job_id);
    switch (jdltype) {
@@ -311,8 +345,8 @@ getOutputFileList(getOutputFileListResponse& getOutputFileList_response,
       edglog_fn("wmpoperations::getOutputFileList");
       edglog(debug) << "getOutputFileList requested for job: " << jid << endl;
       initWMProxyOperation("getOutputFileList");
-      // do not need a valid delegated credential to retrieve the output
-      security::do_authZ("getOutputFileList");
+
+      check_ownership(jid);
 
       // File descriptor for operation lock system:
       // During jobPurge operation, a check to getOutputFileList lock file is done
@@ -323,21 +357,6 @@ getOutputFileList(getOutputFileListResponse& getOutputFileList_response,
               "getOutputFileList");
 
       string jobdirectory = wmputilities::getJobDirectoryPath(jobid);
-
-	// bug 98113
-	// wmputilities::readTextFile(wmputilities::getJobJDLExistingStartPath(jid)
-	// turn into classad
-	// get VO and VOMS_FQAN attributes
-	// compare with wmputilities::getGridsiteVO()
-	// build a set from this vector of strings wmputilities::getGridsiteFQANs()
-	// and check that VOMS_FQAN is in that set
-	//ClassAd        *classad;
-	//ClassAdParser  parser;
-	//classad = parser.ParseClassAd(wmputilities::getJobJDLExistingStartPath(jid), true);
-	//ad.EvaluateAttr( "foo", val )
-	//JDLPrivate::VOMS_FQAN
-	//JDL::VIRTUAL_ORGANISATION
-
 
       // Checking for maradona file, created if and only if the job is in DONE state
       // isn't the check on the status already done in the client?

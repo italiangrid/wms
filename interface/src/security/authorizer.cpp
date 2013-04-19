@@ -31,6 +31,8 @@ limitations under the License. */
 #include <boost/lexical_cast.hpp>
 #include <boost/tuple/tuple.hpp>
 #include <boost/algorithm/string/replace.hpp>
+#include <boost/filesystem/path.hpp>
+#include <boost/filesystem/operations.hpp>
 
 #include "glite/wms/common/configuration/Configuration.h"
 #include "common/src/configuration/WMPConfiguration.h"
@@ -55,6 +57,7 @@ extern "C" {
 namespace wmputilities = glite::wms::wmproxy::utilities;
 namespace logger = glite::wms::common::logger;
 namespace configuration = glite::wms::common::configuration;
+namespace fs = boost::filesystem;
 
 using namespace std;
 using namespace glite::wmsutils::exception;
@@ -465,7 +468,15 @@ checkProxyValidity(const string& proxy)
    edglog_fn("security::checkProxyValidity");
 
    edglog(debug)<<"Proxy path: " << proxy << endl;
-
+   std::string errmsg("Proxy certificate not readable or not found");
+   if (!fs::exists(proxy)) {
+      edglog(error) << errmsg << endl;
+      throw wmputilities::ProxyOperationException(
+         __FILE__,
+         __LINE__,
+         "checkProxyValidity()",
+         wmputilities::WMS_PROXY_ERROR, errmsg);
+   }
    static int const PROXY_TIME_MISALIGNMENT_TOLERANCE = 5;
    time_t now = time(0);
    time_t proxytime = time(0);
