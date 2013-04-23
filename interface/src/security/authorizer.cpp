@@ -469,7 +469,7 @@ checkProxyValidity(const string& proxy)
 
    edglog(debug)<<"Proxy path: " << proxy << endl;
    std::string errmsg("Proxy certificate not readable or not found");
-   if (!fs::exists(proxy)) {
+   if (!fs::exists(fs::path(proxy, fs::native))) {
       edglog(error) << errmsg << endl;
       throw wmputilities::ProxyOperationException(
          __FILE__,
