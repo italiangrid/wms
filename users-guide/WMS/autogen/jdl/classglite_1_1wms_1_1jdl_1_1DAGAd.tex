@@ -1,0 +1,296 @@
+\hypertarget{classglite_1_1wms_1_1jdl_1_1DAGAd}{
+\section{glite::wms::jdl::DAGAd Class Reference}
+\label{classglite_1_1wms_1_1jdl_1_1DAGAd}\index{glite::wms::jdl::DAGAd@{glite::wms::jdl::DAGAd}}
+}
+{\tt \#include $<$DAGAd.h$>$}
+
+\subsection*{Public Types}
+\begin{CompactItemize}
+\item 
+typedef \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGAdNodeIterator}{DAGAd\-Node\-Iterator} \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGAd_w0}{node\_\-iterator}
+\item 
+typedef DAGAd\-Node\-Iterator::value\_\-type \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGAd_w1}{node\_\-value\_\-type}
+\item 
+typedef \hyperlink{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator}{DAGAd\-Dependency\-Iterator} \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGAd_w2}{dependency\_\-iterator}
+\item 
+typedef DAGAd\-Dependency\-Iterator::value\_\-type \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGAd_w3}{dependency\_\-value\_\-type}
+\item 
+typedef boost::adjacency\_\-list$<$ boost::vec\-S, boost::vec\-S, boost::directed\-S $>$ \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGAd_w4}{Graph\_\-t}
+\item 
+typedef boost::graph\_\-traits$<$ \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGAd_w4}{Graph\_\-t} $>$::vertex\_\-descriptor \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGAd_w5}{Vertex}
+\item 
+typedef boost::property\_\-map$<$ \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGAd_w4}{Graph\_\-t}, boost::vertex\_\-color\_\-t $>$::type \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGAd_w6}{Color}
+\item 
+typedef std::map$<$ std::string, \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGAd_w5}{Vertex} $>$ \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGAd_w7}{Mapping}
+\end{CompactItemize}
+\subsection*{Public Member Functions}
+\begin{CompactItemize}
+\item 
+\hyperlink{classglite_1_1wms_1_1jdl_1_1DAGAd_a0}{DAGAd} ()
+\item 
+\hyperlink{classglite_1_1wms_1_1jdl_1_1DAGAd_a1}{DAGAd} (classad::Class\-Ad const \&ad)
+\item 
+classad::Class\-Ad const \& \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGAd_a2}{ad} () const 
+\item 
+int \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGAd_a3}{max\_\-running\_\-nodes} (int new\_\-value)
+\item 
+int \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGAd_a4}{max\_\-running\_\-nodes} () const 
+\item 
+std::string \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGAd_a5}{default\_\-node\_\-type} (std::string const \&new\_\-value)
+\item 
+std::string \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGAd_a6}{default\_\-node\_\-type} () const 
+\item 
+int \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGAd_a7}{default\_\-node\_\-retry\_\-count} (int new\_\-value)
+\item 
+int \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGAd_a8}{default\_\-node\_\-retry\_\-count} () const 
+\item 
+bool \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGAd_a9}{add\_\-node} (std::string const \&name, \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGNodeInfo}{DAGNode\-Info} const \&info)
+\item 
+bool \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGAd_a10}{replace\_\-node} (std::string const \&name, \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGNodeInfo}{DAGNode\-Info} const \&info)
+\item 
+bool \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGAd_a11}{remove\_\-node} (std::string const \&name)
+\item 
+std::size\_\-t \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGAd_a12}{num\_\-nodes} () const 
+\item 
+\hyperlink{classglite_1_1wms_1_1jdl_1_1DAGAdNodeIterator}{node\_\-iterator} \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGAd_a13}{find} (std::string const \&name) const 
+\item 
+bool \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGAd_a14}{add\_\-dependency} (std::string const \&first, std::string const \&second)
+\item 
+bool \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGAd_a15}{remove\_\-dependency} (std::string const \&first, std::string const \&second)
+\item 
+std::size\_\-t \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGAd_a16}{num\_\-dependencies} () const 
+\item 
+bool \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGAd_a17}{set\_\-generic} (std::string const \&attribute, classad::Expr\-Tree $\ast$value)
+\item 
+classad::Expr\-Tree const $\ast$ \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGAd_a18}{get\_\-generic} (std::string const \&attribute) const 
+\item 
+bool \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGAd_a19}{remove\_\-generic} (std::string const \&attribute)
+\item 
+std::pair$<$ \hyperlink{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator}{dependency\_\-iterator}, \hyperlink{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator}{dependency\_\-iterator} $>$ \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGAd_a20}{dependencies} () const 
+\item 
+std::pair$<$ \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGAdNodeIterator}{node\_\-iterator}, \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGAdNodeIterator}{node\_\-iterator} $>$ \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGAd_a21}{nodes} () const 
+\end{CompactItemize}
+
+
+\subsection{Member Typedef Documentation}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1DAGAd_w6}{
+\index{glite::wms::jdl::DAGAd@{glite::wms::jdl::DAGAd}!Color@{Color}}
+\index{Color@{Color}!glite::wms::jdl::DAGAd@{glite::wms::jdl::DAGAd}}
+\subsubsection[Color]{\setlength{\rightskip}{0pt plus 5cm}typedef boost::property\_\-map$<$\hyperlink{classglite_1_1wms_1_1jdl_1_1DAGAd_w4}{Graph\_\-t}, boost::vertex\_\-color\_\-t$>$::type \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGAd_w6}{glite::wms::jdl::DAGAd::Color}}}
+\label{classglite_1_1wms_1_1jdl_1_1DAGAd_w6}
+
+
+\hypertarget{classglite_1_1wms_1_1jdl_1_1DAGAd_w2}{
+\index{glite::wms::jdl::DAGAd@{glite::wms::jdl::DAGAd}!dependency_iterator@{dependency\_\-iterator}}
+\index{dependency_iterator@{dependency\_\-iterator}!glite::wms::jdl::DAGAd@{glite::wms::jdl::DAGAd}}
+\subsubsection[dependency\_\-iterator]{\setlength{\rightskip}{0pt plus 5cm}typedef \hyperlink{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator}{DAGAd\-Dependency\-Iterator} \hyperlink{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator}{glite::wms::jdl::DAGAd::dependency\_\-iterator}}}
+\label{classglite_1_1wms_1_1jdl_1_1DAGAd_w2}
+
+
+\hypertarget{classglite_1_1wms_1_1jdl_1_1DAGAd_w3}{
+\index{glite::wms::jdl::DAGAd@{glite::wms::jdl::DAGAd}!dependency_value_type@{dependency\_\-value\_\-type}}
+\index{dependency_value_type@{dependency\_\-value\_\-type}!glite::wms::jdl::DAGAd@{glite::wms::jdl::DAGAd}}
+\subsubsection[dependency\_\-value\_\-type]{\setlength{\rightskip}{0pt plus 5cm}typedef DAGAd\-Dependency\-Iterator::value\_\-type \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGAd_w3}{glite::wms::jdl::DAGAd::dependency\_\-value\_\-type}}}
+\label{classglite_1_1wms_1_1jdl_1_1DAGAd_w3}
+
+
+\hypertarget{classglite_1_1wms_1_1jdl_1_1DAGAd_w4}{
+\index{glite::wms::jdl::DAGAd@{glite::wms::jdl::DAGAd}!Graph_t@{Graph\_\-t}}
+\index{Graph_t@{Graph\_\-t}!glite::wms::jdl::DAGAd@{glite::wms::jdl::DAGAd}}
+\subsubsection[Graph\_\-t]{\setlength{\rightskip}{0pt plus 5cm}typedef boost::adjacency\_\-list$<$boost::vec\-S, boost::vec\-S, boost::directed\-S$>$ \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGAd_w4}{glite::wms::jdl::DAGAd::Graph\_\-t}}}
+\label{classglite_1_1wms_1_1jdl_1_1DAGAd_w4}
+
+
+\hypertarget{classglite_1_1wms_1_1jdl_1_1DAGAd_w7}{
+\index{glite::wms::jdl::DAGAd@{glite::wms::jdl::DAGAd}!Mapping@{Mapping}}
+\index{Mapping@{Mapping}!glite::wms::jdl::DAGAd@{glite::wms::jdl::DAGAd}}
+\subsubsection[Mapping]{\setlength{\rightskip}{0pt plus 5cm}typedef std::map$<$std::string, \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGAd_w5}{Vertex}$>$ \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGAd_w7}{glite::wms::jdl::DAGAd::Mapping}}}
+\label{classglite_1_1wms_1_1jdl_1_1DAGAd_w7}
+
+
+\hypertarget{classglite_1_1wms_1_1jdl_1_1DAGAd_w0}{
+\index{glite::wms::jdl::DAGAd@{glite::wms::jdl::DAGAd}!node_iterator@{node\_\-iterator}}
+\index{node_iterator@{node\_\-iterator}!glite::wms::jdl::DAGAd@{glite::wms::jdl::DAGAd}}
+\subsubsection[node\_\-iterator]{\setlength{\rightskip}{0pt plus 5cm}typedef \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGAdNodeIterator}{DAGAd\-Node\-Iterator} \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGAdNodeIterator}{glite::wms::jdl::DAGAd::node\_\-iterator}}}
+\label{classglite_1_1wms_1_1jdl_1_1DAGAd_w0}
+
+
+\hypertarget{classglite_1_1wms_1_1jdl_1_1DAGAd_w1}{
+\index{glite::wms::jdl::DAGAd@{glite::wms::jdl::DAGAd}!node_value_type@{node\_\-value\_\-type}}
+\index{node_value_type@{node\_\-value\_\-type}!glite::wms::jdl::DAGAd@{glite::wms::jdl::DAGAd}}
+\subsubsection[node\_\-value\_\-type]{\setlength{\rightskip}{0pt plus 5cm}typedef DAGAd\-Node\-Iterator::value\_\-type \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGAd_w1}{glite::wms::jdl::DAGAd::node\_\-value\_\-type}}}
+\label{classglite_1_1wms_1_1jdl_1_1DAGAd_w1}
+
+
+\hypertarget{classglite_1_1wms_1_1jdl_1_1DAGAd_w5}{
+\index{glite::wms::jdl::DAGAd@{glite::wms::jdl::DAGAd}!Vertex@{Vertex}}
+\index{Vertex@{Vertex}!glite::wms::jdl::DAGAd@{glite::wms::jdl::DAGAd}}
+\subsubsection[Vertex]{\setlength{\rightskip}{0pt plus 5cm}typedef boost::graph\_\-traits$<$\hyperlink{classglite_1_1wms_1_1jdl_1_1DAGAd_w4}{Graph\_\-t}$>$::vertex\_\-descriptor \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGAd_w5}{glite::wms::jdl::DAGAd::Vertex}}}
+\label{classglite_1_1wms_1_1jdl_1_1DAGAd_w5}
+
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1DAGAd_a0}{
+\index{glite::wms::jdl::DAGAd@{glite::wms::jdl::DAGAd}!DAGAd@{DAGAd}}
+\index{DAGAd@{DAGAd}!glite::wms::jdl::DAGAd@{glite::wms::jdl::DAGAd}}
+\subsubsection[DAGAd]{\setlength{\rightskip}{0pt plus 5cm}glite::wms::jdl::DAGAd::DAGAd ()}}
+\label{classglite_1_1wms_1_1jdl_1_1DAGAd_a0}
+
+
+\hypertarget{classglite_1_1wms_1_1jdl_1_1DAGAd_a1}{
+\index{glite::wms::jdl::DAGAd@{glite::wms::jdl::DAGAd}!DAGAd@{DAGAd}}
+\index{DAGAd@{DAGAd}!glite::wms::jdl::DAGAd@{glite::wms::jdl::DAGAd}}
+\subsubsection[DAGAd]{\setlength{\rightskip}{0pt plus 5cm}glite::wms::jdl::DAGAd::DAGAd (classad::Class\-Ad const \& {\em ad})\hspace{0.3cm}{\tt  \mbox{[}explicit\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1DAGAd_a1}
+
+
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1DAGAd_a2}{
+\index{glite::wms::jdl::DAGAd@{glite::wms::jdl::DAGAd}!ad@{ad}}
+\index{ad@{ad}!glite::wms::jdl::DAGAd@{glite::wms::jdl::DAGAd}}
+\subsubsection[ad]{\setlength{\rightskip}{0pt plus 5cm}classad::Class\-Ad const\& glite::wms::jdl::DAGAd::ad () const}}
+\label{classglite_1_1wms_1_1jdl_1_1DAGAd_a2}
+
+
+\hypertarget{classglite_1_1wms_1_1jdl_1_1DAGAd_a14}{
+\index{glite::wms::jdl::DAGAd@{glite::wms::jdl::DAGAd}!add_dependency@{add\_\-dependency}}
+\index{add_dependency@{add\_\-dependency}!glite::wms::jdl::DAGAd@{glite::wms::jdl::DAGAd}}
+\subsubsection[add\_\-dependency]{\setlength{\rightskip}{0pt plus 5cm}bool glite::wms::jdl::DAGAd::add\_\-dependency (std::string const \& {\em first}, std::string const \& {\em second})}}
+\label{classglite_1_1wms_1_1jdl_1_1DAGAd_a14}
+
+
+\hypertarget{classglite_1_1wms_1_1jdl_1_1DAGAd_a9}{
+\index{glite::wms::jdl::DAGAd@{glite::wms::jdl::DAGAd}!add_node@{add\_\-node}}
+\index{add_node@{add\_\-node}!glite::wms::jdl::DAGAd@{glite::wms::jdl::DAGAd}}
+\subsubsection[add\_\-node]{\setlength{\rightskip}{0pt plus 5cm}bool glite::wms::jdl::DAGAd::add\_\-node (std::string const \& {\em name}, \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGNodeInfo}{DAGNode\-Info} const \& {\em info})}}
+\label{classglite_1_1wms_1_1jdl_1_1DAGAd_a9}
+
+
+\hypertarget{classglite_1_1wms_1_1jdl_1_1DAGAd_a8}{
+\index{glite::wms::jdl::DAGAd@{glite::wms::jdl::DAGAd}!default_node_retry_count@{default\_\-node\_\-retry\_\-count}}
+\index{default_node_retry_count@{default\_\-node\_\-retry\_\-count}!glite::wms::jdl::DAGAd@{glite::wms::jdl::DAGAd}}
+\subsubsection[default\_\-node\_\-retry\_\-count]{\setlength{\rightskip}{0pt plus 5cm}int glite::wms::jdl::DAGAd::default\_\-node\_\-retry\_\-count () const}}
+\label{classglite_1_1wms_1_1jdl_1_1DAGAd_a8}
+
+
+\hypertarget{classglite_1_1wms_1_1jdl_1_1DAGAd_a7}{
+\index{glite::wms::jdl::DAGAd@{glite::wms::jdl::DAGAd}!default_node_retry_count@{default\_\-node\_\-retry\_\-count}}
+\index{default_node_retry_count@{default\_\-node\_\-retry\_\-count}!glite::wms::jdl::DAGAd@{glite::wms::jdl::DAGAd}}
+\subsubsection[default\_\-node\_\-retry\_\-count]{\setlength{\rightskip}{0pt plus 5cm}int glite::wms::jdl::DAGAd::default\_\-node\_\-retry\_\-count (int {\em new\_\-value})}}
+\label{classglite_1_1wms_1_1jdl_1_1DAGAd_a7}
+
+
+\hypertarget{classglite_1_1wms_1_1jdl_1_1DAGAd_a6}{
+\index{glite::wms::jdl::DAGAd@{glite::wms::jdl::DAGAd}!default_node_type@{default\_\-node\_\-type}}
+\index{default_node_type@{default\_\-node\_\-type}!glite::wms::jdl::DAGAd@{glite::wms::jdl::DAGAd}}
+\subsubsection[default\_\-node\_\-type]{\setlength{\rightskip}{0pt plus 5cm}std::string glite::wms::jdl::DAGAd::default\_\-node\_\-type () const}}
+\label{classglite_1_1wms_1_1jdl_1_1DAGAd_a6}
+
+
+\hypertarget{classglite_1_1wms_1_1jdl_1_1DAGAd_a5}{
+\index{glite::wms::jdl::DAGAd@{glite::wms::jdl::DAGAd}!default_node_type@{default\_\-node\_\-type}}
+\index{default_node_type@{default\_\-node\_\-type}!glite::wms::jdl::DAGAd@{glite::wms::jdl::DAGAd}}
+\subsubsection[default\_\-node\_\-type]{\setlength{\rightskip}{0pt plus 5cm}std::string glite::wms::jdl::DAGAd::default\_\-node\_\-type (std::string const \& {\em new\_\-value})}}
+\label{classglite_1_1wms_1_1jdl_1_1DAGAd_a5}
+
+
+\hypertarget{classglite_1_1wms_1_1jdl_1_1DAGAd_a20}{
+\index{glite::wms::jdl::DAGAd@{glite::wms::jdl::DAGAd}!dependencies@{dependencies}}
+\index{dependencies@{dependencies}!glite::wms::jdl::DAGAd@{glite::wms::jdl::DAGAd}}
+\subsubsection[dependencies]{\setlength{\rightskip}{0pt plus 5cm}std::pair$<$\hyperlink{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator}{dependency\_\-iterator}, \hyperlink{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator}{dependency\_\-iterator}$>$ glite::wms::jdl::DAGAd::dependencies () const}}
+\label{classglite_1_1wms_1_1jdl_1_1DAGAd_a20}
+
+
+\hypertarget{classglite_1_1wms_1_1jdl_1_1DAGAd_a13}{
+\index{glite::wms::jdl::DAGAd@{glite::wms::jdl::DAGAd}!find@{find}}
+\index{find@{find}!glite::wms::jdl::DAGAd@{glite::wms::jdl::DAGAd}}
+\subsubsection[find]{\setlength{\rightskip}{0pt plus 5cm}\hyperlink{classglite_1_1wms_1_1jdl_1_1DAGAdNodeIterator}{node\_\-iterator} glite::wms::jdl::DAGAd::find (std::string const \& {\em name}) const}}
+\label{classglite_1_1wms_1_1jdl_1_1DAGAd_a13}
+
+
+\hypertarget{classglite_1_1wms_1_1jdl_1_1DAGAd_a18}{
+\index{glite::wms::jdl::DAGAd@{glite::wms::jdl::DAGAd}!get_generic@{get\_\-generic}}
+\index{get_generic@{get\_\-generic}!glite::wms::jdl::DAGAd@{glite::wms::jdl::DAGAd}}
+\subsubsection[get\_\-generic]{\setlength{\rightskip}{0pt plus 5cm}classad::Expr\-Tree const$\ast$ glite::wms::jdl::DAGAd::get\_\-generic (std::string const \& {\em attribute}) const}}
+\label{classglite_1_1wms_1_1jdl_1_1DAGAd_a18}
+
+
+\hypertarget{classglite_1_1wms_1_1jdl_1_1DAGAd_a4}{
+\index{glite::wms::jdl::DAGAd@{glite::wms::jdl::DAGAd}!max_running_nodes@{max\_\-running\_\-nodes}}
+\index{max_running_nodes@{max\_\-running\_\-nodes}!glite::wms::jdl::DAGAd@{glite::wms::jdl::DAGAd}}
+\subsubsection[max\_\-running\_\-nodes]{\setlength{\rightskip}{0pt plus 5cm}int glite::wms::jdl::DAGAd::max\_\-running\_\-nodes () const}}
+\label{classglite_1_1wms_1_1jdl_1_1DAGAd_a4}
+
+
+\hypertarget{classglite_1_1wms_1_1jdl_1_1DAGAd_a3}{
+\index{glite::wms::jdl::DAGAd@{glite::wms::jdl::DAGAd}!max_running_nodes@{max\_\-running\_\-nodes}}
+\index{max_running_nodes@{max\_\-running\_\-nodes}!glite::wms::jdl::DAGAd@{glite::wms::jdl::DAGAd}}
+\subsubsection[max\_\-running\_\-nodes]{\setlength{\rightskip}{0pt plus 5cm}int glite::wms::jdl::DAGAd::max\_\-running\_\-nodes (int {\em new\_\-value})}}
+\label{classglite_1_1wms_1_1jdl_1_1DAGAd_a3}
+
+
+\hypertarget{classglite_1_1wms_1_1jdl_1_1DAGAd_a21}{
+\index{glite::wms::jdl::DAGAd@{glite::wms::jdl::DAGAd}!nodes@{nodes}}
+\index{nodes@{nodes}!glite::wms::jdl::DAGAd@{glite::wms::jdl::DAGAd}}
+\subsubsection[nodes]{\setlength{\rightskip}{0pt plus 5cm}std::pair$<$\hyperlink{classglite_1_1wms_1_1jdl_1_1DAGAdNodeIterator}{node\_\-iterator}, \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGAdNodeIterator}{node\_\-iterator}$>$ glite::wms::jdl::DAGAd::nodes () const}}
+\label{classglite_1_1wms_1_1jdl_1_1DAGAd_a21}
+
+
+\hypertarget{classglite_1_1wms_1_1jdl_1_1DAGAd_a16}{
+\index{glite::wms::jdl::DAGAd@{glite::wms::jdl::DAGAd}!num_dependencies@{num\_\-dependencies}}
+\index{num_dependencies@{num\_\-dependencies}!glite::wms::jdl::DAGAd@{glite::wms::jdl::DAGAd}}
+\subsubsection[num\_\-dependencies]{\setlength{\rightskip}{0pt plus 5cm}std::size\_\-t glite::wms::jdl::DAGAd::num\_\-dependencies () const}}
+\label{classglite_1_1wms_1_1jdl_1_1DAGAd_a16}
+
+
+\hypertarget{classglite_1_1wms_1_1jdl_1_1DAGAd_a12}{
+\index{glite::wms::jdl::DAGAd@{glite::wms::jdl::DAGAd}!num_nodes@{num\_\-nodes}}
+\index{num_nodes@{num\_\-nodes}!glite::wms::jdl::DAGAd@{glite::wms::jdl::DAGAd}}
+\subsubsection[num\_\-nodes]{\setlength{\rightskip}{0pt plus 5cm}std::size\_\-t glite::wms::jdl::DAGAd::num\_\-nodes () const}}
+\label{classglite_1_1wms_1_1jdl_1_1DAGAd_a12}
+
+
+\hypertarget{classglite_1_1wms_1_1jdl_1_1DAGAd_a15}{
+\index{glite::wms::jdl::DAGAd@{glite::wms::jdl::DAGAd}!remove_dependency@{remove\_\-dependency}}
+\index{remove_dependency@{remove\_\-dependency}!glite::wms::jdl::DAGAd@{glite::wms::jdl::DAGAd}}
+\subsubsection[remove\_\-dependency]{\setlength{\rightskip}{0pt plus 5cm}bool glite::wms::jdl::DAGAd::remove\_\-dependency (std::string const \& {\em first}, std::string const \& {\em second})}}
+\label{classglite_1_1wms_1_1jdl_1_1DAGAd_a15}
+
+
+\hypertarget{classglite_1_1wms_1_1jdl_1_1DAGAd_a19}{
+\index{glite::wms::jdl::DAGAd@{glite::wms::jdl::DAGAd}!remove_generic@{remove\_\-generic}}
+\index{remove_generic@{remove\_\-generic}!glite::wms::jdl::DAGAd@{glite::wms::jdl::DAGAd}}
+\subsubsection[remove\_\-generic]{\setlength{\rightskip}{0pt plus 5cm}bool glite::wms::jdl::DAGAd::remove\_\-generic (std::string const \& {\em attribute})}}
+\label{classglite_1_1wms_1_1jdl_1_1DAGAd_a19}
+
+
+\hypertarget{classglite_1_1wms_1_1jdl_1_1DAGAd_a11}{
+\index{glite::wms::jdl::DAGAd@{glite::wms::jdl::DAGAd}!remove_node@{remove\_\-node}}
+\index{remove_node@{remove\_\-node}!glite::wms::jdl::DAGAd@{glite::wms::jdl::DAGAd}}
+\subsubsection[remove\_\-node]{\setlength{\rightskip}{0pt plus 5cm}bool glite::wms::jdl::DAGAd::remove\_\-node (std::string const \& {\em name})}}
+\label{classglite_1_1wms_1_1jdl_1_1DAGAd_a11}
+
+
+\hypertarget{classglite_1_1wms_1_1jdl_1_1DAGAd_a10}{
+\index{glite::wms::jdl::DAGAd@{glite::wms::jdl::DAGAd}!replace_node@{replace\_\-node}}
+\index{replace_node@{replace\_\-node}!glite::wms::jdl::DAGAd@{glite::wms::jdl::DAGAd}}
+\subsubsection[replace\_\-node]{\setlength{\rightskip}{0pt plus 5cm}bool glite::wms::jdl::DAGAd::replace\_\-node (std::string const \& {\em name}, \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGNodeInfo}{DAGNode\-Info} const \& {\em info})}}
+\label{classglite_1_1wms_1_1jdl_1_1DAGAd_a10}
+
+
+\hypertarget{classglite_1_1wms_1_1jdl_1_1DAGAd_a17}{
+\index{glite::wms::jdl::DAGAd@{glite::wms::jdl::DAGAd}!set_generic@{set\_\-generic}}
+\index{set_generic@{set\_\-generic}!glite::wms::jdl::DAGAd@{glite::wms::jdl::DAGAd}}
+\subsubsection[set\_\-generic]{\setlength{\rightskip}{0pt plus 5cm}bool glite::wms::jdl::DAGAd::set\_\-generic (std::string const \& {\em attribute}, classad::Expr\-Tree $\ast$ {\em value})}}
+\label{classglite_1_1wms_1_1jdl_1_1DAGAd_a17}
+
+
+
+
+The documentation for this class was generated from the following file:\begin{CompactItemize}
+\item 
+\hyperlink{DAGAd_8h}{DAGAd.h}\end{CompactItemize}

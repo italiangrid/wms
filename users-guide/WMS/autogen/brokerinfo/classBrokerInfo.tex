@@ -1,0 +1,195 @@
+\hypertarget{classBrokerInfo}{
+\section{Broker\-Info Class Reference}
+\label{classBrokerInfo}\index{BrokerInfo@{BrokerInfo}}
+}
+parses .Broker\-Info file containing job submission parameters  
+
+
+{\tt \#include $<$Broker\-Info.h$>$}
+
+\subsection*{Public Member Functions}
+\begin{CompactItemize}
+\item 
+\hyperlink{classBrokerInfo_a0}{$\sim$Broker\-Info} (void)
+\item 
+std::string \hyperlink{classBrokerInfo_a1}{get\-BIFile\-Name} (void)
+\item 
+\hyperlink{bi__result_8h_a2}{BI\_\-Result} \hyperlink{classBrokerInfo_a2}{get\-CE} (std::string \&CE)
+\item 
+\hyperlink{bi__result_8h_a2}{BI\_\-Result} \hyperlink{classBrokerInfo_a3}{get\-Data\-Access\-Protocol} (std::vector$<$ std::string $>$ \&DAPs)
+\item 
+\hyperlink{bi__result_8h_a2}{BI\_\-Result} \hyperlink{classBrokerInfo_a4}{get\-LFN2SFN} (std::string LFN, std::vector$<$ std::string $>$ \&SFNs)
+\item 
+\hyperlink{bi__result_8h_a2}{BI\_\-Result} \hyperlink{classBrokerInfo_a5}{get\-SEs} (std::vector$<$ std::string $>$ \&SEs)
+\item 
+\hyperlink{bi__result_8h_a2}{BI\_\-Result} \hyperlink{classBrokerInfo_a6}{get\-SEProtocols} (std::string SE, std::vector$<$ std::string $>$ \&SEProtos)
+\item 
+\hyperlink{bi__result_8h_a2}{BI\_\-Result} \hyperlink{classBrokerInfo_a7}{get\-SEPort} (std::string SE, std::string SEProtocol, std::string \&SEPort)
+\item 
+\hyperlink{bi__result_8h_a2}{BI\_\-Result} \hyperlink{classBrokerInfo_a8}{get\-Close\-SEs} (std::vector$<$ std::string $>$ \&SEs)
+\item 
+\hyperlink{bi__result_8h_a2}{BI\_\-Result} \hyperlink{classBrokerInfo_a9}{get\-SEMount\-Point} (std::string Close\-SE, std::string \&SEMount)
+\item 
+\hyperlink{bi__result_8h_a2}{BI\_\-Result} \hyperlink{classBrokerInfo_a10}{get\-SEFree\-Space} (std::string Close\-SE, std::string \&SEFree\-Space)
+\item 
+\hyperlink{bi__result_8h_a2}{BI\_\-Result} \hyperlink{classBrokerInfo_a11}{get\-Input\-Data} (std::vector$<$ std::string $>$ \&LFNs)
+\item 
+\hyperlink{bi__result_8h_a2}{BI\_\-Result} \hyperlink{classBrokerInfo_a12}{get\-Virtual\-Organization} (std::string \&VO)
+\item 
+int \hyperlink{classBrokerInfo_a13}{parser} (std::string \&outbuffer)
+\end{CompactItemize}
+\subsection*{Static Public Member Functions}
+\begin{CompactItemize}
+\item 
+\hyperlink{classBrokerInfo}{Broker\-Info} $\ast$ \hyperlink{classBrokerInfo_e0}{instance} (void)
+\end{CompactItemize}
+
+
+\subsection{Detailed Description}
+parses .Broker\-Info file containing job submission parameters 
+
+\begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em Broker\-Info\-File\_\-}]holds the fullpath of the brokerinfo file \item[{\em fbrokerinfo\_\-}]handler to the brokerinfo file \item[{\em mbrokerinfo\_\-}]handler to the brokerinfo memory info \item[{\em instance\_\-}]it points to the current instance. this class is intended so to be instantiated only once (singleton). \end{description}
+\end{Desc}
+
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classBrokerInfo_a0}{
+\index{BrokerInfo@{Broker\-Info}!~BrokerInfo@{$\sim$BrokerInfo}}
+\index{~BrokerInfo@{$\sim$BrokerInfo}!BrokerInfo@{Broker\-Info}}
+\subsubsection[$\sim$BrokerInfo]{\setlength{\rightskip}{0pt plus 5cm}Broker\-Info::$\sim$\hyperlink{classBrokerInfo}{Broker\-Info} (void)}}
+\label{classBrokerInfo_a0}
+
+
+Destructor. 
+
+\subsection{Member Function Documentation}
+\hypertarget{classBrokerInfo_a1}{
+\index{BrokerInfo@{Broker\-Info}!getBIFileName@{getBIFileName}}
+\index{getBIFileName@{getBIFileName}!BrokerInfo@{Broker\-Info}}
+\subsubsection[getBIFileName]{\setlength{\rightskip}{0pt plus 5cm}std::string Broker\-Info::get\-BIFile\-Name (void)}}
+\label{classBrokerInfo_a1}
+
+
+the Broker\-Info file to parse. \hypertarget{classBrokerInfo_a2}{
+\index{BrokerInfo@{Broker\-Info}!getCE@{getCE}}
+\index{getCE@{getCE}!BrokerInfo@{Broker\-Info}}
+\subsubsection[getCE]{\setlength{\rightskip}{0pt plus 5cm}\hyperlink{bi__result_8h_a2}{BI\_\-Result} Broker\-Info::get\-CE (std::string \& {\em CE})}}
+\label{classBrokerInfo_a2}
+
+
+\begin{Desc}
+\item[Returns:]CE (Computing Element) Info. @param CE The Resource\-ID of the Computing Element to be returned. @return BI\_\-SUCCESS, or BI\_\-ERROR if the operation failed \end{Desc}
+\hypertarget{classBrokerInfo_a8}{
+\index{BrokerInfo@{Broker\-Info}!getCloseSEs@{getCloseSEs}}
+\index{getCloseSEs@{getCloseSEs}!BrokerInfo@{Broker\-Info}}
+\subsubsection[getCloseSEs]{\setlength{\rightskip}{0pt plus 5cm}\hyperlink{bi__result_8h_a2}{BI\_\-Result} Broker\-Info::get\-Close\-SEs (std::vector$<$ std::string $>$ \& {\em SEs})}}
+\label{classBrokerInfo_a8}
+
+
+\begin{Desc}
+\item[Returns:]SE's protocol port number @param SE Vector of SEs close to the given CE. @return BI\_\-SUCCESS, or BI\_\-ERROR if the operation failed \end{Desc}
+\hypertarget{classBrokerInfo_a3}{
+\index{BrokerInfo@{Broker\-Info}!getDataAccessProtocol@{getDataAccessProtocol}}
+\index{getDataAccessProtocol@{getDataAccessProtocol}!BrokerInfo@{Broker\-Info}}
+\subsubsection[getDataAccessProtocol]{\setlength{\rightskip}{0pt plus 5cm}\hyperlink{bi__result_8h_a2}{BI\_\-Result} Broker\-Info::get\-Data\-Access\-Protocol (std::vector$<$ std::string $>$ \& {\em DAPs})}}
+\label{classBrokerInfo_a3}
+
+
+\begin{Desc}
+\item[Returns:]Data Access Protocol list @param DAPs Vector of Data Access Protocols specified by the user. @return BI\_\-SUCCESS, or BI\_\-ERROR if the operation failed \end{Desc}
+\hypertarget{classBrokerInfo_a11}{
+\index{BrokerInfo@{Broker\-Info}!getInputData@{getInputData}}
+\index{getInputData@{getInputData}!BrokerInfo@{Broker\-Info}}
+\subsubsection[getInputData]{\setlength{\rightskip}{0pt plus 5cm}\hyperlink{bi__result_8h_a2}{BI\_\-Result} Broker\-Info::get\-Input\-Data (std::vector$<$ std::string $>$ \& {\em LFNs})}}
+\label{classBrokerInfo_a11}
+
+
+\begin{Desc}
+\item[Returns:]Input\-Data list @param LFN/GUID/LFC vector. @return BI\_\-SUCCESS, or BI\_\-ERROR if the operation failed \end{Desc}
+\hypertarget{classBrokerInfo_a4}{
+\index{BrokerInfo@{Broker\-Info}!getLFN2SFN@{getLFN2SFN}}
+\index{getLFN2SFN@{getLFN2SFN}!BrokerInfo@{Broker\-Info}}
+\subsubsection[getLFN2SFN]{\setlength{\rightskip}{0pt plus 5cm}\hyperlink{bi__result_8h_a2}{BI\_\-Result} Broker\-Info::get\-LFN2SFN (std::string {\em LFN}, std::vector$<$ std::string $>$ \& {\em SFNs})}}
+\label{classBrokerInfo_a4}
+
+
+\begin{Desc}
+\item[Returns:]LFN to SFN mapping @param LFN String of LFN specified. @param SFNs Vector of corresponding SFNs. @return BI\_\-SUCCESS, or BI\_\-ERROR if the operation failed \end{Desc}
+\hypertarget{classBrokerInfo_a10}{
+\index{BrokerInfo@{Broker\-Info}!getSEFreeSpace@{getSEFreeSpace}}
+\index{getSEFreeSpace@{getSEFreeSpace}!BrokerInfo@{Broker\-Info}}
+\subsubsection[getSEFreeSpace]{\setlength{\rightskip}{0pt plus 5cm}\hyperlink{bi__result_8h_a2}{BI\_\-Result} Broker\-Info::get\-SEFree\-Space (std::string {\em Close\-SE}, std::string \& {\em SEFree\-Space})}}
+\label{classBrokerInfo_a10}
+
+
+\begin{Desc}
+\item[Returns:]SE Free\-Space for the specific Close\-SE returned by $\ast$  get\-Close\-SEs method. $\ast$ @param SEFree\-Space string of SE free space. $\ast$ @return BI\_\-SUCCESS, or BI\_\-ERROR if the operation failed \end{Desc}
+\hypertarget{classBrokerInfo_a9}{
+\index{BrokerInfo@{Broker\-Info}!getSEMountPoint@{getSEMountPoint}}
+\index{getSEMountPoint@{getSEMountPoint}!BrokerInfo@{Broker\-Info}}
+\subsubsection[getSEMountPoint]{\setlength{\rightskip}{0pt plus 5cm}\hyperlink{bi__result_8h_a2}{BI\_\-Result} Broker\-Info::get\-SEMount\-Point (std::string {\em Close\-SE}, std::string \& {\em SEMount})}}
+\label{classBrokerInfo_a9}
+
+
+\begin{Desc}
+\item[Returns:]SE Mount\-Point for the specific Close\-SE returned by  get\-Close\-SEs method. @param SEMount string of SE mount point. @return BI\_\-SUCCESS, or BI\_\-ERROR if the operation failed \end{Desc}
+\hypertarget{classBrokerInfo_a7}{
+\index{BrokerInfo@{Broker\-Info}!getSEPort@{getSEPort}}
+\index{getSEPort@{getSEPort}!BrokerInfo@{Broker\-Info}}
+\subsubsection[getSEPort]{\setlength{\rightskip}{0pt plus 5cm}\hyperlink{bi__result_8h_a2}{BI\_\-Result} Broker\-Info::get\-SEPort (std::string {\em SE}, std::string {\em SEProtocol}, std::string \& {\em SEPort})}}
+\label{classBrokerInfo_a7}
+
+
+\begin{Desc}
+\item[Returns:]SE Ports list ordered following the order of SEs  by get\-SEs @param SEPorts Vector of ports used by SEs. @return BI\_\-SUCCESS, or BI\_\-ERROR if the operation failed \end{Desc}
+\hypertarget{classBrokerInfo_a6}{
+\index{BrokerInfo@{Broker\-Info}!getSEProtocols@{getSEProtocols}}
+\index{getSEProtocols@{getSEProtocols}!BrokerInfo@{Broker\-Info}}
+\subsubsection[getSEProtocols]{\setlength{\rightskip}{0pt plus 5cm}\hyperlink{bi__result_8h_a2}{BI\_\-Result} Broker\-Info::get\-SEProtocols (std::string {\em SE}, std::vector$<$ std::string $>$ \& {\em SEProtos})}}
+\label{classBrokerInfo_a6}
+
+
+\begin{Desc}
+\item[Returns:]SE Protocols list ordered following the order of SEs  by get\-SEs @param SEProtcs Vector of protocols supported by SEs. @return BI\_\-SUCCESS, or BI\_\-ERROR if the operation failed \end{Desc}
+\hypertarget{classBrokerInfo_a5}{
+\index{BrokerInfo@{Broker\-Info}!getSEs@{getSEs}}
+\index{getSEs@{getSEs}!BrokerInfo@{Broker\-Info}}
+\subsubsection[getSEs]{\setlength{\rightskip}{0pt plus 5cm}\hyperlink{bi__result_8h_a2}{BI\_\-Result} Broker\-Info::get\-SEs (std::vector$<$ std::string $>$ \& {\em SEs})}}
+\label{classBrokerInfo_a5}
+
+
+\begin{Desc}
+\item[Returns:]SE (Storage Element) list @param SEs Vector of SEs serving PFNs. @return BI\_\-SUCCESS, or BI\_\-ERROR if the operation failed \end{Desc}
+\hypertarget{classBrokerInfo_a12}{
+\index{BrokerInfo@{Broker\-Info}!getVirtualOrganization@{getVirtualOrganization}}
+\index{getVirtualOrganization@{getVirtualOrganization}!BrokerInfo@{Broker\-Info}}
+\subsubsection[getVirtualOrganization]{\setlength{\rightskip}{0pt plus 5cm}\hyperlink{bi__result_8h_a2}{BI\_\-Result} Broker\-Info::get\-Virtual\-Organization (std::string \& {\em VO})}}
+\label{classBrokerInfo_a12}
+
+
+\begin{Desc}
+\item[Returns:]Virtual Organization string @param VO string. @return BI\_\-SUCCESS, or BI\_\-ERROR if the operation failed \end{Desc}
+\hypertarget{classBrokerInfo_e0}{
+\index{BrokerInfo@{Broker\-Info}!instance@{instance}}
+\index{instance@{instance}!BrokerInfo@{Broker\-Info}}
+\subsubsection[instance]{\setlength{\rightskip}{0pt plus 5cm}\hyperlink{classBrokerInfo}{Broker\-Info}$\ast$ Broker\-Info::instance (void)\hspace{0.3cm}{\tt  \mbox{[}static\mbox{]}}}}
+\label{classBrokerInfo_e0}
+
+
+the handle to the instantiated object. \hypertarget{classBrokerInfo_a13}{
+\index{BrokerInfo@{Broker\-Info}!parser@{parser}}
+\index{parser@{parser}!BrokerInfo@{Broker\-Info}}
+\subsubsection[parser]{\setlength{\rightskip}{0pt plus 5cm}int Broker\-Info::parser (std::string \& {\em outbuffer})}}
+\label{classBrokerInfo_a13}
+
+
+utilities 
+
+The documentation for this class was generated from the following file:\begin{CompactItemize}
+\item 
+\hyperlink{BrokerInfo_8h}{Broker\-Info.h}\end{CompactItemize}

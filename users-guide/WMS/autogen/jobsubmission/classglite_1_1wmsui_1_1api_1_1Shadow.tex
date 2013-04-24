@@ -1,0 +1,142 @@
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Shadow}{
+\section{glite::wmsui::api::Shadow Class Reference}
+\label{classglite_1_1wmsui_1_1api_1_1Shadow}\index{glite::wmsui::api::Shadow@{glite::wmsui::api::Shadow}}
+}
+{\tt \#include $<$Shadow.h$>$}
+
+\subsection*{Public Member Functions}
+\begin{CompactItemize}
+\item 
+void \hyperlink{classglite_1_1wmsui_1_1api_1_1Shadow_a0}{attach} (int port=0)
+\item 
+std::string \hyperlink{classglite_1_1wmsui_1_1api_1_1Shadow_a1}{empty} (std::string buffer)
+\item 
+void \hyperlink{classglite_1_1wmsui_1_1api_1_1Shadow_a2}{detach} ()
+\item 
+void \hyperlink{classglite_1_1wmsui_1_1api_1_1Shadow_a3}{start} ()
+\item 
+std::string \hyperlink{classglite_1_1wmsui_1_1api_1_1Shadow_a4}{get\-Pipe\-Err} ()
+\item 
+std::string \hyperlink{classglite_1_1wmsui_1_1api_1_1Shadow_a5}{get\-Pipe\-In} ()
+\item 
+std::string \hyperlink{classglite_1_1wmsui_1_1api_1_1Shadow_a6}{get\-Pipe\-Out} ()
+\item 
+int \hyperlink{classglite_1_1wmsui_1_1api_1_1Shadow_a7}{get\-Port} ()
+\item 
+int \hyperlink{classglite_1_1wmsui_1_1api_1_1Shadow_a8}{get\-Pid} ()
+\end{CompactItemize}
+\subsection*{Static Public Member Functions}
+\begin{CompactItemize}
+\item 
+std::string \hyperlink{classglite_1_1wmsui_1_1api_1_1Shadow_e0}{get\-Host} ()
+\end{CompactItemize}
+\subsection*{Friends}
+\begin{CompactItemize}
+\item 
+class \hyperlink{classglite_1_1wmsui_1_1api_1_1Shadow_n0}{Job}
+\end{CompactItemize}
+
+
+\subsection{Detailed Description}
+This class provides the core management for interactive jobs. once the glite-grid-console-shadow has started successfully and the job is running the user should interact with the submitted job (or might have attached to a previous job) At the end of the interaction the background bypass process should be killed and the I/O pipes have to be removed. This is done automatically by the 'detach' method. The shadow class must be used togheter with an implementation of the \hyperlink{classglite_1_1wmsui_1_1api_1_1Listener}{Listener} interface, which actually performs the final visual interactivity with the user. \begin{Desc}
+\item[See also:]\hyperlink{classglite_1_1wmsui_1_1api_1_1Listener}{Listener} \end{Desc}
+
+
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Shadow_a0}{
+\index{glite::wmsui::api::Shadow@{glite::wmsui::api::Shadow}!attach@{attach}}
+\index{attach@{attach}!glite::wmsui::api::Shadow@{glite::wmsui::api::Shadow}}
+\subsubsection[attach]{\setlength{\rightskip}{0pt plus 5cm}void glite::wmsui::api::Shadow::attach (int {\em port} = 0)}}
+\label{classglite_1_1wmsui_1_1api_1_1Shadow_a0}
+
+
+Attach a new listener to the \hyperlink{classglite_1_1wmsui_1_1api_1_1Job}{Job} \hypertarget{classglite_1_1wmsui_1_1api_1_1Shadow_a2}{
+\index{glite::wmsui::api::Shadow@{glite::wmsui::api::Shadow}!detach@{detach}}
+\index{detach@{detach}!glite::wmsui::api::Shadow@{glite::wmsui::api::Shadow}}
+\subsubsection[detach]{\setlength{\rightskip}{0pt plus 5cm}void glite::wmsui::api::Shadow::detach ()}}
+\label{classglite_1_1wmsui_1_1api_1_1Shadow_a2}
+
+
+Stop the launched processes and remove the created listener pipes \hypertarget{classglite_1_1wmsui_1_1api_1_1Shadow_a1}{
+\index{glite::wmsui::api::Shadow@{glite::wmsui::api::Shadow}!empty@{empty}}
+\index{empty@{empty}!glite::wmsui::api::Shadow@{glite::wmsui::api::Shadow}}
+\subsubsection[empty]{\setlength{\rightskip}{0pt plus 5cm}std::string glite::wmsui::api::Shadow::empty (std::string {\em buffer})}}
+\label{classglite_1_1wmsui_1_1api_1_1Shadow_a1}
+
+
+Read the specified buffer and return it's content \hypertarget{classglite_1_1wmsui_1_1api_1_1Shadow_e0}{
+\index{glite::wmsui::api::Shadow@{glite::wmsui::api::Shadow}!getHost@{getHost}}
+\index{getHost@{getHost}!glite::wmsui::api::Shadow@{glite::wmsui::api::Shadow}}
+\subsubsection[getHost]{\setlength{\rightskip}{0pt plus 5cm}std::string glite::wmsui::api::Shadow::get\-Host ()\hspace{0.3cm}{\tt  \mbox{[}static\mbox{]}}}}
+\label{classglite_1_1wmsui_1_1api_1_1Shadow_e0}
+
+
+\begin{Desc}
+\item[Returns:]the local host name \end{Desc}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Shadow_a8}{
+\index{glite::wmsui::api::Shadow@{glite::wmsui::api::Shadow}!getPid@{getPid}}
+\index{getPid@{getPid}!glite::wmsui::api::Shadow@{glite::wmsui::api::Shadow}}
+\subsubsection[getPid]{\setlength{\rightskip}{0pt plus 5cm}int glite::wmsui::api::Shadow::get\-Pid ()}}
+\label{classglite_1_1wmsui_1_1api_1_1Shadow_a8}
+
+
+Get the process id of the launched listener process \hypertarget{classglite_1_1wmsui_1_1api_1_1Shadow_a4}{
+\index{glite::wmsui::api::Shadow@{glite::wmsui::api::Shadow}!getPipeErr@{getPipeErr}}
+\index{getPipeErr@{getPipeErr}!glite::wmsui::api::Shadow@{glite::wmsui::api::Shadow}}
+\subsubsection[getPipeErr]{\setlength{\rightskip}{0pt plus 5cm}std::string glite::wmsui::api::Shadow::get\-Pipe\-Err ()}}
+\label{classglite_1_1wmsui_1_1api_1_1Shadow_a4}
+
+
+\begin{Desc}
+\item[Returns:]the error pipe string representation \end{Desc}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Shadow_a5}{
+\index{glite::wmsui::api::Shadow@{glite::wmsui::api::Shadow}!getPipeIn@{getPipeIn}}
+\index{getPipeIn@{getPipeIn}!glite::wmsui::api::Shadow@{glite::wmsui::api::Shadow}}
+\subsubsection[getPipeIn]{\setlength{\rightskip}{0pt plus 5cm}std::string glite::wmsui::api::Shadow::get\-Pipe\-In ()}}
+\label{classglite_1_1wmsui_1_1api_1_1Shadow_a5}
+
+
+\begin{Desc}
+\item[Returns:]the Input pipe string representation \end{Desc}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Shadow_a6}{
+\index{glite::wmsui::api::Shadow@{glite::wmsui::api::Shadow}!getPipeOut@{getPipeOut}}
+\index{getPipeOut@{getPipeOut}!glite::wmsui::api::Shadow@{glite::wmsui::api::Shadow}}
+\subsubsection[getPipeOut]{\setlength{\rightskip}{0pt plus 5cm}std::string glite::wmsui::api::Shadow::get\-Pipe\-Out ()}}
+\label{classglite_1_1wmsui_1_1api_1_1Shadow_a6}
+
+
+\begin{Desc}
+\item[Returns:]the Output pipe string representation \end{Desc}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Shadow_a7}{
+\index{glite::wmsui::api::Shadow@{glite::wmsui::api::Shadow}!getPort@{getPort}}
+\index{getPort@{getPort}!glite::wmsui::api::Shadow@{glite::wmsui::api::Shadow}}
+\subsubsection[getPort]{\setlength{\rightskip}{0pt plus 5cm}int glite::wmsui::api::Shadow::get\-Port ()}}
+\label{classglite_1_1wmsui_1_1api_1_1Shadow_a7}
+
+
+Get the port where the shadow is listening to \hypertarget{classglite_1_1wmsui_1_1api_1_1Shadow_a3}{
+\index{glite::wmsui::api::Shadow@{glite::wmsui::api::Shadow}!start@{start}}
+\index{start@{start}!glite::wmsui::api::Shadow@{glite::wmsui::api::Shadow}}
+\subsubsection[start]{\setlength{\rightskip}{0pt plus 5cm}void glite::wmsui::api::Shadow::start ()}}
+\label{classglite_1_1wmsui_1_1api_1_1Shadow_a3}
+
+
+Start the \hyperlink{classglite_1_1wmsui_1_1api_1_1Listener}{Listener} run method \begin{Desc}
+\item[See also:]\hyperlink{classglite_1_1wmsui_1_1api_1_1Listener}{Listener}\end{Desc}
+
+
+\subsection{Friends And Related Function Documentation}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Shadow_n0}{
+\index{glite::wmsui::api::Shadow@{glite::wmsui::api::Shadow}!Job@{Job}}
+\index{Job@{Job}!glite::wmsui::api::Shadow@{glite::wmsui::api::Shadow}}
+\subsubsection[Job]{\setlength{\rightskip}{0pt plus 5cm}friend class \hyperlink{classglite_1_1wmsui_1_1api_1_1Job}{Job}\hspace{0.3cm}{\tt  \mbox{[}friend\mbox{]}}}}
+\label{classglite_1_1wmsui_1_1api_1_1Shadow_n0}
+
+
+
+
+The documentation for this class was generated from the following file:\begin{CompactItemize}
+\item 
+\hyperlink{Shadow_8h}{Shadow.h}\end{CompactItemize}

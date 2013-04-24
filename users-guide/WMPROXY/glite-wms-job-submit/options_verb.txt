@@ -1,0 +1,32 @@
+delegation-opts:
+        --delegationid, -d <id_string>
+        --autm-delegation, -a
+
+options:
+        --version
+        --help
+        --endpoint, -e     <service_URL>
+        --config, -c       <configfile>
+        --vo               <voname>
+        --debug
+        --logfile          <filepath>
+        --noint
+        --input, -i        <filepath>
+        --resource, -r     <ceid>
+        --nodes-resource   <ceid>
+        --nolisten
+        --nomsg
+        --lrms             <lrmstype>
+        --to               <[MM:DD:]hh:mm[:[CC]YY]>
+        --valid, -v        <hh:mm>
+        --register-only
+        --transfer-files
+        --proto            <protocol>
+        --start            <jobid>
+        --output, -o       <filepath>
+        --collection, -c   <dirpath>
+        --dag              <dirpath>
+        --default-jdl      <filepath>
+        --jsdl             <filepath>
+        --json
+        --pretty-print

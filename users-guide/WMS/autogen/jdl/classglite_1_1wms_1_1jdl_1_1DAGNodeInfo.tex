@@ -1,0 +1,182 @@
+\hypertarget{classglite_1_1wms_1_1jdl_1_1DAGNodeInfo}{
+\section{glite::wms::jdl::DAGNode\-Info Class Reference}
+\label{classglite_1_1wms_1_1jdl_1_1DAGNodeInfo}\index{glite::wms::jdl::DAGNodeInfo@{glite::wms::jdl::DAGNodeInfo}}
+}
+{\tt \#include $<$DAGAd.h$>$}
+
+\subsection*{Public Member Functions}
+\begin{CompactItemize}
+\item 
+\hyperlink{classglite_1_1wms_1_1jdl_1_1DAGNodeInfo_a0}{DAGNode\-Info} ()
+\item 
+\hyperlink{classglite_1_1wms_1_1jdl_1_1DAGNodeInfo_a1}{DAGNode\-Info} (classad::Class\-Ad const \&node\_\-info\_\-ad)
+\item 
+\hyperlink{classglite_1_1wms_1_1jdl_1_1DAGNodeInfo_a2}{DAGNode\-Info} (std::string const \&node\_\-description, std::string const \&node\_\-type)
+\item 
+\hyperlink{classglite_1_1wms_1_1jdl_1_1DAGNodeInfo_a3}{DAGNode\-Info} (classad::Class\-Ad const \&node\_\-description, std::string const \&node\_\-type)
+\item 
+std::string \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGNodeInfo_a4}{description\_\-file} () const 
+\item 
+bool \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGNodeInfo_a5}{replace\_\-description\_\-file} (std::string const \&file)
+\item 
+classad::Class\-Ad const $\ast$ \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGNodeInfo_a6}{description\_\-ad} () const 
+\item 
+bool \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGNodeInfo_a7}{replace\_\-description\_\-ad} (classad::Class\-Ad $\ast$ad)
+\item 
+bool \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGNodeInfo_a8}{description\_\-file\_\-for\_\-ad} (std::string const \&file)
+\item 
+bool \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGNodeInfo_a9}{description\_\-ad\_\-for\_\-file} (classad::Class\-Ad $\ast$ad)
+\item 
+std::string \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGNodeInfo_a10}{type} () const 
+\item 
+std::pair$<$ std::string, std::string $>$ \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGNodeInfo_a11}{pre} () const 
+\item 
+bool \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGNodeInfo_a12}{pre} (std::string const \&file, std::string const \&args)
+\item 
+std::pair$<$ std::string, std::string $>$ \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGNodeInfo_a13}{post} () const 
+\item 
+bool \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGNodeInfo_a14}{post} (std::string const \&file, std::string const \&args)
+\item 
+int \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGNodeInfo_a15}{retry\_\-count} () const 
+\item 
+bool \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGNodeInfo_a16}{retry\_\-count} (int n)
+\item 
+classad::Class\-Ad \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGNodeInfo_a17}{as\_\-classad} () const 
+\end{CompactItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1DAGNodeInfo_a0}{
+\index{glite::wms::jdl::DAGNodeInfo@{glite::wms::jdl::DAGNode\-Info}!DAGNodeInfo@{DAGNodeInfo}}
+\index{DAGNodeInfo@{DAGNodeInfo}!glite::wms::jdl::DAGNodeInfo@{glite::wms::jdl::DAGNode\-Info}}
+\subsubsection[DAGNodeInfo]{\setlength{\rightskip}{0pt plus 5cm}glite::wms::jdl::DAGNode\-Info::DAGNode\-Info ()}}
+\label{classglite_1_1wms_1_1jdl_1_1DAGNodeInfo_a0}
+
+
+\hypertarget{classglite_1_1wms_1_1jdl_1_1DAGNodeInfo_a1}{
+\index{glite::wms::jdl::DAGNodeInfo@{glite::wms::jdl::DAGNode\-Info}!DAGNodeInfo@{DAGNodeInfo}}
+\index{DAGNodeInfo@{DAGNodeInfo}!glite::wms::jdl::DAGNodeInfo@{glite::wms::jdl::DAGNode\-Info}}
+\subsubsection[DAGNodeInfo]{\setlength{\rightskip}{0pt plus 5cm}glite::wms::jdl::DAGNode\-Info::DAGNode\-Info (classad::Class\-Ad const \& {\em node\_\-info\_\-ad})\hspace{0.3cm}{\tt  \mbox{[}explicit\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1DAGNodeInfo_a1}
+
+
+\hypertarget{classglite_1_1wms_1_1jdl_1_1DAGNodeInfo_a2}{
+\index{glite::wms::jdl::DAGNodeInfo@{glite::wms::jdl::DAGNode\-Info}!DAGNodeInfo@{DAGNodeInfo}}
+\index{DAGNodeInfo@{DAGNodeInfo}!glite::wms::jdl::DAGNodeInfo@{glite::wms::jdl::DAGNode\-Info}}
+\subsubsection[DAGNodeInfo]{\setlength{\rightskip}{0pt plus 5cm}glite::wms::jdl::DAGNode\-Info::DAGNode\-Info (std::string const \& {\em node\_\-description}, std::string const \& {\em node\_\-type})}}
+\label{classglite_1_1wms_1_1jdl_1_1DAGNodeInfo_a2}
+
+
+\hypertarget{classglite_1_1wms_1_1jdl_1_1DAGNodeInfo_a3}{
+\index{glite::wms::jdl::DAGNodeInfo@{glite::wms::jdl::DAGNode\-Info}!DAGNodeInfo@{DAGNodeInfo}}
+\index{DAGNodeInfo@{DAGNodeInfo}!glite::wms::jdl::DAGNodeInfo@{glite::wms::jdl::DAGNode\-Info}}
+\subsubsection[DAGNodeInfo]{\setlength{\rightskip}{0pt plus 5cm}glite::wms::jdl::DAGNode\-Info::DAGNode\-Info (classad::Class\-Ad const \& {\em node\_\-description}, std::string const \& {\em node\_\-type})}}
+\label{classglite_1_1wms_1_1jdl_1_1DAGNodeInfo_a3}
+
+
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1DAGNodeInfo_a17}{
+\index{glite::wms::jdl::DAGNodeInfo@{glite::wms::jdl::DAGNode\-Info}!as_classad@{as\_\-classad}}
+\index{as_classad@{as\_\-classad}!glite::wms::jdl::DAGNodeInfo@{glite::wms::jdl::DAGNode\-Info}}
+\subsubsection[as\_\-classad]{\setlength{\rightskip}{0pt plus 5cm}classad::Class\-Ad glite::wms::jdl::DAGNode\-Info::as\_\-classad () const}}
+\label{classglite_1_1wms_1_1jdl_1_1DAGNodeInfo_a17}
+
+
+\hypertarget{classglite_1_1wms_1_1jdl_1_1DAGNodeInfo_a6}{
+\index{glite::wms::jdl::DAGNodeInfo@{glite::wms::jdl::DAGNode\-Info}!description_ad@{description\_\-ad}}
+\index{description_ad@{description\_\-ad}!glite::wms::jdl::DAGNodeInfo@{glite::wms::jdl::DAGNode\-Info}}
+\subsubsection[description\_\-ad]{\setlength{\rightskip}{0pt plus 5cm}classad::Class\-Ad const$\ast$ glite::wms::jdl::DAGNode\-Info::description\_\-ad () const}}
+\label{classglite_1_1wms_1_1jdl_1_1DAGNodeInfo_a6}
+
+
+\hypertarget{classglite_1_1wms_1_1jdl_1_1DAGNodeInfo_a9}{
+\index{glite::wms::jdl::DAGNodeInfo@{glite::wms::jdl::DAGNode\-Info}!description_ad_for_file@{description\_\-ad\_\-for\_\-file}}
+\index{description_ad_for_file@{description\_\-ad\_\-for\_\-file}!glite::wms::jdl::DAGNodeInfo@{glite::wms::jdl::DAGNode\-Info}}
+\subsubsection[description\_\-ad\_\-for\_\-file]{\setlength{\rightskip}{0pt plus 5cm}bool glite::wms::jdl::DAGNode\-Info::description\_\-ad\_\-for\_\-file (classad::Class\-Ad $\ast$ {\em ad})}}
+\label{classglite_1_1wms_1_1jdl_1_1DAGNodeInfo_a9}
+
+
+\hypertarget{classglite_1_1wms_1_1jdl_1_1DAGNodeInfo_a4}{
+\index{glite::wms::jdl::DAGNodeInfo@{glite::wms::jdl::DAGNode\-Info}!description_file@{description\_\-file}}
+\index{description_file@{description\_\-file}!glite::wms::jdl::DAGNodeInfo@{glite::wms::jdl::DAGNode\-Info}}
+\subsubsection[description\_\-file]{\setlength{\rightskip}{0pt plus 5cm}std::string glite::wms::jdl::DAGNode\-Info::description\_\-file () const}}
+\label{classglite_1_1wms_1_1jdl_1_1DAGNodeInfo_a4}
+
+
+\hypertarget{classglite_1_1wms_1_1jdl_1_1DAGNodeInfo_a8}{
+\index{glite::wms::jdl::DAGNodeInfo@{glite::wms::jdl::DAGNode\-Info}!description_file_for_ad@{description\_\-file\_\-for\_\-ad}}
+\index{description_file_for_ad@{description\_\-file\_\-for\_\-ad}!glite::wms::jdl::DAGNodeInfo@{glite::wms::jdl::DAGNode\-Info}}
+\subsubsection[description\_\-file\_\-for\_\-ad]{\setlength{\rightskip}{0pt plus 5cm}bool glite::wms::jdl::DAGNode\-Info::description\_\-file\_\-for\_\-ad (std::string const \& {\em file})}}
+\label{classglite_1_1wms_1_1jdl_1_1DAGNodeInfo_a8}
+
+
+\hypertarget{classglite_1_1wms_1_1jdl_1_1DAGNodeInfo_a14}{
+\index{glite::wms::jdl::DAGNodeInfo@{glite::wms::jdl::DAGNode\-Info}!post@{post}}
+\index{post@{post}!glite::wms::jdl::DAGNodeInfo@{glite::wms::jdl::DAGNode\-Info}}
+\subsubsection[post]{\setlength{\rightskip}{0pt plus 5cm}bool glite::wms::jdl::DAGNode\-Info::post (std::string const \& {\em file}, std::string const \& {\em args})}}
+\label{classglite_1_1wms_1_1jdl_1_1DAGNodeInfo_a14}
+
+
+\hypertarget{classglite_1_1wms_1_1jdl_1_1DAGNodeInfo_a13}{
+\index{glite::wms::jdl::DAGNodeInfo@{glite::wms::jdl::DAGNode\-Info}!post@{post}}
+\index{post@{post}!glite::wms::jdl::DAGNodeInfo@{glite::wms::jdl::DAGNode\-Info}}
+\subsubsection[post]{\setlength{\rightskip}{0pt plus 5cm}std::pair$<$std::string,std::string$>$ glite::wms::jdl::DAGNode\-Info::post () const}}
+\label{classglite_1_1wms_1_1jdl_1_1DAGNodeInfo_a13}
+
+
+\hypertarget{classglite_1_1wms_1_1jdl_1_1DAGNodeInfo_a12}{
+\index{glite::wms::jdl::DAGNodeInfo@{glite::wms::jdl::DAGNode\-Info}!pre@{pre}}
+\index{pre@{pre}!glite::wms::jdl::DAGNodeInfo@{glite::wms::jdl::DAGNode\-Info}}
+\subsubsection[pre]{\setlength{\rightskip}{0pt plus 5cm}bool glite::wms::jdl::DAGNode\-Info::pre (std::string const \& {\em file}, std::string const \& {\em args})}}
+\label{classglite_1_1wms_1_1jdl_1_1DAGNodeInfo_a12}
+
+
+\hypertarget{classglite_1_1wms_1_1jdl_1_1DAGNodeInfo_a11}{
+\index{glite::wms::jdl::DAGNodeInfo@{glite::wms::jdl::DAGNode\-Info}!pre@{pre}}
+\index{pre@{pre}!glite::wms::jdl::DAGNodeInfo@{glite::wms::jdl::DAGNode\-Info}}
+\subsubsection[pre]{\setlength{\rightskip}{0pt plus 5cm}std::pair$<$std::string,std::string$>$ glite::wms::jdl::DAGNode\-Info::pre () const}}
+\label{classglite_1_1wms_1_1jdl_1_1DAGNodeInfo_a11}
+
+
+\hypertarget{classglite_1_1wms_1_1jdl_1_1DAGNodeInfo_a7}{
+\index{glite::wms::jdl::DAGNodeInfo@{glite::wms::jdl::DAGNode\-Info}!replace_description_ad@{replace\_\-description\_\-ad}}
+\index{replace_description_ad@{replace\_\-description\_\-ad}!glite::wms::jdl::DAGNodeInfo@{glite::wms::jdl::DAGNode\-Info}}
+\subsubsection[replace\_\-description\_\-ad]{\setlength{\rightskip}{0pt plus 5cm}bool glite::wms::jdl::DAGNode\-Info::replace\_\-description\_\-ad (classad::Class\-Ad $\ast$ {\em ad})}}
+\label{classglite_1_1wms_1_1jdl_1_1DAGNodeInfo_a7}
+
+
+\hypertarget{classglite_1_1wms_1_1jdl_1_1DAGNodeInfo_a5}{
+\index{glite::wms::jdl::DAGNodeInfo@{glite::wms::jdl::DAGNode\-Info}!replace_description_file@{replace\_\-description\_\-file}}
+\index{replace_description_file@{replace\_\-description\_\-file}!glite::wms::jdl::DAGNodeInfo@{glite::wms::jdl::DAGNode\-Info}}
+\subsubsection[replace\_\-description\_\-file]{\setlength{\rightskip}{0pt plus 5cm}bool glite::wms::jdl::DAGNode\-Info::replace\_\-description\_\-file (std::string const \& {\em file})}}
+\label{classglite_1_1wms_1_1jdl_1_1DAGNodeInfo_a5}
+
+
+\hypertarget{classglite_1_1wms_1_1jdl_1_1DAGNodeInfo_a16}{
+\index{glite::wms::jdl::DAGNodeInfo@{glite::wms::jdl::DAGNode\-Info}!retry_count@{retry\_\-count}}
+\index{retry_count@{retry\_\-count}!glite::wms::jdl::DAGNodeInfo@{glite::wms::jdl::DAGNode\-Info}}
+\subsubsection[retry\_\-count]{\setlength{\rightskip}{0pt plus 5cm}bool glite::wms::jdl::DAGNode\-Info::retry\_\-count (int {\em n})}}
+\label{classglite_1_1wms_1_1jdl_1_1DAGNodeInfo_a16}
+
+
+\hypertarget{classglite_1_1wms_1_1jdl_1_1DAGNodeInfo_a15}{
+\index{glite::wms::jdl::DAGNodeInfo@{glite::wms::jdl::DAGNode\-Info}!retry_count@{retry\_\-count}}
+\index{retry_count@{retry\_\-count}!glite::wms::jdl::DAGNodeInfo@{glite::wms::jdl::DAGNode\-Info}}
+\subsubsection[retry\_\-count]{\setlength{\rightskip}{0pt plus 5cm}int glite::wms::jdl::DAGNode\-Info::retry\_\-count () const}}
+\label{classglite_1_1wms_1_1jdl_1_1DAGNodeInfo_a15}
+
+
+\hypertarget{classglite_1_1wms_1_1jdl_1_1DAGNodeInfo_a10}{
+\index{glite::wms::jdl::DAGNodeInfo@{glite::wms::jdl::DAGNode\-Info}!type@{type}}
+\index{type@{type}!glite::wms::jdl::DAGNodeInfo@{glite::wms::jdl::DAGNode\-Info}}
+\subsubsection[type]{\setlength{\rightskip}{0pt plus 5cm}std::string glite::wms::jdl::DAGNode\-Info::type () const}}
+\label{classglite_1_1wms_1_1jdl_1_1DAGNodeInfo_a10}
+
+
+
+
+The documentation for this class was generated from the following file:\begin{CompactItemize}
+\item 
+\hyperlink{DAGAd_8h}{DAGAd.h}\end{CompactItemize}

@@ -1,0 +1,36 @@
+glite-wms-job-submit is the command for submitting simple jobs, DAGs, collections and parametric jobs to the WMProxy service: hence allows the user to run these jobs at one or several remote resources. It requires as input a job description file in which job characteristics and requirements are expressed by means of Condor class-ad-like expressions. 
+While it does not matter the order of the other arguments, the job description file has to be the last argument of this command.
+
+Submission can be performed either by using a proxy previously delegated to the WMProxy (for example with the glite-wms-job-delegate-proxy command) or delegating a new proxy at each new submission ("automatic delegation"). In the former case the the --delegationid (-d) option must be used, specifying the id string associated with the delegated proxy.
+
+<<<NEWLINE>>>
+E.g.:
+
+<<<ENUM>>>
+<<<ITEM>>>
+<<<VERB>>>
+glite-wms-job-delegate-proxy --delegationid <mydelegID>
+<<<ENDVERB>>>
+
+<<<ITEM>>>
+<<<VERB>>>
+glite-wms-job-submit --delegationid mydelegID <myjob ID>
+<<<ENDVERB>>>
+<<<ENDENUM>>>
+<<<NEWLINE>>>
+For automatic delegation the --autm-delegation (-a) option must be used. Only one of these two options must be specified. For job collections there is a further way to perform submission. The --collection option allows indeed to specify the path to a directory containing all the single JDL files of the jobs you want the collection is made of.
+The glite-wms-job-submit will generate the corresponding collection JDL and submit it. 
+
+<<<NEWLINE>>>
+E.g.:
+<<<NEWLINE>>>
+<<<VERB>>>
+glite-wms-job-submit -d mydelegID --collection /home/glite/KOLL/
+<<<ENDVERB>>>
+<<<NEWLINE>>>
+<<<NEWLINE>>>
+where <<<INLINEVERB>>>/home/glite/KOLL/<<<ENDINLINEVERB>>>  is the directory containing all the JDL files.
+<<<NEWLINE>>>
+In all cases, upon success, the command returns an ID to the user that can be used as the handle to follow
+up the progress of the request itself.
+<<<NEWLINE>>>

@@ -1,0 +1,5 @@
+This command queries the LB persistent DB for logging information about jobs previously submitted using 
+glite-wms-job-submit.
+The job logging information are stored permanently by the LB service and can be retrieved also after 
+the job has terminated its life-cycle, differently from the bookkeeping information that are in some way 
+"consumed" by the user during the job existence.

@@ -1,0 +1,22 @@
+%\subsection{Introduction}
+
+The WMProxy (Workload Manager Proxy) is a simple service providing access 
+to the WMS (Workload Management System) functionality through a Web Services based 
+interface the user can interact with by mean of the WMS Command Line Interface (WMS CLI or WMS UI).
+
+WMProxy accepts job submission requests described with the job description language 
+(JDL) whose specification is available at~\cite{JDL} and other job management and 
+control requests such as job cancellation, job file perusal, job output retrieval etc.
+
+This service replaces with a Web Services based interface the legacy interface to the WMS 
+represented by the Network Server described in \cite{WMS} and provides additional 
+functionality such as bulk submission and support for shared and compressed sandboxes. 
+
+The WMProxy can be either accessed directly through the published WSDL available 
+at~\cite{wmproxy-wsdl} or through the provided client tools that are:
+\begin{itemize}
+  \item a C++ command line interface (Sect. \ref{cli}).
+  \item an API providing C++, Java and Python bindings (Sect. \ref{api}). 
+\end{itemize}
+
+Further information about the WMProxy Service can be found at \cite{wmproxy-wiki}. 

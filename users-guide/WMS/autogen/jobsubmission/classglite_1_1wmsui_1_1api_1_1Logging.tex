@@ -1,0 +1,146 @@
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Logging}{
+\section{glite::wmsui::api::Logging Class Reference}
+\label{classglite_1_1wmsui_1_1api_1_1Logging}\index{glite::wmsui::api::Logging@{glite::wmsui::api::Logging}}
+}
+{\tt \#include $<$Logging.h$>$}
+
+\subsection*{Public Types}
+\begin{CompactItemize}
+\item 
+enum \hyperlink{classglite_1_1wmsui_1_1api_1_1Logging_w3}{tx\-Type} \{ \hyperlink{classglite_1_1wmsui_1_1api_1_1Logging_w3w0}{START}, 
+\hyperlink{classglite_1_1wmsui_1_1api_1_1Logging_w3w1}{OK}, 
+\hyperlink{classglite_1_1wmsui_1_1api_1_1Logging_w3w2}{FAIL}
+ \}
+\end{CompactItemize}
+\subsection*{Public Member Functions}
+\begin{CompactItemize}
+\item 
+\hyperlink{classglite_1_1wmsui_1_1api_1_1Logging_a0}{Logging} ()
+\item 
+virtual \hyperlink{classglite_1_1wmsui_1_1api_1_1Logging_a1}{$\sim$Logging} ()  throw ()
+\item 
+void \hyperlink{classglite_1_1wmsui_1_1api_1_1Logging_a2}{init} (const std::string \&ns\-Host, int ns\-Port, glite::wmsutils::jobid::Job\-Id $\ast$id)
+\item 
+glite::wms::jdl::Exp\-Dag\-Ad $\ast$ \hyperlink{classglite_1_1wmsui_1_1api_1_1Logging_a3}{register\-Job} (glite::wms::jdl::Job\-Ad $\ast$ad, int resource)
+\item 
+void \hyperlink{classglite_1_1wmsui_1_1api_1_1Logging_a4}{register\-Job} (glite::wms::jdl::Job\-Ad $\ast$ad)
+\item 
+void \hyperlink{classglite_1_1wmsui_1_1api_1_1Logging_a5}{register\-Dag} (glite::wms::jdl::Exp\-Dag\-Ad $\ast$ad)
+\item 
+void \hyperlink{classglite_1_1wmsui_1_1api_1_1Logging_a6}{transfer} (\hyperlink{classglite_1_1wmsui_1_1api_1_1Logging_w3}{tx\-Type} tx, const std::string \&jdl, const char $\ast$error=\char`\"{}\char`\"{})
+\item 
+std::string \hyperlink{classglite_1_1wmsui_1_1api_1_1Logging_a7}{get\-Sequence} ()
+\item 
+void \hyperlink{classglite_1_1wmsui_1_1api_1_1Logging_a8}{log\-User\-Tags} (classad::Class\-Ad $\ast$user\-Tags)
+\item 
+void \hyperlink{classglite_1_1wmsui_1_1api_1_1Logging_a9}{log\-User\-Tags} (std::vector$<$ std::pair$<$ std::string, classad::Expr\-Tree $\ast$ $>$ $>$ user\-Tags)
+\end{CompactItemize}
+
+
+\subsection{Member Enumeration Documentation}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Logging_w3}{
+\index{glite::wmsui::api::Logging@{glite::wmsui::api::Logging}!txType@{txType}}
+\index{txType@{txType}!glite::wmsui::api::Logging@{glite::wmsui::api::Logging}}
+\subsubsection[txType]{\setlength{\rightskip}{0pt plus 5cm}enum \hyperlink{classglite_1_1wmsui_1_1api_1_1Logging_w3}{glite::wmsui::api::Logging::tx\-Type}}}
+\label{classglite_1_1wmsui_1_1api_1_1Logging_w3}
+
+
+\begin{Desc}
+\item[Enumeration values: ]\par
+\begin{description}
+\index{START@{START}!glite::wmsui::api::Logging@{glite::wmsui::api::Logging}}\index{glite::wmsui::api::Logging@{glite::wmsui::api::Logging}!START@{START}}\item[{\em 
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Logging_w3w0}{
+START}
+\label{classglite_1_1wmsui_1_1api_1_1Logging_w3w0}
+}]\index{OK@{OK}!glite::wmsui::api::Logging@{glite::wmsui::api::Logging}}\index{glite::wmsui::api::Logging@{glite::wmsui::api::Logging}!OK@{OK}}\item[{\em 
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Logging_w3w1}{
+OK}
+\label{classglite_1_1wmsui_1_1api_1_1Logging_w3w1}
+}]\index{FAIL@{FAIL}!glite::wmsui::api::Logging@{glite::wmsui::api::Logging}}\index{glite::wmsui::api::Logging@{glite::wmsui::api::Logging}!FAIL@{FAIL}}\item[{\em 
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Logging_w3w2}{
+FAIL}
+\label{classglite_1_1wmsui_1_1api_1_1Logging_w3w2}
+}]\end{description}
+\end{Desc}
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Logging_a0}{
+\index{glite::wmsui::api::Logging@{glite::wmsui::api::Logging}!Logging@{Logging}}
+\index{Logging@{Logging}!glite::wmsui::api::Logging@{glite::wmsui::api::Logging}}
+\subsubsection[Logging]{\setlength{\rightskip}{0pt plus 5cm}glite::wmsui::api::Logging::Logging ()}}
+\label{classglite_1_1wmsui_1_1api_1_1Logging_a0}
+
+
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Logging_a1}{
+\index{glite::wmsui::api::Logging@{glite::wmsui::api::Logging}!~Logging@{$\sim$Logging}}
+\index{~Logging@{$\sim$Logging}!glite::wmsui::api::Logging@{glite::wmsui::api::Logging}}
+\subsubsection[$\sim$Logging]{\setlength{\rightskip}{0pt plus 5cm}virtual glite::wmsui::api::Logging::$\sim$\hyperlink{classglite_1_1wmsui_1_1api_1_1Logging}{Logging} ()  throw ()\hspace{0.3cm}{\tt  \mbox{[}inline, virtual\mbox{]}}}}
+\label{classglite_1_1wmsui_1_1api_1_1Logging_a1}
+
+
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Logging_a7}{
+\index{glite::wmsui::api::Logging@{glite::wmsui::api::Logging}!getSequence@{getSequence}}
+\index{getSequence@{getSequence}!glite::wmsui::api::Logging@{glite::wmsui::api::Logging}}
+\subsubsection[getSequence]{\setlength{\rightskip}{0pt plus 5cm}std::string glite::wmsui::api::Logging::get\-Sequence ()\hspace{0.3cm}{\tt  \mbox{[}inline\mbox{]}}}}
+\label{classglite_1_1wmsui_1_1api_1_1Logging_a7}
+
+
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Logging_a2}{
+\index{glite::wmsui::api::Logging@{glite::wmsui::api::Logging}!init@{init}}
+\index{init@{init}!glite::wmsui::api::Logging@{glite::wmsui::api::Logging}}
+\subsubsection[init]{\setlength{\rightskip}{0pt plus 5cm}void glite::wmsui::api::Logging::init (const std::string \& {\em ns\-Host}, int {\em ns\-Port}, glite::wmsutils::jobid::Job\-Id $\ast$ {\em id})}}
+\label{classglite_1_1wmsui_1_1api_1_1Logging_a2}
+
+
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Logging_a9}{
+\index{glite::wmsui::api::Logging@{glite::wmsui::api::Logging}!logUserTags@{logUserTags}}
+\index{logUserTags@{logUserTags}!glite::wmsui::api::Logging@{glite::wmsui::api::Logging}}
+\subsubsection[logUserTags]{\setlength{\rightskip}{0pt plus 5cm}void glite::wmsui::api::Logging::log\-User\-Tags (std::vector$<$ std::pair$<$ std::string, classad::Expr\-Tree $\ast$ $>$ $>$ {\em user\-Tags})}}
+\label{classglite_1_1wmsui_1_1api_1_1Logging_a9}
+
+
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Logging_a8}{
+\index{glite::wmsui::api::Logging@{glite::wmsui::api::Logging}!logUserTags@{logUserTags}}
+\index{logUserTags@{logUserTags}!glite::wmsui::api::Logging@{glite::wmsui::api::Logging}}
+\subsubsection[logUserTags]{\setlength{\rightskip}{0pt plus 5cm}void glite::wmsui::api::Logging::log\-User\-Tags (classad::Class\-Ad $\ast$ {\em user\-Tags})}}
+\label{classglite_1_1wmsui_1_1api_1_1Logging_a8}
+
+
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Logging_a5}{
+\index{glite::wmsui::api::Logging@{glite::wmsui::api::Logging}!registerDag@{registerDag}}
+\index{registerDag@{registerDag}!glite::wmsui::api::Logging@{glite::wmsui::api::Logging}}
+\subsubsection[registerDag]{\setlength{\rightskip}{0pt plus 5cm}void glite::wmsui::api::Logging::register\-Dag (glite::wms::jdl::Exp\-Dag\-Ad $\ast$ {\em ad})}}
+\label{classglite_1_1wmsui_1_1api_1_1Logging_a5}
+
+
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Logging_a4}{
+\index{glite::wmsui::api::Logging@{glite::wmsui::api::Logging}!registerJob@{registerJob}}
+\index{registerJob@{registerJob}!glite::wmsui::api::Logging@{glite::wmsui::api::Logging}}
+\subsubsection[registerJob]{\setlength{\rightskip}{0pt plus 5cm}void glite::wmsui::api::Logging::register\-Job (glite::wms::jdl::Job\-Ad $\ast$ {\em ad})}}
+\label{classglite_1_1wmsui_1_1api_1_1Logging_a4}
+
+
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Logging_a3}{
+\index{glite::wmsui::api::Logging@{glite::wmsui::api::Logging}!registerJob@{registerJob}}
+\index{registerJob@{registerJob}!glite::wmsui::api::Logging@{glite::wmsui::api::Logging}}
+\subsubsection[registerJob]{\setlength{\rightskip}{0pt plus 5cm}glite::wms::jdl::Exp\-Dag\-Ad$\ast$ glite::wmsui::api::Logging::register\-Job (glite::wms::jdl::Job\-Ad $\ast$ {\em ad}, int {\em resource})}}
+\label{classglite_1_1wmsui_1_1api_1_1Logging_a3}
+
+
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Logging_a6}{
+\index{glite::wmsui::api::Logging@{glite::wmsui::api::Logging}!transfer@{transfer}}
+\index{transfer@{transfer}!glite::wmsui::api::Logging@{glite::wmsui::api::Logging}}
+\subsubsection[transfer]{\setlength{\rightskip}{0pt plus 5cm}void glite::wmsui::api::Logging::transfer (\hyperlink{classglite_1_1wmsui_1_1api_1_1Logging_w3}{tx\-Type} {\em tx}, const std::string \& {\em jdl}, const char $\ast$ {\em error} = \char`\"{}\char`\"{})}}
+\label{classglite_1_1wmsui_1_1api_1_1Logging_a6}
+
+
+
+
+The documentation for this class was generated from the following file:\begin{CompactItemize}
+\item 
+\hyperlink{Logging_8h}{Logging.h}\end{CompactItemize}

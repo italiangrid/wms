@@ -1,0 +1,409 @@
+\hypertarget{classglite_1_1wms_1_1jdl_1_1AdConverter}{
+\section{glite::wms::jdl::Ad\-Converter Class Reference}
+\label{classglite_1_1wms_1_1jdl_1_1AdConverter}\index{glite::wms::jdl::AdConverter@{glite::wms::jdl::AdConverter}}
+}
+utilities for converting classad expression into requestad known classes and to create Job\-Ad/Exp\-Dag\-Ad templates instances  
+
+
+{\tt \#include $<$adconverter.h$>$}
+
+\subsection*{Public Types}
+\begin{CompactItemize}
+\item 
+enum \hyperlink{classglite_1_1wms_1_1jdl_1_1AdConverter_w9}{jobtype} \{ \par
+\hyperlink{classglite_1_1wms_1_1jdl_1_1AdConverter_w9w0}{ADCONV\_\-JOBTYPE\_\-NORMAL} = 1, 
+\hyperlink{classglite_1_1wms_1_1jdl_1_1AdConverter_w9w1}{ADCONV\_\-JOBTYPE\_\-PARAMETRIC} = 2, 
+\hyperlink{classglite_1_1wms_1_1jdl_1_1AdConverter_w9w2}{ADCONV\_\-JOBTYPE\_\-INTERACTIVE} = 4, 
+\hyperlink{classglite_1_1wms_1_1jdl_1_1AdConverter_w9w3}{ADCONV\_\-JOBTYPE\_\-MPICH} = 8, 
+\par
+\hyperlink{classglite_1_1wms_1_1jdl_1_1AdConverter_w9w4}{ADCONV\_\-JOBTYPE\_\-PARTITIONABLE} = 16, 
+\hyperlink{classglite_1_1wms_1_1jdl_1_1AdConverter_w9w5}{ADCONV\_\-JOBTYPE\_\-CHECKPOINTABLE} = 32
+ \}
+\item 
+enum \hyperlink{classglite_1_1wms_1_1jdl_1_1AdConverter_w10}{attribute} \{ \hyperlink{classglite_1_1wms_1_1jdl_1_1AdConverter_w10w6}{ADCONV\_\-ATTR\_\-INPUTSB} = 1, 
+\hyperlink{classglite_1_1wms_1_1jdl_1_1AdConverter_w10w7}{ADCONV\_\-ATTR\_\-INPUTDATA} = 2, 
+\hyperlink{classglite_1_1wms_1_1jdl_1_1AdConverter_w10w8}{ADCONV\_\-ATTR\_\-ARGUMENTS} = 4
+ \}
+\end{CompactItemize}
+\subsection*{Static Public Member Functions}
+\begin{Indent}{\bf Template creation:}\par
+\begin{CompactItemize}
+\item 
+\hyperlink{classglite_1_1wms_1_1jdl_1_1JobAd}{Job\-Ad} $\ast$ \hyperlink{classglite_1_1wms_1_1jdl_1_1AdConverter_z21_0}{create\-Job\-Template} (int type, const std::string \&executable, const std::string \&arguments, const std::string \&requirements, const std::string \&rank, const std::string \&vo=\char`\"{}\char`\"{})
+\item 
+\hyperlink{classglite_1_1wms_1_1jdl_1_1JobAd}{Job\-Ad} $\ast$ \hyperlink{classglite_1_1wms_1_1jdl_1_1AdConverter_z21_1}{create\-String\-Parametric\-Template} (std::vector$<$ std::string $>$ parametrised,std::vector$<$ std::string $>$ parameters, const std::string \&requirements, const std::string \&rank, const std::string \&vo=\char`\"{}\char`\"{})
+\item 
+\hyperlink{classglite_1_1wms_1_1jdl_1_1JobAd}{Job\-Ad} $\ast$ \hyperlink{classglite_1_1wms_1_1jdl_1_1AdConverter_z21_2}{create\-String\-Parametric\-Template} (int parametrised,std::vector$<$ std::string $>$ parameters, const std::string \&requirements, const std::string \&rank, const std::string \&vo=\char`\"{}\char`\"{})
+\item 
+\hyperlink{classglite_1_1wms_1_1jdl_1_1JobAd}{Job\-Ad} $\ast$ \hyperlink{classglite_1_1wms_1_1jdl_1_1AdConverter_z21_3}{create\-Int\-Parametric\-Template} (std::vector$<$ std::string $>$ parametrised,int param\_\-number, int param\_\-start, int param\_\-step, const std::string \&requirements, const std::string \&rank, const std::string \&vo=\char`\"{}\char`\"{})
+\item 
+\hyperlink{classglite_1_1wms_1_1jdl_1_1JobAd}{Job\-Ad} $\ast$ \hyperlink{classglite_1_1wms_1_1jdl_1_1AdConverter_z21_4}{create\-Int\-Parametric\-Template} (int parametrised,int param\_\-number, int param\_\-start, int param\_\-step, const std::string \&requirements, const std::string \&rank, const std::string \&vo=\char`\"{}\char`\"{})
+\item 
+\hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd}{Exp\-Dag\-Ad} $\ast$ \hyperlink{classglite_1_1wms_1_1jdl_1_1AdConverter_z21_5}{create\-DAGTemplate} (\hyperlink{structglite_1_1wms_1_1jdl_1_1NodeStruct}{Node\-Struct} dependencies, const std::string \&requirements, const std::string \&rank, const std::string \&vo=\char`\"{}\char`\"{})
+\item 
+\hyperlink{classglite_1_1wms_1_1jdl_1_1Ad}{Ad} $\ast$ \hyperlink{classglite_1_1wms_1_1jdl_1_1AdConverter_z21_6}{create\-Collection\-Template} (unsigned int job\-Number,const std::string \&requirements, const std::string \&rank, const std::string \&vo=\char`\"{}\char`\"{})
+\item 
+\hyperlink{classglite_1_1wms_1_1jdl_1_1Ad}{Ad} $\ast$ \hyperlink{classglite_1_1wms_1_1jdl_1_1AdConverter_z21_7}{create\-Collection\-From\-Path} (const std::string \&path, const std::string \&vo=\char`\"{}\char`\"{})
+\end{CompactItemize}
+\end{Indent}
+\begin{Indent}{\bf Ad conversion:}\par
+\begin{CompactItemize}
+\item 
+\hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd}{Exp\-Dag\-Ad} $\ast$ \hyperlink{classglite_1_1wms_1_1jdl_1_1AdConverter_z23_0}{part2dag} (const std::string \&ad)
+\item 
+\hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd}{Exp\-Dag\-Ad} $\ast$ \hyperlink{classglite_1_1wms_1_1jdl_1_1AdConverter_z23_1}{part2dag} (\hyperlink{classglite_1_1wms_1_1jdl_1_1Ad}{Ad} $\ast$ad)
+\item 
+\hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd}{Exp\-Dag\-Ad} $\ast$ \hyperlink{classglite_1_1wms_1_1jdl_1_1AdConverter_z23_2}{collection2dag} (const std::string \&ad)
+\item 
+\hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd}{Exp\-Dag\-Ad} $\ast$ \hyperlink{classglite_1_1wms_1_1jdl_1_1AdConverter_z23_3}{collection2dag} (\hyperlink{classglite_1_1wms_1_1jdl_1_1Ad}{Ad} $\ast$ad)
+\item 
+\hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd}{Exp\-Dag\-Ad} $\ast$ \hyperlink{classglite_1_1wms_1_1jdl_1_1AdConverter_z23_4}{bulk2dag} (const std::string \&ad)
+\item 
+\hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd}{Exp\-Dag\-Ad} $\ast$ \hyperlink{classglite_1_1wms_1_1jdl_1_1AdConverter_z23_5}{bulk2dag} (\hyperlink{classglite_1_1wms_1_1jdl_1_1Ad}{Ad} $\ast$ad)
+\end{CompactItemize}
+\end{Indent}
+\subsection*{Static Public Attributes}
+\begin{CompactItemize}
+\item 
+const std::string \hyperlink{classglite_1_1wms_1_1jdl_1_1AdConverter_s0}{VALUES}
+\item 
+const std::string \hyperlink{classglite_1_1wms_1_1jdl_1_1AdConverter_s1}{VALUE}
+\item 
+const std::string \hyperlink{classglite_1_1wms_1_1jdl_1_1AdConverter_s2}{NODE}
+\item 
+const std::string \hyperlink{classglite_1_1wms_1_1jdl_1_1AdConverter_s3}{SIMPLE\_\-NODE\_\-TYPE}
+\item 
+const std::string \hyperlink{classglite_1_1wms_1_1jdl_1_1AdConverter_s4}{PARAMETRIC\_\-PARAMETERS}
+\item 
+const std::string \hyperlink{classglite_1_1wms_1_1jdl_1_1AdConverter_s5}{PARAMETRIC\_\-START}
+\item 
+const std::string \hyperlink{classglite_1_1wms_1_1jdl_1_1AdConverter_s6}{PARAMETRIC\_\-STEP}
+\end{CompactItemize}
+
+
+\subsection{Detailed Description}
+utilities for converting classad expression into requestad known classes and to create Job\-Ad/Exp\-Dag\-Ad templates instances 
+
+\hyperlink{classglite_1_1wms_1_1jdl_1_1AdConverter}{Ad\-Converter} deifines a series of utiliteis as separate static methods that allow the user to convert a Jdl into several different classad representation. it manages partitioner, collection and parametric jdls converting internally into an \hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd}{Exp\-Dag\-Ad} clas instance. It also provide a set of utilities to easily create valid jdl template for simple Jobs (even with jobtype different from \char`\"{}normal\char`\"{}) Dags or Collection of jobs; just by specifing a few parameters.
+
+\begin{Desc}
+\item[Version:]0.1 \end{Desc}
+\begin{Desc}
+\item[Date:]2004 \end{Desc}
+\begin{Desc}
+\item[Author:]Alessandro Maraschini $<$\href{mailto:alessandro.maraschini@datamat.it}{\tt alessandro.maraschini@datamat.it}$>$ \end{Desc}
+
+
+
+
+\subsection{Member Enumeration Documentation}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1AdConverter_w10}{
+\index{glite::wms::jdl::AdConverter@{glite::wms::jdl::Ad\-Converter}!attribute@{attribute}}
+\index{attribute@{attribute}!glite::wms::jdl::AdConverter@{glite::wms::jdl::Ad\-Converter}}
+\subsubsection[attribute]{\setlength{\rightskip}{0pt plus 5cm}enum \hyperlink{classglite_1_1wms_1_1jdl_1_1AdConverter_w10}{glite::wms::jdl::Ad\-Converter::attribute}}}
+\label{classglite_1_1wms_1_1jdl_1_1AdConverter_w10}
+
+
+Enum used to specify which attribute(s) are to be parametrised Notice: muliple attributes can be obtained by bitwise '$|$' operator. \begin{Desc}
+\item[See also:]\hyperlink{classglite_1_1wms_1_1jdl_1_1AdConverter_z21_1}{create\-String\-Parametric\-Template} 
+
+\hyperlink{classglite_1_1wms_1_1jdl_1_1AdConverter_z21_3}{create\-Int\-Parametric\-Template}\end{Desc}
+\begin{Desc}
+\item[Enumeration values: ]\par
+\begin{description}
+\index{ADCONV_ATTR_INPUTSB@{ADCONV\_\-ATTR\_\-INPUTSB}!glite::wms::jdl::AdConverter@{glite::wms::jdl::AdConverter}}\index{glite::wms::jdl::AdConverter@{glite::wms::jdl::AdConverter}!ADCONV_ATTR_INPUTSB@{ADCONV\_\-ATTR\_\-INPUTSB}}\item[{\em 
+\hypertarget{classglite_1_1wms_1_1jdl_1_1AdConverter_w10w6}{
+ADCONV\_\-ATTR\_\-INPUTSB}
+\label{classglite_1_1wms_1_1jdl_1_1AdConverter_w10w6}
+}]\index{ADCONV_ATTR_INPUTDATA@{ADCONV\_\-ATTR\_\-INPUTDATA}!glite::wms::jdl::AdConverter@{glite::wms::jdl::AdConverter}}\index{glite::wms::jdl::AdConverter@{glite::wms::jdl::AdConverter}!ADCONV_ATTR_INPUTDATA@{ADCONV\_\-ATTR\_\-INPUTDATA}}\item[{\em 
+\hypertarget{classglite_1_1wms_1_1jdl_1_1AdConverter_w10w7}{
+ADCONV\_\-ATTR\_\-INPUTDATA}
+\label{classglite_1_1wms_1_1jdl_1_1AdConverter_w10w7}
+}]\index{ADCONV_ATTR_ARGUMENTS@{ADCONV\_\-ATTR\_\-ARGUMENTS}!glite::wms::jdl::AdConverter@{glite::wms::jdl::AdConverter}}\index{glite::wms::jdl::AdConverter@{glite::wms::jdl::AdConverter}!ADCONV_ATTR_ARGUMENTS@{ADCONV\_\-ATTR\_\-ARGUMENTS}}\item[{\em 
+\hypertarget{classglite_1_1wms_1_1jdl_1_1AdConverter_w10w8}{
+ADCONV\_\-ATTR\_\-ARGUMENTS}
+\label{classglite_1_1wms_1_1jdl_1_1AdConverter_w10w8}
+}]\end{description}
+\end{Desc}
+
+\hypertarget{classglite_1_1wms_1_1jdl_1_1AdConverter_w9}{
+\index{glite::wms::jdl::AdConverter@{glite::wms::jdl::Ad\-Converter}!jobtype@{jobtype}}
+\index{jobtype@{jobtype}!glite::wms::jdl::AdConverter@{glite::wms::jdl::Ad\-Converter}}
+\subsubsection[jobtype]{\setlength{\rightskip}{0pt plus 5cm}enum \hyperlink{classglite_1_1wms_1_1jdl_1_1AdConverter_w9}{glite::wms::jdl::Ad\-Converter::jobtype}}}
+\label{classglite_1_1wms_1_1jdl_1_1AdConverter_w9}
+
+
+Enum used to specify the Jobtype of a job Notice: muliple job type can be obtained by bitwise '$|$' operator. \begin{Desc}
+\item[See also:]\hyperlink{classglite_1_1wms_1_1jdl_1_1AdConverter_z21_0}{create\-Job\-Template} \end{Desc}
+\begin{Desc}
+\item[Enumeration values: ]\par
+\begin{description}
+\index{ADCONV_JOBTYPE_NORMAL@{ADCONV\_\-JOBTYPE\_\-NORMAL}!glite::wms::jdl::AdConverter@{glite::wms::jdl::AdConverter}}\index{glite::wms::jdl::AdConverter@{glite::wms::jdl::AdConverter}!ADCONV_JOBTYPE_NORMAL@{ADCONV\_\-JOBTYPE\_\-NORMAL}}\item[{\em 
+\hypertarget{classglite_1_1wms_1_1jdl_1_1AdConverter_w9w0}{
+ADCONV\_\-JOBTYPE\_\-NORMAL}
+\label{classglite_1_1wms_1_1jdl_1_1AdConverter_w9w0}
+}]\index{ADCONV_JOBTYPE_PARAMETRIC@{ADCONV\_\-JOBTYPE\_\-PARAMETRIC}!glite::wms::jdl::AdConverter@{glite::wms::jdl::AdConverter}}\index{glite::wms::jdl::AdConverter@{glite::wms::jdl::AdConverter}!ADCONV_JOBTYPE_PARAMETRIC@{ADCONV\_\-JOBTYPE\_\-PARAMETRIC}}\item[{\em 
+\hypertarget{classglite_1_1wms_1_1jdl_1_1AdConverter_w9w1}{
+ADCONV\_\-JOBTYPE\_\-PARAMETRIC}
+\label{classglite_1_1wms_1_1jdl_1_1AdConverter_w9w1}
+}]\index{ADCONV_JOBTYPE_INTERACTIVE@{ADCONV\_\-JOBTYPE\_\-INTERACTIVE}!glite::wms::jdl::AdConverter@{glite::wms::jdl::AdConverter}}\index{glite::wms::jdl::AdConverter@{glite::wms::jdl::AdConverter}!ADCONV_JOBTYPE_INTERACTIVE@{ADCONV\_\-JOBTYPE\_\-INTERACTIVE}}\item[{\em 
+\hypertarget{classglite_1_1wms_1_1jdl_1_1AdConverter_w9w2}{
+ADCONV\_\-JOBTYPE\_\-INTERACTIVE}
+\label{classglite_1_1wms_1_1jdl_1_1AdConverter_w9w2}
+}]\index{ADCONV_JOBTYPE_MPICH@{ADCONV\_\-JOBTYPE\_\-MPICH}!glite::wms::jdl::AdConverter@{glite::wms::jdl::AdConverter}}\index{glite::wms::jdl::AdConverter@{glite::wms::jdl::AdConverter}!ADCONV_JOBTYPE_MPICH@{ADCONV\_\-JOBTYPE\_\-MPICH}}\item[{\em 
+\hypertarget{classglite_1_1wms_1_1jdl_1_1AdConverter_w9w3}{
+ADCONV\_\-JOBTYPE\_\-MPICH}
+\label{classglite_1_1wms_1_1jdl_1_1AdConverter_w9w3}
+}]\index{ADCONV_JOBTYPE_PARTITIONABLE@{ADCONV\_\-JOBTYPE\_\-PARTITIONABLE}!glite::wms::jdl::AdConverter@{glite::wms::jdl::AdConverter}}\index{glite::wms::jdl::AdConverter@{glite::wms::jdl::AdConverter}!ADCONV_JOBTYPE_PARTITIONABLE@{ADCONV\_\-JOBTYPE\_\-PARTITIONABLE}}\item[{\em 
+\hypertarget{classglite_1_1wms_1_1jdl_1_1AdConverter_w9w4}{
+ADCONV\_\-JOBTYPE\_\-PARTITIONABLE}
+\label{classglite_1_1wms_1_1jdl_1_1AdConverter_w9w4}
+}]\index{ADCONV_JOBTYPE_CHECKPOINTABLE@{ADCONV\_\-JOBTYPE\_\-CHECKPOINTABLE}!glite::wms::jdl::AdConverter@{glite::wms::jdl::AdConverter}}\index{glite::wms::jdl::AdConverter@{glite::wms::jdl::AdConverter}!ADCONV_JOBTYPE_CHECKPOINTABLE@{ADCONV\_\-JOBTYPE\_\-CHECKPOINTABLE}}\item[{\em 
+\hypertarget{classglite_1_1wms_1_1jdl_1_1AdConverter_w9w5}{
+ADCONV\_\-JOBTYPE\_\-CHECKPOINTABLE}
+\label{classglite_1_1wms_1_1jdl_1_1AdConverter_w9w5}
+}]\end{description}
+\end{Desc}
+
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1AdConverter_z23_5}{
+\index{glite::wms::jdl::AdConverter@{glite::wms::jdl::Ad\-Converter}!bulk2dag@{bulk2dag}}
+\index{bulk2dag@{bulk2dag}!glite::wms::jdl::AdConverter@{glite::wms::jdl::Ad\-Converter}}
+\subsubsection[bulk2dag]{\setlength{\rightskip}{0pt plus 5cm}\hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd}{Exp\-Dag\-Ad}$\ast$ glite::wms::jdl::Ad\-Converter::bulk2dag (\hyperlink{classglite_1_1wms_1_1jdl_1_1Ad}{Ad} $\ast$ {\em ad})\hspace{0.3cm}{\tt  \mbox{[}static\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1AdConverter_z23_5}
+
+
+utility that converts the jdl of a parametric job into a Dag\-Ad \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em ad}]the Class\-Ad representing the JDL of a parametric job \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]the converted \hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd}{Exp\-Dag\-Ad} instance\end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1AdConverter_z23_4}{
+\index{glite::wms::jdl::AdConverter@{glite::wms::jdl::Ad\-Converter}!bulk2dag@{bulk2dag}}
+\index{bulk2dag@{bulk2dag}!glite::wms::jdl::AdConverter@{glite::wms::jdl::Ad\-Converter}}
+\subsubsection[bulk2dag]{\setlength{\rightskip}{0pt plus 5cm}\hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd}{Exp\-Dag\-Ad}$\ast$ glite::wms::jdl::Ad\-Converter::bulk2dag (const std::string \& {\em ad})\hspace{0.3cm}{\tt  \mbox{[}static\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1AdConverter_z23_4}
+
+
+utility that converts the jdl of a parametric job into a Dag\-Ad \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em jdl}]string representing the classad of a parametric job \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]the converted \hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd}{Exp\-Dag\-Ad} instance\end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1AdConverter_z23_3}{
+\index{glite::wms::jdl::AdConverter@{glite::wms::jdl::Ad\-Converter}!collection2dag@{collection2dag}}
+\index{collection2dag@{collection2dag}!glite::wms::jdl::AdConverter@{glite::wms::jdl::Ad\-Converter}}
+\subsubsection[collection2dag]{\setlength{\rightskip}{0pt plus 5cm}\hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd}{Exp\-Dag\-Ad}$\ast$ glite::wms::jdl::Ad\-Converter::collection2dag (\hyperlink{classglite_1_1wms_1_1jdl_1_1Ad}{Ad} $\ast$ {\em ad})\hspace{0.3cm}{\tt  \mbox{[}static\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1AdConverter_z23_3}
+
+
+utility that converts the jdl of a collection into a Dag\-Ad \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em ad}]the Class\-Ad representing the JDL of a collection of jobs \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]the converted \hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd}{Exp\-Dag\-Ad} instance\end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1AdConverter_z23_2}{
+\index{glite::wms::jdl::AdConverter@{glite::wms::jdl::Ad\-Converter}!collection2dag@{collection2dag}}
+\index{collection2dag@{collection2dag}!glite::wms::jdl::AdConverter@{glite::wms::jdl::Ad\-Converter}}
+\subsubsection[collection2dag]{\setlength{\rightskip}{0pt plus 5cm}\hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd}{Exp\-Dag\-Ad}$\ast$ glite::wms::jdl::Ad\-Converter::collection2dag (const std::string \& {\em ad})\hspace{0.3cm}{\tt  \mbox{[}static\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1AdConverter_z23_2}
+
+
+utility that converts the jdl of a collection into a Dag\-Ad \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em jdl}]string representing the classad of a collection of jobs \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]the converted \hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd}{Exp\-Dag\-Ad} instance\end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1AdConverter_z21_7}{
+\index{glite::wms::jdl::AdConverter@{glite::wms::jdl::Ad\-Converter}!createCollectionFromPath@{createCollectionFromPath}}
+\index{createCollectionFromPath@{createCollectionFromPath}!glite::wms::jdl::AdConverter@{glite::wms::jdl::Ad\-Converter}}
+\subsubsection[createCollectionFromPath]{\setlength{\rightskip}{0pt plus 5cm}\hyperlink{classglite_1_1wms_1_1jdl_1_1Ad}{Ad}$\ast$ glite::wms::jdl::Ad\-Converter::create\-Collection\-From\-Path (const std::string \& {\em path}, const std::string \& {\em vo} = \char`\"{}\char`\"{})\hspace{0.3cm}{\tt  \mbox{[}static\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1AdConverter_z21_7}
+
+
+Load all the JDL files stored in a specified path and put them all inside a collection of jobs \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em path}]the directory where to look for JDL files to be added to the collection \item[{\em vo}]the Virtual\-Organisation name to be used by all the jobs in the collection \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]the Class\-Ad template istance\end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1AdConverter_z21_6}{
+\index{glite::wms::jdl::AdConverter@{glite::wms::jdl::Ad\-Converter}!createCollectionTemplate@{createCollectionTemplate}}
+\index{createCollectionTemplate@{createCollectionTemplate}!glite::wms::jdl::AdConverter@{glite::wms::jdl::Ad\-Converter}}
+\subsubsection[createCollectionTemplate]{\setlength{\rightskip}{0pt plus 5cm}\hyperlink{classglite_1_1wms_1_1jdl_1_1Ad}{Ad}$\ast$ glite::wms::jdl::Ad\-Converter::create\-Collection\-Template (unsigned int {\em job\-Number}, const std::string \& {\em requirements}, const std::string \& {\em rank}, const std::string \& {\em vo} = \char`\"{}\char`\"{})\hspace{0.3cm}{\tt  \mbox{[}static\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1AdConverter_z21_6}
+
+
+Create a valid template JDL for a Collection of jobs \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em job\-Number}]the number of jobs to be created for the collection \item[{\em requirements}]a string representing the expression describing the requirements (which is an attribute of boolean type) for all the jobs in the collection \item[{\em rank}]a string representing the expression for the rank (which is an attribute of double type) for all the jobs in the collection \item[{\em vo}]the Virtual\-Organisation name to be used by all the jobs in the collection \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]the Class\-Ad template istance\end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1AdConverter_z21_5}{
+\index{glite::wms::jdl::AdConverter@{glite::wms::jdl::Ad\-Converter}!createDAGTemplate@{createDAGTemplate}}
+\index{createDAGTemplate@{createDAGTemplate}!glite::wms::jdl::AdConverter@{glite::wms::jdl::Ad\-Converter}}
+\subsubsection[createDAGTemplate]{\setlength{\rightskip}{0pt plus 5cm}\hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd}{Exp\-Dag\-Ad}$\ast$ glite::wms::jdl::Ad\-Converter::create\-DAGTemplate (\hyperlink{structglite_1_1wms_1_1jdl_1_1NodeStruct}{Node\-Struct} {\em dependencies}, const std::string \& {\em requirements}, const std::string \& {\em rank}, const std::string \& {\em vo} = \char`\"{}\char`\"{})\hspace{0.3cm}{\tt  \mbox{[}static\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1AdConverter_z21_5}
+
+
+Create a valid template JDL for a Dag \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em dependencies}]the dependency structure of the dag: each node must list all the nodes that depends on it. \item[{\em requirements}]a string representing the expression describing the requirements (which is an attribute of boolean type) for all the nodes of the dag \item[{\em rank}]a string representing the expression for the rank (which is an attribute of double type) for all the nodes of the dag \item[{\em vo}]the Virtual\-Organisation name to be used for all the nodes of the dag \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]the \hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd}{Exp\-Dag\-Ad} template istance\end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1AdConverter_z21_4}{
+\index{glite::wms::jdl::AdConverter@{glite::wms::jdl::Ad\-Converter}!createIntParametricTemplate@{createIntParametricTemplate}}
+\index{createIntParametricTemplate@{createIntParametricTemplate}!glite::wms::jdl::AdConverter@{glite::wms::jdl::Ad\-Converter}}
+\subsubsection[createIntParametricTemplate]{\setlength{\rightskip}{0pt plus 5cm}\hyperlink{classglite_1_1wms_1_1jdl_1_1JobAd}{Job\-Ad}$\ast$ glite::wms::jdl::Ad\-Converter::create\-Int\-Parametric\-Template (int {\em parametrised}, int {\em param\_\-number}, int {\em param\_\-start}, int {\em param\_\-step}, const std::string \& {\em requirements}, const std::string \& {\em rank}, const std::string \& {\em vo} = \char`\"{}\char`\"{})\hspace{0.3cm}{\tt  \mbox{[}static\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1AdConverter_z21_4}
+
+
+\hypertarget{classglite_1_1wms_1_1jdl_1_1AdConverter_z21_3}{
+\index{glite::wms::jdl::AdConverter@{glite::wms::jdl::Ad\-Converter}!createIntParametricTemplate@{createIntParametricTemplate}}
+\index{createIntParametricTemplate@{createIntParametricTemplate}!glite::wms::jdl::AdConverter@{glite::wms::jdl::Ad\-Converter}}
+\subsubsection[createIntParametricTemplate]{\setlength{\rightskip}{0pt plus 5cm}\hyperlink{classglite_1_1wms_1_1jdl_1_1JobAd}{Job\-Ad}$\ast$ glite::wms::jdl::Ad\-Converter::create\-Int\-Parametric\-Template (std::vector$<$ std::string $>$ {\em parametrised}, int {\em param\_\-number}, int {\em param\_\-start}, int {\em param\_\-step}, const std::string \& {\em requirements}, const std::string \& {\em rank}, const std::string \& {\em vo} = \char`\"{}\char`\"{})\hspace{0.3cm}{\tt  \mbox{[}static\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1AdConverter_z21_3}
+
+
+Create a valid Parametric \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em parametrised}]all the attributes that contains reference to a parameter. Multiple attributes can be specified toghegher through the bitwise '$|$' operator ( as specified in \hyperlink{classglite_1_1wms_1_1jdl_1_1AdConverter_w10}{attribute}) \item[{\em param\_\-number}]the number of different parameters to be created \item[{\em param\_\-start}](default value is 0) the starting point where to begin to parametrise \item[{\em param\_\-step}](default value is 1) the step between one parameter and the next one among param\_\-start \item[{\em requirements}]a string representing the expression describing all the Job requirements (which is an attribute of boolean type) \item[{\em rank}]a string representing the expression for the rank (which is an attribute of double type) of the resource \item[{\em vo}]the Virtual\-Organisation name to be used \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]the \hyperlink{classglite_1_1wms_1_1jdl_1_1JobAd}{Job\-Ad} of a parametric job \end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1AdConverter_z21_0}{
+\index{glite::wms::jdl::AdConverter@{glite::wms::jdl::Ad\-Converter}!createJobTemplate@{createJobTemplate}}
+\index{createJobTemplate@{createJobTemplate}!glite::wms::jdl::AdConverter@{glite::wms::jdl::Ad\-Converter}}
+\subsubsection[createJobTemplate]{\setlength{\rightskip}{0pt plus 5cm}\hyperlink{classglite_1_1wms_1_1jdl_1_1JobAd}{Job\-Ad}$\ast$ glite::wms::jdl::Ad\-Converter::create\-Job\-Template (int {\em type}, const std::string \& {\em executable}, const std::string \& {\em arguments}, const std::string \& {\em requirements}, const std::string \& {\em rank}, const std::string \& {\em vo} = \char`\"{}\char`\"{})\hspace{0.3cm}{\tt  \mbox{[}static\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1AdConverter_z21_0}
+
+
+Create a valid JDL ready for submission. \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em type}]the jobtype of the job. Multiple jobtype can be specified toghether through the bitwise '$|$' operator ( as specified in \hyperlink{classglite_1_1wms_1_1jdl_1_1AdConverter_w9}{jobtype}) \item[{\em executable}]the simple file name to be executed (if local) or the full path if stored in the remote machine. In the former case the full path of the file must be specified in the inputsandbox attribute \item[{\em arguments}]a string representing the arguments (if needed) of the executable file (empty \char`\"{}\char`\"{} string if not needed) \item[{\em requirements}]a string representing the expression describing all the Job requirements (which is an attribute of boolean type) \item[{\em rank}]a string representing the expression for the rank (which is an attribute of double type) of the resource \item[{\em vo}]the Virtual\-Organisation name to be used \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]the \hyperlink{classglite_1_1wms_1_1jdl_1_1JobAd}{Job\-Ad} template instance\end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1AdConverter_z21_2}{
+\index{glite::wms::jdl::AdConverter@{glite::wms::jdl::Ad\-Converter}!createStringParametricTemplate@{createStringParametricTemplate}}
+\index{createStringParametricTemplate@{createStringParametricTemplate}!glite::wms::jdl::AdConverter@{glite::wms::jdl::Ad\-Converter}}
+\subsubsection[createStringParametricTemplate]{\setlength{\rightskip}{0pt plus 5cm}\hyperlink{classglite_1_1wms_1_1jdl_1_1JobAd}{Job\-Ad}$\ast$ glite::wms::jdl::Ad\-Converter::create\-String\-Parametric\-Template (int {\em parametrised}, std::vector$<$ std::string $>$ {\em parameters}, const std::string \& {\em requirements}, const std::string \& {\em rank}, const std::string \& {\em vo} = \char`\"{}\char`\"{})\hspace{0.3cm}{\tt  \mbox{[}static\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1AdConverter_z21_2}
+
+
+\hypertarget{classglite_1_1wms_1_1jdl_1_1AdConverter_z21_1}{
+\index{glite::wms::jdl::AdConverter@{glite::wms::jdl::Ad\-Converter}!createStringParametricTemplate@{createStringParametricTemplate}}
+\index{createStringParametricTemplate@{createStringParametricTemplate}!glite::wms::jdl::AdConverter@{glite::wms::jdl::Ad\-Converter}}
+\subsubsection[createStringParametricTemplate]{\setlength{\rightskip}{0pt plus 5cm}\hyperlink{classglite_1_1wms_1_1jdl_1_1JobAd}{Job\-Ad}$\ast$ glite::wms::jdl::Ad\-Converter::create\-String\-Parametric\-Template (std::vector$<$ std::string $>$ {\em parametrised}, std::vector$<$ std::string $>$ {\em parameters}, const std::string \& {\em requirements}, const std::string \& {\em rank}, const std::string \& {\em vo} = \char`\"{}\char`\"{})\hspace{0.3cm}{\tt  \mbox{[}static\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1AdConverter_z21_1}
+
+
+Create a valid Parametric \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em parametrised}]all the attributes that contains reference to a parameter. Multiple attributes can be specified toghegher through the bitwise '$|$' operator ( as specified in \hyperlink{classglite_1_1wms_1_1jdl_1_1AdConverter_w10}{attribute}) \item[{\em parameters}]a vector containing all the parameters \item[{\em requirements}]a string representing the expression describing all the Job requirements (which is an attribute of boolean type) \item[{\em rank}]a string representing the expression for the rank (which is an attribute of double type) of the resource \item[{\em vo}]the Virtual\-Organisation name to be used \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]the \hyperlink{classglite_1_1wms_1_1jdl_1_1JobAd}{Job\-Ad} of a parametric job\end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1AdConverter_z23_1}{
+\index{glite::wms::jdl::AdConverter@{glite::wms::jdl::Ad\-Converter}!part2dag@{part2dag}}
+\index{part2dag@{part2dag}!glite::wms::jdl::AdConverter@{glite::wms::jdl::Ad\-Converter}}
+\subsubsection[part2dag]{\setlength{\rightskip}{0pt plus 5cm}\hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd}{Exp\-Dag\-Ad}$\ast$ glite::wms::jdl::Ad\-Converter::part2dag (\hyperlink{classglite_1_1wms_1_1jdl_1_1Ad}{Ad} $\ast$ {\em ad})\hspace{0.3cm}{\tt  \mbox{[}static\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1AdConverter_z23_1}
+
+
+utility that converts the jdl of a partitioner job into a Dag\-Ad \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em ad}]the Class\-Ad representing the JDL of a partitioner job \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]the converted \hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd}{Exp\-Dag\-Ad} instance\end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1AdConverter_z23_0}{
+\index{glite::wms::jdl::AdConverter@{glite::wms::jdl::Ad\-Converter}!part2dag@{part2dag}}
+\index{part2dag@{part2dag}!glite::wms::jdl::AdConverter@{glite::wms::jdl::Ad\-Converter}}
+\subsubsection[part2dag]{\setlength{\rightskip}{0pt plus 5cm}\hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd}{Exp\-Dag\-Ad}$\ast$ glite::wms::jdl::Ad\-Converter::part2dag (const std::string \& {\em ad})\hspace{0.3cm}{\tt  \mbox{[}static\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1AdConverter_z23_0}
+
+
+utility that converts the jdl of a partitioner job into a Dag\-Ad \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em jdl}]string representing the classad of a partitioner job \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]the converted \hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd}{Exp\-Dag\-Ad} instance\end{Desc}
+
+
+\subsection{Member Data Documentation}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1AdConverter_s2}{
+\index{glite::wms::jdl::AdConverter@{glite::wms::jdl::Ad\-Converter}!NODE@{NODE}}
+\index{NODE@{NODE}!glite::wms::jdl::AdConverter@{glite::wms::jdl::Ad\-Converter}}
+\subsubsection[NODE]{\setlength{\rightskip}{0pt plus 5cm}const std::string \hyperlink{classglite_1_1wms_1_1jdl_1_1AdConverter_s2}{glite::wms::jdl::Ad\-Converter::NODE}\hspace{0.3cm}{\tt  \mbox{[}static\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1AdConverter_s2}
+
+
+\hypertarget{classglite_1_1wms_1_1jdl_1_1AdConverter_s4}{
+\index{glite::wms::jdl::AdConverter@{glite::wms::jdl::Ad\-Converter}!PARAMETRIC_PARAMETERS@{PARAMETRIC\_\-PARAMETERS}}
+\index{PARAMETRIC_PARAMETERS@{PARAMETRIC\_\-PARAMETERS}!glite::wms::jdl::AdConverter@{glite::wms::jdl::Ad\-Converter}}
+\subsubsection[PARAMETRIC\_\-PARAMETERS]{\setlength{\rightskip}{0pt plus 5cm}const std::string \hyperlink{classglite_1_1wms_1_1jdl_1_1AdConverter_s4}{glite::wms::jdl::Ad\-Converter::PARAMETRIC\_\-PARAMETERS}\hspace{0.3cm}{\tt  \mbox{[}static\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1AdConverter_s4}
+
+
+\hypertarget{classglite_1_1wms_1_1jdl_1_1AdConverter_s5}{
+\index{glite::wms::jdl::AdConverter@{glite::wms::jdl::Ad\-Converter}!PARAMETRIC_START@{PARAMETRIC\_\-START}}
+\index{PARAMETRIC_START@{PARAMETRIC\_\-START}!glite::wms::jdl::AdConverter@{glite::wms::jdl::Ad\-Converter}}
+\subsubsection[PARAMETRIC\_\-START]{\setlength{\rightskip}{0pt plus 5cm}const std::string \hyperlink{classglite_1_1wms_1_1jdl_1_1AdConverter_s5}{glite::wms::jdl::Ad\-Converter::PARAMETRIC\_\-START}\hspace{0.3cm}{\tt  \mbox{[}static\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1AdConverter_s5}
+
+
+\hypertarget{classglite_1_1wms_1_1jdl_1_1AdConverter_s6}{
+\index{glite::wms::jdl::AdConverter@{glite::wms::jdl::Ad\-Converter}!PARAMETRIC_STEP@{PARAMETRIC\_\-STEP}}
+\index{PARAMETRIC_STEP@{PARAMETRIC\_\-STEP}!glite::wms::jdl::AdConverter@{glite::wms::jdl::Ad\-Converter}}
+\subsubsection[PARAMETRIC\_\-STEP]{\setlength{\rightskip}{0pt plus 5cm}const std::string \hyperlink{classglite_1_1wms_1_1jdl_1_1AdConverter_s6}{glite::wms::jdl::Ad\-Converter::PARAMETRIC\_\-STEP}\hspace{0.3cm}{\tt  \mbox{[}static\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1AdConverter_s6}
+
+
+\hypertarget{classglite_1_1wms_1_1jdl_1_1AdConverter_s3}{
+\index{glite::wms::jdl::AdConverter@{glite::wms::jdl::Ad\-Converter}!SIMPLE_NODE_TYPE@{SIMPLE\_\-NODE\_\-TYPE}}
+\index{SIMPLE_NODE_TYPE@{SIMPLE\_\-NODE\_\-TYPE}!glite::wms::jdl::AdConverter@{glite::wms::jdl::Ad\-Converter}}
+\subsubsection[SIMPLE\_\-NODE\_\-TYPE]{\setlength{\rightskip}{0pt plus 5cm}const std::string \hyperlink{classglite_1_1wms_1_1jdl_1_1AdConverter_s3}{glite::wms::jdl::Ad\-Converter::SIMPLE\_\-NODE\_\-TYPE}\hspace{0.3cm}{\tt  \mbox{[}static\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1AdConverter_s3}
+
+
+\hypertarget{classglite_1_1wms_1_1jdl_1_1AdConverter_s1}{
+\index{glite::wms::jdl::AdConverter@{glite::wms::jdl::Ad\-Converter}!VALUE@{VALUE}}
+\index{VALUE@{VALUE}!glite::wms::jdl::AdConverter@{glite::wms::jdl::Ad\-Converter}}
+\subsubsection[VALUE]{\setlength{\rightskip}{0pt plus 5cm}const std::string \hyperlink{classglite_1_1wms_1_1jdl_1_1AdConverter_s1}{glite::wms::jdl::Ad\-Converter::VALUE}\hspace{0.3cm}{\tt  \mbox{[}static\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1AdConverter_s1}
+
+
+\hypertarget{classglite_1_1wms_1_1jdl_1_1AdConverter_s0}{
+\index{glite::wms::jdl::AdConverter@{glite::wms::jdl::Ad\-Converter}!VALUES@{VALUES}}
+\index{VALUES@{VALUES}!glite::wms::jdl::AdConverter@{glite::wms::jdl::Ad\-Converter}}
+\subsubsection[VALUES]{\setlength{\rightskip}{0pt plus 5cm}const std::string \hyperlink{classglite_1_1wms_1_1jdl_1_1AdConverter_s0}{glite::wms::jdl::Ad\-Converter::VALUES}\hspace{0.3cm}{\tt  \mbox{[}static\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1AdConverter_s0}
+
+
+
+
+The documentation for this class was generated from the following file:\begin{CompactItemize}
+\item 
+\hyperlink{adconverter_8h}{adconverter.h}\end{CompactItemize}

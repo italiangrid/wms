@@ -1,0 +1,134 @@
+
+
+<<<OPT>>>--endpoint, -e <serviceURL>
+
+when this option is specified, the operations are performed contacting the WMProxy 
+service represented by the given <serviceURL>. 
+If it is not used, the endpoint contacted is that one specified by the 
+GLITE<<<USC>>>WMS<<<USC>>>WMPROXY<<<USC>>>ENDPOINT environment variable. 
+If none of these options is specified and the environment variable is not set, 
+the service request will be sent to one of the endpoints listed in the WMProxyEndPoints 
+attribute in the user configuration file (randomly chosen among the URLs of the attribute list). 
+If the chosen service is not available, a succession of attempts are performed on the other 
+specified services until the connection with one of these endpoints can be established or all 
+services have been contacted without success. In this latter case the operation can not be 
+obviously performed and the execution of the command is stopped with an error message.
+<<<ENDOPT>>>
+
+<<<OPT>>>--noint
+
+If this option is specified, every interactive question to the user is skipped and the operation is continued (when possible)
+<<<ENDOPT>>>
+
+<<<OPT>>>--delegationid, -d <idstring>
+
+If this option is specified, the proxy that will be delegated is identified by <idstring>. This proxy can be therefore used for operations like job registration, job submission and job list matching until its expiration specifying the <idstring>. It must be used in place of --autm-delegation option.
+<<<ENDOPT>>>
+
+<<<OPT>>>--autm-delegation, -a
+
+This option is specified to make automatic generation of the identifier string (delegationid) that will be associated to the delegated proxy. It must be used in place of the --delegationid (-d) option.
+<<<ENDOPT>>>
+
+<<<OPT>>>--input, -i <filepath>
+
+If this option is specified, the user will be asked to choose a CEId from a list of CEs contained in the <filepath>. Once a CEId has been selected the command behaves as explained for the resource option. If this option is used together with the --noint one and the input file contains more than one CEId, then the first CEId in the list is taken into account for submitting the job.
+<<<ENDOPT>>>
+
+<<<OPT>>>--resource, -r <ceid>
+
+This option is available only for jobs.
+If it is specified, the job-ad sent to the WMProxy service contains a line of the type "SubmitTo = <ceid>"  and the job is submitted by the WMS to the resource identified by <ceid> without going through the match-making process.
+<<<ENDOPT>>>
+
+<<<OPT>>>--nodes-resource <ceid>
+
+This option is available only for DAGs.
+If it option is specified, the job-ad sent to the WMProxy service contains a line of the type "SubmitTo = <ceid>"  and the DAG is submitted by the WMS to the resource identified by <ceid> without going through the match-making process for each of its nodes.
+<<<ENDOPT>>>
+
+<<<OPT>>>--nolisten
+
+This option can be used only for interactive jobs. It makes the command forward the job standard streams coming from the WN to named pipes on the client machine whose names are returned to the user together with the OS id of the listener process. This allows the user to interact with the job through her/his own tools. It is important to note that when this option is specified, the command has no more control over the launched listener process that has hence to be killed by the user (through the returned process id) once the job is finished.
+<<<ENDOPT>>>
+
+<<<OPT>>>--nomsg
+
+This option makes the command print on the standard output only the jobId generated for the job if submission was successful; the location of the log file containing massages and diagnostics is printed otherwise.
+<<<ENDOPT>>>
+
+<<<OPT>>>--lrms <lrmstype>
+
+This option is only for MPICH  jobs and must be used together with either --resource or --input option; it specifies the type of the lrms of the resource the user is submitting to. When the batch system type of the specified CE resource given is not known, the lrms must be provided while submitting. For non-MPICH jobs this option will be ignored.
+<<<ENDOPT>>>
+
+<<<OPT>>>--to <[MM:DD:]hh:mm[:[CC]YY]>
+
+A job for which no compatible CEs have been found during the matchmaking phase is hold in the WMS Task Queue for a certain time so that it can be subjected again to matchmaking from time to time until a compatible CE is found. The JDL ExpiryTime attribute is an integer representing the date and time (in seconds since epoch) until the job request has to be considered valid by the WMS. This option sets the value for the ExpiryTime attribute to the submitted JDL converting appropriately the absolute timestamp provided as input. It overrides, if present, the current value. If the specified value exceeds one day from job submission then it is not taken into account by the WMS.
+<<<ENDOPT>>>
+
+<<<OPT>>>--valid, -v <hh:mm>
+
+A job for which no compatible CEs have been found during the matchmaking phase is hold in the WMS Task Queue for a certain time so that it can be subjected again to matchmaking from time to time until a compatible CE is found. The JDL ExpiryTime attribute is an integer representing the date and time (in seconds since epoch) until the job request has to be considered valid by the WMS. This option allows to specify the validity in hours and minutes from submission time of the submitted JDL. When this option is used the command sets the value for the ExpiryTime attribute converting appropriately the relative timestamp provided as input. It overrides, if present,the current value. If the specified value exceeds one day from job submission then it is not taken into account by the WMS.
+<<<ENDOPT>>>
+
+<<<OPT>>>--register-only
+
+If this option is specified, the job is only registered to the WMProxy service. Local files that could be in the JDL InputSandbox attribute are not transferred unless the --transfer-files is also specified; and the job is not started. If the --transfer-files option is not specified, the command displays the list of the local files to be transferred before starting the job. In this list each local file is matched to the corresponding Destination URI where it has to be transferred. The URIs are referred to either the default protocol (gsiftp) or another protocol specified by --proto.  Not using the --transfer-files option, users can transfer these files by low level commands like either globus-url-copy or curl. After having transferred all files, the job can be started launching again this command with the --start option:
+<<<VERB>>>
+glite-wms-job-submit --start <jobid>
+<<<ENDVERB>>>
+<<<ENDOPT>>>
+
+<<<OPT>>>--transfer-files
+
+This option must be only used with the --register-only option. It enables transferring operation for files in the JDL InputSandbox attribute located on the submitting machine. These files are transferred to the WMProxy machine.
+<<<ENDOPT>>>
+
+<<<OPT>>>--proto <protocol>
+
+This option specifies the protocol to be used for file transferring. It will be ignored when the specified protocol is not found among WMProxy service available protocols: in this case the default one (generally gsiftp ) will be used instead.
+<<<ENDOPT>>>
+
+<<<OPT>>>--start <jobid>
+
+This option allows starting a job (specified by JobId) previously registered and whose InputSandbox files on the submitting machine have been already transferred to the WMProxy machine.
+<<<ENDOPT>>>
+
+<<<OPT>>>--output, -o <filepath>
+
+Writes the generated jobId assigned to the submitted job in the file specified by <filepath>, which can be either a simple name or an absolute path (on the submitting machine). In the former case the file is created in the current working directory.
+<<<ENDOPT>>>
+
+<<<OPT>>>--collection, -c <dirpath>
+
+This option allows specifying  the directory pointed by <dirpath> containing all the single JDL files of the jobs that the collection will be made of. The corresponding collection JDL will be generated and submitted. Using this option the jdl<<<USC>>>file (the last argument) must not be specified. Please note that the directory specified through the --collection option MUST only contain JDL files describing simple jobs (i.e. no DAGs, no collections). All job types are admitted but "partitionable" and "parametric". Please note that this option cannot be used with --default-jdl.
+<<<ENDOPT>>>
+
+<<<OPT>>>--dag <dirpath>
+
+This option allows specifying  the directory pointed by <dirpath> containing all the single JDL files of the jobs that the DAG will be made of. The corresponding DAG JDL will be generated and submitted. Using this option the jdl<<<USC>>>file (the last argument) must note be specified.
+This option is only available from glite version >= 3.1.
+<<<ENDOPT>>>
+
+<<<OPT>>>--default-jdl <filepath>
+
+This option Allows specifying a further jdl file whose attributes will be merged into the submitting (if not yet present).
+This option is only available from glite version >= 3.1. Please note that this
+option cannot be used with --collection
+<<<ENDOPT>>>
+
+<<<OPT>>>--json
+
+This option makes the command produce its output in JSON-compliant format, that can be parsed by proper json libraries for python/perl and other script languages. Please note that --json and --output options are mutually exclusive.
+<<<ENDOPT>>>
+
+<<<OPT>>>--pretty-print
+
+This option should be used with --json. Without it the JSON format is machine-oriented (no carriage returns, no indentations). --pretty-print makes the JSON output easily readable by a human. Using this option without --json has no effect.
+<<<ENDOPT>>>
+
+<<<OPT>>>--jsdl <filepath>
+
+This option must not be used with the last arugment <jdl<<<USC>>>file> (they're mutually exclusive). It is needed when the job description language used by the user is JSDL instead of standard JDL. Please refer to this document \cite{JSDL} for documentation about JSDL language.
+<<<ENDOPT>>>

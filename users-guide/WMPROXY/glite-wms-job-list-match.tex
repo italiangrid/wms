@@ -1,0 +1,281 @@
+
+\subsection{glite-wms-job-list-match}
+\label{glite-wms-job-list-match}
+
+\medskip
+\textbf{glite-wms-job-list-match}
+\smallskip
+
+
+\textbf{SYNOPSIS}
+\smallskip
+
+\textbf{glite-wms-job-list-match [options]  <jdl\_file>}
+
+\begin{verbatim}
+delegation-opts:
+        --delegationid, -d <id_string>
+        --autm-delegation, -a
+
+options:
+        --version
+        --help
+        --config, -c <configfile>
+        --vo <voname>
+        --debug
+        --logfile <filepath>
+        --noint
+        --endpoint, -e <serviceURL>
+        --rank
+        --output, -o <filepath>
+        --json
+        --pretty-print
+\end{verbatim}
+
+\medskip
+\textbf{DESCRIPTION}
+\smallskip
+
+displays the list of identifiers of the resources on which the user is authorized and
+satisfying the job requirements included in the job description file. The CE identifiers are returned either
+on the standard output or in a file according to the chosen command options, and are strings universally
+identifying the CEs published in the IS.
+The returned CEIds are listed in decreasing order of rank, i.e. the one with the best (greater) rank is in
+the first place and so forth.
+
+
+\medskip\textbf{OPTIONS}\smallskip
+
+
+
+\textbf{-{}-version}
+
+displays WMProxy client and servers version numbers.
+If the -{}-endpoint option is specified only this service is contacted to retrieve its version. If it is not used, the endpoint contacted is that one specified with GLITE\_WMS\_WMPROXY\_ENDPOINT environment variable. If the option is not specified and the environment variable is not set, all servers listed in the WMProxyEndPoints attribute of the user configuration file are contacted. For each of these service, the returned result will be displayed on the standard output (the version numbers in case of success; otherwise the error message).
+
+
+
+
+\textbf{-{}-help}
+
+displays command usage
+
+
+
+
+\textbf{-{}-config, -c <configfile>}
+
+if the command is launched with this option, the configuration file pointed by <configfile> is used. This option is meaningless when used together with -{}-vo option
+
+
+
+
+\textbf{-{}-vo <voname>}
+
+this option allows the user to specify the Virtual Organization she/he is currently working for.
+If the user proxy contains VOMS extensions then the VO specified through this option is overridden by the
+default VO contained in the proxy (i.e. this option is only useful when working with non-VOMS proxies).
+This option is meaningless when used together with -{}-config-vo option.
+
+
+
+
+\textbf{-{}-debug}
+
+when this option is specified, debugging information is displayed on the standard output and written also either into the default log file:
+
+
+\begin{verbatim}
+glite-wms-job-<command_name>_<uid>_<pid>_<time>.log
+\end{verbatim}
+
+located under the /var/tmp  directory or in the log file specified with -{}-logfile option.
+
+
+
+
+\textbf{-{}-logfile <filepath>}
+
+When this option is specified, a command log file (whose pathname is <filepath> ) is created.
+
+
+
+\textbf{-{}-noint}
+
+if this option is specified, every interactive question to the user is skipped 
+(yes is assumed as answer) and the operation is continued (when possible)
+
+
+
+
+
+\textbf{-{}-delegationid, -d <idstring>}
+
+if this option is specified, the proxy that will be delegated is identified by 
+<idstring>. This proxy can be therefore used for operations like job registration, 
+job submission and job list matching until its expiration specifying the <idstring>. 
+It must be used in place of -{}-autm-delegation option.
+
+
+
+
+
+\textbf{-{}-autm-delegation, -a}
+
+this option is specified to make automatic generation of the identifier string 
+(delegationid) that will be associated to the delegated proxy. It must be used 
+in place of the -{}-delegationid (-d) option.
+
+
+
+
+
+\textbf{-{}-endpoint, -e <serviceURL>}
+
+when this option is specified, the operations are performed contacting the WMProxy 
+service represented by the given <serviceURL>. If it is not used, the endpoint 
+contacted is that one specified by the GLITE\_WMS\_WMPROXY\_ENDPOINT environment variable. 
+If none of these options is specified and the environment variable is not set, 
+the service request will be sent to one of the endpoints listed in the WMProxyEndPoints 
+attribute in the user configuration file (randomly chosen among the URLs of the attribute list). 
+If the chosen service is not available, a succession of attempts are performed 
+on the other specified services until the connection with one of these endpoints 
+can be established or all services have been contacted without success. In this latter 
+case the operation can not be obviously performed and the execution of the command is 
+stopped with an error message.
+
+
+
+
+
+\textbf{-{}-rank}
+
+displays the "matching" CEIds and the associated ranking values.
+
+
+
+
+
+\textbf{output, -o <filepath>}
+
+returns the CEIds list in the file specified by filepath. <filepath> can be either a 
+simple name or an absolute path (on the submitting machine). 
+In the former case the file <filepath> is created in the current working directory.
+
+
+
+
+
+\textbf{-{}-json}
+
+This option makes the command produce its output in JSON-compliant format, 
+that can be parsed by proper json libraries for python/perl and other script 
+languages. Please note that -{}-json and -{}-output options are mutually exclusive.
+
+
+
+
+
+\textbf{-{}-pretty-print}
+
+This option should be used with -{}-json. Without it the JSON format is 
+machine-oriented (no carriage returns, no indentations). -{}-pretty-print makes 
+the JSON output easily readable by a human. Using this option without -{}-json has no effect.
+
+
+
+
+
+\medskip
+\textbf{EXAMPLES}
+\smallskip
+
+
+\begin{enumerate}
+
+
+\item  request with automatic credential delegation:
+
+\begin{verbatim}
+glite-wms-job-list-match -a ./match.jdl
+\end{verbatim}
+
+If the operation succeeds, the output will be a list of CEs
+
+
+\item  request with a proxy previously delegated with "exID" id-string; request for displays CE rank numbers:
+\begin{verbatim}
+glite-wms-job-list-match -d exID --rank ./match.jdl
+\end{verbatim}
+
+If the operation succeeds, a list of CEs with their rank numbers is displayed on the standard output
+
+
+\item  saves the result in a file:
+\begin{verbatim}
+glite-wms-job-list-match -a --output match.out ./match.jdl
+\end{verbatim}
+
+If the operation succeeds,a list of CEs is saved in the file match.out in the current working directory
+
+
+\item  sends the request to the WMProxy service whose URL is specified with the -e (where a proxy has been previously delegated with "exID" id-string)
+
+\begin{verbatim}
+glite-wms-job-list-match -d exID \
+                         -e https://wmproxy.glite.it:7443/glite_wms_wmproxy_server \
+                         $HOME/match.jdl
+\end{verbatim}
+
+\end{enumerate}
+
+
+If the operation succeeds, a list of CEs is displayed on the standard output
+
+When -{}-endpoint (-e) is not specified, the search of an available WMProxy service is performed according to the modality reported in the description of the -{}-endpoint option.
+
+
+\medskip
+\textbf{FILES}
+\smallskip
+
+\verb voName/glite_wms.conf {}: The user configuration file. The standard 
+path location is \verb /etc/glite-wms . 
+
+\verb /tmp/x509up_u<uid> {}: A valid X509 user proxy; 
+use the X509\_USER\_PROXY environment variable to override the default location
+
+
+
+\medskip
+\textbf{ENVIRONMENT}
+\smallskip
+
+
+\begin{itemize}
+
+
+
+\item GLITE\_WMS\_WMPROXY\_ENDPOINT: This variable may be set to specify the endpoint URL
+
+
+\item GLOBUS\_LOCATION: This variable must be set when the Globus installation is not located in the default path \verb /opt/globus {}.
+
+
+\item GLOBUS\_TCP\_PORT\_RANGE="<val min> <val max>": This variable must be set to define a range of ports to be used for inbound connections in the interactivity context
+
+
+\item X509\_CERT\_DIR: This variable may be set to override the default location of the trusted certificates directory, which is normally \verb /etc/grid-security/certificates {}.
+
+
+\item X509\_USER\_PROXY: This variable may be set to override the default location of the user proxy credentials, which is normally \verb /tmp/x509up_u<uid> {}.
+
+
+\item GLITE\_SD\_PLUGIN: If Service Discovery querying is needed, this variable can be used in order to set a specific (or more) plugin, normally bdii, rgma (or both, separated by comma)
+
+
+\item LCG\_GFAL\_INFOSYS: If Service Discovery querying is needed, this variable can be used in order to set a specific Server where to perform the queries: for instance LCG\_GFAL\_INFOSYS='gridit-bdii-01.cnaf.infn.it:2170'
+
+
+\end{itemize}
+

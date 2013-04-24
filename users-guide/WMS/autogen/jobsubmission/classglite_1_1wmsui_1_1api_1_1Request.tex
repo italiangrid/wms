@@ -1,0 +1,322 @@
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Request}{
+\section{glite::wmsui::api::Request Class Reference}
+\label{classglite_1_1wmsui_1_1api_1_1Request}\index{glite::wmsui::api::Request@{glite::wmsui::api::Request}}
+}
+Allow creating the job and controlling it during its lifetime.  
+
+
+{\tt \#include $<$Request.h$>$}
+
+\subsection*{Public Member Functions}
+\begin{Indent}{\bf Constructors/Destructor}\par
+\begin{CompactItemize}
+\item 
+\hyperlink{classglite_1_1wmsui_1_1api_1_1Request_z9_0}{Request} ()
+\item 
+\hyperlink{classglite_1_1wmsui_1_1api_1_1Request_z9_1}{Request} (const glite::wmsutils::jobid::Job\-Id \&id)
+\item 
+\hyperlink{classglite_1_1wmsui_1_1api_1_1Request_z9_2}{Request} (const glite::wms::jdl::Exp\-Dag\-Ad \&ad)
+\item 
+\hyperlink{classglite_1_1wmsui_1_1api_1_1Request_z9_3}{Request} (const glite::wms::jdl::Job\-Ad \&ad)
+\item 
+\hyperlink{classglite_1_1wmsui_1_1api_1_1Request_z9_4}{Request} (const \hyperlink{classglite_1_1wmsui_1_1api_1_1Request}{Request} \&\hyperlink{classglite_1_1wmsui_1_1api_1_1Request}{Request})
+\item 
+virtual \hyperlink{classglite_1_1wmsui_1_1api_1_1Request_z9_5}{$\sim$Request} ()  throw ()
+\item 
+void \hyperlink{classglite_1_1wmsui_1_1api_1_1Request_z9_6}{operator=} (const \hyperlink{classglite_1_1wmsui_1_1api_1_1Request}{Request} \&dag)
+\end{CompactItemize}
+\end{Indent}
+\begin{Indent}{\bf Get/Set Methods}\par
+\begin{CompactItemize}
+\item 
+void \hyperlink{classglite_1_1wmsui_1_1api_1_1Request_z11_0}{set\-Cred\-Path} (const std::string cp)
+\item 
+void \hyperlink{classglite_1_1wmsui_1_1api_1_1Request_z11_1}{unset\-Cred\-Path} ()
+\item 
+void \hyperlink{classglite_1_1wmsui_1_1api_1_1Request_z11_2}{set\-Logger\-Level} (unsigned int level)
+\item 
+void \hyperlink{classglite_1_1wmsui_1_1api_1_1Request_z11_3}{set\-Job\-Ad} (const glite::wms::jdl::Job\-Ad \&ad)
+\item 
+void \hyperlink{classglite_1_1wmsui_1_1api_1_1Request_z11_4}{set\-Dag\-Ad} (const glite::wms::jdl::Exp\-Dag\-Ad \&ad)
+\item 
+void \hyperlink{classglite_1_1wmsui_1_1api_1_1Request_z11_5}{set\-Dag\-Id} (const glite::wmsutils::jobid::Job\-Id \&id)
+\end{CompactItemize}
+\end{Indent}
+\begin{Indent}{\bf Job Action Methods}\par
+\begin{CompactItemize}
+\item 
+glite::lb::Job\-Status \hyperlink{classglite_1_1wmsui_1_1api_1_1Request_z13_0}{get\-Status} (bool ad=true)
+\item 
+std::vector$<$ glite::lb::Event $>$ \hyperlink{classglite_1_1wmsui_1_1api_1_1Request_z13_1}{get\-Log\-Info} ()
+\item 
+glite::wmsutils::jobid::Job\-Id \hyperlink{classglite_1_1wmsui_1_1api_1_1Request_z13_2}{submit} (const std::string \&ns\-Host, int ns\-Port, const std::string \&lb\-Host, int lb\-Port, const std::string \&ceid=\char`\"{}\char`\"{})
+\item 
+std::vector$<$ std::string $>$ \hyperlink{classglite_1_1wmsui_1_1api_1_1Request_z13_3}{list\-Matching\-CE} (const std::string \&ns\-Host, int ns\-Port)
+\item 
+void \hyperlink{classglite_1_1wmsui_1_1api_1_1Request_z13_4}{cancel} ()
+\item 
+void \hyperlink{classglite_1_1wmsui_1_1api_1_1Request_z13_5}{get\-Output} (const std::string \&dir\_\-path)
+\end{CompactItemize}
+\end{Indent}
+
+
+\subsection{Detailed Description}
+Allow creating the job and controlling it during its lifetime. 
+
+Allow controlling the Dag The \hyperlink{classglite_1_1wmsui_1_1api_1_1Job}{Job} class provides methods that allow controlling the job during its lifetime. It currently encompasses routines for cancelling a job and retrieving its output, but if needed it will be extended to provide other features such as job checkpointing, holding, releasing etc.
+
+\begin{Desc}
+\item[Version:]0.1 \end{Desc}
+\begin{Desc}
+\item[Date:]15 April 2002 \end{Desc}
+\begin{Desc}
+\item[Author:]Alessandro Maraschini $<$\href{mailto:alessandro.maraschini@datamat.it}{\tt alessandro.maraschini@datamat.it}$>$ \end{Desc}
+
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Request_z9_0}{
+\index{glite::wmsui::api::Request@{glite::wmsui::api::Request}!Request@{Request}}
+\index{Request@{Request}!glite::wmsui::api::Request@{glite::wmsui::api::Request}}
+\subsubsection[Request]{\setlength{\rightskip}{0pt plus 5cm}glite::wmsui::api::Request::Request ()}}
+\label{classglite_1_1wmsui_1_1api_1_1Request_z9_0}
+
+
+Instantiates an empty \hyperlink{classglite_1_1wmsui_1_1api_1_1Job}{Job} object \hypertarget{classglite_1_1wmsui_1_1api_1_1Request_z9_1}{
+\index{glite::wmsui::api::Request@{glite::wmsui::api::Request}!Request@{Request}}
+\index{Request@{Request}!glite::wmsui::api::Request@{glite::wmsui::api::Request}}
+\subsubsection[Request]{\setlength{\rightskip}{0pt plus 5cm}glite::wmsui::api::Request::Request (const glite::wmsutils::jobid::Job\-Id \& {\em id})}}
+\label{classglite_1_1wmsui_1_1api_1_1Request_z9_1}
+
+
+Instantiates an \hyperlink{classglite_1_1wmsui_1_1api_1_1Job}{Job} object with a Job\-Id \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em id}]the Jobid instance \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Exceptions:]
+\begin{description}
+\item[{\em Job\-Operation\-Exception}]If the Job\-Id is empty \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Request_z9_2}{
+\index{glite::wmsui::api::Request@{glite::wmsui::api::Request}!Request@{Request}}
+\index{Request@{Request}!glite::wmsui::api::Request@{glite::wmsui::api::Request}}
+\subsubsection[Request]{\setlength{\rightskip}{0pt plus 5cm}glite::wmsui::api::Request::Request (const glite::wms::jdl::Exp\-Dag\-Ad \& {\em ad})}}
+\label{classglite_1_1wmsui_1_1api_1_1Request_z9_2}
+
+
+Instantiates an \hyperlink{classglite_1_1wmsui_1_1api_1_1Job}{Job} object with a Exp\-Dag\-Ad \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em ad}]the Expr\-Dag\-Ad instance \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Exceptions:]
+\begin{description}
+\item[{\em Job\-Operation\-Exception}]If the Dag\-Ad is empty \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Request_z9_3}{
+\index{glite::wmsui::api::Request@{glite::wmsui::api::Request}!Request@{Request}}
+\index{Request@{Request}!glite::wmsui::api::Request@{glite::wmsui::api::Request}}
+\subsubsection[Request]{\setlength{\rightskip}{0pt plus 5cm}glite::wmsui::api::Request::Request (const glite::wms::jdl::Job\-Ad \& {\em ad})}}
+\label{classglite_1_1wmsui_1_1api_1_1Request_z9_3}
+
+
+Instantiates an \hyperlink{classglite_1_1wmsui_1_1api_1_1Job}{Job} object with a Job\-Ad \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em ad}]the Job\-Ad instance \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Exceptions:]
+\begin{description}
+\item[{\em Job\-Operation\-Exception}]If the Job\-Ad is empty \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Request_z9_4}{
+\index{glite::wmsui::api::Request@{glite::wmsui::api::Request}!Request@{Request}}
+\index{Request@{Request}!glite::wmsui::api::Request@{glite::wmsui::api::Request}}
+\subsubsection[Request]{\setlength{\rightskip}{0pt plus 5cm}glite::wmsui::api::Request::Request (const \hyperlink{classglite_1_1wmsui_1_1api_1_1Request}{Request} \& {\em Request})}}
+\label{classglite_1_1wmsui_1_1api_1_1Request_z9_4}
+
+
+Copy constructor \hypertarget{classglite_1_1wmsui_1_1api_1_1Request_z9_5}{
+\index{glite::wmsui::api::Request@{glite::wmsui::api::Request}!~Request@{$\sim$Request}}
+\index{~Request@{$\sim$Request}!glite::wmsui::api::Request@{glite::wmsui::api::Request}}
+\subsubsection[$\sim$Request]{\setlength{\rightskip}{0pt plus 5cm}virtual glite::wmsui::api::Request::$\sim$\hyperlink{classglite_1_1wmsui_1_1api_1_1Request}{Request} ()  throw ()\hspace{0.3cm}{\tt  \mbox{[}virtual\mbox{]}}}}
+\label{classglite_1_1wmsui_1_1api_1_1Request_z9_5}
+
+
+destructor 
+
+\subsection{Member Function Documentation}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Request_z13_4}{
+\index{glite::wmsui::api::Request@{glite::wmsui::api::Request}!cancel@{cancel}}
+\index{cancel@{cancel}!glite::wmsui::api::Request@{glite::wmsui::api::Request}}
+\subsubsection[cancel]{\setlength{\rightskip}{0pt plus 5cm}void glite::wmsui::api::Request::cancel ()}}
+\label{classglite_1_1wmsui_1_1api_1_1Request_z13_4}
+
+
+Cancel the job from the Network Server \begin{Desc}
+\item[Returns:]The Result of the operation \end{Desc}
+\begin{Desc}
+\item[Exceptions:]
+\begin{description}
+\item[{\em Job\-Operation\-Exception}]The Operation required is not allowed for the \hyperlink{classglite_1_1wmsui_1_1api_1_1Job}{Job} \end{description}
+\end{Desc}
+\begin{Desc}
+\item[See also:]exception returned from NS \end{Desc}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Request_z13_1}{
+\index{glite::wmsui::api::Request@{glite::wmsui::api::Request}!getLogInfo@{getLogInfo}}
+\index{getLogInfo@{getLogInfo}!glite::wmsui::api::Request@{glite::wmsui::api::Request}}
+\subsubsection[getLogInfo]{\setlength{\rightskip}{0pt plus 5cm}std::vector$<$glite::lb::Event$>$ glite::wmsui::api::Request::get\-Log\-Info ()}}
+\label{classglite_1_1wmsui_1_1api_1_1Request_z13_1}
+
+
+Retrieve the bookkeeping information of the job \begin{Desc}
+\item[Returns:]all the events logged during the job life \end{Desc}
+\begin{Desc}
+\item[See also:]glite::lb::Event class documentation \end{Desc}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Request_z13_5}{
+\index{glite::wmsui::api::Request@{glite::wmsui::api::Request}!getOutput@{getOutput}}
+\index{getOutput@{getOutput}!glite::wmsui::api::Request@{glite::wmsui::api::Request}}
+\subsubsection[getOutput]{\setlength{\rightskip}{0pt plus 5cm}void glite::wmsui::api::Request::get\-Output (const std::string \& {\em dir\_\-path})}}
+\label{classglite_1_1wmsui_1_1api_1_1Request_z13_5}
+
+
+Retrieve output files of a submitted job \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em dir\_\-path}]the path where to retrieve the Output\-Sandbox files \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Exceptions:]
+\begin{description}
+\item[{\em Job\-Operation\-Exception}]The Operation required is not allowed for the \hyperlink{classglite_1_1wmsui_1_1api_1_1Job}{Job} \end{description}
+\end{Desc}
+\begin{Desc}
+\item[See also:]exception returned from NS \end{Desc}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Request_z13_0}{
+\index{glite::wmsui::api::Request@{glite::wmsui::api::Request}!getStatus@{getStatus}}
+\index{getStatus@{getStatus}!glite::wmsui::api::Request@{glite::wmsui::api::Request}}
+\subsubsection[getStatus]{\setlength{\rightskip}{0pt plus 5cm}glite::lb::Job\-Status glite::wmsui::api::Request::get\-Status (bool {\em ad} = true)}}
+\label{classglite_1_1wmsui_1_1api_1_1Request_z13_0}
+
+
+Retrieve the status of the job \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em ad}]if set to false only basic info are retrieved \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]the status of the requested component \end{Desc}
+\begin{Desc}
+\item[See also:]glite::lb::Job\-Status class documentation \end{Desc}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Request_z13_3}{
+\index{glite::wmsui::api::Request@{glite::wmsui::api::Request}!listMatchingCE@{listMatchingCE}}
+\index{listMatchingCE@{listMatchingCE}!glite::wmsui::api::Request@{glite::wmsui::api::Request}}
+\subsubsection[listMatchingCE]{\setlength{\rightskip}{0pt plus 5cm}std::vector$<$std::string$>$ glite::wmsui::api::Request::list\-Matching\-CE (const std::string \& {\em ns\-Host}, int {\em ns\-Port})}}
+\label{classglite_1_1wmsui_1_1api_1_1Request_z13_3}
+
+
+Look for matching resources \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em ns\-Host}]The Network Server host address \item[{\em ns\-Port}]The Network Server port \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]the Computing elements that match with the specified JDL \end{Desc}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Request_z9_6}{
+\index{glite::wmsui::api::Request@{glite::wmsui::api::Request}!operator=@{operator=}}
+\index{operator=@{operator=}!glite::wmsui::api::Request@{glite::wmsui::api::Request}}
+\subsubsection[operator=]{\setlength{\rightskip}{0pt plus 5cm}void glite::wmsui::api::Request::operator= (const \hyperlink{classglite_1_1wmsui_1_1api_1_1Request}{Request} \& {\em dag})}}
+\label{classglite_1_1wmsui_1_1api_1_1Request_z9_6}
+
+
+Assignment operator \hypertarget{classglite_1_1wmsui_1_1api_1_1Request_z11_0}{
+\index{glite::wmsui::api::Request@{glite::wmsui::api::Request}!setCredPath@{setCredPath}}
+\index{setCredPath@{setCredPath}!glite::wmsui::api::Request@{glite::wmsui::api::Request}}
+\subsubsection[setCredPath]{\setlength{\rightskip}{0pt plus 5cm}void glite::wmsui::api::Request::set\-Cred\-Path (const std::string {\em cp})}}
+\label{classglite_1_1wmsui_1_1api_1_1Request_z11_0}
+
+
+Set a different Proxy certificate from the default one \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em cp}]The full path of the proxy certificate file to be set \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Request_z11_4}{
+\index{glite::wmsui::api::Request@{glite::wmsui::api::Request}!setDagAd@{setDagAd}}
+\index{setDagAd@{setDagAd}!glite::wmsui::api::Request@{glite::wmsui::api::Request}}
+\subsubsection[setDagAd]{\setlength{\rightskip}{0pt plus 5cm}void glite::wmsui::api::Request::set\-Dag\-Ad (const glite::wms::jdl::Exp\-Dag\-Ad \& {\em ad})}}
+\label{classglite_1_1wmsui_1_1api_1_1Request_z11_4}
+
+
+set the Job\-Ad instance \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em ad}]the Job\-Ad Instance to set \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Request_z11_5}{
+\index{glite::wmsui::api::Request@{glite::wmsui::api::Request}!setDagId@{setDagId}}
+\index{setDagId@{setDagId}!glite::wmsui::api::Request@{glite::wmsui::api::Request}}
+\subsubsection[setDagId]{\setlength{\rightskip}{0pt plus 5cm}void glite::wmsui::api::Request::set\-Dag\-Id (const glite::wmsutils::jobid::Job\-Id \& {\em id})}}
+\label{classglite_1_1wmsui_1_1api_1_1Request_z11_5}
+
+
+set the Job\-Id instance \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em id}]the Job\-Id Instance to set \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Request_z11_3}{
+\index{glite::wmsui::api::Request@{glite::wmsui::api::Request}!setJobAd@{setJobAd}}
+\index{setJobAd@{setJobAd}!glite::wmsui::api::Request@{glite::wmsui::api::Request}}
+\subsubsection[setJobAd]{\setlength{\rightskip}{0pt plus 5cm}void glite::wmsui::api::Request::set\-Job\-Ad (const glite::wms::jdl::Job\-Ad \& {\em ad})}}
+\label{classglite_1_1wmsui_1_1api_1_1Request_z11_3}
+
+
+set the Job\-Ad instance \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em ad}]the Job\-Ad Instance to set \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Request_z11_2}{
+\index{glite::wmsui::api::Request@{glite::wmsui::api::Request}!setLoggerLevel@{setLoggerLevel}}
+\index{setLoggerLevel@{setLoggerLevel}!glite::wmsui::api::Request@{glite::wmsui::api::Request}}
+\subsubsection[setLoggerLevel]{\setlength{\rightskip}{0pt plus 5cm}void glite::wmsui::api::Request::set\-Logger\-Level (unsigned int {\em level})\hspace{0.3cm}{\tt  \mbox{[}inline\mbox{]}}}}
+\label{classglite_1_1wmsui_1_1api_1_1Request_z11_2}
+
+
+Se the verbosity level for NS debug \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em level}]default value = 0 (no verbosity), max value = 6 (dreadful verbosity, print screen) \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Request_z13_2}{
+\index{glite::wmsui::api::Request@{glite::wmsui::api::Request}!submit@{submit}}
+\index{submit@{submit}!glite::wmsui::api::Request@{glite::wmsui::api::Request}}
+\subsubsection[submit]{\setlength{\rightskip}{0pt plus 5cm}glite::wmsutils::jobid::Job\-Id glite::wmsui::api::Request::submit (const std::string \& {\em ns\-Host}, int {\em ns\-Port}, const std::string \& {\em lb\-Host}, int {\em lb\-Port}, const std::string \& {\em ceid} = \char`\"{}\char`\"{})}}
+\label{classglite_1_1wmsui_1_1api_1_1Request_z13_2}
+
+
+Submit the job to the Network Server \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em ns\-Host}]The Network Server host address \item[{\em ns\-Port}]The Network Server port \item[{\em lb\-Host}]The LB Server host address \item[{\em lb\-Port}]The LB Server port \item[{\em ceid}]the resource id where the job has to be executed \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]the Job\-Id representing the submitted job\end{Desc}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Request_z11_1}{
+\index{glite::wmsui::api::Request@{glite::wmsui::api::Request}!unsetCredPath@{unsetCredPath}}
+\index{unsetCredPath@{unsetCredPath}!glite::wmsui::api::Request@{glite::wmsui::api::Request}}
+\subsubsection[unsetCredPath]{\setlength{\rightskip}{0pt plus 5cm}void glite::wmsui::api::Request::unset\-Cred\-Path ()}}
+\label{classglite_1_1wmsui_1_1api_1_1Request_z11_1}
+
+
+Set the Proxy certificate as default 
+
+The documentation for this class was generated from the following file:\begin{CompactItemize}
+\item 
+\hyperlink{Request_8h}{Request.h}\end{CompactItemize}

@@ -1,0 +1,35 @@
+<<<ENUM>>>
+<<<ITEM>>> request with automatic credential delegation:
+
+<<<VERB>>>
+glite-wms-job-list-match -a ./match.jdl
+<<<ENDVERB>>>
+
+If the operation succeeds, the output will be a list of CEs
+
+<<<ITEM>>> request with a proxy previously delegated with "exID" id-string; request for displays CE rank numbers:
+<<<VERB>>>
+glite-wms-job-list-match -d exID --rank ./match.jdl
+<<<ENDVERB>>>
+
+If the operation succeeds, a list of CEs with their rank numbers is displayed on the standard output
+
+<<<ITEM>>> saves the result in a file:
+<<<VERB>>>
+glite-wms-job-list-match -a --output match.out ./match.jdl
+<<<ENDVERB>>>
+
+If the operation succeeds,a list of CEs is saved in the file match.out in the current working directory
+
+<<<ITEM>>> sends the request to the WMProxy service whose URL is specified with the -e (where a proxy has been previously delegated with "exID" id-string)
+
+<<<VERB>>>
+glite-wms-job-list-match -d exID \
+                         -e https://wmproxy.glite.it:7443/glite_wms_wmproxy_server \
+                         $HOME/match.jdl
+<<<ENDVERB>>>
+<<<ENDENUM>>>
+
+If the operation succeeds, a list of CEs is displayed on the standard output
+
+When --endpoint (-e) is not specified, the search of an available WMProxy service is performed according to the modality reported in the description of the --endpoint option.

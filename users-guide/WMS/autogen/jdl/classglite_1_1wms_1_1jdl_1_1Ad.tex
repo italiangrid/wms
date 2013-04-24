@@ -1,0 +1,850 @@
+\hypertarget{classglite_1_1wms_1_1jdl_1_1Ad}{
+\section{glite::wms::jdl::Ad Class Reference}
+\label{classglite_1_1wms_1_1jdl_1_1Ad}\index{glite::wms::jdl::Ad@{glite::wms::jdl::Ad}}
+}
+{\tt \#include $<$Ad.h$>$}
+
+Inheritance diagram for glite::wms::jdl::Ad::\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3cm]{classglite_1_1wms_1_1jdl_1_1Ad}
+\end{center}
+\end{figure}
+\subsection*{Get Methods}
+\begin{CompactItemize}
+\item 
+enum \{ \par
+\hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_z19_0w0}{TYPE\_\-UNKNOWN} =  classad::Value::ERROR\_\-VALUE, 
+\hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_z19_0w1}{TYPE\_\-INTEGER} = classad::Value::INTEGER\_\-VALUE, 
+\hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_z19_0w2}{TYPE\_\-BOOLEAN} = classad::Value::BOOLEAN\_\-VALUE, 
+\hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_z19_0w3}{TYPE\_\-STRING} = classad::Value::STRING\_\-VALUE, 
+\par
+\hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_z19_0w4}{TYPE\_\-REAL} = classad::Value::REAL\_\-VALUE, 
+\hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_z19_0w5}{TYPE\_\-EXPRESSION} = classad::Value::UNDEFINED\_\-VALUE
+ \}
+\item 
+int \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_z19_1}{get\-Type} (const std::string \&attr\_\-name)
+\item 
+void \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_z19_2}{add\-Attribute} (const std::string \&attr\_\-name, int attr\_\-value)
+\item 
+void \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_z19_3}{add\-Attribute} (const std::string \&attr\_\-name, double attr\_\-value)
+\item 
+void \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_z19_4}{add\-Attribute} (const std::string \&attr\_\-name, bool attr\_\-value)
+\item 
+void \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_z19_5}{add\-Attribute} (const std::string \&attr\_\-name, const std::string \&attr\_\-value)
+\item 
+void \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_z19_6}{add\-Attribute} (const std::string \&attr\_\-name, const char $\ast$attr\_\-value)
+\item 
+void \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_z19_7}{add\-Attribute} (const std::string \&attr\_\-name, \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad}{Ad} $\ast$attr\_\-value)
+\item 
+virtual void \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_z19_8}{set\-Attribute\-Expr} (const std::string \&attr\_\-name, const std::string \&attr\_\-value)
+\item 
+virtual void \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_z19_9}{set\-Attribute} (const std::string \&attr\_\-name, int attr\_\-value)
+\item 
+virtual void \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_z19_10}{set\-Attribute} (const std::string \&attr\_\-name, const std::string \&attr\_\-value)
+\item 
+virtual void \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_z19_11}{set\-Attribute} (const std::string \&attr\_\-name, const char $\ast$attr\_\-value)
+\item 
+virtual void \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_z19_12}{set\-Attribute} (const std::string \&attr\_\-name, double attr\_\-value)
+\item 
+virtual void \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_z19_13}{set\-Attribute} (const std::string \&attr\_\-name, bool attr\_\-value)
+\item 
+virtual void \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_z19_14}{set\-Attribute} (const std::string \&attr\_\-name, \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad}{Ad} $\ast$attr\_\-value)
+\item 
+virtual void \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_z19_15}{set\-Attribute\-Expr} (const std::string \&attr\_\-name, classad::Expr\-Tree $\ast$attr\_\-value)
+\item 
+virtual std::string \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_z19_16}{get\-Attribute\-Expr} (const std::string \&attr\_\-name)
+\item 
+std::vector$<$ int $>$ \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_z19_17}{get\-Int\-Value} (const std::string \&attr\_\-name)
+\item 
+std::vector$<$ double $>$ \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_z19_18}{get\-Double\-Value} (const std::string \&attr\_\-name)
+\item 
+std::vector$<$ bool $>$ \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_z19_19}{get\-Bool\-Value} (const std::string \&attr\_\-name)
+\item 
+std::vector$<$ std::string $>$ \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_z19_20}{get\-String\-Value} (const std::string \&attr\_\-name)
+\item 
+std::vector$<$ std::vector$<$ std::string $>$ $>$ \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_z19_21}{get\-String\-List} (const std::string \&attr\_\-name)
+\end{CompactItemize}
+\subsection*{Public Types}
+\subsection*{Public Member Functions}
+\begin{Indent}{\bf Constructors}\par
+\begin{CompactItemize}
+\item 
+\hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_z11_0}{Ad} ()
+\item 
+virtual \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_z11_1}{$\sim$Ad} ()  throw ()
+\item 
+\hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_z11_2}{Ad} (const classad::Class\-Ad \&class\-Ad)
+\item 
+\hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_z11_3}{Ad} (const std::string \&jdl\_\-string)
+\item 
+classad::Class\-Ad $\ast$ \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_z11_4}{ad} ()
+\end{CompactItemize}
+\end{Indent}
+\begin{Indent}{\bf From methods}\par
+\begin{CompactItemize}
+\item 
+virtual void \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_z13_0}{from\-String} (const std::string \&jdl\_\-string)
+\item 
+virtual void \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_z13_1}{from\-File} (const std::string \&jdl\_\-file)
+\end{CompactItemize}
+\end{Indent}
+\begin{Indent}{\bf To methods}\par
+\begin{CompactItemize}
+\item 
+virtual std::string \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_z15_0}{to\-String} ()
+\item 
+virtual std::string \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_z15_1}{to\-String} (const std::string \&attr\_\-name)
+\item 
+virtual std::string \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_z15_2}{to\-Lines} ()
+\item 
+bool \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_z15_3}{is\-Set} ()
+\item 
+void \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_z15_4}{clear} ()
+\end{CompactItemize}
+\end{Indent}
+\begin{Indent}{\bf has methods}\par
+\begin{CompactItemize}
+\item 
+bool \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_z17_0}{has\-Attribute} (const std::string \&attr\_\-name)
+\item 
+virtual classad::Expr\-Tree $\ast$ \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_z17_1}{del\-Attribute} (const std::string \&attr\_\-name)
+\item 
+bool \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_z17_2}{has\-Attribute} (const std::string \&attr\_\-name, const std::string \&attr\_\-value)
+\item 
+std::vector$<$ std::string $>$ \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_z17_3}{attributes} ()
+\end{CompactItemize}
+\end{Indent}
+\subsection*{Protected Member Functions}
+\begin{CompactItemize}
+\item 
+virtual void \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_b0}{add\-Attribute} (std::string attr\_\-name, classad::Value val)
+\item 
+virtual void \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_b1}{append\-Value} (classad::Expr\-Tree $\ast$tree, const classad::Value \&val, const std::string \&attr\_\-name)
+\item 
+virtual void \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_b2}{insert\-Attribute} (const std::string \&attr\_\-name, classad::Expr\-Tree $\ast$val)
+\item 
+virtual void \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_b3}{insert\-Attribute} (const std::string \&attr\_\-name, classad::Value val)
+\item 
+virtual classad::Value \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_b4}{get\-Type\-Value} (const std::string \&attr\_\-name)
+\item 
+bool \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_b5}{has\-Attribute} (classad::Expr\-Tree $\ast$tree, const std::string \&attr\_\-value)
+\end{CompactItemize}
+
+
+\subsection{Detailed Description}
+Provides a common interface for all \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad}{Ad} components. It allows the user to create a valid Class\-Ad instance utilizing native classes and retrieve any kind of information from it. It is utilised as a superclass for \hyperlink{classglite_1_1wms_1_1jdl_1_1JobAd}{Job\-Ad} class \begin{Desc}
+\item[See also:]Joib\-Ad\end{Desc}
+\begin{Desc}
+\item[Version:]0.1 \end{Desc}
+\begin{Desc}
+\item[Date:]15 April 2002 \end{Desc}
+\begin{Desc}
+\item[Author:]Alessandro Maraschini $<$\href{mailto:alessandro.maraschini@datamat.it}{\tt alessandro.maraschini@datamat.it}$>$ \end{Desc}
+
+
+
+
+\subsection{Member Enumeration Documentation}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1Ad_z19_0}{
+\subsubsection["@0]{\setlength{\rightskip}{0pt plus 5cm}anonymous enum}}
+\label{classglite_1_1wms_1_1jdl_1_1Ad_z19_0}
+
+
+\begin{Desc}
+\item[Enumeration values: ]\par
+\begin{description}
+\index{TYPE_UNKNOWN@{TYPE\_\-UNKNOWN}!glite::wms::jdl::Ad@{glite::wms::jdl::Ad}}\index{glite::wms::jdl::Ad@{glite::wms::jdl::Ad}!TYPE_UNKNOWN@{TYPE\_\-UNKNOWN}}\item[{\em 
+\hypertarget{classglite_1_1wms_1_1jdl_1_1Ad_z19_0w0}{
+TYPE\_\-UNKNOWN}
+\label{classglite_1_1wms_1_1jdl_1_1Ad_z19_0w0}
+}]Unknown type \begin{Desc}
+\item[See also:]\hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_z19_1}{get\-Type} \end{Desc}
+\index{TYPE_INTEGER@{TYPE\_\-INTEGER}!glite::wms::jdl::Ad@{glite::wms::jdl::Ad}}\index{glite::wms::jdl::Ad@{glite::wms::jdl::Ad}!TYPE_INTEGER@{TYPE\_\-INTEGER}}\item[{\em 
+\hypertarget{classglite_1_1wms_1_1jdl_1_1Ad_z19_0w1}{
+TYPE\_\-INTEGER}
+\label{classglite_1_1wms_1_1jdl_1_1Ad_z19_0w1}
+}]Attribute Integer type value \begin{Desc}
+\item[See also:]\hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_z19_1}{get\-Type} \end{Desc}
+\index{TYPE_BOOLEAN@{TYPE\_\-BOOLEAN}!glite::wms::jdl::Ad@{glite::wms::jdl::Ad}}\index{glite::wms::jdl::Ad@{glite::wms::jdl::Ad}!TYPE_BOOLEAN@{TYPE\_\-BOOLEAN}}\item[{\em 
+\hypertarget{classglite_1_1wms_1_1jdl_1_1Ad_z19_0w2}{
+TYPE\_\-BOOLEAN}
+\label{classglite_1_1wms_1_1jdl_1_1Ad_z19_0w2}
+}]Attribute Boolean type value \begin{Desc}
+\item[See also:]\hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_z19_1}{get\-Type} \end{Desc}
+\index{TYPE_STRING@{TYPE\_\-STRING}!glite::wms::jdl::Ad@{glite::wms::jdl::Ad}}\index{glite::wms::jdl::Ad@{glite::wms::jdl::Ad}!TYPE_STRING@{TYPE\_\-STRING}}\item[{\em 
+\hypertarget{classglite_1_1wms_1_1jdl_1_1Ad_z19_0w3}{
+TYPE\_\-STRING}
+\label{classglite_1_1wms_1_1jdl_1_1Ad_z19_0w3}
+}]Attribute String type value \begin{Desc}
+\item[See also:]\hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_z19_1}{get\-Type} \end{Desc}
+\index{TYPE_REAL@{TYPE\_\-REAL}!glite::wms::jdl::Ad@{glite::wms::jdl::Ad}}\index{glite::wms::jdl::Ad@{glite::wms::jdl::Ad}!TYPE_REAL@{TYPE\_\-REAL}}\item[{\em 
+\hypertarget{classglite_1_1wms_1_1jdl_1_1Ad_z19_0w4}{
+TYPE\_\-REAL}
+\label{classglite_1_1wms_1_1jdl_1_1Ad_z19_0w4}
+}]Attribute Real/Double type value \begin{Desc}
+\item[See also:]\hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_z19_1}{get\-Type} \end{Desc}
+\index{TYPE_EXPRESSION@{TYPE\_\-EXPRESSION}!glite::wms::jdl::Ad@{glite::wms::jdl::Ad}}\index{glite::wms::jdl::Ad@{glite::wms::jdl::Ad}!TYPE_EXPRESSION@{TYPE\_\-EXPRESSION}}\item[{\em 
+\hypertarget{classglite_1_1wms_1_1jdl_1_1Ad_z19_0w5}{
+TYPE\_\-EXPRESSION}
+\label{classglite_1_1wms_1_1jdl_1_1Ad_z19_0w5}
+}]Attribute Expression type value \begin{Desc}
+\item[See also:]\hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_z19_1}{get\-Type} \end{Desc}
+\end{description}
+\end{Desc}
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1Ad_z11_0}{
+\index{glite::wms::jdl::Ad@{glite::wms::jdl::Ad}!Ad@{Ad}}
+\index{Ad@{Ad}!glite::wms::jdl::Ad@{glite::wms::jdl::Ad}}
+\subsubsection[Ad]{\setlength{\rightskip}{0pt plus 5cm}glite::wms::jdl::Ad::Ad ()}}
+\label{classglite_1_1wms_1_1jdl_1_1Ad_z11_0}
+
+
+default Constructor \hypertarget{classglite_1_1wms_1_1jdl_1_1Ad_z11_1}{
+\index{glite::wms::jdl::Ad@{glite::wms::jdl::Ad}!~Ad@{$\sim$Ad}}
+\index{~Ad@{$\sim$Ad}!glite::wms::jdl::Ad@{glite::wms::jdl::Ad}}
+\subsubsection[$\sim$Ad]{\setlength{\rightskip}{0pt plus 5cm}virtual glite::wms::jdl::Ad::$\sim$\hyperlink{classglite_1_1wms_1_1jdl_1_1Ad}{Ad} ()  throw ()\hspace{0.3cm}{\tt  \mbox{[}virtual\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1Ad_z11_1}
+
+
+Default Destructor \hypertarget{classglite_1_1wms_1_1jdl_1_1Ad_z11_2}{
+\index{glite::wms::jdl::Ad@{glite::wms::jdl::Ad}!Ad@{Ad}}
+\index{Ad@{Ad}!glite::wms::jdl::Ad@{glite::wms::jdl::Ad}}
+\subsubsection[Ad]{\setlength{\rightskip}{0pt plus 5cm}glite::wms::jdl::Ad::Ad (const classad::Class\-Ad \& {\em class\-Ad})}}
+\label{classglite_1_1wms_1_1jdl_1_1Ad_z11_2}
+
+
+Constructor by Class\-Ad \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em class\-Ad}]the classad source where to create the \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad}{Ad} instance from \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1Ad_z11_3}{
+\index{glite::wms::jdl::Ad@{glite::wms::jdl::Ad}!Ad@{Ad}}
+\index{Ad@{Ad}!glite::wms::jdl::Ad@{glite::wms::jdl::Ad}}
+\subsubsection[Ad]{\setlength{\rightskip}{0pt plus 5cm}glite::wms::jdl::Ad::Ad (const std::string \& {\em jdl\_\-string})}}
+\label{classglite_1_1wms_1_1jdl_1_1Ad_z11_3}
+
+
+Constructor by string \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em jdl\_\-string}]the \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad}{Ad} string representation \end{description}
+\end{Desc}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1Ad_z11_4}{
+\index{glite::wms::jdl::Ad@{glite::wms::jdl::Ad}!ad@{ad}}
+\index{ad@{ad}!glite::wms::jdl::Ad@{glite::wms::jdl::Ad}}
+\subsubsection[ad]{\setlength{\rightskip}{0pt plus 5cm}classad::Class\-Ad$\ast$ glite::wms::jdl::Ad::ad ()\hspace{0.3cm}{\tt  \mbox{[}inline\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1Ad_z11_4}
+
+
+Deep copy of \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad}{Ad}. \begin{Desc}
+\item[Returns:]a Class\-Ad pointer representing a copy of all \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad}{Ad} attributes$\ast$ \end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1Ad_b0}{
+\index{glite::wms::jdl::Ad@{glite::wms::jdl::Ad}!addAttribute@{addAttribute}}
+\index{addAttribute@{addAttribute}!glite::wms::jdl::Ad@{glite::wms::jdl::Ad}}
+\subsubsection[addAttribute]{\setlength{\rightskip}{0pt plus 5cm}virtual void glite::wms::jdl::Ad::add\-Attribute (std::string {\em attr\_\-name}, classad::Value {\em val})\hspace{0.3cm}{\tt  \mbox{[}protected, virtual\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1Ad_b0}
+
+
+Add a value to a list (if already present) or set the first value of this attribute \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em attr\_\-name}]a string representing the attribute name \item[{\em val}]The value of the attribute to be added \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Exceptions:]
+\begin{description}
+\item[{\em Ad\-Mismatch\-Exception}]The type of value is not allowed for the specified attribute name \item[{\em Ad\-Format\-Exception}]The type of value is not allowed for the specified attribute name\end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1Ad_z19_7}{
+\index{glite::wms::jdl::Ad@{glite::wms::jdl::Ad}!addAttribute@{addAttribute}}
+\index{addAttribute@{addAttribute}!glite::wms::jdl::Ad@{glite::wms::jdl::Ad}}
+\subsubsection[addAttribute]{\setlength{\rightskip}{0pt plus 5cm}void glite::wms::jdl::Ad::add\-Attribute (const std::string \& {\em attr\_\-name}, \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad}{Ad} $\ast$ {\em attr\_\-value})}}
+\label{classglite_1_1wms_1_1jdl_1_1Ad_z19_7}
+
+
+Allow adding a value to an already set attribute of the \hyperlink{classglite_1_1wms_1_1jdl_1_1JobAd}{Job\-Ad} instance (i.e. it transforms it in a list attribute). if used on a non-set attribute the corresponding set\-Attribute method is automatically called. \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em attr\_\-name}]a string representing the attribute name \item[{\em attr\_\-value}]- The value of the attribute to be added \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Exceptions:]
+\begin{description}
+\item[{\em Ad\-Mismatch\-Exception}]- The type of value is not allowed for the specified attribute name \item[{\em Ad\-Format\-Exception}]The type of value is not allowed for the specified attribute name \item[{\em Ad\-Syntax\-Exception}]- Syntax error caught while trying to add the attribute \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1Ad_z19_6}{
+\index{glite::wms::jdl::Ad@{glite::wms::jdl::Ad}!addAttribute@{addAttribute}}
+\index{addAttribute@{addAttribute}!glite::wms::jdl::Ad@{glite::wms::jdl::Ad}}
+\subsubsection[addAttribute]{\setlength{\rightskip}{0pt plus 5cm}void glite::wms::jdl::Ad::add\-Attribute (const std::string \& {\em attr\_\-name}, const char $\ast$ {\em attr\_\-value})\hspace{0.3cm}{\tt  \mbox{[}inline\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1Ad_z19_6}
+
+
+Allow adding a value to an already set attribute of the \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad}{Ad} instance (i.e. it transforms it in a list attribute). if used on a non-set attribute the corresponding set\-Attribute method is automatically called. \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em attr\_\-name}]a string representing the attribute name \item[{\em attr\_\-value}]- The value of the attribute to be added \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Exceptions:]
+\begin{description}
+\item[{\em Ad\-Mismatch\-Exception}]- The type of value is not allowed for the specified attribute name \item[{\em Ad\-Format\-Exception}]The type of value is not allowed for the specified attribute name \item[{\em Ad\-Syntax\-Exception}]- Syntax error caught while trying to add the attribute \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1Ad_z19_5}{
+\index{glite::wms::jdl::Ad@{glite::wms::jdl::Ad}!addAttribute@{addAttribute}}
+\index{addAttribute@{addAttribute}!glite::wms::jdl::Ad@{glite::wms::jdl::Ad}}
+\subsubsection[addAttribute]{\setlength{\rightskip}{0pt plus 5cm}void glite::wms::jdl::Ad::add\-Attribute (const std::string \& {\em attr\_\-name}, const std::string \& {\em attr\_\-value})}}
+\label{classglite_1_1wms_1_1jdl_1_1Ad_z19_5}
+
+
+Allow adding a value to an already set attribute of the \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad}{Ad} instance (i.e. it transforms it in a list attribute). if used on a non-set attribute the corresponding set\-Attribute method is automatically called. \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em attr\_\-name}]a string representing the attribute name \item[{\em attr\_\-value}]- The value of the attribute to be added \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Exceptions:]
+\begin{description}
+\item[{\em Ad\-Mismatch\-Exception}]- The type of value is not allowed for the specified attribute name \item[{\em Ad\-Format\-Exception}]The type of value is not allowed for the specified attribute name \item[{\em Ad\-Syntax\-Exception}]- Syntax error caught while trying to add the attribute \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1Ad_z19_4}{
+\index{glite::wms::jdl::Ad@{glite::wms::jdl::Ad}!addAttribute@{addAttribute}}
+\index{addAttribute@{addAttribute}!glite::wms::jdl::Ad@{glite::wms::jdl::Ad}}
+\subsubsection[addAttribute]{\setlength{\rightskip}{0pt plus 5cm}void glite::wms::jdl::Ad::add\-Attribute (const std::string \& {\em attr\_\-name}, bool {\em attr\_\-value})}}
+\label{classglite_1_1wms_1_1jdl_1_1Ad_z19_4}
+
+
+Allow adding a value to an already set attribute of the \hyperlink{classglite_1_1wms_1_1jdl_1_1JobAd}{Job\-Ad} instance (i.e. it transforms it in a list attribute). if used on a non-set attribute the corresponding set\-Attribute method is automatically called. \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em attr\_\-name}]a string representing the attribute name \item[{\em attr\_\-value}]- The value of the attribute to be added \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Exceptions:]
+\begin{description}
+\item[{\em Ad\-Mismatch\-Exception}]- The type of value is not allowed for the specified attribute name \item[{\em Ad\-Syntax\-Exception}]- Syntax error caught while trying to add the attribute \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1Ad_z19_3}{
+\index{glite::wms::jdl::Ad@{glite::wms::jdl::Ad}!addAttribute@{addAttribute}}
+\index{addAttribute@{addAttribute}!glite::wms::jdl::Ad@{glite::wms::jdl::Ad}}
+\subsubsection[addAttribute]{\setlength{\rightskip}{0pt plus 5cm}void glite::wms::jdl::Ad::add\-Attribute (const std::string \& {\em attr\_\-name}, double {\em attr\_\-value})}}
+\label{classglite_1_1wms_1_1jdl_1_1Ad_z19_3}
+
+
+Allow adding a value to an already set attribute of the \hyperlink{classglite_1_1wms_1_1jdl_1_1JobAd}{Job\-Ad} instance (i.e. it transforms it in a list attribute). if used on a non-set attribute the corresponding set\-Attribute method is automatically called. \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em attr\_\-name}]a string representing the attribute name \item[{\em attr\_\-value}]- The value of the attribute to be added \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Exceptions:]
+\begin{description}
+\item[{\em Ad\-Mismatch\-Exception}]- The type of value is not allowed for the specified attribute name \item[{\em Ad\-Syntax\-Exception}]- Syntax error caught while trying to add the attribute \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1Ad_z19_2}{
+\index{glite::wms::jdl::Ad@{glite::wms::jdl::Ad}!addAttribute@{addAttribute}}
+\index{addAttribute@{addAttribute}!glite::wms::jdl::Ad@{glite::wms::jdl::Ad}}
+\subsubsection[addAttribute]{\setlength{\rightskip}{0pt plus 5cm}void glite::wms::jdl::Ad::add\-Attribute (const std::string \& {\em attr\_\-name}, int {\em attr\_\-value})}}
+\label{classglite_1_1wms_1_1jdl_1_1Ad_z19_2}
+
+
+Allow adding a value to an already set attribute of the \hyperlink{classglite_1_1wms_1_1jdl_1_1JobAd}{Job\-Ad} instance (i.e. it transforms it in a list attribute). if used on a non-set attribute the corresponding set\-Attribute method is automatically called. \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em attr\_\-name}]a string representing the attribute name \item[{\em attr\_\-value}]- The value of the attribute to be added \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Exceptions:]
+\begin{description}
+\item[{\em Ad\-Mismatch\-Exception}]- The type of value is not allowed for the specified attribute name \item[{\em Ad\-Syntax\-Exception}]- Syntax error caught while trying to add the attribute \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1Ad_b1}{
+\index{glite::wms::jdl::Ad@{glite::wms::jdl::Ad}!appendValue@{appendValue}}
+\index{appendValue@{appendValue}!glite::wms::jdl::Ad@{glite::wms::jdl::Ad}}
+\subsubsection[appendValue]{\setlength{\rightskip}{0pt plus 5cm}virtual void glite::wms::jdl::Ad::append\-Value (classad::Expr\-Tree $\ast$ {\em tree}, const classad::Value \& {\em val}, const std::string \& {\em attr\_\-name})\hspace{0.3cm}{\tt  \mbox{[}protected, virtual\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1Ad_b1}
+
+
+Append a value to a list \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em attr\_\-name}]a string representing the attribute name \item[{\em val}]- The value of the attribute to be added \item[{\em tree}]the current value (before appending) of the attribute\end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1Ad_z17_3}{
+\index{glite::wms::jdl::Ad@{glite::wms::jdl::Ad}!attributes@{attributes}}
+\index{attributes@{attributes}!glite::wms::jdl::Ad@{glite::wms::jdl::Ad}}
+\subsubsection[attributes]{\setlength{\rightskip}{0pt plus 5cm}std::vector$<$std::string$>$ glite::wms::jdl::Ad::attributes ()}}
+\label{classglite_1_1wms_1_1jdl_1_1Ad_z17_3}
+
+
+Retrieve the list of attribugtes present inside the instance \begin{Desc}
+\item[Returns:]a vector containing (with no order) all the attributes of the \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad}{Ad}\end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1Ad_z15_4}{
+\index{glite::wms::jdl::Ad@{glite::wms::jdl::Ad}!clear@{clear}}
+\index{clear@{clear}!glite::wms::jdl::Ad@{glite::wms::jdl::Ad}}
+\subsubsection[clear]{\setlength{\rightskip}{0pt plus 5cm}void glite::wms::jdl::Ad::clear ()}}
+\label{classglite_1_1wms_1_1jdl_1_1Ad_z15_4}
+
+
+Reset the \hyperlink{classglite_1_1wms_1_1jdl_1_1JobAd}{Job\-Ad} Instance. All the previous existing attributes will be deleted \hypertarget{classglite_1_1wms_1_1jdl_1_1Ad_z17_1}{
+\index{glite::wms::jdl::Ad@{glite::wms::jdl::Ad}!delAttribute@{delAttribute}}
+\index{delAttribute@{delAttribute}!glite::wms::jdl::Ad@{glite::wms::jdl::Ad}}
+\subsubsection[delAttribute]{\setlength{\rightskip}{0pt plus 5cm}virtual classad::Expr\-Tree$\ast$ glite::wms::jdl::Ad::del\-Attribute (const std::string \& {\em attr\_\-name})\hspace{0.3cm}{\tt  \mbox{[}virtual\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1Ad_z17_1}
+
+
+Delete an Attribute. It fails if the attribute doesn't exist \begin{Desc}
+\item[Exceptions:]
+\begin{description}
+\item[{\em Ad\-Empty\-Exception}]attribute has not been set yet \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]the deep copy of the expression for the deleted attribute \end{Desc}
+\begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em attr\_\-nam}]The name of the attibute to be deleted \end{description}
+\end{Desc}
+
+
+Reimplemented in \hyperlink{classglite_1_1wms_1_1jdl_1_1JobAd_z9_2}{glite::wms::jdl::Job\-Ad}.\hypertarget{classglite_1_1wms_1_1jdl_1_1Ad_z13_1}{
+\index{glite::wms::jdl::Ad@{glite::wms::jdl::Ad}!fromFile@{fromFile}}
+\index{fromFile@{fromFile}!glite::wms::jdl::Ad@{glite::wms::jdl::Ad}}
+\subsubsection[fromFile]{\setlength{\rightskip}{0pt plus 5cm}virtual void glite::wms::jdl::Ad::from\-File (const std::string \& {\em jdl\_\-file})\hspace{0.3cm}{\tt  \mbox{[}virtual\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1Ad_z13_1}
+
+
+Create an \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad}{Ad} instacne from a file \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em jdl\_\-file}]the string representing the path containing the jdl to be parsed \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1Ad_z13_0}{
+\index{glite::wms::jdl::Ad@{glite::wms::jdl::Ad}!fromString@{fromString}}
+\index{fromString@{fromString}!glite::wms::jdl::Ad@{glite::wms::jdl::Ad}}
+\subsubsection[fromString]{\setlength{\rightskip}{0pt plus 5cm}virtual void glite::wms::jdl::Ad::from\-String (const std::string \& {\em jdl\_\-string})\hspace{0.3cm}{\tt  \mbox{[}virtual\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1Ad_z13_0}
+
+
+Create an \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad}{Ad} instance from a string \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em jdl\_\-string}]the ad string representation \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1Ad_z19_16}{
+\index{glite::wms::jdl::Ad@{glite::wms::jdl::Ad}!getAttributeExpr@{getAttributeExpr}}
+\index{getAttributeExpr@{getAttributeExpr}!glite::wms::jdl::Ad@{glite::wms::jdl::Ad}}
+\subsubsection[getAttributeExpr]{\setlength{\rightskip}{0pt plus 5cm}virtual std::string glite::wms::jdl::Ad::get\-Attribute\-Expr (const std::string \& {\em attr\_\-name})\hspace{0.3cm}{\tt  \mbox{[}virtual\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1Ad_z19_16}
+
+
+Retreive the value of the specified attribute \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em attr\_\-name}]The name of the attribute name to be retrieved \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]the string representation of this attribute \end{Desc}
+\begin{Desc}
+\item[Exceptions:]
+\begin{description}
+\item[{\em Ad\-Empty\-Exception}]- The checked attribute has not been set yet \item[{\em Ad\-Mismatch\-Exception}]- The type of retrieved value is not allowed for the specified attribute name \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1Ad_z19_19}{
+\index{glite::wms::jdl::Ad@{glite::wms::jdl::Ad}!getBoolValue@{getBoolValue}}
+\index{getBoolValue@{getBoolValue}!glite::wms::jdl::Ad@{glite::wms::jdl::Ad}}
+\subsubsection[getBoolValue]{\setlength{\rightskip}{0pt plus 5cm}std::vector$<$bool$>$ glite::wms::jdl::Ad::get\-Bool\-Value (const std::string \& {\em attr\_\-name})}}
+\label{classglite_1_1wms_1_1jdl_1_1Ad_z19_19}
+
+
+Retreive the value of the specified attribute \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em attr\_\-name}]The name of the attribute to be retrieved \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]a vector cantaining the values listed in the specified attribute , (1-size vector if the attribute has a single value) \end{Desc}
+\begin{Desc}
+\item[Exceptions:]
+\begin{description}
+\item[{\em Ad\-Empty\-Exception}]- The checked attribute has not been set yet \item[{\em Ad\-Mismatch\-Exception}]- The type of retrieved value is not allowed for the specified attribute name \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1Ad_z19_18}{
+\index{glite::wms::jdl::Ad@{glite::wms::jdl::Ad}!getDoubleValue@{getDoubleValue}}
+\index{getDoubleValue@{getDoubleValue}!glite::wms::jdl::Ad@{glite::wms::jdl::Ad}}
+\subsubsection[getDoubleValue]{\setlength{\rightskip}{0pt plus 5cm}std::vector$<$double$>$ glite::wms::jdl::Ad::get\-Double\-Value (const std::string \& {\em attr\_\-name})}}
+\label{classglite_1_1wms_1_1jdl_1_1Ad_z19_18}
+
+
+Retreive the value of the specified attribute \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em attr\_\-name}]The name of the attribute to be retrieved \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]a vector cantaining the values listed in the specified attribute , (1-size vector if the attribute has a single value) \end{Desc}
+\begin{Desc}
+\item[Exceptions:]
+\begin{description}
+\item[{\em Ad\-Empty\-Exception}]- The checked attribute has not been set yet \item[{\em Ad\-Mismatch\-Exception}]- The type of retrieved value is not allowed for the specified attribute name \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1Ad_z19_17}{
+\index{glite::wms::jdl::Ad@{glite::wms::jdl::Ad}!getIntValue@{getIntValue}}
+\index{getIntValue@{getIntValue}!glite::wms::jdl::Ad@{glite::wms::jdl::Ad}}
+\subsubsection[getIntValue]{\setlength{\rightskip}{0pt plus 5cm}std::vector$<$int$>$ glite::wms::jdl::Ad::get\-Int\-Value (const std::string \& {\em attr\_\-name})}}
+\label{classglite_1_1wms_1_1jdl_1_1Ad_z19_17}
+
+
+Retreive the value of the specified attribute \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em attr\_\-name}]The name of the attribute name to be retrieved \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]a vector cantaining the values listed in the specified attribute , (1-size vector if the attribute has a single value) \end{Desc}
+\begin{Desc}
+\item[Exceptions:]
+\begin{description}
+\item[{\em Ad\-Empty\-Exception}]- The checked attribute has not been set yet \item[{\em Ad\-Mismatch\-Exception}]- The type of retrieved value is not allowed for the specified attribute name \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1Ad_z19_21}{
+\index{glite::wms::jdl::Ad@{glite::wms::jdl::Ad}!getStringList@{getStringList}}
+\index{getStringList@{getStringList}!glite::wms::jdl::Ad@{glite::wms::jdl::Ad}}
+\subsubsection[getStringList]{\setlength{\rightskip}{0pt plus 5cm}std::vector$<$std::vector$<$std::string$>$ $>$ glite::wms::jdl::Ad::get\-String\-List (const std::string \& {\em attr\_\-name})}}
+\label{classglite_1_1wms_1_1jdl_1_1Ad_z19_21}
+
+
+Retreive the value of the specified attribute \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em attr\_\-name}]The name of the attribute to be retrieved \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]a vector cantaining the a vector of strings (1-size vector if the attribute has a single value) \end{Desc}
+\begin{Desc}
+\item[Exceptions:]
+\begin{description}
+\item[{\em Ad\-Empty\-Exception}]- The checked attribute has not been set yet \item[{\em Ad\-Mismatch\-Exception}]- The type of retrieved value is not allowed for the specified attribute name \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1Ad_z19_20}{
+\index{glite::wms::jdl::Ad@{glite::wms::jdl::Ad}!getStringValue@{getStringValue}}
+\index{getStringValue@{getStringValue}!glite::wms::jdl::Ad@{glite::wms::jdl::Ad}}
+\subsubsection[getStringValue]{\setlength{\rightskip}{0pt plus 5cm}std::vector$<$std::string$>$ glite::wms::jdl::Ad::get\-String\-Value (const std::string \& {\em attr\_\-name})}}
+\label{classglite_1_1wms_1_1jdl_1_1Ad_z19_20}
+
+
+Retreive the value of the specified attribute \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em attr\_\-name}]The name of the attribute to be retrieved \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]a vector cantaining the values listed in the specified attribute , (1-size vector if the attribute has a single value) \end{Desc}
+\begin{Desc}
+\item[Exceptions:]
+\begin{description}
+\item[{\em Ad\-Empty\-Exception}]- The checked attribute has not been set yet \item[{\em Ad\-Mismatch\-Exception}]- The type of retrieved value is not allowed for the specified attribute name \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1Ad_z19_1}{
+\index{glite::wms::jdl::Ad@{glite::wms::jdl::Ad}!getType@{getType}}
+\index{getType@{getType}!glite::wms::jdl::Ad@{glite::wms::jdl::Ad}}
+\subsubsection[getType]{\setlength{\rightskip}{0pt plus 5cm}int glite::wms::jdl::Ad::get\-Type (const std::string \& {\em attr\_\-name})}}
+\label{classglite_1_1wms_1_1jdl_1_1Ad_z19_1}
+
+
+Retrieve the type of the value specified for attr\_\-name \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em attr\_\-name}]the name of the attribute \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]an integer representing the type of the attribute \end{Desc}
+\begin{Desc}
+\item[Exceptions:]
+\begin{description}
+\item[{\em Ad\-Empty\-Exception}]if the attribute is not present in the \hyperlink{classglite_1_1wms_1_1jdl_1_1JobAd}{Job\-Ad} instance \end{description}
+\end{Desc}
+\begin{Desc}
+\item[See also:]\hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_z19_0w0}{TYPE\_\-UNKNOWN} 
+
+\hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_z19_0w1}{TYPE\_\-INTEGER} 
+
+\hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_z19_0w2}{TYPE\_\-BOOLEAN} 
+
+\hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_z19_0w3}{TYPE\_\-STRING} 
+
+\hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_z19_0w4}{TYPE\_\-REAL} 
+
+\hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_z19_0w5}{TYPE\_\-EXPRESSION} \end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1Ad_b4}{
+\index{glite::wms::jdl::Ad@{glite::wms::jdl::Ad}!getTypeValue@{getTypeValue}}
+\index{getTypeValue@{getTypeValue}!glite::wms::jdl::Ad@{glite::wms::jdl::Ad}}
+\subsubsection[getTypeValue]{\setlength{\rightskip}{0pt plus 5cm}virtual classad::Value glite::wms::jdl::Ad::get\-Type\-Value (const std::string \& {\em attr\_\-name})\hspace{0.3cm}{\tt  \mbox{[}protected, virtual\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1Ad_b4}
+
+
+Retrieve the Value of the specified attribute \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em attr\_\-name}]a string representing the attribute name \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]the Value of the attribute inside the \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad}{Ad} instance\end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1Ad_b5}{
+\index{glite::wms::jdl::Ad@{glite::wms::jdl::Ad}!hasAttribute@{hasAttribute}}
+\index{hasAttribute@{hasAttribute}!glite::wms::jdl::Ad@{glite::wms::jdl::Ad}}
+\subsubsection[hasAttribute]{\setlength{\rightskip}{0pt plus 5cm}bool glite::wms::jdl::Ad::has\-Attribute (classad::Expr\-Tree $\ast$ {\em tree}, const std::string \& {\em attr\_\-value})\hspace{0.3cm}{\tt  \mbox{[}protected\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1Ad_b5}
+
+
+Check whether a value is present inside a classad Expression \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em tree}]the expression to be checked @ attr\_\-value the value to be checked \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]true (if the value is present) false otherwise \end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1Ad_z17_2}{
+\index{glite::wms::jdl::Ad@{glite::wms::jdl::Ad}!hasAttribute@{hasAttribute}}
+\index{hasAttribute@{hasAttribute}!glite::wms::jdl::Ad@{glite::wms::jdl::Ad}}
+\subsubsection[hasAttribute]{\setlength{\rightskip}{0pt plus 5cm}bool glite::wms::jdl::Ad::has\-Attribute (const std::string \& {\em attr\_\-name}, const std::string \& {\em attr\_\-value})}}
+\label{classglite_1_1wms_1_1jdl_1_1Ad_z17_2}
+
+
+Check if the specified value is present in the specified attribute \hypertarget{classglite_1_1wms_1_1jdl_1_1Ad_z17_0}{
+\index{glite::wms::jdl::Ad@{glite::wms::jdl::Ad}!hasAttribute@{hasAttribute}}
+\index{hasAttribute@{hasAttribute}!glite::wms::jdl::Ad@{glite::wms::jdl::Ad}}
+\subsubsection[hasAttribute]{\setlength{\rightskip}{0pt plus 5cm}bool glite::wms::jdl::Ad::has\-Attribute (const std::string \& {\em attr\_\-name})}}
+\label{classglite_1_1wms_1_1jdl_1_1Ad_z17_0}
+
+
+Check If the specified attribute has already been set \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em attr\_\-nam}]The name of the attibute to be looked for \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]{\em true\/} if the attribute has been found, {\em false\/} otherwise \end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1Ad_b3}{
+\index{glite::wms::jdl::Ad@{glite::wms::jdl::Ad}!insertAttribute@{insertAttribute}}
+\index{insertAttribute@{insertAttribute}!glite::wms::jdl::Ad@{glite::wms::jdl::Ad}}
+\subsubsection[insertAttribute]{\setlength{\rightskip}{0pt plus 5cm}virtual void glite::wms::jdl::Ad::insert\-Attribute (const std::string \& {\em attr\_\-name}, classad::Value {\em val})\hspace{0.3cm}{\tt  \mbox{[}protected, virtual\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1Ad_b3}
+
+
+Insert a classad Exptression inside the \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad}{Ad} instance \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em attr\_\-name}]a string representing the attribute name \item[{\em val}]- The value of the attribute to be added\end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1Ad_b2}{
+\index{glite::wms::jdl::Ad@{glite::wms::jdl::Ad}!insertAttribute@{insertAttribute}}
+\index{insertAttribute@{insertAttribute}!glite::wms::jdl::Ad@{glite::wms::jdl::Ad}}
+\subsubsection[insertAttribute]{\setlength{\rightskip}{0pt plus 5cm}virtual void glite::wms::jdl::Ad::insert\-Attribute (const std::string \& {\em attr\_\-name}, classad::Expr\-Tree $\ast$ {\em val})\hspace{0.3cm}{\tt  \mbox{[}protected, virtual\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1Ad_b2}
+
+
+Insert a classad Exptression inside the \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad}{Ad} instance \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em attr\_\-name}]a string representing the attribute name \item[{\em val}]- The value of the attribute to be added\end{description}
+\end{Desc}
+
+
+Reimplemented in \hyperlink{classglite_1_1wms_1_1jdl_1_1JobAd_b2}{glite::wms::jdl::Job\-Ad}, and \hyperlink{classglite_1_1wms_1_1jdl_1_1NodeAd_b2}{glite::wms::jdl::Node\-Ad}.\hypertarget{classglite_1_1wms_1_1jdl_1_1Ad_z15_3}{
+\index{glite::wms::jdl::Ad@{glite::wms::jdl::Ad}!isSet@{isSet}}
+\index{isSet@{isSet}!glite::wms::jdl::Ad@{glite::wms::jdl::Ad}}
+\subsubsection[isSet]{\setlength{\rightskip}{0pt plus 5cm}bool glite::wms::jdl::Ad::is\-Set ()}}
+\label{classglite_1_1wms_1_1jdl_1_1Ad_z15_3}
+
+
+Check whether the \hyperlink{classglite_1_1wms_1_1jdl_1_1JobAd}{Job\-Ad} has been initialised \begin{Desc}
+\item[Returns:]whether the \hyperlink{classglite_1_1wms_1_1jdl_1_1JobAd}{Job\-Ad} has been initialised(true) or not (false) \end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1Ad_z19_14}{
+\index{glite::wms::jdl::Ad@{glite::wms::jdl::Ad}!setAttribute@{setAttribute}}
+\index{setAttribute@{setAttribute}!glite::wms::jdl::Ad@{glite::wms::jdl::Ad}}
+\subsubsection[setAttribute]{\setlength{\rightskip}{0pt plus 5cm}virtual void glite::wms::jdl::Ad::set\-Attribute (const std::string \& {\em attr\_\-name}, \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad}{Ad} $\ast$ {\em attr\_\-value})\hspace{0.3cm}{\tt  \mbox{[}virtual\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1Ad_z19_14}
+
+
+Add The specified Integer Attribute to the jdl istance \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em attr\_\-name}]- The Name of the attribute to be added \item[{\em attr\_\-value}]- The value of the attribute to be added \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Exceptions:]
+\begin{description}
+\item[{\em Ad\-Syntax\-Exception}]- Syntax error caught while trying to add the attribute \item[{\em Ad\-Empty\-Exception}]- The attribute attr\_\-name had been already set \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1Ad_z19_13}{
+\index{glite::wms::jdl::Ad@{glite::wms::jdl::Ad}!setAttribute@{setAttribute}}
+\index{setAttribute@{setAttribute}!glite::wms::jdl::Ad@{glite::wms::jdl::Ad}}
+\subsubsection[setAttribute]{\setlength{\rightskip}{0pt plus 5cm}virtual void glite::wms::jdl::Ad::set\-Attribute (const std::string \& {\em attr\_\-name}, bool {\em attr\_\-value})\hspace{0.3cm}{\tt  \mbox{[}virtual\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1Ad_z19_13}
+
+
+Add The specified String Attribute to the jdl istance \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em attr\_\-name}]- The Name of the attribute to be added \item[{\em attr\_\-value}]- The value of the attribute to be added \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Exceptions:]
+\begin{description}
+\item[{\em Ad\-Syntax\-Exception}]- Syntax error caught while trying to add the attribute \item[{\em Ad\-Empty\-Exception}]- The attribute attr\_\-name had been already set \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1Ad_z19_12}{
+\index{glite::wms::jdl::Ad@{glite::wms::jdl::Ad}!setAttribute@{setAttribute}}
+\index{setAttribute@{setAttribute}!glite::wms::jdl::Ad@{glite::wms::jdl::Ad}}
+\subsubsection[setAttribute]{\setlength{\rightskip}{0pt plus 5cm}virtual void glite::wms::jdl::Ad::set\-Attribute (const std::string \& {\em attr\_\-name}, double {\em attr\_\-value})\hspace{0.3cm}{\tt  \mbox{[}virtual\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1Ad_z19_12}
+
+
+Add The specified String Attribute to the jdl istance \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em attr\_\-name}]- The Name of the attribute to be added \item[{\em attr\_\-value}]- The value of the attribute to be added \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Exceptions:]
+\begin{description}
+\item[{\em Ad\-Syntax\-Exception}]- Syntax error caught while trying to add the attribute \item[{\em Ad\-Empty\-Exception}]- The attribute attr\_\-name had been already set \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1Ad_z19_11}{
+\index{glite::wms::jdl::Ad@{glite::wms::jdl::Ad}!setAttribute@{setAttribute}}
+\index{setAttribute@{setAttribute}!glite::wms::jdl::Ad@{glite::wms::jdl::Ad}}
+\subsubsection[setAttribute]{\setlength{\rightskip}{0pt plus 5cm}virtual void glite::wms::jdl::Ad::set\-Attribute (const std::string \& {\em attr\_\-name}, const char $\ast$ {\em attr\_\-value})\hspace{0.3cm}{\tt  \mbox{[}inline, virtual\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1Ad_z19_11}
+
+
+Add The specified String Attribute to the jdl istance \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em attr\_\-name}]- The Name of the attribute to be added \item[{\em attr\_\-value}]- The value of the attribute to be added \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Exceptions:]
+\begin{description}
+\item[{\em Ad\-Empty\-Exception}]- The attribute attr\_\-name had been already set \item[{\em Ad\-Format\-Exception}]The type of value is not allowed for the specified attribute name \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1Ad_z19_10}{
+\index{glite::wms::jdl::Ad@{glite::wms::jdl::Ad}!setAttribute@{setAttribute}}
+\index{setAttribute@{setAttribute}!glite::wms::jdl::Ad@{glite::wms::jdl::Ad}}
+\subsubsection[setAttribute]{\setlength{\rightskip}{0pt plus 5cm}virtual void glite::wms::jdl::Ad::set\-Attribute (const std::string \& {\em attr\_\-name}, const std::string \& {\em attr\_\-value})\hspace{0.3cm}{\tt  \mbox{[}virtual\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1Ad_z19_10}
+
+
+Add The specified String Attribute to the jdl istance \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em attr\_\-name}]- The Name of the attribute to be added \item[{\em attr\_\-value}]- The value of the attribute to be added \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Exceptions:]
+\begin{description}
+\item[{\em Ad\-Empty\-Exception}]- The attribute attr\_\-name had been already set \item[{\em Ad\-Format\-Exception}]The type of value is not allowed for the specified attribute name \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1Ad_z19_9}{
+\index{glite::wms::jdl::Ad@{glite::wms::jdl::Ad}!setAttribute@{setAttribute}}
+\index{setAttribute@{setAttribute}!glite::wms::jdl::Ad@{glite::wms::jdl::Ad}}
+\subsubsection[setAttribute]{\setlength{\rightskip}{0pt plus 5cm}virtual void glite::wms::jdl::Ad::set\-Attribute (const std::string \& {\em attr\_\-name}, int {\em attr\_\-value})\hspace{0.3cm}{\tt  \mbox{[}virtual\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1Ad_z19_9}
+
+
+Add The specified Integer Attribute to the jdl istance \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em attr\_\-name}]- The Name of the attribute to be added \item[{\em attr\_\-value}]- The value of the attribute to be added \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Exceptions:]
+\begin{description}
+\item[{\em Ad\-Syntax\-Exception}]- Syntax error caught while trying to add the attribute \item[{\em Ad\-Empty\-Exception}]- The attribute attr\_\-name had been already set \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1Ad_z19_15}{
+\index{glite::wms::jdl::Ad@{glite::wms::jdl::Ad}!setAttributeExpr@{setAttributeExpr}}
+\index{setAttributeExpr@{setAttributeExpr}!glite::wms::jdl::Ad@{glite::wms::jdl::Ad}}
+\subsubsection[setAttributeExpr]{\setlength{\rightskip}{0pt plus 5cm}virtual void glite::wms::jdl::Ad::set\-Attribute\-Expr (const std::string \& {\em attr\_\-name}, classad::Expr\-Tree $\ast$ {\em attr\_\-value})\hspace{0.3cm}{\tt  \mbox{[}virtual\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1Ad_z19_15}
+
+
+Add The specified Expression Attribute to the jdl istance \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em attr\_\-name}]- The Name of the attribute to be added \item[{\em attr\_\-value}]- The value of the attribute to be added \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Exceptions:]
+\begin{description}
+\item[{\em Ad\-Syntax\-Exception}]- Syntax error caught while trying to add the attribute \item[{\em Ad\-Empty\-Exception}]- The attribute attr\_\-name had been already set \end{description}
+\end{Desc}
+
+
+Reimplemented in \hyperlink{classglite_1_1wms_1_1jdl_1_1JobAd_z5_5}{glite::wms::jdl::Job\-Ad}.\hypertarget{classglite_1_1wms_1_1jdl_1_1Ad_z19_8}{
+\index{glite::wms::jdl::Ad@{glite::wms::jdl::Ad}!setAttributeExpr@{setAttributeExpr}}
+\index{setAttributeExpr@{setAttributeExpr}!glite::wms::jdl::Ad@{glite::wms::jdl::Ad}}
+\subsubsection[setAttributeExpr]{\setlength{\rightskip}{0pt plus 5cm}virtual void glite::wms::jdl::Ad::set\-Attribute\-Expr (const std::string \& {\em attr\_\-name}, const std::string \& {\em attr\_\-value})\hspace{0.3cm}{\tt  \mbox{[}virtual\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1Ad_z19_8}
+
+
+Add The specified Expression Attribute to the jdl istance \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em attr\_\-name}]- The Name of the attribute to be added \item[{\em attr\_\-value}]- The string expression of the attribute to be added \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Exceptions:]
+\begin{description}
+\item[{\em Ad\-Class\-Ad\-Exception}]- a class\-Ad method raised an error \item[{\em Ad\-Empty\-Exception}]- The attribute attr\_\-name had been already set \end{description}
+\end{Desc}
+
+
+Reimplemented in \hyperlink{classglite_1_1wms_1_1jdl_1_1JobAd_z5_4}{glite::wms::jdl::Job\-Ad}.\hypertarget{classglite_1_1wms_1_1jdl_1_1Ad_z15_2}{
+\index{glite::wms::jdl::Ad@{glite::wms::jdl::Ad}!toLines@{toLines}}
+\index{toLines@{toLines}!glite::wms::jdl::Ad@{glite::wms::jdl::Ad}}
+\subsubsection[toLines]{\setlength{\rightskip}{0pt plus 5cm}virtual std::string glite::wms::jdl::Ad::to\-Lines ()\hspace{0.3cm}{\tt  \mbox{[}virtual\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1Ad_z15_2}
+
+
+Convert the \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad}{Ad} Instance into a multi line indented string representation \begin{Desc}
+\item[Returns:]as in \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad_z15_0}{to\-String()} methods but splits the string one line per attribute \end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1Ad_z15_1}{
+\index{glite::wms::jdl::Ad@{glite::wms::jdl::Ad}!toString@{toString}}
+\index{toString@{toString}!glite::wms::jdl::Ad@{glite::wms::jdl::Ad}}
+\subsubsection[toString]{\setlength{\rightskip}{0pt plus 5cm}virtual std::string glite::wms::jdl::Ad::to\-String (const std::string \& {\em attr\_\-name})\hspace{0.3cm}{\tt  \mbox{[}virtual\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1Ad_z15_1}
+
+
+Convert an \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad}{Ad} attribute into its string representation \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em attr\_\-name}]the attribute to be looked up \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]return the attrbute string representation \end{Desc}
+
+
+Reimplemented in \hyperlink{classglite_1_1wms_1_1jdl_1_1JobAd_z3_2}{glite::wms::jdl::Job\-Ad}.\hypertarget{classglite_1_1wms_1_1jdl_1_1Ad_z15_0}{
+\index{glite::wms::jdl::Ad@{glite::wms::jdl::Ad}!toString@{toString}}
+\index{toString@{toString}!glite::wms::jdl::Ad@{glite::wms::jdl::Ad}}
+\subsubsection[toString]{\setlength{\rightskip}{0pt plus 5cm}virtual std::string glite::wms::jdl::Ad::to\-String ()\hspace{0.3cm}{\tt  \mbox{[}virtual\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1Ad_z15_0}
+
+
+Convert the \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad}{Ad} Instance into a single line string representation \begin{Desc}
+\item[Returns:]the ad as in its string representation \end{Desc}
+
+
+Reimplemented in \hyperlink{classglite_1_1wms_1_1jdl_1_1JobAd_z3_1}{glite::wms::jdl::Job\-Ad}.
+
+The documentation for this class was generated from the following file:\begin{CompactItemize}
+\item 
+\hyperlink{Ad_8h}{Ad.h}\end{CompactItemize}

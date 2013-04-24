@@ -1,0 +1,15 @@
+options:
+        --version
+        --help
+        --config, -c     <configfile>
+        --debug
+        --logfile        <filepath>
+        --noint
+        --input, -i      <filepath>
+        --output, -o     <filepath>
+        --verbosity, -v  <level>
+        --from           <[MM:DD:]hh:mm[:[CC]YY]>
+        --to             <[MM:DD:]hh:mm[:[CC]YY]>
+        --user-tag       <tag name>=<tag value>
+        --event          <event code>
+        --exclude, -e    <event code>

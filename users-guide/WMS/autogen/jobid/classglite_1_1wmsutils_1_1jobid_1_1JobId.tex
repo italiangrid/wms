@@ -1,0 +1,283 @@
+\hypertarget{classglite_1_1wmsutils_1_1jobid_1_1JobId}{
+\section{glite::wmsutils::jobid::Job\-Id Class Reference}
+\label{classglite_1_1wmsutils_1_1jobid_1_1JobId}\index{glite::wmsutils::jobid::JobId@{glite::wmsutils::jobid::JobId}}
+}
+{\tt \#include $<$Job\-Id.h$>$}
+
+\subsection*{Public Member Functions}
+\begin{CompactItemize}
+\item 
+void \hyperlink{classglite_1_1wmsutils_1_1jobid_1_1JobId_a0}{from\-String} (const std::string \&dg\_\-Job\-Id)
+\item 
+std::string \hyperlink{classglite_1_1wmsutils_1_1jobid_1_1JobId_a1}{to\-String} () const 
+\item 
+\hyperlink{classglite_1_1wmsutils_1_1jobid_1_1JobId_a2}{operator const edg\_\-wlc\_\-Job\-Id} () const 
+\item 
+\hyperlink{classglite_1_1wmsutils_1_1jobid_1_1JobId}{Job\-Id} \& \hyperlink{classglite_1_1wmsutils_1_1jobid_1_1JobId_a3}{operator=} (\hyperlink{classglite_1_1wmsutils_1_1jobid_1_1JobId}{Job\-Id} const \&)
+\item 
+\hyperlink{classglite_1_1wmsutils_1_1jobid_1_1JobId}{Job\-Id} \& \hyperlink{classglite_1_1wmsutils_1_1jobid_1_1JobId_a4}{operator=} (const \hyperlink{cjobid_8h_a2}{edg\_\-wlc\_\-Job\-Id} \&)
+\item 
+\hyperlink{cjobid_8h_a2}{edg\_\-wlc\_\-Job\-Id} \hyperlink{classglite_1_1wmsutils_1_1jobid_1_1JobId_a5}{get\-Id} () const 
+\end{CompactItemize}
+\begin{Indent}{\bf Constructors/Destructor}\par
+\begin{CompactItemize}
+\item 
+\hyperlink{classglite_1_1wmsutils_1_1jobid_1_1JobId_z1_0}{Job\-Id} ()
+\item 
+\hyperlink{classglite_1_1wmsutils_1_1jobid_1_1JobId_z1_1}{Job\-Id} (const std::string \&\hyperlink{classjobid}{jobid})
+\item 
+\hyperlink{classglite_1_1wmsutils_1_1jobid_1_1JobId_z1_2}{Job\-Id} (const \hyperlink{classglite_1_1wmsutils_1_1jobid_1_1JobId}{Job\-Id} \&\hyperlink{classjobid}{jobid})
+\item 
+\hyperlink{classglite_1_1wmsutils_1_1jobid_1_1JobId_z1_3}{Job\-Id} (const \hyperlink{cjobid_8h_a2}{edg\_\-wlc\_\-Job\-Id} \&\hyperlink{classjobid}{jobid})
+\item 
+\hyperlink{classglite_1_1wmsutils_1_1jobid_1_1JobId_z1_4}{$\sim$Job\-Id} ()
+\end{CompactItemize}
+\end{Indent}
+\begin{Indent}{\bf Miscellaneous}\par
+\begin{CompactItemize}
+\item 
+void \hyperlink{classglite_1_1wmsutils_1_1jobid_1_1JobId_z3_0}{clear} ()
+\item 
+bool \hyperlink{classglite_1_1wmsutils_1_1jobid_1_1JobId_z3_1}{is\-Set} ()
+\item 
+void \hyperlink{classglite_1_1wmsutils_1_1jobid_1_1JobId_z3_2}{set\-Job\-Id} (const std::string \&lb\_\-server, int port=0, const std::string \&unique=\char`\"{}\char`\"{})
+\end{CompactItemize}
+\end{Indent}
+\begin{Indent}{\bf Get Methods}\par
+\begin{CompactItemize}
+\item 
+std::string \hyperlink{classglite_1_1wmsutils_1_1jobid_1_1JobId_z5_0}{get\-Server} () const 
+\item 
+std::string \hyperlink{classglite_1_1wmsutils_1_1jobid_1_1JobId_z5_1}{get\-Unique} () const 
+\end{CompactItemize}
+\end{Indent}
+\subsection*{Friends}
+\begin{CompactItemize}
+\item 
+bool \hyperlink{classglite_1_1wmsutils_1_1jobid_1_1JobId_n0}{operator$<$} (\hyperlink{classglite_1_1wmsutils_1_1jobid_1_1JobId}{Job\-Id} const \&lhs, \hyperlink{classglite_1_1wmsutils_1_1jobid_1_1JobId}{Job\-Id} const \&rhs)
+\item 
+bool \hyperlink{classglite_1_1wmsutils_1_1jobid_1_1JobId_n1}{operator==} (\hyperlink{classglite_1_1wmsutils_1_1jobid_1_1JobId}{Job\-Id} const \&lhs, \hyperlink{classglite_1_1wmsutils_1_1jobid_1_1JobId}{Job\-Id} const \&rhs)
+\end{CompactItemize}
+
+
+\subsection{Detailed Description}
+Managing Identification, checking, retreiving info from a job File name: \hyperlink{JobId_8h}{Job\-Id.h} The \hyperlink{classglite_1_1wmsutils_1_1jobid_1_1JobId}{Job\-Id} class provides a representation of the Datagrid job identifier (dg\_\-job\-Id) and the methods for manipulating it. We remind that the format of the dg\_\-job\-Id is as follows: :/
+
+\begin{Desc}
+\item[Version:]0.1 \end{Desc}
+\begin{Desc}
+\item[Date:]15 April 2002 \end{Desc}
+\begin{Desc}
+\item[Author:]Alessandro Maraschini $<$\href{mailto:alessandro.maraschini@datamat.it}{\tt alessandro.maraschini@datamat.it}$>$ \end{Desc}
+
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classglite_1_1wmsutils_1_1jobid_1_1JobId_z1_0}{
+\index{glite::wmsutils::jobid::JobId@{glite::wmsutils::jobid::Job\-Id}!JobId@{JobId}}
+\index{JobId@{JobId}!glite::wmsutils::jobid::JobId@{glite::wmsutils::jobid::Job\-Id}}
+\subsubsection[JobId]{\setlength{\rightskip}{0pt plus 5cm}glite::wmsutils::jobid::Job\-Id::Job\-Id ()}}
+\label{classglite_1_1wmsutils_1_1jobid_1_1JobId_z1_0}
+
+
+Instantiates an empty \hyperlink{classglite_1_1wmsutils_1_1jobid_1_1JobId}{Job\-Id} object \hypertarget{classglite_1_1wmsutils_1_1jobid_1_1JobId_z1_1}{
+\index{glite::wmsutils::jobid::JobId@{glite::wmsutils::jobid::Job\-Id}!JobId@{JobId}}
+\index{JobId@{JobId}!glite::wmsutils::jobid::JobId@{glite::wmsutils::jobid::Job\-Id}}
+\subsubsection[JobId]{\setlength{\rightskip}{0pt plus 5cm}glite::wmsutils::jobid::Job\-Id::Job\-Id (const std::string \& {\em jobid})}}
+\label{classglite_1_1wmsutils_1_1jobid_1_1JobId_z1_1}
+
+
+Instantiates a \hyperlink{classglite_1_1wmsutils_1_1jobid_1_1JobId}{Job\-Id} object from the passed dg\_\-job\-Id in string format. \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em jobid}]a string representig a class\-Ad expression \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Exceptions:]
+\begin{description}
+\item[{\em Wrong\-Id\-Exception}]When a string is passed in a wrong format \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wmsutils_1_1jobid_1_1JobId_z1_2}{
+\index{glite::wmsutils::jobid::JobId@{glite::wmsutils::jobid::Job\-Id}!JobId@{JobId}}
+\index{JobId@{JobId}!glite::wmsutils::jobid::JobId@{glite::wmsutils::jobid::Job\-Id}}
+\subsubsection[JobId]{\setlength{\rightskip}{0pt plus 5cm}glite::wmsutils::jobid::Job\-Id::Job\-Id (const \hyperlink{classglite_1_1wmsutils_1_1jobid_1_1JobId}{Job\-Id} \& {\em jobid})}}
+\label{classglite_1_1wmsutils_1_1jobid_1_1JobId_z1_2}
+
+
+Instantiates a \hyperlink{classglite_1_1wmsutils_1_1jobid_1_1JobId}{Job\-Id} object from the passed \hyperlink{classglite_1_1wmsutils_1_1jobid_1_1JobId}{Job\-Id} instance \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em jobid}]a \hyperlink{classglite_1_1wmsutils_1_1jobid_1_1JobId}{Job\-Id} instance to copy from \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Exceptions:]
+\begin{description}
+\item[{\em Wrong\-Id\-Exception}]When a string is passed in a wrong format \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wmsutils_1_1jobid_1_1JobId_z1_3}{
+\index{glite::wmsutils::jobid::JobId@{glite::wmsutils::jobid::Job\-Id}!JobId@{JobId}}
+\index{JobId@{JobId}!glite::wmsutils::jobid::JobId@{glite::wmsutils::jobid::Job\-Id}}
+\subsubsection[JobId]{\setlength{\rightskip}{0pt plus 5cm}glite::wmsutils::jobid::Job\-Id::Job\-Id (const \hyperlink{cjobid_8h_a2}{edg\_\-wlc\_\-Job\-Id} \& {\em jobid})}}
+\label{classglite_1_1wmsutils_1_1jobid_1_1JobId_z1_3}
+
+
+Instantiates a \hyperlink{classglite_1_1wmsutils_1_1jobid_1_1JobId}{Job\-Id} object from the passed \hyperlink{classglite_1_1wmsutils_1_1jobid_1_1JobId}{Job\-Id} internal reference \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em jobid}]the \hyperlink{classglite_1_1wmsutils_1_1jobid_1_1JobId}{Job\-Id} internal reference \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Exceptions:]
+\begin{description}
+\item[{\em Wrong\-Id\-Exception}]When a string is passed in a wrong format \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wmsutils_1_1jobid_1_1JobId_z1_4}{
+\index{glite::wmsutils::jobid::JobId@{glite::wmsutils::jobid::Job\-Id}!~JobId@{$\sim$JobId}}
+\index{~JobId@{$\sim$JobId}!glite::wmsutils::jobid::JobId@{glite::wmsutils::jobid::Job\-Id}}
+\subsubsection[$\sim$JobId]{\setlength{\rightskip}{0pt plus 5cm}glite::wmsutils::jobid::Job\-Id::$\sim$\hyperlink{classglite_1_1wmsutils_1_1jobid_1_1JobId}{Job\-Id} ()}}
+\label{classglite_1_1wmsutils_1_1jobid_1_1JobId_z1_4}
+
+
+Destructor Destroy the Job Id instance 
+
+\subsection{Member Function Documentation}
+\hypertarget{classglite_1_1wmsutils_1_1jobid_1_1JobId_z3_0}{
+\index{glite::wmsutils::jobid::JobId@{glite::wmsutils::jobid::Job\-Id}!clear@{clear}}
+\index{clear@{clear}!glite::wmsutils::jobid::JobId@{glite::wmsutils::jobid::Job\-Id}}
+\subsubsection[clear]{\setlength{\rightskip}{0pt plus 5cm}void glite::wmsutils::jobid::Job\-Id::clear ()}}
+\label{classglite_1_1wmsutils_1_1jobid_1_1JobId_z3_0}
+
+
+Unsets the \hyperlink{classglite_1_1wmsutils_1_1jobid_1_1JobId}{Job\-Id} instance. Clear all it's memebers \hypertarget{classglite_1_1wmsutils_1_1jobid_1_1JobId_a0}{
+\index{glite::wmsutils::jobid::JobId@{glite::wmsutils::jobid::Job\-Id}!fromString@{fromString}}
+\index{fromString@{fromString}!glite::wmsutils::jobid::JobId@{glite::wmsutils::jobid::Job\-Id}}
+\subsubsection[fromString]{\setlength{\rightskip}{0pt plus 5cm}void glite::wmsutils::jobid::Job\-Id::from\-String (const std::string \& {\em dg\_\-Job\-Id})}}
+\label{classglite_1_1wmsutils_1_1jobid_1_1JobId_a0}
+
+
+This method sets the \hyperlink{classglite_1_1wmsutils_1_1jobid_1_1JobId}{Job\-Id} instance from the \hyperlink{classglite_1_1wmsutils_1_1jobid_1_1JobId}{Job\-Id} in string format given as input. \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em dg\_\-Job\-Id}]the string representing the job \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Exceptions:]
+\begin{description}
+\item[{\em Wrong\-Id\-Exception}]When a string is passed in a wrong format \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wmsutils_1_1jobid_1_1JobId_a5}{
+\index{glite::wmsutils::jobid::JobId@{glite::wmsutils::jobid::Job\-Id}!getId@{getId}}
+\index{getId@{getId}!glite::wmsutils::jobid::JobId@{glite::wmsutils::jobid::Job\-Id}}
+\subsubsection[getId]{\setlength{\rightskip}{0pt plus 5cm}\hyperlink{cjobid_8h_a2}{edg\_\-wlc\_\-Job\-Id} glite::wmsutils::jobid::Job\-Id::get\-Id () const}}
+\label{classglite_1_1wmsutils_1_1jobid_1_1JobId_a5}
+
+
+Retrieve the internal id reference \begin{Desc}
+\item[Returns:]the \hyperlink{classglite_1_1wmsutils_1_1jobid_1_1JobId}{Job\-Id} internal reference used by some LB methods \end{Desc}
+\hypertarget{classglite_1_1wmsutils_1_1jobid_1_1JobId_z5_0}{
+\index{glite::wmsutils::jobid::JobId@{glite::wmsutils::jobid::Job\-Id}!getServer@{getServer}}
+\index{getServer@{getServer}!glite::wmsutils::jobid::JobId@{glite::wmsutils::jobid::Job\-Id}}
+\subsubsection[getServer]{\setlength{\rightskip}{0pt plus 5cm}std::string glite::wmsutils::jobid::Job\-Id::get\-Server () const}}
+\label{classglite_1_1wmsutils_1_1jobid_1_1JobId_z5_0}
+
+
+\begin{Desc}
+\item[Returns:]the LB address into its string format \end{Desc}
+\begin{Desc}
+\item[Exceptions:]
+\begin{description}
+\item[{\em Empty\-Id\-Exception}]If the job\-Id has not been initialised yet \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wmsutils_1_1jobid_1_1JobId_z5_1}{
+\index{glite::wmsutils::jobid::JobId@{glite::wmsutils::jobid::Job\-Id}!getUnique@{getUnique}}
+\index{getUnique@{getUnique}!glite::wmsutils::jobid::JobId@{glite::wmsutils::jobid::Job\-Id}}
+\subsubsection[getUnique]{\setlength{\rightskip}{0pt plus 5cm}std::string glite::wmsutils::jobid::Job\-Id::get\-Unique () const}}
+\label{classglite_1_1wmsutils_1_1jobid_1_1JobId_z5_1}
+
+
+\begin{Desc}
+\item[Returns:]the Unique string into its string format \end{Desc}
+\begin{Desc}
+\item[Exceptions:]
+\begin{description}
+\item[{\em Empty\-Id\-Exception}]If the job\-Id has not been initialised yet \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wmsutils_1_1jobid_1_1JobId_z3_1}{
+\index{glite::wmsutils::jobid::JobId@{glite::wmsutils::jobid::Job\-Id}!isSet@{isSet}}
+\index{isSet@{isSet}!glite::wmsutils::jobid::JobId@{glite::wmsutils::jobid::Job\-Id}}
+\subsubsection[isSet]{\setlength{\rightskip}{0pt plus 5cm}bool glite::wmsutils::jobid::Job\-Id::is\-Set ()\hspace{0.3cm}{\tt  \mbox{[}inline\mbox{]}}}}
+\label{classglite_1_1wmsutils_1_1jobid_1_1JobId_z3_1}
+
+
+Check wheater the job\-Id has been already created (true) or not (false) \begin{Desc}
+\item[Returns:]true (job\-Id created) or false (job\-Id not yet created) \end{Desc}
+\hypertarget{classglite_1_1wmsutils_1_1jobid_1_1JobId_a2}{
+\index{glite::wmsutils::jobid::JobId@{glite::wmsutils::jobid::Job\-Id}!operator const edg_wlc_JobId@{operator const edg\_\-wlc\_\-JobId}}
+\index{operator const edg_wlc_JobId@{operator const edg\_\-wlc\_\-JobId}!glite::wmsutils::jobid::JobId@{glite::wmsutils::jobid::Job\-Id}}
+\subsubsection[operator const edg\_\-wlc\_\-JobId]{\setlength{\rightskip}{0pt plus 5cm}glite::wmsutils::jobid::Job\-Id::operator const \hyperlink{cjobid_8h_a2}{edg\_\-wlc\_\-Job\-Id} () const\hspace{0.3cm}{\tt  \mbox{[}inline\mbox{]}}}}
+\label{classglite_1_1wmsutils_1_1jobid_1_1JobId_a2}
+
+
+casting operator \hypertarget{classglite_1_1wmsutils_1_1jobid_1_1JobId_a4}{
+\index{glite::wmsutils::jobid::JobId@{glite::wmsutils::jobid::Job\-Id}!operator=@{operator=}}
+\index{operator=@{operator=}!glite::wmsutils::jobid::JobId@{glite::wmsutils::jobid::Job\-Id}}
+\subsubsection[operator=]{\setlength{\rightskip}{0pt plus 5cm}\hyperlink{classglite_1_1wmsutils_1_1jobid_1_1JobId}{Job\-Id}\& glite::wmsutils::jobid::Job\-Id::operator= (const \hyperlink{cjobid_8h_a2}{edg\_\-wlc\_\-Job\-Id} \&)}}
+\label{classglite_1_1wmsutils_1_1jobid_1_1JobId_a4}
+
+
+Operator \char`\"{}=\char`\"{} create a deep copy of the \hyperlink{classglite_1_1wmsutils_1_1jobid_1_1JobId}{Job\-Id} instance \hypertarget{classglite_1_1wmsutils_1_1jobid_1_1JobId_a3}{
+\index{glite::wmsutils::jobid::JobId@{glite::wmsutils::jobid::Job\-Id}!operator=@{operator=}}
+\index{operator=@{operator=}!glite::wmsutils::jobid::JobId@{glite::wmsutils::jobid::Job\-Id}}
+\subsubsection[operator=]{\setlength{\rightskip}{0pt plus 5cm}\hyperlink{classglite_1_1wmsutils_1_1jobid_1_1JobId}{Job\-Id}\& glite::wmsutils::jobid::Job\-Id::operator= (\hyperlink{classglite_1_1wmsutils_1_1jobid_1_1JobId}{Job\-Id} const \&)}}
+\label{classglite_1_1wmsutils_1_1jobid_1_1JobId_a3}
+
+
+Operator \char`\"{}=\char`\"{} create a deep copy of the \hyperlink{classglite_1_1wmsutils_1_1jobid_1_1JobId}{Job\-Id} instance \hypertarget{classglite_1_1wmsutils_1_1jobid_1_1JobId_z3_2}{
+\index{glite::wmsutils::jobid::JobId@{glite::wmsutils::jobid::Job\-Id}!setJobId@{setJobId}}
+\index{setJobId@{setJobId}!glite::wmsutils::jobid::JobId@{glite::wmsutils::jobid::Job\-Id}}
+\subsubsection[setJobId]{\setlength{\rightskip}{0pt plus 5cm}void glite::wmsutils::jobid::Job\-Id::set\-Job\-Id (const std::string \& {\em lb\_\-server}, int {\em port} = 0, const std::string \& {\em unique} = \char`\"{}\char`\"{})}}
+\label{classglite_1_1wmsutils_1_1jobid_1_1JobId_z3_2}
+
+
+Set the \hyperlink{classglite_1_1wmsutils_1_1jobid_1_1JobId}{Job\-Id} instance according to the LB and RB server addresses and the unique string passed as input parameters. \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em lb\_\-server}]Loggin and Bookkeeping server address \item[{\em port}]Loggin and Bookkeeping port ( dafault value is 9000 ) \item[{\em unique}]A Unique identification ( automatically generatad by md5 protocol ) \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Exceptions:]
+\begin{description}
+\item[{\em Wrong\-Id\-Exception}]When one parameter has been passed in a wrong format \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wmsutils_1_1jobid_1_1JobId_a1}{
+\index{glite::wmsutils::jobid::JobId@{glite::wmsutils::jobid::Job\-Id}!toString@{toString}}
+\index{toString@{toString}!glite::wmsutils::jobid::JobId@{glite::wmsutils::jobid::Job\-Id}}
+\subsubsection[toString]{\setlength{\rightskip}{0pt plus 5cm}std::string glite::wmsutils::jobid::Job\-Id::to\-String () const}}
+\label{classglite_1_1wmsutils_1_1jobid_1_1JobId_a1}
+
+
+Converts the job\-Id into a string \begin{Desc}
+\item[Returns:]the string representation of a \hyperlink{classglite_1_1wmsutils_1_1jobid_1_1JobId}{Job\-Id} \end{Desc}
+
+
+\subsection{Friends And Related Function Documentation}
+\hypertarget{classglite_1_1wmsutils_1_1jobid_1_1JobId_n0}{
+\index{glite::wmsutils::jobid::JobId@{glite::wmsutils::jobid::Job\-Id}!operator<@{operator$<$}}
+\index{operator<@{operator$<$}!glite::wmsutils::jobid::JobId@{glite::wmsutils::jobid::Job\-Id}}
+\subsubsection[operator$<$]{\setlength{\rightskip}{0pt plus 5cm}bool operator$<$ (\hyperlink{classglite_1_1wmsutils_1_1jobid_1_1JobId}{Job\-Id} const \& {\em lhs}, \hyperlink{classglite_1_1wmsutils_1_1jobid_1_1JobId}{Job\-Id} const \& {\em rhs})\hspace{0.3cm}{\tt  \mbox{[}friend\mbox{]}}}}
+\label{classglite_1_1wmsutils_1_1jobid_1_1JobId_n0}
+
+
+Operator \char`\"{}$<$\char`\"{} \hypertarget{classglite_1_1wmsutils_1_1jobid_1_1JobId_n1}{
+\index{glite::wmsutils::jobid::JobId@{glite::wmsutils::jobid::Job\-Id}!operator==@{operator==}}
+\index{operator==@{operator==}!glite::wmsutils::jobid::JobId@{glite::wmsutils::jobid::Job\-Id}}
+\subsubsection[operator==]{\setlength{\rightskip}{0pt plus 5cm}bool operator== (\hyperlink{classglite_1_1wmsutils_1_1jobid_1_1JobId}{Job\-Id} const \& {\em lhs}, \hyperlink{classglite_1_1wmsutils_1_1jobid_1_1JobId}{Job\-Id} const \& {\em rhs})\hspace{0.3cm}{\tt  \mbox{[}friend\mbox{]}}}}
+\label{classglite_1_1wmsutils_1_1jobid_1_1JobId_n1}
+
+
+Operator \char`\"{}==\char`\"{} 
+
+The documentation for this class was generated from the following file:\begin{CompactItemize}
+\item 
+\hyperlink{JobId_8h}{Job\-Id.h}\end{CompactItemize}

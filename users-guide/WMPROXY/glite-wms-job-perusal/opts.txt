@@ -1,0 +1,88 @@
+<<<OPT>>>--input-file <filepath>
+
+this option can be used only when --set or --get option are specified too. It
+allows the user to specify respectively the job's file(s) to be perused or retrieved. The list of files contained in 
+<filepath> is displayed and the user is prompted for a choice. With the --set option multiple files can be 
+specified by selecting more items from the list. Instead, multiple files cannot be specified with --get.
+
+This option is ignored if used with the --unset option.
+<<<ENDOPT>>>
+
+
+<<<OPT>>>--set
+
+if this option is specified, files perusal is enabled for the job (indicated by JobId) for the file(s) 
+specified through the --filename option. Multiple files can be specified by repeating the option several 
+times ( e.g.: --filename <file1>  --filename <file2>  --filename <file3>  ..etc). This option cannot be 
+specified together with --get and --unset.
+<<<ENDOPT>>>
+
+
+<<<OPT>>>--get
+
+if this option is specified, the file specified with the --filename option is downloaded on the local machine. 
+Multiple files can not be specified. This option cannot be specified together with --set and --unset.
+<<<ENDOPT>>>
+
+
+<<<OPT>>>--unset
+
+if this option is specified, files perusal is disabled for the given job.
+This option cannot be specified together with --set and --get.
+<<<ENDOPT>>>
+
+
+<<<OPT>>>--filename, -f <filename>
+
+this option can be used only when --set or --get option are specified too. It allows the user to specify 
+the job's file(s) to be perused or retrieved. With the --set option multiple files can be specified by 
+repeating the option several times. Instead, multiple files cannot be specified with --get.
+
+e.g.: 
+<<<VERB>>>
+--filename <file1> --filename <file2> --filename <file3> ...
+<<<ENDVERB>>>
+
+This option is ignored if used with the --unset option.
+<<<ENDOPT>>>
+
+
+<<<OPT>>>--all
+
+This option can only be specified together with --get: all chunks of the specified file will be downloaded 
+(even those that might have been previously retrieved)
+<<<ENDOPT>>>
+
+
+<<<OPT>>>--dir <directorypath>
+
+if this option is specified, the retrieved files are stored in the location pointed by 
+directory<<<USC>>>path instead of the default location <<<INLINEVERB>>>/tmp/<jobId unique string><<<ENDINLINEVERB>>>. 
+This option is ignored if used with either the --set or the --get options.
+<<<ENDOPT>>>
+
+
+<<<OPT>>>--proto <protocol>
+
+this option specifies the protocol to be used for file transferring. It will be ignored when the specified 
+protocol is not found among WMProxy service available protocols: in this case the default one 
+(generally gsiftp ) will be used instead.
+This option is only available from glite version >= 3.1.
+<<<ENDOPT>>>
+
+
+<<<OPT>>>--output, -o <filepath>
+
+this option can only be used together with either the --set or with the --get option.
+Information about these two operations are saved in the file specified by <filepath> at the end of the execution: 
+for --set the filename(s) for which perusal has been enabled; for --get the local pathnames to the retrieved files. 
+<filepath> can be either a simple name or an absolute path (on the local machine). In the former case the file is 
+created in the current working directory.
+<<<ENDOPT>>>
+
+
+<<<OPT>>>--nodisplay
+
+this option can only be specified together with the --get one; it ends the execution of the command without 
+displaying the content of the downloaded files. This option is ignored if used with --set or --unset.
+<<<ENDOPT>>>

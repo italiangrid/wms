@@ -1,0 +1,218 @@
+.TH GLITE-WMS-JOB-PERUSAL "1" "GLITE-WMS-JOB-PERUSAL" "GLITE User Guide"
+.SH NAME:
+glite-wms-job-perusal
+
+.SH SYNOPSIS
+
+.B glite-wms-job-perusal <operation options> <file options> [options] <jobId> 
+
+operation options (mandatory):
+        --get
+        --set
+        --unset
+
+file options: (mandatory for set and get operations)
+        --filename, -f  <filename> (*)
+        --input-file    <file_path>
+
+other options:
+        --help
+        --version
+        --config, -c    <file_path>
+        --vo            <vo_name>
+        --input, -i     <file_path>
+        --dir           <directory_path>
+        --proto         <protocol>
+        --all (**)
+        --output, -o    <file_path>
+        --nodisplay
+        --debug
+        --logfile       <file_path>
+
+(*) With --set multiple files can be specified by repeating the option several times
+(**) only with --get to returns all chunks of the given file
+
+.SP
+.SH DESCRIPTION
+.SP
+.SP
+
+Allows handling files perusal functionality for a submitted job identified by the jobId.This can be done only when files perusal support has been enabled while submitting/registering the job.This is accomplished via the "PerusalFileEnable" JDL attribute.Three different operations can be performed for a given job:
+
+.SP
+.B -
+Job"s file perusal set (--set option): it allows enabling the perusal functionality for one or more specified files.This option requires the user to specify the file(s) to be perused: this can be done by using either the --filename (multiple files can be specified by repeating the option several times) or the --input option (the user will be prompted to select one or more files).
+
+.SP
+.B -
+Job"s file perusal get (--get option): it allows retrieving chunks of onespecified job"s file previously set for perusal by means of the --set option.This option requires the user to specify the file to be retrieved: this can be done by using either the --filename (no multiple files support available) or the --input option (the user will be prompted to select one file). The specified file is therefore downloaded on the local machine and it can be viewed on the user shell. User can specify a custom directory where to download the files by using the --dir option. The retrieval of files to be perused is available as soon as the job has started running: the command will retrieve the content of the generated file up to the time of the call. By default, any further call on the same file, retrieves back only the last chunks of the file, that means only the information stored after the last call. To retrieve all chunks of a given file (even those that might have been previously retrieved), the --all option must be specified.
+
+.SP
+.B -
+Job"s file perusal unset (--unset option): it disables perusal for all job"s files (no further option required)All Perusal functionality are available for simple jobs and for nodes of compound jobs (like DAGs, collections and parametric jobs) but not for compound jobs as a whole. Moreover the WMProxy service version must be greater than or equal to 2.0.0 (the service version can be retrieved by using the --version option of the client commands).
+.SH OPTIONS 
+.B --version
+
+.IP
+displays WMProxy client and servers version numbers.If the --endpoint option is specified only this service is contacted to retrieve its version. If it is not used, the endpoint contacted is that one specified with GLITE_WMS_WMPROXY_ENDPOINT environment variable. If the option is not specified and the environment variable is not set, all servers listed in the WMProxyEndPoints attribute of the user configuration file are contacted. For each of these service, the returned result will be displayed on the standard output (the version numbers in case of success; otherwise the error message).
+.PP
+.B --help
+
+.IP
+displays command usage
+.PP
+.B --config, -c <configfile>
+
+.IP
+if the command is launched with this option, the configuration file pointed by <configfile> is used. This option is meaningless when used together with --vo option
+.PP
+.B --vo <voname>
+
+.IP
+this option allows the user to specify the Virtual Organization she/he is currently working for.If the user proxy contains VOMS extensions then the VO specified through this option is overridden by thedefault VO contained in the proxy (i.e. this option is only useful when working with non-VOMS proxies).This option is meaningless when used together with --config-vo option.
+.PP
+.B --debug
+
+.IP
+when this option is specified, debugging information is displayed on the standard output and written also either into the default log file:
+
+
+.SP
+glite-wms-job-<command_name>_<uid>_<pid>_<time>.log
+
+
+.SP
+located under the /var/tmp  directory or in the log file specified with --logfile option.
+.PP
+.B --logfile <filepath>
+
+.IP
+When this option is specified, a command log file (whose pathname is <filepath> ) is created.
+.PP
+.B --input-file <filepath>
+
+.IP
+this option can be used only when --set or --get option are specified too. Itallows the user to specify respectively the job"s file(s) to be perused or retrieved. The list of files contained in <filepath> is displayed and the user is prompted for a choice. With the --set option multiple files can be specified by selecting more items from the list. Instead, multiple files cannot be specified with --get.This option is ignored if used with the --unset option.
+.PP
+.B --set
+
+.IP
+if this option is specified, files perusal is enabled for the job (indicated by JobId) for the file(s) specified through the --filename option. Multiple files can be specified by repeating the option several times ( e.g.: --filename <file1>  --filename <file2>  --filename <file3>  ..etc). This option cannot be specified together with --get and --unset.
+.PP
+.B --get
+
+.IP
+if this option is specified, the file specified with the --filename option is downloaded on the local machine. Multiple files can not be specified. This option cannot be specified together with --set and --unset.
+.PP
+.B --unset
+
+.IP
+if this option is specified, files perusal is disabled for the given job.This option cannot be specified together with --set and --get.
+.PP
+.B --filename, -f <filename>
+
+.IP
+this option can be used only when --set or --get option are specified too. It allows the user to specify the job"s file(s) to be perused or retrieved. With the --set option multiple files can be specified by repeating the option several times. Instead, multiple files cannot be specified with --get.e.g.: --filename <file1> --filename <file2> --filename <file3> ...This option is ignored if used with the --unset option.
+.PP
+.B --all
+
+.IP
+This option can only be specified together with --get: all chunks of the specified file will be downloaded (even those that might have been previously retrieved)
+.PP
+.B --dir <directorypath>
+
+.IP
+if this option is specified, the retrieved files are stored in the location pointed by directory_path instead of the default location /tmp/<jobId unique string>. This option is ignored if used with either the --set or the --get options.
+.PP
+.B --proto <protocol>
+
+.IP
+this option specifies the protocol to be used for file transferring. It will be ignored when the specified protocol is not found among WMProxy service available protocols: in this case the default one (generally gsiftp ) will be used instead.This option is only available from glite version >= 3.1.
+.PP
+.B --output, -o <filepath>
+
+.IP
+this option can only be used together with either the --set or with the --get option.Information about these two operations are saved in the file specified by <filepath> at the end of the execution: for --set the filename(s) for which perusal has been enabled; for --get the local pathnames to the retrieved files. <filepath> can be either a simple name or an absolute path (on the local machine). In the former case the file is created in the current working directory.
+.PP
+.B --nodisplay
+
+.IP
+this option can only be specified together with the --get one; it ends the execution of the command without displaying the content of the downloaded files. This option is ignored if used with --set or --unset.
+.PP
+
+.SH EXAMPLES
+.SP
+
+
+
+
+.SP
+.B -
+enable perusal for several job"s files:glite-wms-job-perusal --set --filename file1.pr --filename file2.txt \                      --filename file3.a \                      https://wmproxy.glite.it:9000/7O0j4Fequpg7M6SRJ-NvLgA message with the result of the operation is displayed on the standard output
+
+.SP
+.B -
+file retrieval:
+
+.SP
+.B -
+download the last chunk of a file in the default directory (/tmp/<jobId_UniqueStr> unless otherwise specified in the command config file):glite-wms-job-perusal --get --filename file1.pr \                      https://wmproxy.glite.it:9000/7O0j4Fequpg7M6SRJ-NvLg
+
+.SP
+.B -
+download the last chunk of a file in a custom directory:glite-wms-job-perusal --get --filename file2.txt --dir /tmp/my_dir \                      https://wmproxy.glite.it:9000/7O0j4Fequpg7M6SRJ-NvLg
+
+.SP
+.B -
+download the whole file (generated so far) in the defaultdirectory: already retrieved chunks (if any) are downloaded again:glite-wms-job-perusal --get --filename file2.txt --all \                      https://wmproxy.glite.it:9000/7O0j4Fequpg7M6SRJ-NvLg
+
+.SP
+.B -
+disable files perusal for the given job:glite-wms-job-perusal --unset https://wmproxy.glite.it:9000/7O0j4Fequpg7M6SRJ-NvLg
+.SP
+.SP
+A message with the result of the operation is always displayed on the standard output.
+.SH FILES 
+.SP
+
+voName/glite_wms.conf: The user configuration file. The standard path location is \verb /etc/glite-wms . 
+
+
+.SP
+/tmp/x509up_u<uid>: A valid X509 user proxy; use the X509_USER_PROXY environment variable to override the default location
+
+
+.SP
+
+.SH ENVIRONMENT 
+.SP
+
+
+
+.SP
+.B -
+GLITE_WMS_WMPROXY_ENDPOINT: This variable may be set to specify the endpoint URL
+
+.SP
+.B -
+GLOBUS_LOCATION: This variable must be set when the Globus installation is not located in the default path /opt/globus.
+
+.SP
+.B -
+GLOBUS_TCP_PORT_RANGE="<val min> <val max>": This variable must be set to define a range of ports to be used for inbound connections in the interactivity context
+
+.SP
+.B -
+X509_CERT_DIR: This variable may be set to override the default location of the trusted certificates directory, which is normally /etc/grid-security/certificates.
+
+.SP
+.B -
+X509_USER_PROXY: This variable may be set to override the default location of the user proxy credentials, which is normally /tmp/x509up_u<uid>.
+
+.SP
+.B -
+GLITE_SD_PLUGIN: If Service Discovery querying is needed, this variable can be used in order to set a specific (or more) plugin, normally bdii, rgma (or both, separated by comma)
+
+.SP
+.B -
+LCG_GFAL_INFOSYS: If Service Discovery querying is needed, this variable can be used in order to set a specific Server where to perform the queries: for instance LCG_GFAL_INFOSYS="gridit-bdii-01.cnaf.infn.it:2170"

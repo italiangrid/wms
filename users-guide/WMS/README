@@ -1,0 +1,4 @@
+Set TEXINPUTS=:..:autogen// to run TeX on this document.
+
+Files in autogen// come from Doxygen and similar tools. They should not
+be edited by hand.

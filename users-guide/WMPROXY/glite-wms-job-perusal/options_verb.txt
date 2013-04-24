@@ -1,0 +1,25 @@
+operation options (mandatory):
+        --get
+        --set
+        --unset
+
+file options: (mandatory for set and get operations)
+        --filename, -f  <filename> (*)
+        --input-file    <file_path>
+
+other options:
+        --help
+        --version
+        --config, -c    <file_path>
+        --vo            <vo_name>
+        --input, -i     <file_path>
+        --dir           <directory_path>
+        --proto         <protocol>
+        --all (**)
+        --output, -o    <file_path>
+        --nodisplay
+        --debug
+        --logfile       <file_path>
+
+(*) With --set multiple files can be specified by repeating the option several times
+(**) only with --get to returns all chunks of the given file

@@ -1,0 +1,443 @@
+%\subsection{Commandline Interfaces}
+
+In this section we describe syntax and behavior of the commands made available by the WMS-UI to allow job/DAG 
+submission, monitoring and control. In the commands synopsis the mandatory arguments are showed between 
+angle brackets $<$arg$>$) whilst the optional ones between square brackets ([arg]).
+
+Commands for accessing the WMS through the WMProxy service are described in document ~\cite{WMPROXY}.
+Note that usage of the WMProxy submission and control client commands is strongly recommended as they 
+provide full support for all new functionality and enhancements of the WMS. 
+
+Before going to the single commands let's have a look at how the WMS-UI can be configured.
+
+
+\medskip
+\subsubsection{Commands Configuration}
+\label{config}
+
+\textbf{VO-Specific}
+
+Configuration of the WMS User Interface VO-specific parameters is accomplished through the file:
+
+\smallskip
+\begin{verbatim}
+$GLITE_LOCATION/etc/<vo name>/glite_wmsui.conf 
+\end{verbatim}
+\smallskip
+
+
+i.e. there is one directory and file for each supported VO. 
+
+The common WMS-UI configuration rpm (\textit{glite-wms-ui-configuration}) installs the following example file:
+
+\smallskip
+\begin{verbatim}
+$GLITE_LOCATION/etc/vo_template/glite_wmsui.conf
+\end{verbatim}
+\smallskip
+
+If the configuration for your VO is not present on the WMS-UI machine you must create in \$GLITE\_LOCATION/etc a 
+directory, named as the VO (lower-case), copy in it the above mentioned template file and update it opportunely.
+
+The \emph{glite\_wmsui.conf} file is a classad containing the following fields:
+
+\smallskip
+
+\begin{itemize}
+ \item \textbf{VirtualOrganisation} this is a string representing the name of the virtual organisation the file refers to.
+   It should match with the name of the directory containing the file (i.e. the VO). This parameter is 
+   mandatory. 
+ \item \textbf{NSAddresses} this is a list of strings representing the addresses ($<$hostname$>$:$<$port$>$) of the Network 
+   Servers available for the given VO. Job submission is performed towards the NS picked-up randomly from 
+   the list and in case of failure it is retried on each other listed NS until succes or the end of the 
+   list is reached. This parameter is mandatory.
+ \item \textbf{LBAddresses} this is a list of strings or a list of lists of strings representing the address or list 
+   of addresses ($<$hostname$>$:$<$port$>$) of the LB servers available for the given VO for the corresponding NS. 
+   I.e. the first list of LB addresses correspond to the first NS in the NSAddresses list, the second list 
+   of LB addresses correspond to the second NS in the NSAddresses list and so on.
+   When job submission is performed, the WMS-UI after having chosen the NS, choses randomly one LB server within
+   the corresponding list and uses it for generating the job identifier so that all information related with 
+   that job will be managed by the chosen LB server. This allows distributing load on several LB servers.  
+   This parameter is mandatory.
+ \item \textbf{HLRLocation} this is a string representing the address ($<$hostname$>$:$<$port$>$:$<$X509contact string$>$)  of the 
+   HLR for the given VO. HLR is the service responsible for managing the economic transactions and the 
+   accounts of user and resources. This parameter is not mandatory. It is not present in the file by default.
+   If present, it makes the WMS-UI automatically add to the job description the HLRLocation JDL attribute 
+   (if not specified by the user) and this enables accounting.
+ \item \textbf{MyProxyServer} this is a string representing the MYProxy server address ($<$hostname$>$) for the given VO. 
+   This parameter is not mandatory. It is not present in the file by default. If present, it makes the WMS-UI 
+   automatically add to the job description the MyProxyServer JDL attribute (if not specified by the user) 
+   and this enables proxy renewal. If the myproxy client package is installed on the WMS-UI node, then this 
+   parameter should be set equal to the MYPROXY\_SERVER environment variable.
+ \item \textbf{LoggingDestination} this is a string defining the address ($<$host$>$:$[<$port$>]$;) of the LB logging service 
+   (glite-lb-locallogger logging daemon ) to be targeted when logging events. The WMS-UI first checks the 
+   environment for the EDG\_WL\_LOG\_DESTINATION variable and only if this is not set, the value of the 
+   LoggingDestination parameter is taken into account. Otherwise the job related events are logged to the 
+   LB logging service running on the WMS node.
+
+\end{itemize}
+\smallskip
+
+Here below is provided an example of configuration file for the "atlas" Virtual Organisation. 
+This implies that the file path has to be \textit{\$GLITE\_LOCATION/etc/atlas/glite\_wmsui.conf}. 
+
+\smallskip
+\begin{verbatim}
+
+[
+ VirtualOrganisation = "atlas";
+ NSAddresses = {
+   "ibm139.cnaf.infn.it:7772",
+   "gundam.cnaf.infn.it:7772"
+   };
+ LBAddresses = {
+   {"ibm139.cnaf.infn.it:9000"},
+   {"gundam.cnaf.infn.it:9000", "neo.datamat.it:9000", "grid003.ct.infn.it:9876"}
+  };
+ HLRLocation = "lilith.to.infn.it:56568:/C=IT/O=INFN/OU=Personal Certificate/L=Torino/CN=Andrea 
+                Guarise/Email=A.Guarise@to.infn.it";
+ MyProxyServer = "skurut.cesnet.cz";
+ LoggingDestination = "localhost:9002";  // local instance of LB logging service
+]
+
+\end{verbatim}
+\medskip
+\medskip
+
+
+\textbf{Generic}
+
+
+Configuration of the WMS User Interface generic parameters is accomplished through the file:
+
+\smallskip
+\begin{verbatim}
+$GLITE_LOCATION/etc/glite_wmsui_cmd_var.conf
+\end{verbatim}
+\smallskip
+
+
+Update the content of the latter file according to your needs.
+
+The \textit{glite\_wmsui\_cmd\_var.conf} file is a classad containing the following fields:
+
+
+\smallskip
+
+\begin{itemize}
+ \item \textbf{requirements} this is an expression representing the default value for the requirements expression 
+   in the JDL job description. This parameter is mandatory. The value of this parameter is assigned by 
+   the WMS-UI to the requirements attribute in the JDL if not specified by the user. If the user has instead 
+   provided an expression for the requirements attribute in the JDL, the one specified in the configuration 
+   file is added (in AND) to the existing one. 
+   E.g. if in the glite\_wmsui\_cmd\_var.conf configuration file there is: 
+
+   \begin{scriptsize}   
+   \textit{requirements = other.GlueCEStateStatus == "Production" ;} 
+   \end{scriptsize}
+
+   and in the JDL file the user has specified: 
+
+   \begin{scriptsize}   
+   \textit{requirements = other.GlueCEInfoLRMSType == "PBS";} 
+   \end{scriptsize}
+
+   then the job description that is passed to the WMS contains 
+
+   \begin{scriptsize}   
+   \textit{requirements = (other.GlueCEInfoLRMSType == "PBS") \&\& (other.GlueCEStateStatus == "Production");} 
+   \end{scriptsize}
+      
+   Obviously the setting TRUE for the requirements in the configuration file does not have any impact on the evaluation 
+   of job requirements as it would result in: 
+
+   \begin{scriptsize}   
+   \textit{requirements = (other.GlueCEInfoLRMSType == "PBS") \&\& TRUE ;}
+   \end{scriptsize}
+
+ \item \textbf{rank} this is an expression representing the default value for the rank expression in the JDL job 
+   description. The value of this parameter is assigned by the WMS-UI to the rank attribute in the JDL if not 
+   specified by the user. This parameter is mandatory.   
+ \item \textbf{RetryCount} this is an integer representing the default value for the number of submission retries for 
+   a job upon failure due to some grid component (i.e. not to the job itself). The value of this parameter 
+   is assigned by the WMS-UI to the RetryCount attribute in the JDL if not specified by the user.   
+ \item \textbf{DefaultVo} this is a string representing the name of the virtual organisation to be taken as the user s 
+   VO (VirtualOrganisation attribute in he JDL) if not specified by the user neither in the credentials 
+   VOMS extension, nor directly in the job description nor through the --vo option. This attribute can be 
+   either set to  unspecified  or not included at all in the file to mean that no default is set for the VO. 
+ \item \textbf{ErrorStorage} this is a string representing the path of the directory where the WMS-UI creates log files. 
+   This directory is not created by the WMS-UI, so It has to be an already existing directory. Default for this 
+   parameter is /tmp.   
+ \item \textbf{OutputStorage} this is a string defining the path of the directory where the job OutputSandbox files are 
+   stored if not specified by the user through commands options. This directory is not created by the WMS-UI, 
+   so It has to be an already existing directory. Default for this parameter is /tmp. 
+ \item \textbf{ListenerStorage} this is a string defining the path of the directory where are created the pipes where 
+   the glite\_wms\_console\_shadow process saves the job standard streams for interactive jobs. Default for 
+   this parameter is /tmp.   
+ \item \textbf{LoggingTimeout} this is an integer representing the timeout in seconds for asynchronous logging function 
+   called by the WMS-UI when logging events to the LB. Recommended value for WMS-UI that are non-local to the 
+   logging service (glite-lb-logd logging daemon) is not less than 30 seconds. 
+ \item \textbf{LoggingSyncTimeout} this is an integer representing the timeout in seconds for synchronous logging function
+   called by the WMS-UI when logging events to the LB. Recommended value is not less than 30 seconds.   
+ \item \textbf{DefaulStatusLevel} this is an integer defining the default level of verbosity for the glite-job-status 
+   command. Possible values are 0,1,2 and 3. 1 is the default.
+ \item \textbf{DefaultLogInfoLevel} this is an integer defining the default level of verbosity for the glite-job-logging-info
+   command. Possible values are 0,1,2 and 3. 1 is the default. 
+   Default for this parameter is 0.   
+ \item \textbf{NSLoggerLevel} this is an integer defining the quantity of information logged by the NS client. Possible 
+   values range from 0 to 6. 0 is the defaults and means that no information is logged. Default for this 
+   parameter is 0. 
+
+\end{itemize}
+\smallskip
+
+
+Hereafter is provided an example of the \textit{\$GLITE\_LOCATION/etc/glite\_wmsui\_cmd\_var.conf} configuration file: 
+
+
+\smallskip
+\begin{verbatim}
+
+[ 
+ requirements = other.GlueCEStateStatus == "Production" ; 
+ rank = - other.GlueCEStateEstimatedResponseTime ; 
+ RetryCount = 3 ; 
+ ErrorStorage= "/var/tmp" ; 
+ OutputStorage="/tmp/jobOutput"; 
+ ListenerStorage = "/tmp" 
+ LoggingTimeout = 30 ; 
+ LoggingSyncTimeout = 45 ;  
+ DefaultStatusLevel = 1 ; 
+ DefaultLogInfoLevel = 0; 
+ NSLoggerLevel = 2; 
+ DefaultVo = "EGEE"; 
+] 
+
+\end{verbatim}
+\smallskip
+
+The files: 
+
+\smallskip
+\begin{verbatim}
+$GLITE_LOCATION/etc/glite_wmsui_cmd_err.conf
+\end{verbatim}
+\smallskip
+
+and 
+
+\smallskip
+\begin{verbatim}
+$GLITE_LOCATION/etc/glite_wmsui_cmd_help.conf 
+\end{verbatim}
+\smallskip
+
+contain respectively the error codes and error messages returned by the WMS-UI and the text describing the 
+commands usage.
+
+\newpage
+\subsubsection{Common behaviours}
+\label{commonbeh}
+
+As mentioned in the previous section~\ref{quickstart}, 
+\textit{\$GLITE\_LOCATION/etc} is the WMS-UI configuration area: it includes the file specifying 
+the mapping between error codes and error messages (glite\_wmsui\_cmd\_err.conf), 
+the file containing the detailed description of each command (glite\_wmsui\_cmd\_help.conf) and the 
+actual configuration files: glite\_wmsui\_cmd\_var.conf and $<$VO name$>$/glite\_wmsui.conf). 
+The latter files are the only ones that could need to be edited and tailored according to the user/platform 
+characteristics and needs. 
+The \emph{glite\_wmsui\_cmd\_var.conf } file contains the following information that are read by and have 
+influence on commands behaviour: 
+
+\begin{itemize}
+\item default location of the local storage areas for the Output sandbox files,
+\item default location for the WMS-UI log files,
+\item default values for the JDL mandatory attributes,
+\item default values for timeouts when logging events to the LB,
+\item default logging destination,
+\item user's default VO,
+\item default level of information displayed by the monitoring commands
+\end{itemize}
+
+Inside \textit{\$GLITE\_LOCATION/etc} there is instead a directory for each supported Virtual Organisation and 
+named as the VO lower case e.g. for atlas we will have \$GLITE\_LOCATION/etc/atlas/) that contains a vo-specific 
+configuration file glite\_wmsui.conf specifying the list of Network Servers and LBs accessible for the given VO.
+
+When started, WMS-UI commands search for the configuration files in the following locations, in order of 
+precedence:
+ 
+\begin{itemize}
+ \item \$GLITE\_WMS\_LOCATION/etc,
+ \item \$GLITE\_LOCATION/etc,  
+ \item /opt/glite/etc,
+ \item /usr/local/etc,
+ \item /etc
+\end{itemize}
+
+If none of the locations contains needed files an error is returned to the user.
+
+Since several users on the same machine can use a single installation of the WMS-UI, people concurrently issuing 
+WMS-UI commands share the same configuration files. Anyway for users (or groups of users) having particular needs 
+it is possible to use "customised" WMS-UI configuration files through the --config and -config-vo options supported 
+by each WMS-UI command.
+
+Indeed every command launched specifying \emph{--config file\_path} reads its configuration settings in the file 
+pointed by "file\_path" instead of the default configuration file. The same happens for the vo-specific 
+configuration file if the command is started using specifying  \emph{-config-vo vo\_file\_path}. 
+Hence the user only needs to create such file according to her needs and to use the appropriate options to work 
+under "private" settings.
+
+Moreover if the user wants to make this change in some way permanent avoiding the use for each issued command 
+of the --config option, she can set the environment variable GLITE\_WMSUI\_CONFIG\_VAR to point to the non-standard 
+path of the configuration file. Indeed if that variable is set commands will read settings from file 
+"\$GLITE\_WMSUI\_CONFIG\_VAR". Anyway the --config option takes precedence on all other settings.
+
+Exactly the same applies for the GLITE\_WMSUI\_CONFIG\_VO environment variable and the --config-vo option.
+
+It is important to note that since the job identifiers implicitly holds the information about the LB that is 
+managing the corresponding job, all the commands taking the job Id as input parameter do not take into account 
+the LB addresses listed in the configuration file to perform the requested operation also if the -config-vo option 
+has been specified.
+
+Hereafter are listed the options that are common to all WMS-UI commands: 
+
+{\begin{verbatim}
+--config file_path
+--config-vo file_path
+--noint
+--debug
+--logfile file_path
+--version
+--help
+\end{verbatim} 
+
+The \verb!--noint! option skips all interactive questions to the user and goes ahead in the command execution. 
+All warning messages and errors (if any) are written to the file 
+
+\textbf{$<$command\_name$>$\-\_$<$UID$>$\-\_$<$PID$>$\-\_$<$date\_time$>$.log} 
+
+in the location specified in the configuration file instead of the standard output. 
+It is important to note that when \verb!--noint! is specified some checks on "dangerous actions" are skipped. 
+For example if jobs cancellation is requested with this option, this action will be performed without requiring 
+any confirmation to the user. The same applies if the command output will overwrite an existing file, so it is 
+recommended to use the \verb!--noint! option in a safe context.
+
+\medskip
+
+The \verb!--debug! option is mainly thought for testing and debugging purposes; indeed it makes the commands 
+print additional information while running. Every time an external API function call is encountered during the 
+command execution, values of parameters passed to the API are printed to the user. The info messages are displayed 
+on the standard output and are also written together with possible errors and warnings, to 
+
+\textit{$<$command\_name$>$\-\_$<$UID$>$\-\_$<$PID$>$\-\_$<$date\-\_time$>$.log}.
+
+\medskip
+
+If \verb!--noint! option is specified together with \verb!--debug! option the debug message will not be printed on 
+standard output.
+
+\medskip
+
+The \verb!--logfile! $<$file\_path$>$ option allows re-location of the commands log files in the location pointed 
+by file\_path.
+
+\medskip
+
+The \verb!--version! and \verb!--help! options respectively make the commands display the WMS-UI current version and 
+the command usage.
+
+\medskip
+
+Two further options that are common to almost all commands are \verb!--input! and \verb!--output!. The latter one 
+makes the commands redirect the outcome to the file specified as option argument whilst the former reads a list of 
+input items from the file given as option argument. The only exception is the glite\--job\--list\--match command 
+that does not have the \verb!--input! option.
+
+\medskip
+\textbf{--input option}
+\medskip
+\smallskip
+for all commands, the file given as argument to the \verb!--input! option shall contain a list of job identifiers 
+in the following format: one \textit{jobId} for each line, comments beginning with a "\#" or a "*" character.  
+If the input file contains only one \textit{jobId} (see the description of glite-job-submit command later in this 
+document for details about \textit{jobId} format), then the request is directly submitted taking the 
+\textit{jobId} as input, otherwise a menu is displayed to the user listing all the contained items, 
+i.e. something like:
+
+\smallskip
+\begin{scriptsize}
+\begin{verbatim}
+---------------------------------------------------------------
+1 : https://ibm139.cnaf.infn.it:9000/ZU9yOC7AP7AOEhMAHirG3w
+2 : https://ibm139.cnaf.infn.it:9000/ZU9yOC767gJOEhMAHirG3w
+3 : https://ibm135.cnaf.infn.it:9000/ZU9yOC7AP7A55TREAHirG3w
+4 : https://grid012f.cnaf.infn.it:7846/ZUHY6707AP7AOEhMAHirG3w
+5 : https://grid012f.cnaf.infn.it:9000/Cde341P7AOEhMAHirG3w
+6 : https://ibm139.cnaf.infn.it:9000/BgT8T6H\_L92FsKq3OeTWOw
+7 : https://ibm139.cnaf.infn.it:9000/lYlPBQez7fiXx9qq7BEdyw
+8 : https://ibm139.cnaf.infn.it:9000/_f0Bm\_s6UdFPZIEjSglipg
+a : all
+q : quit
+---------------------------------------------------------------
+Choose one or more jobId(s) in the list - [1-10]all:
+\end{verbatim} 
+\end{scriptsize}
+\smallskip
+
+The user can choose one or more jobs from the list entering the corresponding numbers. Single jobs can be selected 
+specifying the numbers associated to the job identifiers separated by commas. Ranges can also be selected 
+specifying ends separated by a dash and it is worth mentioning that it is possible to select at the same time 
+ranges and single jobs. E.g.:
+
+\begin{itemize}
+\item [2:] 	makes the command take the second listed \textit{jobId} as input
+\item [1,4:]	makes the command take the first and the fourth listed \textit{jobId}s as input
+\item [2-5:]	makes the command take listed \textit{jobId}s from 2 to 5 ends included) as input
+\item [1,3-5,8:] selects the first job id in the list, the ids from the third to the fifth ends included) 
+and finally the eighth one.
+\item [all:]	makes the command take all listed \textit{jobId}s as input
+\item [q:]	makes the command quit
+\end{itemize}
+
+Default value for the choice is all. 
+
+If the \verb!--input! option is used together with the  \verb!--noint! then all \textit{jobId}s contained in 
+the input file are taken into account by the command.
+
+There are some commands whose \verb!--input! behaviour differs from the one just described. One of them is 
+glite-job-submit: the input file contains in this case CEIds instead of \textit{jobId}s. 
+As only one CE at a time can be the target of a submission, the user is allowed to choose one and only one CEId.
+Default value for the choice is "1", i.e. the first CEId in the list. 
+This is also the choice automatically made by the command when the \verb!--input! option is used together with 
+the \verb!--noint! one.
+
+The other commands are \textbf{glite-job-attach} and \textbf{glite-job-get-chkpt} whose \verb!--input! option 
+allows to select one (just one) of the \textit{jobId}s contained in the input file.
+
+\newpage
+
+\input{glite-job-submit}
+\newpage
+
+\input{glite-job-list-match}
+\newpage
+
+\input{glite-job-cancel}
+\newpage
+
+\input{glite-job-output}
+\newpage
+
+\input{glite-job-attach}
+\newpage
+
+\input{glite-job-get-chkpt}
+\newpage
+
+\input{glite-job-status}
+\newpage
+
+\input{glite-job-logging-info}
+\newpage
+
+

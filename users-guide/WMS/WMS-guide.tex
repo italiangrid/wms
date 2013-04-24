@@ -1,0 +1,389 @@
+\documentclass{egee}
+\usepackage{doxygen}
+\usepackage{tabularx}
+
+
+\title{EGEE User's Guide}
+\Subtitle{WMS Service}
+\author{Fabrizio Pacini}
+\DocIdentifier{EGEE-JRA1-TEC-572489}
+\Date{\today}
+\Activity{JRA1: Middleware Engineering and Integration}
+\DocStatus{}
+\Dissemination{PUBLIC}
+\DocumentLink{https://edms.cern.ch/document/572489/1}
+
+\Abstract{
+This user's guide explains how to use Services offered by the gLite Workload Management System and 
+the Logging and Bookkeeping Service. Commands and API for job submission and control described in 
+this document allow accessing the WMS through the legacy interface, the Network Server. 
+Commands and API for accessing the WMS through the Web-Service interface (WMProxy) and exploit all new 
+WMS features (e.g. bulk submission, shared sandboxes, job's files perusal etc.) are described at 
+https://edms.cern.ch/document/674643/1. 
+Described features are fully supported by the WMS included in gLite version 3.0.0 or later.
+}
+
+\begin{document}
+
+\input{frontmatter}
+
+\newpage
+
+\tableofcontents
+
+\newpage
+
+\section{Introduction}
+
+The purpose of the Workload Manager Service (WMS) is to accept requests for job submission and management 
+coming from its clients and take the appropriate actions to satisfy them.
+The complexity of the management of applications and resources in the grid is hidden by the WMS to 
+the users. Their interaction with the WMS is indeed limited to the description of the characteristics and 
+requirements of the request via a high-level, user-oriented specification language, the Job Description 
+Language (JDL) ~\cite{jdl-lang} and to the submission of it through the provided interfaces.
+
+It is then responsibility of the WMS to translate these abstract resource requirements into a set of actual 
+resources, taken from the overall grid resource pool, to which the user has access permission.
+The JDL allows the description of the following request types supported by the WMS:
+\begin{itemize}
+   \item{Job: a simple application}
+   \item{DAG: a direct acyclic graph of dependent jobs }
+   \item{Collection: a set of independent jobs }
+\end{itemize}
+
+Jobs in turn can be batch, interactive, MPI-based, checkpointable, partitionable and parametric.
+Support for job collections and parametric jobs is only available when the submission to the WMS 
+is done through the WMProxy service whose features are described in document ~\cite{WMPROXY}.
+Besides request submission, the WMS  also exposes additional functionality for request 
+management and control such as cancellation, output retrieval and job files perusal. 
+Request status follow-up can be instead achieved through the functionality exposed by the 
+LB service ~\cite{lb}.
+
+If a user belonging to a Virtual Organization wants to submit a job to the Grid, he/she must, first 
+of all, describe it with an appropriate JDL file. The user is allowed to use whatever attribute for the 
+description of a request without incurring in errors. 
+Anyway only a certain set of attributes (the "supported" attributes) are taken into account by the WMS 
+components for scheduling and submit the corresponding request. The "supported" attributes, their meaning 
+and the way to use them to describe a job/DAG are described in detail in document ~\cite{jdl}.
+
+
+\subsection{Service Architecture}
+\label{arch}
+\input{arch}
+
+
+\subsection{Interactions with other Services}
+\label{interactions}
+\input{interactions}
+
+\subsection {Security} 
+\label{security}
+\input{security}
+ 
+\section{Quick-start Guide}
+\label{quickstart}
+\input{quickstart}
+
+\newpage
+\section{Reference Guide}
+\label{refguide}
+
+%The reference guide should contain detailed descriptions of all
+%provided CLIs and APIs. There should be two subsections for those.
+
+\subsection{Command-Line Interfaces}
+\label{cli}
+\input{cli2}
+
+
+\newpage
+
+\subsection{WMS client API Description}
+
+The WMS client API supplies the client applications with a set of interfaces over the job description, 
+submission, monitoring and control services made available by the gLite WMS.
+The API provided methods could be conceptually grouped into two main categories that are Job Description and 
+Job Submission, Monitoring \& Control. 
+The Job Description functions provide the API customers with services to build consistent and syntactically 
+correct job and jobs workflows (DAGs) descriptions in the JDL language. 
+The Job Submission, Monitoring and Control methods handle instead:
+
+\begin{itemize}
+ \item Job submission for execution on a remote Computing Element, also encompassing: 
+ \begin{itemize}                   
+    \item Automatic resource discovery and selection
+    \item Staging of the application input sandbox
+    \item Restart of the job from a previously saved checkpoint state
+    \item Job Partitioning
+    \item Interactive communication with the running job
+    \item Management of job workflows
+ \end{itemize}
+ \item Listing of resources suitable to run a specific job according to job requirements,
+ \item Cancellation of one or more submitted jobs,
+ \item Retrieval of the output files of one or more completed job.
+ \item Retrieval of job bookkeeping and logging information.
+ \item Retrieval of information from the proxy credentials needed by the user applications to interact 
+       with the service.
+\end{itemize}
+
+A simple API for the management of job identifiers is also provided.
+The main classes of the WMS client API (C$++$ and Java bindings are provided) are listed here below:
+	       
+\begin{itemize}
+    \item \textbf{JobId}             		(job identifier representation)
+    \item \textbf{Ad}, \textbf{JobAd}           (job description)
+    \item \textbf{DAGAd}, \textbf{ExpDagAd}     (DAG description)
+    \item \textbf{Job}                          (job submission, monitoring and control - all job types)
+    \item \textbf{Request}                      (DAG and normal job submission, monitoring and control)
+    \item \textbf{JobCollection}                (management of group of independent jobs)
+    \item \textbf{UserJobs}                     (monitoring and control of all jobs owned by a user)
+    \item \textbf{UserCredentials}              (user credentials information) 
+\end{itemize}
+
+\newpage
+
+This is a simple usage example of the above listed classes for submitting a normal job:
+
+\begin{scriptsize}
+\begin{verbatim}
+        ...
+        // declare a job description object 
+        glite::wms::jdl::JobAd jdl; 	
+        // create the description object from a jdl file. Correctness of the description is checked 
+        jdl.fromFile ( "/home/test/myjob.jdl" ) ; 
+        // create a Request object from the job description. Request handles DAGs and normal jobs.
+        // the Job class can instead be used for specific job types (e.g. Interactive, MPI etc.)
+        glite::wmsui::api::Request   job(jdl);	
+        // submit the job to the specified WMS (NShost, NSport) and store job information to the 
+        // specified LB (LBhost , LBport).   
+        glite::wmsutils::jobid::JobId jobid = job.submit ( NShost , NSPort , LBhost , LBport ) ;
+        // print out the assigned job identifier 
+        cout << "Success. The job identifier is: " << jobid.toString() << endl ;
+        ...
+\end{verbatim}
+\end{scriptsize}
+\smallskip
+
+
+Detailed documentation of the above mentioned APIs is provided in the following section (~\ref{jscpp},~\ref{jdlcpp} 
+and ~\ref{jobidcpp}). The documentation in HTML format for the C$++$ and Java bindings of the described 
+APIs is available at the following URL \url{http://egee-jra1-wm.mi.infn.it/egee-jra1-wm/glite-wms-api-index.shtml}. 
+Usage examples and build hints for the C$++$ and the Java APIs are respectively available at: \\
+\url{http://egee-jra1-wm.mi.infn.it/egee-jra1-wm/ui_cpp_api_usage.shtml} and \\ 
+\url{http://egee-jra1-wm.mi.infn.it/egee-jra1-wm/ui_java_api_usage.shtml}. \\
+The Java API documentation and the coding examples are available on-line and have not been included in this 
+user's guide to not make this document size explode and to ease quick updates when needed.  
+
+Note that the documentation describing the WMProxy Client API providing C++, Java and Python bindings
+(also including the support for bulk submission and shared sandboxes) can be found at 
+\url{http://egee-jra1-wm.mi.infn.it/egee-jra1-wm/glite-wmproxy-api-index.shtml}.
+Pointers to usage examples are provided in the above mentioned web page.
+Usage of the WMProxy submission and control API is strongly recommended as it provides full            
+support for all new functionality and enhancements of the WMS.
+
+
+The WMS client software also includes the Brokerinfo Access API.
+This API  consists of a simple class for parsing the \textit{.BrokerInfo} file ~\cite{brokerinfo}, which is a file 
+generated by the Resource Broker during the match making phase on the basis of the data requirements 
+(\textit{InputData} attribute) specified in the JDL and is copied on the CE worker node where the job is run. 
+The \textit{.BrokerInfo} file contains information about the physical file names the job has to consider at run time, 
+the protocols it can use to access those files and the Storage Elements that are close to the CE where the job is run.  
+The Brokerinfo Access API is described in section ~\ref{brki}. HTML documentation is available at: \\
+\url{http://egee-jra1-wm.mi.infn.it/egee-jra1-wm/api_doc/brokerinfo-access/index.html}. 
+
+\newpage
+\subsection{Job Submission API---C++ binding}
+\label{jscpp}
+{
+\renewenvironment{CompactList}{\itemize\itemsep -2pt}{\enditemize}
+\def\section#1{}
+\renewcommand{\contentsline}[4]{{\bf #2}\leaders\hbox{.}\hfill #3}
+The documentation of C$++$ Job Submission API presented in this section was generated automatically from the 
+comments in the API header files by Doxygen. The packages providing the Job Submission API are 
+{\verb!org.glite.wms-ui.api-cpp!} and {\verb!org.glite.wms-ui.api-java!}.
+
+The class hierarchy is depicted in the following list.
+\input{hierarchy_js}
+}
+
+\noindent The Job Submission API classes are described in the
+following sections.
+{
+\input{doxyhack}
+\let\ddescription=\description
+\let\denddescription=\enddescription
+\renewenvironment{description}{\list{}{\labelwidth 4cm\leftmargin 4cm}}{\endlist}
+% documentation for particular classes
+
+\input{structglite_1_1wmsui_1_1api_1_1CollectionResult}
+\include{classglite_1_1wmsui_1_1api_1_1Job}
+\include{classglite_1_1wmsui_1_1api_1_1JobCollection}
+\include{classglite_1_1wmsui_1_1api_1_1JobCollectionException}
+\include{classglite_1_1wmsui_1_1api_1_1JobCollectNoJobException}
+\include{classglite_1_1wmsui_1_1api_1_1JobException}
+\include{classglite_1_1wmsui_1_1api_1_1JobOperationException}
+\include{classglite_1_1wmsui_1_1api_1_1JobTimeoutException}
+\include{classglite_1_1wmsui_1_1api_1_1Listener}
+\include{classglite_1_1wmsui_1_1api_1_1Logging}
+\include{classglite_1_1wmsui_1_1api_1_1paramStruct}
+\include{classglite_1_1wmsui_1_1api_1_1Request}
+\include{classglite_1_1wmsui_1_1api_1_1resultStruct}
+\include{classglite_1_1wmsui_1_1api_1_1Shadow}
+\include{classglite_1_1wmsui_1_1api_1_1ThreadException}
+\include{classglite_1_1wmsui_1_1api_1_1UserCredential}
+\include{classglite_1_1wmsui_1_1api_1_1UserJobs}
+
+}
+
+
+
+\subsection{Job Description API---C++ binding}
+\label{jdlcpp}
+{
+\renewenvironment{CompactList}{\itemize\itemsep -2pt}{\enditemize}
+\def\section#1{}
+\renewcommand{\contentsline}[4]{{\bf #2}\leaders\hbox{.}\hfill #3}
+The documentation of C$++$ Job Description API (also referred to as JDL API) presented in this section was 
+generated automatically from the comments in the API header files by Doxygen.
+The packages providing the Job Description API are {\verb!org.glite.wms.jdl!} and {\verb!org.glite.wms.jdlj!}.
+
+
+The class hierarchy is depicted in the following list.
+\input{hierarchy_jdl}
+}
+
+\noindent The Job Description API classes are described in the
+following sections.
+{
+\input{doxyhack}
+\let\ddescription=\description
+\let\denddescription=\enddescription
+\renewenvironment{description}{\list{}{\labelwidth 4cm\leftmargin 4cm}}{\endlist}
+% documentation for particular classes
+
+\input{classglite_1_1wms_1_1jdl_1_1Ad}
+\include{classglite_1_1wms_1_1jdl_1_1AdAttributeException}
+\include{classglite_1_1wms_1_1jdl_1_1AdClassAdException}
+\include{classglite_1_1wms_1_1jdl_1_1AdConverter}
+\include{classglite_1_1wms_1_1jdl_1_1AdEmptyException}
+\include{classglite_1_1wms_1_1jdl_1_1AdFormatException}
+\include{classglite_1_1wms_1_1jdl_1_1AdListException}
+\include{classglite_1_1wms_1_1jdl_1_1AdMismatchException}
+\include{classglite_1_1wms_1_1jdl_1_1AdSemanticException}
+\include{classglite_1_1wms_1_1jdl_1_1AdSemanticGroupException}
+\include{classglite_1_1wms_1_1jdl_1_1AdSemanticMandatoryException}
+\include{classglite_1_1wms_1_1jdl_1_1AdSemanticPathException}
+\include{classglite_1_1wms_1_1jdl_1_1AdSyntaxException}
+\include{classglite_1_1wms_1_1jdl_1_1CannotGetAttribute}
+\include{classglite_1_1wms_1_1jdl_1_1CannotRemoveAttribute}
+\include{classglite_1_1wms_1_1jdl_1_1CannotSetAttribute}
+\include{classglite_1_1wms_1_1jdl_1_1DAGAd}
+\include{structglite_1_1wms_1_1jdl_1_1DAGAd_1_1Attributes}
+\include{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator}
+\include{classglite_1_1wms_1_1jdl_1_1DAGAdNodeIterator}
+\include{classglite_1_1wms_1_1jdl_1_1DAGNodeInfo}
+\include{classglite_1_1wms_1_1jdl_1_1ExpDagAd}
+\include{structglite_1_1wms_1_1jdl_1_1InvalidDAG}
+\include{structglite_1_1wms_1_1jdl_1_1InvalidNodeInfo}
+\include{classglite_1_1wms_1_1jdl_1_1JdlAttributeList}
+\include{classglite_1_1wms_1_1jdl_1_1JobAd}
+\include{classglite_1_1wms_1_1jdl_1_1JobAdSchema}
+\include{structglite_1_1wms_1_1jdl_1_1JobIdStruct}
+\include{classglite_1_1wms_1_1jdl_1_1ManipulationException}
+\include{classglite_1_1wms_1_1jdl_1_1NodeAd}
+\include{structglite_1_1wms_1_1jdl_1_1NodeStruct}
+\include{classglite_1_1wms_1_1jdl_1_1RequestAdException}
+
+}
+
+\subsection{Job Identifier API---C++ binding}
+\label{jobidcpp}
+{
+\renewenvironment{CompactList}{\itemize\itemsep -2pt}{\enditemize}
+\def\section#1{}
+\renewcommand{\contentsline}[4]{{\bf #2}\leaders\hbox{.}\hfill #3}
+The documentation of C$++$ Job Identifier API presented in this section was
+generated automatically from the comments in the API header files by Doxygen.
+The package providing the Job Identifier API is {\verb!org.glite.wms-utils.jobid!} for C$++$. The Java API is included
+in package {\verb!org.glite.wms-ui.api-java!}
+
+The class hierarchy is depicted in the following list.
+\input{hierarchy_jobid}
+}
+
+\noindent The Job Identifier API classes are described in the
+following sections. 
+{
+\input{doxyhack}
+\let\ddescription=\description
+\let\denddescription=\enddescription
+\renewenvironment{description}{\list{}{\labelwidth 4cm\leftmargin 4cm}}{\endlist}
+% documentation for particular classes
+
+\input{classglite_1_1wmsutils_1_1jobid_1_1EmptyIdException}
+\include{classglite_1_1wmsutils_1_1jobid_1_1JobId}
+\include{classglite_1_1wmsutils_1_1jobid_1_1JobIdException}
+\include{classglite_1_1wmsutils_1_1jobid_1_1WrongIdException}
+
+}
+
+
+\subsection{BrokerInfo Access API---C++ binding}
+\label{brki}
+{
+\renewenvironment{CompactList}{\itemize\itemsep -2pt}{\enditemize}
+\def\section#1{}
+\renewcommand{\contentsline}[4]{{\bf #2}\leaders\hbox{.}\hfill #3}
+The documentation of C$++$ BrokerInfo Access API presented in this section was generated automatically from the
+comments in the API header files by Doxygen. The package providing the BrokerInfo Access API is 
+{\verb!org.glite.wms.brokerinfo-access!}.
+
+The class hierarchy is depicted in the following list.
+\input{annotated_br}
+}
+
+\noindent The BrokerInfo Access API classes are described in the
+following sections.
+{
+\input{doxyhack}
+\let\ddescription=\description
+\let\denddescription=\enddescription
+\renewenvironment{description}{\list{}{\labelwidth 4cm\leftmargin 4cm}}{\endlist}
+% documentation for particular classes
+
+\input{classBrokerInfo}
+\include{classBrokerInfoEx}
+
+}
+
+
+
+
+\newpage
+\section{Known Problems and Caveats}
+\label{caveats}
+\input{caveats}
+
+
+\begin{thebibliography}1
+\bibitem[R1]{WMS} G.Avellino at al., \emph{The DataGrid Workload Management System: Challenges and Results}, Journal of Grid Computing, ISSN: 1570-7873, 2005, accepted.
+\bibitem[R2]{jdl}\emph{JDL Attributes Specification}, EGEE-JRA1-TEC-555796-JDL-Attributes-v0-6 , \\ \url{https://edms.cern.ch/file/555796/1/}.
+\bibitem[R3]{lb}\emph{LB Service User's Guide}, EGEE-JRA1-TEC-571273 , \\ \url{https://edms.cern.ch/file/571273/1/LB-guide.pdf}.
+\bibitem[R4]{voms-core}\emph{VOMS User's Guide}, EGEE-JRA1-TEC-571991 , \\ \url{https://edms.cern.ch/file/571991/1/voms-guide.pdf}.
+\bibitem[R5]{brokerinfo}\emph{The Resource Broker Info file}, Brokerinfo-access Guide , \\ \url{http://egee-jra1-wm.mi.infn.it/egee-jra1-wm/brokerinfo-access.shtml}.
+\bibitem[R6]{jdl-lang}\emph{About Job Description Language}, About JDL , \\ \url{http://trinity.datamat.it/projects/EGEE/wiki/wiki.php?n=JDL.AboutJDL}.
+\bibitem[R7]{jra1-arch}\emph{EGEE Middleware Architecture}, DJRA1.1 , \\ \url{https://edms.cern.ch/document/476451/1.0}.
+\bibitem[R8]{jra1-design}\emph{Design of the EGEE gLite middleware external interfaces}, DJRA1.2 , \\ \url{https://edms.cern.ch/document/487871/1.0}.
+\bibitem[R9]{jra3-arch}\emph{Global Security Architecture}, DJRA1.3 , \\ \url{https://edms.cern.ch/document/487004/1.1}.
+\bibitem[R10]{jra1-arch2}\emph{EGEE Middleware Architecture (Review)}, EGEE-DJRA1.1-594698-v1.0 , \\ \url{https://edms.cern.ch/document/594698/1.0}.
+\bibitem[R11]{jra1-design2}\emph{Design of the EGEE Middleware Grid Services (Review)}, EGEE-DJRA1.5-606574-v1.0 , \\ \url{https://edms.cern.ch/document/606574/1.0}.
+\bibitem[R12]{WMPROXY}\emph{WMProxy User's Guide}, EGEE-JRA1-TEC-674643 , \\ \url{https://edms.cern.ch/document/674643/1}.
+\end{thebibliography}
+
+\clearpage
+
+%\appendix
+
+
+
+\end{document}

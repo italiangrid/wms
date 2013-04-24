@@ -1,0 +1,104 @@
+\hypertarget{classglite_1_1wmsui_1_1api_1_1UserJobs}{
+\section{glite::wmsui::api::User\-Jobs Class Reference}
+\label{classglite_1_1wmsui_1_1api_1_1UserJobs}\index{glite::wmsui::api::UserJobs@{glite::wmsui::api::UserJobs}}
+}
+Allow controlling all the jobs owned by the user.  
+
+
+{\tt \#include $<$User\-Jobs.h$>$}
+
+\subsection*{Public Member Functions}
+\begin{Indent}{\bf Constructors/Destructor}\par
+\begin{CompactItemize}
+\item 
+\hyperlink{classglite_1_1wmsui_1_1api_1_1UserJobs_z27_0}{User\-Jobs} ()
+\item 
+\hyperlink{classglite_1_1wmsui_1_1api_1_1UserJobs_z27_1}{$\sim$User\-Jobs} ()
+\item 
+\hyperlink{classglite_1_1wmsui_1_1api_1_1UserJobs_z27_2}{User\-Jobs} (const std::string cred\_\-path)
+\end{CompactItemize}
+\end{Indent}
+\begin{Indent}{\bf Action Methods}\par
+\begin{CompactItemize}
+\item 
+void \hyperlink{classglite_1_1wmsui_1_1api_1_1UserJobs_z29_0}{get\-Jobs} (const std::string \&lb\-Host, int lb\-Port, std::vector$<$ glite::wmsutils::jobid::Job\-Id $>$ \&jobs)
+\item 
+void \hyperlink{classglite_1_1wmsui_1_1api_1_1UserJobs_z29_1}{get\-Status} (const std::string \&lb\-Host, int lb\-Port, std::vector$<$ glite::lb::Job\-Status $>$ \&jobs\-Status)
+\end{CompactItemize}
+\end{Indent}
+
+
+\subsection{Detailed Description}
+Allow controlling all the jobs owned by the user. 
+
+Allow controlling all the jobs owned by the user The \hyperlink{classglite_1_1wmsui_1_1api_1_1UserJobs}{User\-Jobs} class provides methods that allow controlling all the user's jobs during its lifetime. such as getting their status, or cancelling them
+
+\begin{Desc}
+\item[Version:]0.1 \end{Desc}
+\begin{Desc}
+\item[Date:]15 April 2002 \end{Desc}
+\begin{Desc}
+\item[Author:]Alessandro Maraschini $<$\href{mailto:alessandro.maraschini@datamat.it}{\tt alessandro.maraschini@datamat.it}$>$ \end{Desc}
+
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1UserJobs_z27_0}{
+\index{glite::wmsui::api::UserJobs@{glite::wmsui::api::User\-Jobs}!UserJobs@{UserJobs}}
+\index{UserJobs@{UserJobs}!glite::wmsui::api::UserJobs@{glite::wmsui::api::User\-Jobs}}
+\subsubsection[UserJobs]{\setlength{\rightskip}{0pt plus 5cm}glite::wmsui::api::User\-Jobs::User\-Jobs ()}}
+\label{classglite_1_1wmsui_1_1api_1_1UserJobs_z27_0}
+
+
+Instantiates an \hyperlink{classglite_1_1wmsui_1_1api_1_1UserJobs}{User\-Jobs} object using default user credential \hypertarget{classglite_1_1wmsui_1_1api_1_1UserJobs_z27_1}{
+\index{glite::wmsui::api::UserJobs@{glite::wmsui::api::User\-Jobs}!~UserJobs@{$\sim$UserJobs}}
+\index{~UserJobs@{$\sim$UserJobs}!glite::wmsui::api::UserJobs@{glite::wmsui::api::User\-Jobs}}
+\subsubsection[$\sim$UserJobs]{\setlength{\rightskip}{0pt plus 5cm}glite::wmsui::api::User\-Jobs::$\sim$\hyperlink{classglite_1_1wmsui_1_1api_1_1UserJobs}{User\-Jobs} ()}}
+\label{classglite_1_1wmsui_1_1api_1_1UserJobs_z27_1}
+
+
+Destructor \hypertarget{classglite_1_1wmsui_1_1api_1_1UserJobs_z27_2}{
+\index{glite::wmsui::api::UserJobs@{glite::wmsui::api::User\-Jobs}!UserJobs@{UserJobs}}
+\index{UserJobs@{UserJobs}!glite::wmsui::api::UserJobs@{glite::wmsui::api::User\-Jobs}}
+\subsubsection[UserJobs]{\setlength{\rightskip}{0pt plus 5cm}glite::wmsui::api::User\-Jobs::User\-Jobs (const std::string {\em cred\_\-path})}}
+\label{classglite_1_1wmsui_1_1api_1_1UserJobs_z27_2}
+
+
+Instantiates an \hyperlink{classglite_1_1wmsui_1_1api_1_1UserJobs}{User\-Jobs} object using non-default credential \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em cred\_\-path}]The proxy certificate file where to retrive credential from \end{description}
+\end{Desc}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1UserJobs_z29_0}{
+\index{glite::wmsui::api::UserJobs@{glite::wmsui::api::User\-Jobs}!getJobs@{getJobs}}
+\index{getJobs@{getJobs}!glite::wmsui::api::UserJobs@{glite::wmsui::api::User\-Jobs}}
+\subsubsection[getJobs]{\setlength{\rightskip}{0pt plus 5cm}void glite::wmsui::api::User\-Jobs::get\-Jobs (const std::string \& {\em lb\-Host}, int {\em lb\-Port}, std::vector$<$ glite::wmsutils::jobid::Job\-Id $>$ \& {\em jobs})}}
+\label{classglite_1_1wmsui_1_1api_1_1UserJobs_z29_0}
+
+
+Retreive the jobs owned by the user in a specific LB \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em lb\-Host}]the LB server host name \item[{\em lb\-Port}]the LB server port value \item[{\em jobs}]the vector of Job\-Id which will be filled with all the user jobs\end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1UserJobs_z29_1}{
+\index{glite::wmsui::api::UserJobs@{glite::wmsui::api::User\-Jobs}!getStatus@{getStatus}}
+\index{getStatus@{getStatus}!glite::wmsui::api::UserJobs@{glite::wmsui::api::User\-Jobs}}
+\subsubsection[getStatus]{\setlength{\rightskip}{0pt plus 5cm}void glite::wmsui::api::User\-Jobs::get\-Status (const std::string \& {\em lb\-Host}, int {\em lb\-Port}, std::vector$<$ glite::lb::Job\-Status $>$ \& {\em jobs\-Status})}}
+\label{classglite_1_1wmsui_1_1api_1_1UserJobs_z29_1}
+
+
+Retrieve the status of all the user's jobs \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em lb\-Host}]the LB server host name \item[{\em lb\-Port}]the LB server port value \item[{\em jobs\-Status}]the vector to be filled of all the jobs status information \end{description}
+\end{Desc}
+
+
+The documentation for this class was generated from the following file:\begin{CompactItemize}
+\item 
+\hyperlink{UserJobs_8h}{User\-Jobs.h}\end{CompactItemize}

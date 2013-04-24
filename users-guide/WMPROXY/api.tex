@@ -1,0 +1,27 @@
+%\subsection{WMProxy Client API Description}
+
+The WMProxy client API supplies the client applications with a set of 
+interfaces over the job submission and control services made available 
+by the gLite WMS through a web service based interface. 
+The API provides the corresponding method for each operation published in the
+WSDL description of the WMProxy Service ~\cite{wmproxy-wsdl}. 
+
+The request types supported by the WMProxy Service are:
+\begin{itemize}
+  \item Job: a simple application
+  \item DAG: a direct acyclic graph of dependent jobs
+  \item Collection: a set of independent jobs
+\end{itemize}
+
+Jobs in turn can be batch, interactive, MPI-based, checkpointable,
+partitionable and parametric. The specification of the JDL for describing the 
+mentioned request types is available at ~\cite{JDL}.
+Besides requests submission, the WMProxy also exposes additional
+functionality for request management and control such as cancellation, job files perusal and
+output retrieval. Requests status follow-up can be instead achieved through
+the functionality exposed by the Logging \& Bookkeeping (LB) service ~\cite{LB}.
+
+The documentation describing the WMProxy Client API providing C++, Java and Python bindings 
+can be found at \url{http://egee-jra1-wm.mi.infn.it/egee-jra1-wm/glite-wmproxy-api-index.shtml}.
+Pointers to usage examples are provided in the above mentioned web page. 
+

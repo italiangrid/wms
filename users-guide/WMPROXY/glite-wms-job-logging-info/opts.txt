@@ -1,0 +1,95 @@
+<<<OPT>>>--noint  
+
+if this option is specified, every interactive question to the user is skipped and the operation is continued (when possible)
+<<<ENDOPT>>>
+
+
+<<<OPT>>>input, -i <filepath>
+
+Allow the user to select the JobId(s) from an input file located in <filepath>.
+The list of jobIds contained in the file is displayed and the user is prompted for a choice. 
+Single jobs can be selected specifying the numbers associated to the job identifiers separated by 
+commas. E.g. selects the first,the third and the fifth jobId in the list.
+Ranges can also be selected specifying ends separated by a dash. E.g. selects jobIds in the list 
+from third position (included) to sixth position (included). It is worth mentioning that it is 
+possible to select at the same time ranges and single jobs. E.g. selects the first job id in the list, 
+the ids from the third to the fifth (ends included) and finally the eighth one.
+When specified toghether with '--noint', all available JobId are selected.
+ This option cannot be used when one or more jobIds have been specified as extra command argument.
+<<<ENDOPT>>>
+
+
+<<<OPT>>>--output, -o <filepath>
+
+writes the results of the operation in the file specified by <filepath> instead of the standard output. 
+<filepath> can be either a simple name or an absolute path (on the submitting machine). In the former case 
+the file <filepath> is created in the current working directory.
+<<<ENDOPT>>>
+
+
+<<<OPT>>>--verbosity, -v <level>
+
+sets the detail level of information about the job displayed to the user. Possible values for 
+level are 0 (only JobId and status/event displayed),1 (timestamp and source information added), 
+2 (all information but jdls displayed), 3 (complete information containing all Jdl strings)
+<<<ENDOPT>>>
+
+
+<<<OPT>>>--from <[MM:DD:]hh:mm[:[CC]YY]>
+
+makes the command query LB for jobs that have been submitted (more precisely entered the "Submitted" status) 
+after the specified date/time.
+If only hours and minutes are specified then the current day is taken into account. If the year is not 
+specified then the current year is taken into account.
+<<<ENDOPT>>>
+
+
+<<<OPT>>>--to <[MM:DD:]hh:mm[:[CC]YY]>
+
+makes the command query LB for jobs that have been submitted (more precisely entered the "Submitted" status) 
+before the specified date/time.
+If only hours and minutes are specified then the current day is taken into account.
+If the year is not specified then the current year is taken into account.
+<<<ENDOPT>>>
+
+
+<<<OPT>>>--user-tag <tag name>=<tag value>
+
+makes the command include only jobs that have defined specified usertag name and value
+<<<ENDOPT>>>
+
+
+<<<OPT>>>--event <event code>
+
+makes the command query specified events for requested jobid(s)
+The event code can be either an integer or a (case insensitive) string; the following possible values are
+ allowed:
+UNDEF, TRANSFER, ACCEPTED, REFUSED, ENQUEUED, DEQUEUED, HELPERCALL, HELPERRETURN, RUNNING, RESUBMISSION, 
+DONE,
+CANCEL, ABORT, CLEAR, PURGE, MATCH, PENDING, REGJOB, CHKPT, LISTENER, CURDESCR, USERTAG, CHANGEACL, 
+NOTIFICATION,
+RESOURCEUSAGE, REALLYRUNNING
+This option can be repeated several times, all event conditions will be considered as in a logical OR 
+operation
+
+(i.e.  --event  PURGE --event 4  will query, for specified jobid(s), all PURGE and ENQUEUED events)
+<<<ENDOPT>>>
+
+
+<<<OPT>>>--exclude -e <event code>
+
+makes the command exclude specified events for requested jobid(s)
+The event code can be either an integer or a (case insensitive) string; the following possible values 
+are allowed:
+UNDEF, TRANSFER, ACCEPTED, REFUSED, ENQUEUED, DEQUEUED, HELPERCALL, HELPERRETURN, RUNNING, RESUBMISSION, 
+DONE,
+CANCEL, ABORT, CLEAR, PURGE, MATCH, PENDING, REGJOB, CHKPT, LISTENER, CURDESCR, USERTAG, CHANGEACL, 
+NOTIFICATION,
+RESOURCEUSAGE, REALLYRUNNING
+This option can be repeated several times, all event conditions will be considered as in a logical 
+AND operation
+
+(i.e.  -e PURGE --exclude 4  will query, for specified jobid(s), all events BUT PURGE and ENQUEUED)
+<<<ENDOPT>>>
+
+

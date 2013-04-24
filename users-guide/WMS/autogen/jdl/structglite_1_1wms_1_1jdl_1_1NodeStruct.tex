@@ -1,0 +1,40 @@
+\hypertarget{structglite_1_1wms_1_1jdl_1_1NodeStruct}{
+\section{glite::wms::jdl::Node\-Struct Struct Reference}
+\label{structglite_1_1wms_1_1jdl_1_1NodeStruct}\index{glite::wms::jdl::NodeStruct@{glite::wms::jdl::NodeStruct}}
+}
+{\tt \#include $<$adconverter.h$>$}
+
+\subsection*{Public Attributes}
+\begin{CompactItemize}
+\item 
+std::string $\ast$ \hyperlink{structglite_1_1wms_1_1jdl_1_1NodeStruct_o0}{name}
+\item 
+std::vector$<$ \hyperlink{structglite_1_1wms_1_1jdl_1_1NodeStruct}{Node\-Struct} $\ast$ $>$ \hyperlink{structglite_1_1wms_1_1jdl_1_1NodeStruct_o1}{children\-Nodes}
+\end{CompactItemize}
+
+
+\subsection{Detailed Description}
+Used to design the dependency structure among the nodes of a dag. Each node specifies its name and all the nodes that directly depend on it. when the name is NULL this structure does not represent an actual node, but it lists all the nodes that don't depend on any other node. 
+
+
+
+\subsection{Member Data Documentation}
+\hypertarget{structglite_1_1wms_1_1jdl_1_1NodeStruct_o1}{
+\index{glite::wms::jdl::NodeStruct@{glite::wms::jdl::Node\-Struct}!childrenNodes@{childrenNodes}}
+\index{childrenNodes@{childrenNodes}!glite::wms::jdl::NodeStruct@{glite::wms::jdl::Node\-Struct}}
+\subsubsection[childrenNodes]{\setlength{\rightskip}{0pt plus 5cm}std::vector$<$ \hyperlink{structglite_1_1wms_1_1jdl_1_1NodeStruct}{Node\-Struct}$\ast$ $>$ \hyperlink{structglite_1_1wms_1_1jdl_1_1NodeStruct_o1}{glite::wms::jdl::Node\-Struct::children\-Nodes}}}
+\label{structglite_1_1wms_1_1jdl_1_1NodeStruct_o1}
+
+
+The list of all the node that depend on this node (0-size vector if empty) \hypertarget{structglite_1_1wms_1_1jdl_1_1NodeStruct_o0}{
+\index{glite::wms::jdl::NodeStruct@{glite::wms::jdl::Node\-Struct}!name@{name}}
+\index{name@{name}!glite::wms::jdl::NodeStruct@{glite::wms::jdl::Node\-Struct}}
+\subsubsection[name]{\setlength{\rightskip}{0pt plus 5cm}std::string$\ast$ \hyperlink{structglite_1_1wms_1_1jdl_1_1NodeStruct_o0}{glite::wms::jdl::Node\-Struct::name}}}
+\label{structglite_1_1wms_1_1jdl_1_1NodeStruct_o0}
+
+
+The name of the node 
+
+The documentation for this struct was generated from the following file:\begin{CompactItemize}
+\item 
+\hyperlink{adconverter_8h}{adconverter.h}\end{CompactItemize}

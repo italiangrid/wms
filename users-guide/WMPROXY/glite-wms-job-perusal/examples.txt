@@ -1,0 +1,37 @@
+<<<ENUM>>>
+<<<ITEM>>> enable perusal for several job's files:
+<<<VERB>>>
+glite-wms-job-perusal --set --filename file1.pr --filename file2.txt \
+                      --filename file3.a \
+                      https://wmproxy.glite.it:9000/7O0j4Fequpg7M6SRJ-NvLg
+<<<ENDVERB>>>
+A message with the result of the operation is displayed on the standard output
+
+<<<ITEM>>> file retrieval:
+<<<ITEMIZE>>>
+<<<ITEM>>> download the last chunk of a file in the default directory 
+(<<<INLINEVERB>>>/tmp/<jobId_UniqueStr><<<ENDINLINEVERB>>> unless otherwise specified in the command config file):
+<<<VERB>>>
+glite-wms-job-perusal --get --filename file1.pr \
+                      https://wmproxy.glite.it:9000/7O0j4Fequpg7M6SRJ-NvLg
+<<<ENDVERB>>>
+<<<ITEM>>> download the last chunk of a file in a custom directory:
+<<<VERB>>>
+glite-wms-job-perusal --get --filename file2.txt --dir /tmp/my_dir \
+                      https://wmproxy.glite.it:9000/7O0j4Fequpg7M6SRJ-NvLg
+<<<ENDVERB>>>
+<<<ITEM>>> download the whole file (generated so far) in the default
+directory: already retrieved chunks (if any) are downloaded again:
+<<<VERB>>>
+glite-wms-job-perusal --get --filename file2.txt --all \
+                      https://wmproxy.glite.it:9000/7O0j4Fequpg7M6SRJ-NvLg
+<<<ENDVERB>>>
+<<<ENDITEMIZE>>>
+
+<<<ITEM>>> disable files perusal for the given job:
+<<<VERB>>>
+glite-wms-job-perusal --unset https://wmproxy.glite.it:9000/7O0j4Fequpg7M6SRJ-NvLg
+<<<ENDVERB>>>
+<<<ENDENUM>>>
+
+A message with the result of the operation is always displayed on the standard output.

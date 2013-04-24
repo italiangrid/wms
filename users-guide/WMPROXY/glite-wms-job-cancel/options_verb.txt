@@ -1,0 +1,12 @@
+options:
+        --version
+        --help
+        --confab, -c <configfile>
+        --vo <voname>
+        --debug
+        --logfile    <filepath>
+        --noint
+        --input, -i  <filepath>
+        --output, -o <filepath>
+        --json
+        --pretty-print

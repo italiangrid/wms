@@ -1,0 +1,6 @@
+displays the list of identifiers of the resources on which the user is authorized and
+satisfying the job requirements included in the job description file. The CE identifiers are returned either
+on the standard output or in a file according to the chosen command options, and are strings universally
+identifying the CEs published in the IS.
+The returned CEIds are listed in decreasing order of rank, i.e. the one with the best (greater) rank is in
+the first place and so forth.

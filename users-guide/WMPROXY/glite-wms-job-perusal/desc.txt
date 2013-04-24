@@ -1,0 +1,39 @@
+Allows handling files perusal functionality for a submitted job identified by the jobId.
+This can be done only when files perusal support has been enabled while submitting/registering the job.
+This is accomplished via the 'PerusalFileEnable' JDL attribute.
+
+Three different operations can be performed for a given job:
+
+<<<ITEMIZE>>>
+<<<ITEM>>> Job's file perusal set (--set option): it allows enabling the perusal functionality 
+for one or more specified files.
+
+This option requires the user to specify the file(s) to be perused: this can be done by using either the 
+--filename (multiple files 
+can be specified by repeating the option several times) or the --input option (the user will be prompted 
+to select one or more files).
+
+<<<ITEM>>> Job's file perusal get (--get option): it allows retrieving chunks of one
+specified job's file previously set for perusal by means of the --set option.
+
+This option requires the user to specify the file to be retrieved: this can be done by using either the --filename 
+(no multiple files support available) or the --input option (the user will be prompted to select one file). 
+The specified file is therefore downloaded on the local machine and it can be viewed on the user shell. 
+User can specify a custom directory where to download the files by using the --dir option. 
+The retrieval of files to be perused 
+is available as soon as the job has started running: the command will retrieve the content of the 
+generated file up to 
+the time of the call. By default, any further call on the same file, retrieves back only the last chunks of the file, 
+that means only the information stored after the last call. 
+To retrieve all chunks of a given file (even those that might have been previously retrieved), 
+the --all option must be specified.
+
+<<<ITEM>>> Job's file perusal unset (--unset option): it disables perusal for all job's files 
+(no further option required)
+<<<ENDITEMIZE>>>
+
+All Perusal functionality are available for simple jobs and for nodes of compound jobs 
+(like DAGs, collections and parametric jobs) 
+but not for compound jobs as a whole. Moreover the WMProxy service version must be greater than or 
+equal to 2.0.0 
+(the service version can be retrieved by using the --version option of the client commands).

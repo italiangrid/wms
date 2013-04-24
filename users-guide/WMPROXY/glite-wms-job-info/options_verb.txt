@@ -1,0 +1,18 @@
+operation options (mandatory):
+        --jdl
+        --jdl-original, -j
+        --proxy, -p
+        --delegationid, -d <id_string> (*)
+
+options:
+        --help
+        --endpoint, -e  <service_URL>
+        --config, -c    <file_path>
+        --vo            <vo_name>
+        --input, -i     <file_path> (*)
+        --output, -o    <file_path>
+        --noint
+        --debug
+        --logfile       <file_path>
+
+(*) argument <job Id> is not required

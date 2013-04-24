@@ -1,0 +1,18 @@
+This command is only available for glite version >= 3.1.
+
+Allow retrieving useful information about the user delegated proxy, the delegated identification details of the user, 
+the JDL of a previously submitted job, etc.
+Each piece of information has to be queried through the proper option.
+E.g.:
+<<<ENUM>>>
+<<<ITEM>>> <<<VERB>>>
+glite-wms-job-info --delegationid myDelegationID
+<<<ENDVERB>>>
+
+<<<ITEM>>> <<<VERB>>>glite-wms-job-info --jdl mySubmittedJobID
+<<<ENDVERB>>>
+
+<<<ITEM>>> <<<VERB>>>
+glite-wms-job-info --proxy mySubmittedJobID
+<<<ENDVERB>>>
+<<<ENDENUM>>>

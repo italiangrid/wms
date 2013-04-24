@@ -1,0 +1,102 @@
+\hypertarget{classglite_1_1wmsui_1_1api_1_1resultStruct}{
+\section{glite::wmsui::api::result\-Struct Class Reference}
+\label{classglite_1_1wmsui_1_1api_1_1resultStruct}\index{glite::wmsui::api::resultStruct@{glite::wmsui::api::resultStruct}}
+}
+{\tt \#include $<$Job\-Collection.h$>$}
+
+\subsection*{Public Member Functions}
+\begin{CompactItemize}
+\item 
+\hyperlink{classglite_1_1wmsui_1_1api_1_1resultStruct_a0}{result\-Struct} ()
+\item 
+Result\-Code \hyperlink{classglite_1_1wmsui_1_1api_1_1resultStruct_a1}{get} ()
+\item 
+glite::lb::Job\-Status $\ast$ \hyperlink{classglite_1_1wmsui_1_1api_1_1resultStruct_a2}{get\-Status} ()
+\item 
+std::string \hyperlink{classglite_1_1wmsui_1_1api_1_1resultStruct_a3}{get\-Error} ()
+\item 
+std::string \hyperlink{classglite_1_1wmsui_1_1api_1_1resultStruct_a4}{get\-Message} ()
+\item 
+virtual \hyperlink{classglite_1_1wmsui_1_1api_1_1resultStruct_a5}{$\sim$result\-Struct} ()
+\end{CompactItemize}
+\subsection*{Friends}
+\begin{CompactItemize}
+\item 
+class \hyperlink{classglite_1_1wmsui_1_1api_1_1resultStruct_n0}{Job\-Collection}
+\end{CompactItemize}
+
+
+\subsection{Detailed Description}
+This Class is used to return the Result\-Code back to the main function 
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1resultStruct_a0}{
+\index{glite::wmsui::api::resultStruct@{glite::wmsui::api::result\-Struct}!resultStruct@{resultStruct}}
+\index{resultStruct@{resultStruct}!glite::wmsui::api::resultStruct@{glite::wmsui::api::result\-Struct}}
+\subsubsection[resultStruct]{\setlength{\rightskip}{0pt plus 5cm}glite::wmsui::api::result\-Struct::result\-Struct ()\hspace{0.3cm}{\tt  \mbox{[}inline\mbox{]}}}}
+\label{classglite_1_1wmsui_1_1api_1_1resultStruct_a0}
+
+
+Default Success Constructor \hypertarget{classglite_1_1wmsui_1_1api_1_1resultStruct_a5}{
+\index{glite::wmsui::api::resultStruct@{glite::wmsui::api::result\-Struct}!~resultStruct@{$\sim$resultStruct}}
+\index{~resultStruct@{$\sim$resultStruct}!glite::wmsui::api::resultStruct@{glite::wmsui::api::result\-Struct}}
+\subsubsection[$\sim$resultStruct]{\setlength{\rightskip}{0pt plus 5cm}virtual glite::wmsui::api::result\-Struct::$\sim$\hyperlink{classglite_1_1wmsui_1_1api_1_1resultStruct}{result\-Struct} ()\hspace{0.3cm}{\tt  \mbox{[}inline, virtual\mbox{]}}}}
+\label{classglite_1_1wmsui_1_1api_1_1resultStruct_a5}
+
+
+Destructor 
+
+\subsection{Member Function Documentation}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1resultStruct_a1}{
+\index{glite::wmsui::api::resultStruct@{glite::wmsui::api::result\-Struct}!get@{get}}
+\index{get@{get}!glite::wmsui::api::resultStruct@{glite::wmsui::api::result\-Struct}}
+\subsubsection[get]{\setlength{\rightskip}{0pt plus 5cm}Result\-Code glite::wmsui::api::result\-Struct::get ()\hspace{0.3cm}{\tt  \mbox{[}inline\mbox{]}}}}
+\label{classglite_1_1wmsui_1_1api_1_1resultStruct_a1}
+
+
+Used to check the result of the operation, in case of success it returns SUCCES \begin{Desc}
+\item[Returns:]the result code of the operation \end{Desc}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1resultStruct_a3}{
+\index{glite::wmsui::api::resultStruct@{glite::wmsui::api::result\-Struct}!getError@{getError}}
+\index{getError@{getError}!glite::wmsui::api::resultStruct@{glite::wmsui::api::result\-Struct}}
+\subsubsection[getError]{\setlength{\rightskip}{0pt plus 5cm}std::string glite::wmsui::api::result\-Struct::get\-Error ()\hspace{0.3cm}{\tt  \mbox{[}inline\mbox{]}}}}
+\label{classglite_1_1wmsui_1_1api_1_1resultStruct_a3}
+
+
+If some error occurred (FAILURE result code) retrieve the error message \begin{Desc}
+\item[Returns:]A detailed description of the error of the operation \end{Desc}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1resultStruct_a4}{
+\index{glite::wmsui::api::resultStruct@{glite::wmsui::api::result\-Struct}!getMessage@{getMessage}}
+\index{getMessage@{getMessage}!glite::wmsui::api::resultStruct@{glite::wmsui::api::result\-Struct}}
+\subsubsection[getMessage]{\setlength{\rightskip}{0pt plus 5cm}std::string glite::wmsui::api::result\-Struct::get\-Message ()\hspace{0.3cm}{\tt  \mbox{[}inline\mbox{]}}}}
+\label{classglite_1_1wmsui_1_1api_1_1resultStruct_a4}
+
+
+Retrieve the message of this result instance \begin{Desc}
+\item[Returns:]the string exception (if any) representatio, smpty string otherwise\end{Desc}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1resultStruct_a2}{
+\index{glite::wmsui::api::resultStruct@{glite::wmsui::api::result\-Struct}!getStatus@{getStatus}}
+\index{getStatus@{getStatus}!glite::wmsui::api::resultStruct@{glite::wmsui::api::result\-Struct}}
+\subsubsection[getStatus]{\setlength{\rightskip}{0pt plus 5cm}glite::lb::Job\-Status$\ast$ glite::wmsui::api::result\-Struct::get\-Status ()\hspace{0.3cm}{\tt  \mbox{[}inline\mbox{]}}}}
+\label{classglite_1_1wmsui_1_1api_1_1resultStruct_a2}
+
+
+Retrieve the status information from the job If the required operation was a get\-Status then the Job\-Status instance is returned. NULL is returned otherwise. \begin{Desc}
+\item[Returns:]the Status attributes information of the job\end{Desc}
+
+
+\subsection{Friends And Related Function Documentation}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1resultStruct_n0}{
+\index{glite::wmsui::api::resultStruct@{glite::wmsui::api::result\-Struct}!JobCollection@{JobCollection}}
+\index{JobCollection@{JobCollection}!glite::wmsui::api::resultStruct@{glite::wmsui::api::result\-Struct}}
+\subsubsection[JobCollection]{\setlength{\rightskip}{0pt plus 5cm}friend class \hyperlink{classglite_1_1wmsui_1_1api_1_1JobCollection}{Job\-Collection}\hspace{0.3cm}{\tt  \mbox{[}friend\mbox{]}}}}
+\label{classglite_1_1wmsui_1_1api_1_1resultStruct_n0}
+
+
+
+
+The documentation for this class was generated from the following file:\begin{CompactItemize}
+\item 
+\hyperlink{JobCollection_8h}{Job\-Collection.h}\end{CompactItemize}

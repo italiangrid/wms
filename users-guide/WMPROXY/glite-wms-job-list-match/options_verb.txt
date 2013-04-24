@@ -1,0 +1,17 @@
+delegation-opts:
+        --delegationid, -d <id_string>
+        --autm-delegation, -a
+
+options:
+        --version
+        --help
+        --config, -c <configfile>
+        --vo <voname>
+        --debug
+        --logfile <filepath>
+        --noint
+        --endpoint, -e <serviceURL>
+        --rank
+        --output, -o <filepath>
+        --json
+        --pretty-print

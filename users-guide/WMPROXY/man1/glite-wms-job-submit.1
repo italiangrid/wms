@@ -1,0 +1,358 @@
+.TH GLITE-WMS-JOB-SUBMIT "1" "GLITE-WMS-JOB-SUBMIT" "GLITE User Guide"
+.SH NAME:
+glite-wms-job-submit
+
+.SH SYNOPSIS
+
+.B glite-wms-job-submit <delegation-opts> [options] <jdl_file> 
+
+delegation-opts:
+        --delegationid, -d <id_string>
+        --autm-delegation, -a
+
+options:
+        --version
+        --help
+        --endpoint, -e     <service_URL>
+        --config, -c       <configfile>
+        --vo               <voname>
+        --debug
+        --logfile          <filepath>
+        --noint
+        --input, -i        <filepath>
+        --resource, -r     <ceid>
+        --nodes-resource   <ceid>
+        --nolisten
+        --nomsg
+        --lrms             <lrmstype>
+        --to               <[MM:DD:]hh:mm[:[CC]YY]>
+        --valid, -v        <hh:mm>
+        --register-only
+        --transfer-files
+        --proto            <protocol>
+        --start            <jobid>
+        --output, -o       <filepath>
+        --collection, -c   <dirpath>
+        --dag              <dirpath>
+        --default-jdl      <filepath>
+        --jsdl             <filepath>
+        --json
+        --pretty-print
+
+.SP
+.SH DESCRIPTION
+.SP
+.SP
+
+glite-wms-job-submit is the command for submitting simple jobs, DAGs, collections and parametric jobs to the WMProxy service: hence allows the user to run these jobs at one or several remote resources. It requires as input a job description file in which job characteristics and requirements are expressed by means of Condor class-ad-like expressions. While it does not matter the order of the other arguments, the job description file has to be the last argument of this command.Submission can be performed either by using a proxy previously delegated to the WMProxy (for example with the glite-wms-job-delegate-proxy command) or delegating a new proxy at each new submission ("automatic delegation"). In the former case the the --delegationid (-d) option must be used, specifying the id string associated with the delegated proxy.
+
+
+.SP
+E.g.:
+
+
+.SP
+.B -
+glite-wms-job-delegate-proxy --delegationid <mydelegID>
+
+.SP
+.B -
+glite-wms-job-submit --delegationid mydelegID <myjob ID>
+.SP
+.SP
+
+
+
+.SP
+For automatic delegation the --autm-delegation (-a) option must be used. Only one of these two options must be specified. For job collections there is a further way to perform submission. The --collection option allows indeed to specify the path to a directory containing all the single JDL files of the jobs you want the collection is made of.The glite-wms-job-submit will generate the corresponding collection JDL and submit it. 
+
+
+.SP
+E.g.:
+
+
+.SP
+glite-wms-job-submit -d mydelegID --collection /home/glite/KOLL/
+
+
+.SP
+
+
+
+.SP
+where /home/glite/KOLL/  is the directory containing all the JDL files.
+
+
+.SP
+In all cases, upon success, the command returns an ID to the user that can be used as the handle to followup the progress of the request itself.
+
+
+.SP
+
+.SH OPTIONS 
+.B --version
+
+.IP
+displays WMProxy client and servers version numbers.If the --endpoint option is specified only this service is contacted to retrieve its version. If it is not used, the endpoint contacted is that one specified with GLITE_WMS_WMPROXY_ENDPOINT environment variable. If the option is not specified and the environment variable is not set, all servers listed in the WMProxyEndPoints attribute of the user configuration file are contacted. For each of these service, the returned result will be displayed on the standard output (the version numbers in case of success; otherwise the error message).
+.PP
+.B --help
+
+.IP
+displays command usage
+.PP
+.B --config, -c <configfile>
+
+.IP
+if the command is launched with this option, the configuration file pointed by <configfile> is used. This option is meaningless when used together with --vo option
+.PP
+.B --vo <voname>
+
+.IP
+this option allows the user to specify the Virtual Organization she/he is currently working for.If the user proxy contains VOMS extensions then the VO specified through this option is overridden by thedefault VO contained in the proxy (i.e. this option is only useful when working with non-VOMS proxies).This option is meaningless when used together with --config-vo option.
+.PP
+.B --debug
+
+.IP
+when this option is specified, debugging information is displayed on the standard output and written also either into the default log file:
+
+
+.SP
+glite-wms-job-<command_name>_<uid>_<pid>_<time>.log
+
+
+.SP
+located under the /var/tmp  directory or in the log file specified with --logfile option.
+.PP
+.B --logfile <filepath>
+
+.IP
+When this option is specified, a command log file (whose pathname is <filepath> ) is created.
+.PP
+.B --endpoint, -e <serviceURL>
+
+.IP
+when this option is specified, the operations are performed contacting the WMProxy service represented by the given <serviceURL>. If it is not used, the endpoint contacted is that one specified by the GLITE_WMS_WMPROXY_ENDPOINT environment variable. If none of these options is specified and the environment variable is not set, the service request will be sent to one of the endpoints listed in the WMProxyEndPoints attribute in the user configuration file (randomly chosen among the URLs of the attribute list). If the chosen service is not available, a succession of attempts are performed on the other specified services until the connection with one of these endpoints can be established or all services have been contacted without success. In this latter case the operation can not be obviously performed and the execution of the command is stopped with an error message.
+.PP
+.B --noint
+
+.IP
+If this option is specified, every interactive question to the user is skipped and the operation is continued (when possible)
+.PP
+.B --delegationid, -d <idstring>
+
+.IP
+If this option is specified, the proxy that will be delegated is identified by <idstring>. This proxy can be therefore used for operations like job registration, job submission and job list matching until its expiration specifying the <idstring>. It must be used in place of --autm-delegation option.
+.PP
+.B --autm-delegation, -a
+
+.IP
+This option is specified to make automatic generation of the identifier string (delegationid) that will be associated to the delegated proxy. It must be used in place of the --delegationid (-d) option.
+.PP
+.B --input, -i <filepath>
+
+.IP
+If this option is specified, the user will be asked to choose a CEId from a list of CEs contained in the <filepath>. Once a CEId has been selected the command behaves as explained for the resource option. If this option is used together with the --noint one and the input file contains more than one CEId, then the first CEId in the list is taken into account for submitting the job.
+.PP
+.B --resource, -r <ceid>
+
+.IP
+This option is available only for jobs.If it is specified, the job-ad sent to the WMProxy service contains a line of the type "SubmitTo = <ceid>"  and the job is submitted by the WMS to the resource identified by <ceid> without going through the match-making process.
+.PP
+.B --nodes-resource <ceid>
+
+.IP
+This option is available only for DAGs.If it option is specified, the job-ad sent to the WMProxy service contains a line of the type "SubmitTo = <ceid>"  and the DAG is submitted by the WMS to the resource identified by <ceid> without going through the match-making process for each of its nodes.
+.PP
+.B --nolisten
+
+.IP
+This option can be used only for interactive jobs. It makes the command forward the job standard streams coming from the WN to named pipes on the client machine whose names are returned to the user together with the OS id of the listener process. This allows the user to interact with the job through her/his own tools. It is important to note that when this option is specified, the command has no more control over the launched listener process that has hence to be killed by the user (through the returned process id) once the job is finished.
+.PP
+.B --nomsg
+
+.IP
+This option makes the command print on the standard output only the jobId generated for the job if submission was successful; the location of the log file containing massages and diagnostics is printed otherwise.
+.PP
+.B --lrms <lrmstype>
+
+.IP
+This option is only for MPICH  jobs and must be used together with either --resource or --input option; it specifies the type of the lrms of the resource the user is submitting to. When the batch system type of the specified CE resource given is not known, the lrms must be provided while submitting. For non-MPICH jobs this option will be ignored.
+.PP
+.B --to <[MM:DD:]hh:mm[:[CC]YY]>
+
+.IP
+A job for which no compatible CEs have been found during the matchmaking phase is hold in the WMS Task Queue for a certain time so that it can be subjected again to matchmaking from time to time until a compatible CE is found. The JDL ExpiryTime attribute is an integer representing the date and time (in seconds since epoch) until the job request has to be considered valid by the WMS. This option sets the value for the ExpiryTime attribute to the submitted JDL converting appropriately the absolute timestamp provided as input. It overrides, if present, the current value. If the specified value exceeds one day from job submission then it is not taken into account by the WMS.
+.PP
+.B --valid, -v <hh:mm>
+
+.IP
+A job for which no compatible CEs have been found during the matchmaking phase is hold in the WMS Task Queue for a certain time so that it can be subjected again to matchmaking from time to time until a compatible CE is found. The JDL ExpiryTime attribute is an integer representing the date and time (in seconds since epoch) until the job request has to be considered valid by the WMS. This option allows to specify the validity in hours and minutes from submission time of the submitted JDL. When this option is used the command sets the value for the ExpiryTime attribute converting appropriately the relative timestamp provided as input. It overrides, if present,the current value. If the specified value exceeds one day from job submission then it is not taken into account by the WMS.
+.PP
+.B --register-only
+
+.IP
+If this option is specified, the job is only registered to the WMProxy service. Local files that could be in the JDL InputSandbox attribute are not transferred unless the --transfer-files is also specified; and the job is not started. If the --transfer-files option is not specified, the command displays the list of the local files to be transferred before starting the job. In this list each local file is matched to the corresponding Destination URI where it has to be transferred. The URIs are referred to either the default protocol (gsiftp) or another protocol specified by --proto.  Not using the --transfer-files option, users can transfer these files by low level commands like either globus-url-copy or curl. After having transferred all files, the job can be started launching again this command with the --start option:glite-wms-job-submit --start <jobid>
+.PP
+.B --transfer-files
+
+.IP
+This option must be only used with the --register-only option. It enables transferring operation for files in the JDL InputSandbox attribute located on the submitting machine. These files are transferred to the WMProxy machine.
+.PP
+.B --proto <protocol>
+
+.IP
+This option specifies the protocol to be used for file transferring. It will be ignored when the specified protocol is not found among WMProxy service available protocols: in this case the default one (generally gsiftp ) will be used instead.
+.PP
+.B --start <jobid>
+
+.IP
+This option allows starting a job (specified by JobId) previously registered and whose InputSandbox files on the submitting machine have been already transferred to the WMProxy machine.
+.PP
+.B --output, -o <filepath>
+
+.IP
+Writes the generated jobId assigned to the submitted job in the file specified by <filepath>, which can be either a simple name or an absolute path (on the submitting machine). In the former case the file is created in the current working directory.
+.PP
+.B --collection, -c <dirpath>
+
+.IP
+This option allows specifying  the directory pointed by <dirpath> containing all the single JDL files of the jobs that the collection will be made of. The corresponding collection JDL will be generated and submitted. Using this option the jdl_file (the last argument) must not be specified. Please note that the directory specified through the --collection option MUST only contain JDL files describing simple jobs (i.e. no DAGs, no collections). All job types are admitted but "partitionable" and "parametric". Please note that this option cannot be used with --default-jdl.
+.PP
+.B --dag <dirpath>
+
+.IP
+This option allows specifying  the directory pointed by <dirpath> containing all the single JDL files of the jobs that the DAG will be made of. The corresponding DAG JDL will be generated and submitted. Using this option the jdl_file (the last argument) must note be specified.This option is only available from glite version >= 3.1.
+.PP
+.B --default-jdl <filepath>
+
+.IP
+This option Allows specifying a further jdl file whose attributes will be merged into the submitting (if not yet present).This option is only available from glite version >= 3.1. Please note that thisoption cannot be used with --collection
+.PP
+.B --json
+
+.IP
+This option makes the command produce its output in JSON-compliant format, that can be parsed by proper json libraries for python/perl and other script languages. Please note that --json and --output options are mutually exclusive.
+.PP
+.B --pretty-print
+
+.IP
+This option should be used with --json. Without it the JSON format is machine-oriented (no carriage returns, no indentations). --pretty-print makes the JSON output easily readable by a human. Using this option without --json has no effect.
+.PP
+.B --jsdl <filepath>
+
+.IP
+This option must not be used with the last arugment <jdl_file> (they"re mutually exclusive). It is needed when the job description language used by the user is JSDL instead of standard JDL. Please refer to this document \cite{JSDL} for documentation about JSDL language.
+.PP
+
+.SH EXAMPLES
+.SP
+
+Upon successful submission, this command returns the identifier (JobId) assigned to the job
+
+
+.SP
+.B -
+submission with automatic credential delegation:
+
+
+.SP
+glite-wms-job-submit -a ./job.jdl
+
+.SP
+.B -
+submission with a proxy previously delegated with "exID" id-string; request for displays CE rank numbers:
+
+
+.SP
+glite-wms-job-submit -d exID  ./job.jdl
+
+.SP
+.B -
+sends the request to the WMProxy service whose URL is specified with the -e option  (where a proxy has been previously delegated with "exID" id-string)
+
+
+.SP
+glite-wms-job-submit -d exID \                     -e https://wmproxy.glite.it:7443/glite_wms_wmproxy_server \                     ./job.jdl
+
+.SP
+.B -
+saves the returned JobId in a file:
+
+
+.SP
+glite-wms-job-submit -a --output jobid.out ./job.jdl
+
+.SP
+.B -
+submits a collection whose JDL files are located in $HOME/collection_ex:
+
+
+.SP
+glite-wms-job-submit -d exID --collection $HOME/collection_ex
+
+.SP
+.B -
+forces the submission to the resource specified with the -r option:
+
+
+.SP
+glite-wms-job-submit -d exID -r lxb1111.glite.it:2119/blah-lsf-jra1_low \                     ./job.jdl
+
+.SP
+.B -
+forces the submission of the DAG (the parent and all child nodes) to the resource specified with the --nodes-resources option:
+
+
+.SP
+glite-wms-job-submit -d exID \                     --nodes-resources lxb1111.glite.it:2119/blah-lsf-jra1_low \                     ./dag.jdl
+.SP
+.SP
+
+
+
+.SP
+When --endpoint (-e) is not specified, the search of an available WMProxy service is performed according to the modality reported in the description of the --endpoint option.
+.SH FILES 
+.SP
+
+voName/glite_wms.conf: The user configuration file. The standard path location is \verb /etc/glite-wms . 
+
+
+.SP
+/tmp/x509up_u<uid>: A valid X509 user proxy; use the X509_USER_PROXY environment variable to override the default location
+
+
+.SP
+JDL: The file containing the description of the job in the JDL language located in the path specified by jdl_file (the last argument of this command); multiple jdl files can be used with the --collection option
+.SH ENVIRONMENT 
+.SP
+
+
+
+.SP
+.B -
+GLITE_WMS_WMPROXY_ENDPOINT: This variable may be set to specify the endpoint URL
+
+.SP
+.B -
+GLOBUS_LOCATION: This variable must be set when the Globus installation is not located in the default path /opt/globus.
+
+.SP
+.B -
+GLOBUS_TCP_PORT_RANGE="<val min> <val max>": This variable must be set to define a range of ports to be used for inbound connections in the interactivity context
+
+.SP
+.B -
+X509_CERT_DIR: This variable may be set to override the default location of the trusted certificates directory, which is normally /etc/grid-security/certificates.
+
+.SP
+.B -
+X509_USER_PROXY: This variable may be set to override the default location of the user proxy credentials, which is normally /tmp/x509up_u<uid>.
+
+.SP
+.B -
+GLITE_SD_PLUGIN: If Service Discovery querying is needed, this variable can be used in order to set a specific (or more) plugin, normally bdii, rgma (or both, separated by comma)
+
+.SP
+.B -
+LCG_GFAL_INFOSYS: If Service Discovery querying is needed, this variable can be used in order to set a specific Server where to perform the queries: for instance LCG_GFAL_INFOSYS="gridit-bdii-01.cnaf.infn.it:2170"

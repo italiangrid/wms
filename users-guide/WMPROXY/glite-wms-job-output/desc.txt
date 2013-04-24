@@ -1,0 +1,5 @@
+glite-wms-job-output retrieves the output files of a job that has been submitted through the glite-wms-job-submit 
+command with a job description file including the OutputSandbox attribute.
+After the submission, when the job has terminated its execution, the user can download the files generated 
+by the job and temporarily stored on the WMS machine as specified by the OutputSandbox attribute, 
+issuing the glite-wms-job-output with as input the jobId returned by the glite-wms-job-submit.

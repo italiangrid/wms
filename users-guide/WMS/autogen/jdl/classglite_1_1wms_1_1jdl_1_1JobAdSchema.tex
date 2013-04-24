@@ -1,0 +1,139 @@
+\hypertarget{classglite_1_1wms_1_1jdl_1_1JobAdSchema}{
+\section{glite::wms::jdl::Job\-Ad\-Schema Class Reference}
+\label{classglite_1_1wms_1_1jdl_1_1JobAdSchema}\index{glite::wms::jdl::JobAdSchema@{glite::wms::jdl::JobAdSchema}}
+}
+{\tt \#include $<$Job\-Ad\-Schema.h$>$}
+
+\subsection*{Public Types}
+\begin{CompactItemize}
+\item 
+enum \hyperlink{classglite_1_1wms_1_1jdl_1_1JobAdSchema_w6}{attribute} \{ \par
+\hyperlink{classglite_1_1wms_1_1jdl_1_1JobAdSchema_w6w0}{SCHEMA\_\-DAC}, 
+\hyperlink{classglite_1_1wms_1_1jdl_1_1JobAdSchema_w6w1}{SCHEMA\_\-RTE}, 
+\hyperlink{classglite_1_1wms_1_1jdl_1_1JobAdSchema_w6w2}{SCHEMA\_\-TCPU}, 
+\hyperlink{classglite_1_1wms_1_1jdl_1_1JobAdSchema_w6w3}{SCHEMA\_\-FCPU}, 
+\par
+\hyperlink{classglite_1_1wms_1_1jdl_1_1JobAdSchema_w6w4}{SCHEMA\_\-OIP}, 
+\hyperlink{classglite_1_1wms_1_1jdl_1_1JobAdSchema_w6w5}{SCHEMA\_\-ARRAY}
+ \}
+\end{CompactItemize}
+\subsection*{Public Member Functions}
+\begin{CompactItemize}
+\item 
+\hyperlink{classglite_1_1wms_1_1jdl_1_1JobAdSchema_a0}{Job\-Ad\-Schema} (std::vector$<$ std::string $>$ values)
+\item 
+std::string \hyperlink{classglite_1_1wms_1_1jdl_1_1JobAdSchema_a1}{get} (\hyperlink{classglite_1_1wms_1_1jdl_1_1JobAdSchema_w6}{attribute} attr\-Name)
+\item 
+\hyperlink{classglite_1_1wms_1_1jdl_1_1JobAdSchema}{Job\-Ad\-Schema} $\ast$ \hyperlink{classglite_1_1wms_1_1jdl_1_1JobAdSchema_a2}{Copy} ()
+\end{CompactItemize}
+\subsection*{Static Public Member Functions}
+\begin{CompactItemize}
+\item 
+\hyperlink{classglite_1_1wms_1_1jdl_1_1JobAdSchema}{Job\-Ad\-Schema} $\ast$ \hyperlink{classglite_1_1wms_1_1jdl_1_1JobAdSchema_e0}{glue\-Schema} ()
+\item 
+\hyperlink{classglite_1_1wms_1_1jdl_1_1JobAdSchema}{Job\-Ad\-Schema} \hyperlink{classglite_1_1wms_1_1jdl_1_1JobAdSchema_e1}{edg\-Schema} ()
+\end{CompactItemize}
+
+
+\subsection{Detailed Description}
+Provides a Schema used to check the attribute in the \hyperlink{classglite_1_1wms_1_1jdl_1_1JobAd}{Job\-Ad} The default utilised schema is GLUE. To instanciate a schema you will need to provide an array of Strings, one per attribute \begin{Desc}
+\item[Version:]0.1 \end{Desc}
+\begin{Desc}
+\item[Author:]Alessandro Maraschini $<$\href{mailto:alessandro.maraschini@datamat.it}{\tt alessandro.maraschini@datamat.it}$>$ \end{Desc}
+
+
+
+
+\subsection{Member Enumeration Documentation}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1JobAdSchema_w6}{
+\index{glite::wms::jdl::JobAdSchema@{glite::wms::jdl::Job\-Ad\-Schema}!attribute@{attribute}}
+\index{attribute@{attribute}!glite::wms::jdl::JobAdSchema@{glite::wms::jdl::Job\-Ad\-Schema}}
+\subsubsection[attribute]{\setlength{\rightskip}{0pt plus 5cm}enum \hyperlink{classglite_1_1wms_1_1jdl_1_1JobAdSchema_w6}{glite::wms::jdl::Job\-Ad\-Schema::attribute}}}
+\label{classglite_1_1wms_1_1jdl_1_1JobAdSchema_w6}
+
+
+\begin{Desc}
+\item[Enumeration values: ]\par
+\begin{description}
+\index{SCHEMA_DAC@{SCHEMA\_\-DAC}!glite::wms::jdl::JobAdSchema@{glite::wms::jdl::JobAdSchema}}\index{glite::wms::jdl::JobAdSchema@{glite::wms::jdl::JobAdSchema}!SCHEMA_DAC@{SCHEMA\_\-DAC}}\item[{\em 
+\hypertarget{classglite_1_1wms_1_1jdl_1_1JobAdSchema_w6w0}{
+SCHEMA\_\-DAC}
+\label{classglite_1_1wms_1_1jdl_1_1JobAdSchema_w6w0}
+}]other.Data\-Access\-Cost attribute \index{SCHEMA_RTE@{SCHEMA\_\-RTE}!glite::wms::jdl::JobAdSchema@{glite::wms::jdl::JobAdSchema}}\index{glite::wms::jdl::JobAdSchema@{glite::wms::jdl::JobAdSchema}!SCHEMA_RTE@{SCHEMA\_\-RTE}}\item[{\em 
+\hypertarget{classglite_1_1wms_1_1jdl_1_1JobAdSchema_w6w1}{
+SCHEMA\_\-RTE}
+\label{classglite_1_1wms_1_1jdl_1_1JobAdSchema_w6w1}
+}]other.Glue\-Host\-Application\-Software\-Run\-Time\-Environment attribute. Appended for MPI jobs in Requirements expression \index{SCHEMA_TCPU@{SCHEMA\_\-TCPU}!glite::wms::jdl::JobAdSchema@{glite::wms::jdl::JobAdSchema}}\index{glite::wms::jdl::JobAdSchema@{glite::wms::jdl::JobAdSchema}!SCHEMA_TCPU@{SCHEMA\_\-TCPU}}\item[{\em 
+\hypertarget{classglite_1_1wms_1_1jdl_1_1JobAdSchema_w6w2}{
+SCHEMA\_\-TCPU}
+\label{classglite_1_1wms_1_1jdl_1_1JobAdSchema_w6w2}
+}]other.Glue\-CEInfo\-Total\-CPUs attribute. Appended for MPI jobs in Requirements expression \index{SCHEMA_FCPU@{SCHEMA\_\-FCPU}!glite::wms::jdl::JobAdSchema@{glite::wms::jdl::JobAdSchema}}\index{glite::wms::jdl::JobAdSchema@{glite::wms::jdl::JobAdSchema}!SCHEMA_FCPU@{SCHEMA\_\-FCPU}}\item[{\em 
+\hypertarget{classglite_1_1wms_1_1jdl_1_1JobAdSchema_w6w3}{
+SCHEMA\_\-FCPU}
+\label{classglite_1_1wms_1_1jdl_1_1JobAdSchema_w6w3}
+}]other.Glue\-CEState\-Free\-CPUs attribute Set for MPI jobs as a default rank (if not given) \index{SCHEMA_OIP@{SCHEMA\_\-OIP}!glite::wms::jdl::JobAdSchema@{glite::wms::jdl::JobAdSchema}}\index{glite::wms::jdl::JobAdSchema@{glite::wms::jdl::JobAdSchema}!SCHEMA_OIP@{SCHEMA\_\-OIP}}\item[{\em 
+\hypertarget{classglite_1_1wms_1_1jdl_1_1JobAdSchema_w6w4}{
+SCHEMA\_\-OIP}
+\label{classglite_1_1wms_1_1jdl_1_1JobAdSchema_w6w4}
+}]other.Glue\-Host\-Network\-Adapter\-Outbound\-IP Added for Interactive Jobs in requirements expression \index{SCHEMA_ARRAY@{SCHEMA\_\-ARRAY}!glite::wms::jdl::JobAdSchema@{glite::wms::jdl::JobAdSchema}}\index{glite::wms::jdl::JobAdSchema@{glite::wms::jdl::JobAdSchema}!SCHEMA_ARRAY@{SCHEMA\_\-ARRAY}}\item[{\em 
+\hypertarget{classglite_1_1wms_1_1jdl_1_1JobAdSchema_w6w5}{
+SCHEMA\_\-ARRAY}
+\label{classglite_1_1wms_1_1jdl_1_1JobAdSchema_w6w5}
+}]Max index array dimension for Schema Attributes \end{description}
+\end{Desc}
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1JobAdSchema_a0}{
+\index{glite::wms::jdl::JobAdSchema@{glite::wms::jdl::Job\-Ad\-Schema}!JobAdSchema@{JobAdSchema}}
+\index{JobAdSchema@{JobAdSchema}!glite::wms::jdl::JobAdSchema@{glite::wms::jdl::Job\-Ad\-Schema}}
+\subsubsection[JobAdSchema]{\setlength{\rightskip}{0pt plus 5cm}glite::wms::jdl::Job\-Ad\-Schema::Job\-Ad\-Schema (std::vector$<$ std::string $>$ {\em values})}}
+\label{classglite_1_1wms_1_1jdl_1_1JobAdSchema_a0}
+
+
+CUSTOM schema constructor \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em values}]an array of string of \hyperlink{classglite_1_1wms_1_1jdl_1_1JobAdSchema_w6w5}{SCHEMA\_\-ARRAY} dimension \end{description}
+\end{Desc}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1JobAdSchema_a2}{
+\index{glite::wms::jdl::JobAdSchema@{glite::wms::jdl::Job\-Ad\-Schema}!Copy@{Copy}}
+\index{Copy@{Copy}!glite::wms::jdl::JobAdSchema@{glite::wms::jdl::Job\-Ad\-Schema}}
+\subsubsection[Copy]{\setlength{\rightskip}{0pt plus 5cm}\hyperlink{classglite_1_1wms_1_1jdl_1_1JobAdSchema}{Job\-Ad\-Schema}$\ast$ glite::wms::jdl::Job\-Ad\-Schema::Copy ()}}
+\label{classglite_1_1wms_1_1jdl_1_1JobAdSchema_a2}
+
+
+Make a deep copy of the current \hyperlink{classglite_1_1wms_1_1jdl_1_1JobAdSchema}{Job\-Ad\-Schema} instance \begin{Desc}
+\item[Returns:]the copy of the current schema \end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1JobAdSchema_e1}{
+\index{glite::wms::jdl::JobAdSchema@{glite::wms::jdl::Job\-Ad\-Schema}!edgSchema@{edgSchema}}
+\index{edgSchema@{edgSchema}!glite::wms::jdl::JobAdSchema@{glite::wms::jdl::Job\-Ad\-Schema}}
+\subsubsection[edgSchema]{\setlength{\rightskip}{0pt plus 5cm}\hyperlink{classglite_1_1wms_1_1jdl_1_1JobAdSchema}{Job\-Ad\-Schema} glite::wms::jdl::Job\-Ad\-Schema::edg\-Schema ()\hspace{0.3cm}{\tt  \mbox{[}static\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1JobAdSchema_e1}
+
+
+EDG schema static constructor: deprecated \hypertarget{classglite_1_1wms_1_1jdl_1_1JobAdSchema_a1}{
+\index{glite::wms::jdl::JobAdSchema@{glite::wms::jdl::Job\-Ad\-Schema}!get@{get}}
+\index{get@{get}!glite::wms::jdl::JobAdSchema@{glite::wms::jdl::Job\-Ad\-Schema}}
+\subsubsection[get]{\setlength{\rightskip}{0pt plus 5cm}std::string glite::wms::jdl::Job\-Ad\-Schema::get (\hyperlink{classglite_1_1wms_1_1jdl_1_1JobAdSchema_w6}{attribute} {\em attr\-Name})}}
+\label{classglite_1_1wms_1_1jdl_1_1JobAdSchema_a1}
+
+
+Retrieve the value for a specified attribute  the attribute to be retrieved \begin{Desc}
+\item[Returns:]the string representation of the value to be retrieved \end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1JobAdSchema_e0}{
+\index{glite::wms::jdl::JobAdSchema@{glite::wms::jdl::Job\-Ad\-Schema}!glueSchema@{glueSchema}}
+\index{glueSchema@{glueSchema}!glite::wms::jdl::JobAdSchema@{glite::wms::jdl::Job\-Ad\-Schema}}
+\subsubsection[glueSchema]{\setlength{\rightskip}{0pt plus 5cm}\hyperlink{classglite_1_1wms_1_1jdl_1_1JobAdSchema}{Job\-Ad\-Schema}$\ast$ glite::wms::jdl::Job\-Ad\-Schema::glue\-Schema ()\hspace{0.3cm}{\tt  \mbox{[}static\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1JobAdSchema_e0}
+
+
+GLUE schema static constructor (\hyperlink{classglite_1_1wms_1_1jdl_1_1JobAd}{Job\-Ad} default utilised schema) 
+
+The documentation for this class was generated from the following file:\begin{CompactItemize}
+\item 
+\hyperlink{JobAdSchema_8h}{Job\-Ad\-Schema.h}\end{CompactItemize}

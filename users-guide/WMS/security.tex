@@ -1,0 +1,187 @@
+%\subsubsection {Security} 
+ 
+For the Grid to be an effective framework for largely distributed computation, users, user processes 
+and grid services must work in a secure environment.
+ 
+Due to this, all interactions between WMS components, especially those that are network separated, will be 
+mutually authenticated: depending on the specific interaction, an entity authenticates itself to the 
+other peer using either its own credential or a delegated user credential or both. For example when the 
+User Interface passes a job to the Network Server, the WMS-UI authenticates using a proxy user credential 
+(a proxy certificate) whereas the NS uses its own service credential. The same happens when the WMS-UI 
+interacts with the Logging and Bookkeeping service. The WMS-UI uses a proxy user credential to limit the risk 
+of compromising the original credential in the hands of the user. 
+ 
+The user or service identity and their public key are included in a X.509 certificate signed by a trusted 
+Certification Authority (CA), whose purpose is to guarantee the association between that public key and its 
+owner.
+
+According to what just premised, to take advantage of WMS-UI commands the user has to possess a valid X.509 
+certificate on the submitting machine, consisting of two files: the certificate file and the private 
+key file. The location of the two mentioned files is assumed to be either pointed to respectively 
+\textit{"\$X509\_USER\_CERT"} and \textit{"\$X509\_USER\_KEY"} or 
+by \textit{"\$HOME\-/.globus\-/usercert.pem"} and \textit{"\$HOME\-/.globus/\-userkey.pem"} if the 
+X509 environment variables are not set. 
+
+\medskip
+
+
+\framebox{
+\parbox[c]{15cm}{
+ 
+\textbf{How to extract userkey.pem and usercert.pem from your certificate}\medskip
+
+Usually X.509 Certificates are downloaded using a browser and managed by the browser itself. 
+Anyway it is possible to export your certificate in a file PKCS12 (which will probably have the 
+extension .p12 or .pfx). 
+ 
+The procedure to export the certificate vary from browser to browser, for example Internet Explorer 
+starts with "Tools $->$ Internet Options $->$ Content"; Netscape Communicator has a "Security" button 
+on the top menu bar; Mozilla starts with "Edit $->$ Preferences $->$ Privacy and Security $->$ Certificates" 
+and Firefox has "Edit $->$ Preferences $->$ Advanced $->$ Certificates $->$ manage certificates $->$ backup".
+  
+Unfortunately PKCS12 format is not accepted by Globus security infrastructure, but you can easily convert 
+it into the supported standard (PEM). This operation will split your *.p12 file in two files: the certificate 
+(usercert.pm) and the private key (userkey.pm). The conversion can be performed with openssl tool:
+
+\medskip
+
+{\scriptsize{ 
+\$ openssl pkcs12 -nocerts -in mycert.p12 -out userkey.pem\\
+\$ openssl pkcs12 -clcerts -nokeys -in mycert.p12 -out usercert.pem\\
+\$ chmod 0400 userkey.pem\\
+\$ chmod 0600 usercert.pem\\
+ }}
+\medskip
+
+Permission must be set as shown not only for security reasons: \emph{voms-proxy-init} and \emph{grid-proxy-init}
+commands will fail if your private key is not protected as listed above.
+}} 
+%end of framebox and parbox
+\medskip
+
+Actually the user certificate and private key files are not mandatory on the WMS-UI machine; indeed they are 
+only needed for the creation of the proxy user credentials through the \textit{grid-proxy-init} or 
+\textit{voms-proxy-init} commands. Please refer to the VOMS User's Guide ~\cite{voms-core} for detailed 
+information about the VOMS client commands.  
+
+Alternatively you can download the proxy credentials from a trusted site and work with it without having 
+the cert and key available locally.
+
+All WMS-UI commands, when started, check for the existence and expiration date of a user proxy credentials in 
+the location pointed to by \textit{"\$X509\_USER\_PROXY"} or in \textit{"/tmp/\-x509up\_u$<$UID$>$"} 
+(where $<$UID$>$ is the user identifier in the submitting machine OS) if the X509 environment variable is 
+not set. If the proxy certificate does not exist or has expired the WMS-UI returns an error message to the user 
+and exits.
+
+It is important to note that besides authentication, proxy credential issued by VOMS, i.e. containing 
+FQANs (Fully Qualified Attribute Names ~\cite{voms-core}), are used by the WMS-UI to get the VO the user is currently working for. 
+If a given proxy credential contains attributes for more then one VO, than the default one (i.e. the one first 
+position) is considered.   
+
+Once a job has been submitted by the WMS-UI, it passes through several components of the WMS 
+(e.g. the NS, the WM, the JC, CondorC etc.) before it completes its execution. At each step operations 
+that are related with the job could require authentication by a certificate. For example during the 
+scheduling phase, the WM needs to get some information about the user who wants to schedule a job and 
+the certificate of the user could be needed to access this information. Similarly, a valid user's certificate 
+is needed by JC/CondorC to submit a job to the CE. Moreover JC has to be able to repeat this process e.g. 
+in case of crashing of the CE which the job is running on, therefore, a valid user's certificate is needed 
+for all the job lifetime.
+
+A job gets associated a valid proxy certificate (the submitting user's one) when it is submitted by the WMS-UI to 
+NS. Validity of such a certificate is set by default to 12 hours unless a longer validity is explicitly 
+requested by the user when generating the proxy. Problems could occur if the job spends on CE (in a 
+queue or running) more time than lifetime of its proxy certificate.
+
+In order to submit long-running jobs, users can either generate proxy credentials using the respectively 
+the \verb!--valid! and \verb!--hours! of the \textit{voms-proxy-init} and \textit{grid-proxy-init} commands 
+or (more safely) rely on the features of the MyProxy package (see section~ref{myproxy}). The underlying idea 
+is that the user registers in a MyProxy server a valid long-term certificate proxy that will be used by the 
+WMS to perform a periodic credential renewal for the submitted job; in this way the user is no longer obliged 
+to create very long lifetime proxies when submitting jobs lasting for a great amount of time. 
+A more detailed description of this mechanism is provided in the following section~\ref{myproxy}.
+
+\subsubsection {MyProxy} 
+\label{myproxy}
+
+The MyProxy credential repository system consists of a server and a set of client tools that can be used 
+to delegate and retrieve credentials to and from a server. Normally, a user would start by using the 
+\textit{myproxy\_init} client program along with the permanent credentials necessary to contact the server 
+and delegate a set of proxy credentials to the server along with authentication information and retrieval 
+restrictions.
+
+\medskip
+\textbf{MyProxy Client}
+\medskip
+
+The set of binaries provided for the client is made of the following files:
+
+\begin{itemize}
+\item \textit{myproxy-init}
+\item \textit{myproxy-info}
+\item \textit{myproxy-destroy}
+\item \textit{myproxy-get-delegation}
+\item \textit{myproxy-change-pass-phrase}
+\end{itemize}
+
+
+The {\bf myproxy-init} command allows you to create and send a delegated proxy to a MyProxy server for 
+later retrieval; in order to launch it you have to assure you're able to execute the grid-proxy-init 
+or voms-proxy-init command (i.e. the binary is visible from your \$PATH environment and the required 
+cert files are either stored in the common path or specified with the X509 variables). You can use the 
+command as follows (you will be asked for your PEM passhprase):
+
+\smallskip
+{\scriptsize{\verb!myproxy-init -s <host name> -t <hours> -d -n!}}
+\smallskip
+
+The myproxy-init command stores a user proxy in the repository specified by $<$host name$>$ (the -s option). 
+Default lifetime of proxies retrieved from the repository will be set to $<$hours$>$  (see -t) and no 
+password authorization is permitted when fetching the proxy from the repository (the  -n option). 
+The proxy is stored under the same user-name as is your subject in your certificate (-d).
+
+\medskip
+The {\bf myproxy-info} command returns the remaining lifetime of the proxy in the repository along 
+with subject name of the proxy owner (in our case it will be the same as in your proxy certificate). 
+So if you want to get information about the stored proxies you can issue:
+
+\smallskip
+{\scriptsize{\verb!myproxy-info -s <host name> -d!}}
+\smallskip
+
+where -s and -d options have already been explained in the myproy-init command.
+
+\medskip
+The {\bf myproxy-destroy} command simply destroys any existing proxy stored in the myproxy server. 
+You can use it as follows:
+
+\smallskip
+{\scriptsize{\verb!myproxy-destroy  -s <host name> -d!}}
+\smallskip
+
+where -s and -d options have already been explained in the myproy-init command
+
+\medskip
+The {\bf myproxy-get-delegation} command is indeed used to retrieve information about the proxies 
+stored in the myproxy server. You can use it as follows:
+
+\smallskip
+{\scriptsize{\verb!myproxy-get-delegation -s <host name> -d -t <hours> -o <output file> -a <user proxy>!}}
+\smallskip
+
+You should end up with a retrieved proxy in $<$output file$>$, which is valid for
+$<$hours$>$ hours.
+
+It is worth noting that the environment variable MYPROXY\-\_SERVER can be set to tell to all these 
+programs the hostname where the myproxy server is running.
+
+\medskip
+{\bf myproxy-change-pass-phrase}  
+
+The  myproxy-change-pass-phrase  command  changes  the passphrase under which a credential is protected 
+in the MyProxy repository.  The command first prompts for  the  current  passphrase  for the credential, 
+then prompts twice for the new passphrase.  Only the  credential  owner  can change  a  credential's 
+passphrase. 
+The user must have a valid proxy credential as generated by grid-proxy-init or voms-proxy-init or retrieved 
+by myproxy-get-delegation when running this command.
+   
+%}

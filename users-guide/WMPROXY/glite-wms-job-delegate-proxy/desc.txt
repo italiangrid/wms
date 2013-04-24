@@ -1,0 +1,12 @@
+glite-wms-job-delegate-proxy allows delegating a user proxy to the WMProxy service. 
+The user can either specify the delegationid to be associated with the delegated proxy by
+using the --delegationid option:
+<<<VERB>>>
+glite-wms-job-delegate-proxy -d mydelegationiD
+<<<ENDVERB>>>
+or make the command automatically generate an ID by using the --autm-delegation option.
+<<<NEWLINE>>>
+One of these two options is mandatory and they're mutually exclusive.
+If a delegation with the same id and belonging to the same user already exists in the WMProxy service, 
+the new proxy will overwrite the one associated to that delegation id.
+Credential delegation with the same id used for a proxy belonging to another user is possible.

@@ -1,0 +1,70 @@
+<<<OPT>>>--noint
+
+if this option is specified, every interactive question to the user is skipped 
+(yes is assumed as answer) and the operation is continued (when possible)
+<<<ENDOPT>>>
+
+
+<<<OPT>>>--delegationid, -d <idstring>
+
+if this option is specified, the proxy that will be delegated is identified by 
+<idstring>. This proxy can be therefore used for operations like job registration, 
+job submission and job list matching until its expiration specifying the <idstring>. 
+It must be used in place of --autm-delegation option.
+<<<ENDOPT>>>
+
+
+<<<OPT>>>--autm-delegation, -a
+
+this option is specified to make automatic generation of the identifier string 
+(delegationid) that will be associated to the delegated proxy. It must be used 
+in place of the --delegationid (-d) option.
+<<<ENDOPT>>>
+
+
+<<<OPT>>>--endpoint, -e <serviceURL>
+
+when this option is specified, the operations are performed contacting the WMProxy 
+service represented by the given <serviceURL>. If it is not used, the endpoint 
+contacted is that one specified by the GLITE\_WMS\_WMPROXY\_ENDPOINT environment variable. 
+If none of these options is specified and the environment variable is not set, 
+the service request will be sent to one of the endpoints listed in the WMProxyEndPoints 
+attribute in the user configuration file (randomly chosen among the URLs of the attribute list). 
+If the chosen service is not available, a succession of attempts are performed 
+on the other specified services until the connection with one of these endpoints 
+can be established or all services have been contacted without success. In this latter 
+case the operation can not be obviously performed and the execution of the command is 
+stopped with an error message.
+<<<ENDOPT>>>
+
+
+<<<OPT>>>--rank
+
+displays the "matching" CEIds and the associated ranking values.
+<<<ENDOPT>>>
+
+
+<<<OPT>>>output, -o <filepath>
+
+returns the CEIds list in the file specified by filepath. <filepath> can be either a 
+simple name or an absolute path (on the submitting machine). 
+In the former case the file <filepath> is created in the current working directory.
+<<<ENDOPT>>>
+
+
+<<<OPT>>>--json
+
+This option makes the command produce its output in JSON-compliant format, 
+that can be parsed by proper json libraries for python/perl and other script 
+languages. Please note that --json and --output options are mutually exclusive.
+<<<ENDOPT>>>
+
+
+<<<OPT>>>--pretty-print
+
+This option should be used with --json. Without it the JSON format is 
+machine-oriented (no carriage returns, no indentations). --pretty-print makes 
+the JSON output easily readable by a human. Using this option without --json has no effect.
+<<<ENDOPT>>>
+
+

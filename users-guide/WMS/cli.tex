@@ -1,0 +1,2548 @@
+%\subsection{Commandline Interfaces}
+
+In this section we describe syntax and behavior of the commands made available by the WMS-UI to allow job/DAG 
+submission, monitoring and control. In the commands synopsis the mandatory arguments are showed between 
+angle brackets $<$arg$>$) whilst the optional ones between square brackets ([arg]).
+
+Commands for accessing the WMS through the WMProxy service are described in document ~\cite{WMPROXY}.
+Note that usage of the WMProxy submission and control client commands is strongly recommended as they 
+provide full support for all new functionality and enhancements of the WMS. 
+
+Before going to the single commands let's have a look at how the WMS-UI can be configured.
+
+
+\medskip
+\subsubsection{Commands Configuration}
+\label{config}
+
+\textbf{VO-Specific}
+
+Configuration of the WMS User Interface VO-specific parameters is accomplished through the file:
+
+\smallskip
+\begin{verbatim}
+$GLITE_LOCATION/etc/<vo name>/glite_wmsui.conf 
+\end{verbatim}
+\smallskip
+
+
+i.e. there is one directory and file for each supported VO. 
+
+The common WMS-UI configuration rpm (\textit{glite-wms-ui-configuration}) installs the following example file:
+
+\smallskip
+\begin{verbatim}
+$GLITE_LOCATION/etc/vo_template/glite_wmsui.conf
+\end{verbatim}
+\smallskip
+
+If the configuration for your VO is not present on the WMS-UI machine you must create in \$GLITE\_LOCATION/etc a 
+directory, named as the VO (lower-case), copy in it the above mentioned template file and update it opportunely.
+
+The \emph{glite\_wmsui.conf} file is a classad containing the following fields:
+
+\smallskip
+
+\begin{itemize}
+ \item \textbf{VirtualOrganisation} this is a string representing the name of the virtual organisation the file refers to.
+   It should match with the name of the directory containing the file (i.e. the VO). This parameter is 
+   mandatory. 
+ \item \textbf{NSAddresses} this is a list of strings representing the addresses ($<$hostname$>$:$<$port$>$) of the Network 
+   Servers available for the given VO. Job submission is performed towards the NS picked-up randomly from 
+   the list and in case of failure it is retried on each other listed NS until succes or the end of the 
+   list is reached. This parameter is mandatory.
+ \item \textbf{LBAddresses} this is a list of strings or a list of lists of strings representing the address or list 
+   of addresses ($<$hostname$>$:$<$port$>$) of the LB servers available for the given VO for the corresponding NS. 
+   I.e. the first list of LB addresses correspond to the first NS in the NSAddresses list, the second list 
+   of LB addresses correspond to the second NS in the NSAddresses list and so on.
+   When job submission is performed, the WMS-UI after having chosen the NS, choses randomly one LB server within
+   the corresponding list and uses it for generating the job identifier so that all information related with 
+   that job will be managed by the chosen LB server. This allows distributing load on several LB servers.  
+   This parameter is mandatory.
+ \item \textbf{HLRLocation} this is a string representing the address ($<$hostname$>$:$<$port$>$:$<$X509contact string$>$)  of the 
+   HLR for the given VO. HLR is the service responsible for managing the economic transactions and the 
+   accounts of user and resources. This parameter is not mandatory. It is not present in the file by default.
+   If present, it makes the WMS-UI automatically add to the job description the HLRLocation JDL attribute 
+   (if not specified by the user) and this enables accounting.
+ \item \textbf{MyProxyServer} this is a string representing the MYProxy server address ($<$hostname$>$) for the given VO. 
+   This parameter is not mandatory. It is not present in the file by default. If present, it makes the WMS-UI 
+   automatically add to the job description the MyProxyServer JDL attribute (if not specified by the user) 
+   and this enables proxy renewal. If the myproxy client package is installed on the WMS-UI node, then this 
+   parameter should be set equal to the MYPROXY\_SERVER environment variable.
+ \item \textbf{LoggingDestination} this is a string defining the address ($<$host$>$:$[<$port$>]$;) of the LB logging service 
+   (glite-lb-locallogger logging daemon ) to be targeted when logging events. The WMS-UI first checks the 
+   environment for the EDG\_WL\_LOG\_DESTINATION variable and only if this is not set, the value of the 
+   LoggingDestination parameter is taken into account. Otherwise the job related events are logged to the 
+   LB logging service running on the WMS node.
+
+\end{itemize}
+\smallskip
+
+Here below is provided an example of configuration file for the "atlas" Virtual Organisation. 
+This implies that the file path has to be \textit{\$GLITE\_LOCATION/etc/atlas/glite\_wmsui.conf}. 
+
+\smallskip
+\begin{verbatim}
+
+[
+ VirtualOrganisation = "atlas";
+ NSAddresses = {
+   "ibm139.cnaf.infn.it:7772",
+   "gundam.cnaf.infn.it:7772"
+   };
+ LBAddresses = {
+   {"ibm139.cnaf.infn.it:9000"},
+   {"gundam.cnaf.infn.it:9000", "neo.datamat.it:9000", "grid003.ct.infn.it:9876"}
+  };
+ HLRLocation = "lilith.to.infn.it:56568:/C=IT/O=INFN/OU=Personal Certificate/L=Torino/CN=Andrea 
+                Guarise/Email=A.Guarise@to.infn.it";
+ MyProxyServer = "skurut.cesnet.cz";
+ LoggingDestination = "localhost:9002";  // local instance of LB logging service
+]
+
+\end{verbatim}
+\medskip
+\medskip
+
+
+\textbf{Generic}
+
+
+Configuration of the WMS User Interface generic parameters is accomplished through the file:
+
+\smallskip
+\begin{verbatim}
+$GLITE_LOCATION/etc/glite_wmsui_cmd_var.conf
+\end{verbatim}
+\smallskip
+
+
+Update the content of the latter file according to your needs.
+
+The \textit{glite\_wmsui\_cmd\_var.conf} file is a classad containing the following fields:
+
+
+\smallskip
+
+\begin{itemize}
+ \item \textbf{requirements} this is an expression representing the default value for the requirements expression 
+   in the JDL job description. This parameter is mandatory. The value of this parameter is assigned by 
+   the WMS-UI to the requirements attribute in the JDL if not specified by the user. If the user has instead 
+   provided an expression for the requirements attribute in the JDL, the one specified in the configuration 
+   file is added (in AND) to the existing one. 
+   E.g. if in the glite\_wmsui\_cmd\_var.conf configuration file there is: 
+
+   \begin{scriptsize}   
+   \textit{requirements = other.GlueCEStateStatus == "Production" ;} 
+   \end{scriptsize}
+
+   and in the JDL file the user has specified: 
+
+   \begin{scriptsize}   
+   \textit{requirements = other.GlueCEInfoLRMSType == "PBS";} 
+   \end{scriptsize}
+
+   then the job description that is passed to the WMS contains 
+
+   \begin{scriptsize}   
+   \textit{requirements = (other.GlueCEInfoLRMSType == "PBS") \&\& (other.GlueCEStateStatus == "Production");} 
+   \end{scriptsize}
+      
+   Obviously the setting TRUE for the requirements in the configuration file does not have any impact on the evaluation 
+   of job requirements as it would result in: 
+
+   \begin{scriptsize}   
+   \textit{requirements = (other.GlueCEInfoLRMSType == "PBS") \&\& TRUE ;}
+   \end{scriptsize}
+
+ \item \textbf{rank} this is an expression representing the default value for the rank expression in the JDL job 
+   description. The value of this parameter is assigned by the WMS-UI to the rank attribute in the JDL if not 
+   specified by the user. This parameter is mandatory.   
+ \item \textbf{RetryCount} this is an integer representing the default value for the number of submission retries for 
+   a job upon failure due to some grid component (i.e. not to the job itself). The value of this parameter 
+   is assigned by the WMS-UI to the RetryCount attribute in the JDL if not specified by the user.   
+ \item \textbf{DefaultVo} this is a string representing the name of the virtual organisation to be taken as the user s 
+   VO (VirtualOrganisation attribute in he JDL) if not specified by the user neither in the credentials 
+   VOMS extension, nor directly in the job description nor through the --vo option. This attribute can be 
+   either set to  unspecified  or not included at all in the file to mean that no default is set for the VO. 
+ \item \textbf{ErrorStorage} this is a string representing the path of the directory where the WMS-UI creates log files. 
+   This directory is not created by the WMS-UI, so It has to be an already existing directory. Default for this 
+   parameter is /tmp.   
+ \item \textbf{OutputStorage} this is a string defining the path of the directory where the job OutputSandbox files are 
+   stored if not specified by the user through commands options. This directory is not created by the WMS-UI, 
+   so It has to be an already existing directory. Default for this parameter is /tmp. 
+ \item \textbf{ListenerStorage} this is a string defining the path of the directory where are created the pipes where 
+   the glite\_wms\_console\_shadow process saves the job standard streams for interactive jobs. Default for 
+   this parameter is /tmp.   
+ \item \textbf{LoggingTimeout} this is an integer representing the timeout in seconds for asynchronous logging function 
+   called by the WMS-UI when logging events to the LB. Recommended value for WMS-UI that are non-local to the 
+   logging service (glite-lb-logd logging daemon) is not less than 30 seconds. 
+ \item \textbf{LoggingSyncTimeout} this is an integer representing the timeout in seconds for synchronous logging function
+   called by the WMS-UI when logging events to the LB. Recommended value is not less than 30 seconds.   
+ \item \textbf{DefaulStatusLevel} this is an integer defining the default level of verbosity for the glite-job-status 
+   command. Possible values are 0,1,2 and 3. 1 is the default.
+ \item \textbf{DefaultLogInfoLevel} this is an integer defining the default level of verbosity for the glite-job-logging-info
+   command. Possible values are 0,1,2 and 3. 1 is the default. 
+   Default for this parameter is 0.   
+ \item \textbf{NSLoggerLevel} this is an integer defining the quantity of information logged by the NS client. Possible 
+   values range from 0 to 6. 0 is the defaults and means that no information is logged. Default for this 
+   parameter is 0. 
+
+\end{itemize}
+\smallskip
+
+
+Hereafter is provided an example of the \textit{\$GLITE\_LOCATION/etc/glite\_wmsui\_cmd\_var.conf} configuration file: 
+
+
+\smallskip
+\begin{verbatim}
+
+[ 
+ requirements = other.GlueCEStateStatus == "Production" ; 
+ rank = - other.GlueCEStateEstimatedResponseTime ; 
+ RetryCount = 3 ; 
+ ErrorStorage= "/var/tmp" ; 
+ OutputStorage="/tmp/jobOutput"; 
+ ListenerStorage = "/tmp" 
+ LoggingTimeout = 30 ; 
+ LoggingSyncTimeout = 45 ;  
+ DefaultStatusLevel = 1 ; 
+ DefaultLogInfoLevel = 0; 
+ NSLoggerLevel = 2; 
+ DefaultVo = "EGEE"; 
+] 
+
+\end{verbatim}
+\smallskip
+
+The files: 
+
+\smallskip
+\begin{verbatim}
+$GLITE_LOCATION/etc/glite_wmsui_cmd_err.conf
+\end{verbatim}
+\smallskip
+
+and 
+
+\smallskip
+\begin{verbatim}
+$GLITE_LOCATION/etc/glite_wmsui_cmd_help.conf 
+\end{verbatim}
+\smallskip
+
+contain respectively the error codes and error messages returned by the WMS-UI and the text describing the 
+commands usage.
+
+\newpage
+\subsubsection{Common behaviours}
+\label{commonbeh}
+
+As mentioned in the previous section~\ref{quickstart}, 
+\textit{\$GLITE\_LOCATION/etc} is the WMS-UI configuration area: it includes the file specifying 
+the mapping between error codes and error messages (glite\_wmsui\_cmd\_err.conf), 
+the file containing the detailed description of each command (glite\_wmsui\_cmd\_help.conf) and the 
+actual configuration files: glite\_wmsui\_cmd\_var.conf and $<$VO name$>$/glite\_wmsui.conf). 
+The latter files are the only ones that could need to be edited and tailored according to the user/platform 
+characteristics and needs. 
+The \emph{glite\_wmsui\_cmd\_var.conf } file contains the following information that are read by and have 
+influence on commands behaviour: 
+
+\begin{itemize}
+\item default location of the local storage areas for the Output sandbox files,
+\item default location for the WMS-UI log files,
+\item default values for the JDL mandatory attributes,
+\item default values for timeouts when logging events to the LB,
+\item default logging destination,
+\item user's default VO,
+\item default level of information displayed by the monitoring commands
+\end{itemize}
+
+Inside \textit{\$GLITE\_LOCATION/etc} there is instead a directory for each supported Virtual Organisation and 
+named as the VO lower case e.g. for atlas we will have \$GLITE\_LOCATION/etc/atlas/) that contains a vo-specific 
+configuration file glite\_wmsui.conf specifying the list of Network Servers and LBs accessible for the given VO.
+
+When started, WMS-UI commands search for the configuration files in the following locations, in order of 
+precedence:
+ 
+\begin{itemize}
+ \item \$GLITE\_WMS\_LOCATION/etc,
+ \item \$GLITE\_LOCATION/etc,  
+ \item /opt/glite/etc,
+ \item /usr/local/etc,
+ \item /etc
+\end{itemize}
+
+If none of the locations contains needed files an error is returned to the user.
+
+Since several users on the same machine can use a single installation of the WMS-UI, people concurrently issuing 
+WMS-UI commands share the same configuration files. Anyway for users (or groups of users) having particular needs 
+it is possible to use "customised" WMS-UI configuration files through the --config and -config-vo options supported 
+by each WMS-UI command.
+
+Indeed every command launched specifying \emph{--config file\_path} reads its configuration settings in the file 
+pointed by "file\_path" instead of the default configuration file. The same happens for the vo-specific 
+configuration file if the command is started using specifying  \emph{-config-vo vo\_file\_path}. 
+Hence the user only needs to create such file according to her needs and to use the appropriate options to work 
+under "private" settings.
+
+Moreover if the user wants to make this change in some way permanent avoiding the use for each issued command 
+of the --config option, she can set the environment variable GLITE\_WMSUI\_CONFIG\_VAR to point to the non-standard 
+path of the configuration file. Indeed if that variable is set commands will read settings from file 
+"\$GLITE\_WMSUI\_CONFIG\_VAR". Anyway the --config option takes precedence on all other settings.
+
+Exactly the same applies for the GLITE\_WMSUI\_CONFIG\_VO environment variable and the --config-vo option.
+
+It is important to note that since the job identifiers implicitly holds the information about the LB that is 
+managing the corresponding job, all the commands taking the job Id as input parameter do not take into account 
+the LB addresses listed in the configuration file to perform the requested operation also if the -config-vo option 
+has been specified.
+
+Hereafter are listed the options that are common to all WMS-UI commands: 
+
+{\begin{verbatim}
+--config file_path
+--config-vo file_path
+--noint
+--debug
+--logfile file_path
+--version
+--help
+\end{verbatim} 
+
+The \verb!--noint! option skips all interactive questions to the user and goes ahead in the command execution. 
+All warning messages and errors (if any) are written to the file 
+
+\textbf{$<$command\_name$>$\-\_$<$UID$>$\-\_$<$PID$>$\-\_$<$date\_time$>$.log} 
+
+in the location specified in the configuration file instead of the standard output. 
+It is important to note that when \verb!--noint! is specified some checks on "dangerous actions" are skipped. 
+For example if jobs cancellation is requested with this option, this action will be performed without requiring 
+any confirmation to the user. The same applies if the command output will overwrite an existing file, so it is 
+recommended to use the \verb!--noint! option in a safe context.
+
+\medskip
+
+The \verb!--debug! option is mainly thought for testing and debugging purposes; indeed it makes the commands 
+print additional information while running. Every time an external API function call is encountered during the 
+command execution, values of parameters passed to the API are printed to the user. The info messages are displayed 
+on the standard output and are also written together with possible errors and warnings, to 
+
+\textit{$<$command\_name$>$\-\_$<$UID$>$\-\_$<$PID$>$\-\_$<$date\-\_time$>$.log}.
+
+\medskip
+
+If \verb!--noint! option is specified together with \verb!--debug! option the debug message will not be printed on 
+standard output.
+
+\medskip
+
+The \verb!--logfile! $<$file\_path$>$ option allows re-location of the commands log files in the location pointed 
+by file\_path.
+
+\medskip
+
+The \verb!--version! and \verb!--help! options respectively make the commands display the WMS-UI current version and 
+the command usage.
+
+\medskip
+
+Two further options that are common to almost all commands are \verb!--input! and \verb!--output!. The latter one 
+makes the commands redirect the outcome to the file specified as option argument whilst the former reads a list of 
+input items from the file given as option argument. The only exception is the glite\--job\--list\--match command 
+that does not have the \verb!--input! option.
+
+\medskip
+\textbf{--input option}
+\medskip
+\smallskip
+for all commands, the file given as argument to the \verb!--input! option shall contain a list of job identifiers 
+in the following format: one \textit{jobId} for each line, comments beginning with a "\#" or a "*" character.  
+If the input file contains only one \textit{jobId} (see the description of glite-job-submit command later in this 
+document for details about \textit{jobId} format), then the request is directly submitted taking the 
+\textit{jobId} as input, otherwise a menu is displayed to the user listing all the contained items, 
+i.e. something like:
+
+\smallskip
+\begin{scriptsize}
+\begin{verbatim}
+---------------------------------------------------------------
+1 : https://ibm139.cnaf.infn.it:9000/ZU9yOC7AP7AOEhMAHirG3w
+2 : https://ibm139.cnaf.infn.it:9000/ZU9yOC767gJOEhMAHirG3w
+3 : https://ibm135.cnaf.infn.it:9000/ZU9yOC7AP7A55TREAHirG3w
+4 : https://grid012f.cnaf.infn.it:7846/ZUHY6707AP7AOEhMAHirG3w
+5 : https://grid012f.cnaf.infn.it:9000/Cde341P7AOEhMAHirG3w
+6 : https://ibm139.cnaf.infn.it:9000/BgT8T6H\_L92FsKq3OeTWOw
+7 : https://ibm139.cnaf.infn.it:9000/lYlPBQez7fiXx9qq7BEdyw
+8 : https://ibm139.cnaf.infn.it:9000/_f0Bm\_s6UdFPZIEjSglipg
+a : all
+q : quit
+---------------------------------------------------------------
+Choose one or more jobId(s) in the list - [1-10]all:
+\end{verbatim} 
+\end{scriptsize}
+\smallskip
+
+The user can choose one or more jobs from the list entering the corresponding numbers. Single jobs can be selected 
+specifying the numbers associated to the job identifiers separated by commas. Ranges can also be selected 
+specifying ends separated by a dash and it is worth mentioning that it is possible to select at the same time 
+ranges and single jobs. E.g.:
+
+\begin{itemize}
+\item [2:] 	makes the command take the second listed \textit{jobId} as input
+\item [1,4:]	makes the command take the first and the fourth listed \textit{jobId}s as input
+\item [2-5:]	makes the command take listed \textit{jobId}s from 2 to 5 ends included) as input
+\item [1,3-5,8:] selects the first job id in the list, the ids from the third to the fifth ends included) 
+and finally the eighth one.
+\item [all:]	makes the command take all listed \textit{jobId}s as input
+\item [q:]	makes the command quit
+\end{itemize}
+
+Default value for the choice is all. 
+
+If the \verb!--input! option is used together with the  \verb!--noint! then all \textit{jobId}s contained in 
+the input file are taken into account by the command.
+
+There are some commands whose \verb!--input! behaviour differs from the one just described. One of them is 
+glite-job-submit: the input file contains in this case CEIds instead of \textit{jobId}s. 
+As only one CE at a time can be the target of a submission, the user is allowed to choose one and only one CEId.
+Default value for the choice is "1", i.e. the first CEId in the list. 
+This is also the choice automatically made by the command when the \verb!--input! option is used together with 
+the \verb!--noint! one.
+
+The other commands are \textbf{glite-job-attach} and \textbf{glite-job-get-chkpt} whose \verb!--input! option 
+allows to select one (just one) of the \textit{jobId}s contained in the input file.
+
+\newpage
+
+\subsubsection{glite-job-submit}
+\label{submit}
+
+Allows the user to submit a job/DAG for execution on remote resources in a grid.
+
+\medskip
+SYNOPSIS
+\smallskip
+
+\textbf{glite-job-submit  [options]  $<$jdl\_file$>$}
+\medskip
+
+{\begin{verbatim}
+Options:
+   --help
+   --version
+   --vo            <vo_name>			
+   --input, -i     <file_path>
+   --resource, -r  <ce_id>
+   --chkpt         <file_path>
+   --nolisten
+   --nogui
+   --nomsg
+   --lrms          <lrms value>
+   --to            [MM:DD:]hh:mm[:[CC]YY]
+   --valid, -v     <hours>:<minutes>
+   --config, -c    
+   --config-vo     <file_path>
+   --output, -o    <file_path>
+   --noint
+   --debug
+   --logfile <file_path>
+\end{verbatim} 
+
+\medskip
+DESCRIPTION 
+\smallskip
+
+\textbf{glite-job-submit} is the command for submitting jobs and DAGs to the grid, i.e. allows the user to run her 
+application  job at one remote resource. glite-job-submit requires as input a job description file in which job/DAG 
+characteristics and requirements are expressed by means of Condor class-ad-like expressions. While it does not 
+matter the order of the other arguments, the request description file has to be the last argument of this command.
+
+The job/DAG description file given in input to this command is syntactically checked and default values are 
+assigned to some of the not provided mandatory attributes in order to create a meaningful class-ad. 
+The resulting \emph{ad} is sent to the NS, which then forwards it to the WM, which via the RB/Matchmaker finds 
+the best matching resource (match-making) and then the JC submits the request to it.
+
+Upon successful completion this command returns to the user the submitted job/DAG identifier \textit{jobId} 
+(a string that identifies unambiguously the job/DAG in the whole grid), generated by the User Interface, that 
+can be later used as a handle to perform monitor and control operations on the job/DAG (e.g. see glite-job-status 
+described later in this document). It is important to note that upon submission of a DAG, the WMS-UI command returns
+the identifier of the DAG as a whole. This handle will give access (by means of the \emph{glite-job-status} 
+command) to the information and identifiers of all DAG subjobs. 
+
+
+The format of the \textit{jobId} is as follows:
+
+\smallskip
+{\verb!https://LB_server_address[:port]/unique_string!}
+\smallskip
+
+The unique\_string is a md5 string computed taking into account the following information:
+
+\begin{itemize}
+\item IP of the User Interface machine,
+\item timestamp,
+\item process ID (more WMS-UI instances may occur on the same machine),
+\item sequence or just random number (if the User Interface submits jobs in batches and more than one per second 
+can be submitted),
+\end{itemize}
+
+The final md5 sum is encoded case modified Base64 encoding (":" is used instead fo "/") ensuring reasobable 
+uniqueness and compactness of job IDs.
+
+
+The structure of the \textit{jobId} that could appear in some way complex and not easily readable, has been 
+conceived in order to ensure uniqueness and at the same time contain information that are needed by the components 
+of the WMS to fulfil user requests. 
+
+\medskip
+
+The \verb!--vo! option allows the user to specify the Virtual Organisation she is currently working for in 
+case she is working with non-VOMS credentials. Indeed, if the user proxy credentials currently available on the 
+WMS-UI contains VOMS extensions specifying one or more VOs, then the default VO from the proxy credentials has 
+precedence over all other possible choiches and is taken as the current working VO.
+
+If the \verb!--vo! option is not used (and the proxy credentials does not contain extensions), then the 
+VirtualOrganisation attribute in the JDL is considered. If this attribute has not been specified in the JDL, 
+then the default VO specified in the \$GLITE\_LOCATION/\-etc/\-glite\-\_wl\-\_ui\-\_cmd\-\_var.conf 
+(DefaultVo field) configuration file is considered. Otherwise an error is returned to the user. 
+
+\medskip
+
+The \verb!--resource! option can be used to target the job submission to a specific known resource identified 
+by the provided Computing Element identifier \textit{ce\_id} (returned by glite-job-list-match described later 
+in this document). The CE identifier is a string published by the resource (the Glue\-CE\-Unique\-ID field in 
+the Glue schema) that univocally identifies a resource belonging to the Grid. The standard format for CEId is:
+
+\medskip
+{\verb!<full-hostname>:<port-number>/jobmanager-<service>-<queue-name>!}
+\medskip
+
+where \textit{$<$service$>$} is for example lsf, pbs, bqs, condor but can also be a different string as it is 
+freely set by the site administrator when the queue is set-up.
+No check is done on the CEId format by the WMS-UI as there could be cases in which different formats for the resources
+identifiers are adopted by the site administrators.
+
+When the \verb!--resource! option is specified, the WMS skips completely the match making process and directly 
+submits the job to the requested CE.  It is important to note that in this case the \textit{".BrokerInfo"} file 
+is not generated even if data requirements have been specified in the JDL, so jobs submitted using this option 
+should not rely on the \textit{".BrokerInfo"} file information when running on the CE. 
+
+The \textit{".BrokerInfo"} file is a file generated by the RB/Matchmaker during matchmaking and contains 
+information about the location where input  data specified in the JDL are physically stored, the SEs that 
+are "close" to the CE chosen for submitting the job etc. It is shipped within the InputSandbox to the CE 
+where the job is going to run so that it can be used at run-time to get information (through the appropriate 
+API) for accessing data. Details about the \textit{".BrokerInfo"} file and the BrokerInfo API can be found 
+in ~\cite{brokerinfo}.
+ 
+A way for performing direct submission to a given CE and at the same time having the \textit{".BrokerInfo"} 
+file generated by RB and shipped to the CE is to not use the \verb!--resource! option and specify the 
+following requirements in the JDL:
+
+\medskip
+{\verb!Requirements = other.GlueCEUniqueID == <Ce_identifier>;!}
+\medskip
+
+(e.g.  {\scriptsize{Requirements = other.GlueCEUniqueID == "lxde01.pd.infn.it:\-2119/\-jobmanager\--lsf\--grid01";)}}
+
+\medskip
+
+It is also possible to specify the target CE to which submit the job using the \verb!--input! option. 
+With the \verb!--input! option an \textit{input\_file} must be supplied containing a list of target CE ids. 
+In this case the glite-job-submit command parses the \textit{input\_file} and displays on the standard output 
+the list of CE Ids written in the \textit{input\_file}. The user is then asked to choose one CEId between the 
+listed ones. The command will then behave exactly like already explained for the \verb!--resource! option. 
+The basic idea of this command is to use as \textit{input\_file} the output file generated by the 
+glite-job-list-match command when used with the \verb!--output! option (see glite-job-list-match) that 
+contains the list of CE Ids (if any) matching the requirements specified in the \textit{jobad.jdl} file.  
+An example of a possible sequence of commands is:
+
+\smallskip
+\begin{scriptsize}
+\begin{verbatim}
+> glite-job-list-match --output CEList.out jobad.jdl
+> glite-job-submit --input CEList.out jobad.jdl
+\end{verbatim}
+\end{scriptsize}
+\smallskip
+
+If \textit{CEList.out} contains more than one CEId then the user is prompted for choosing one Id from the list.
+
+It is possible to redirect the returned \textit{jobId} to an output file using the \verb!--output! option. 
+If the file already exists, a check is performed: if the file was previously created by the command 
+glite-job-submit (i.e. it contains a well defined header), the returned \textit{jobId} is appended to the 
+existing file every time the command is launched. If the file wasn't created by the command glite-job-submit 
+the user will be prompted to choose if overwrite the file or not. If the answer is no the command will abort.
+
+The glite-job-submit command has a particular behaviour when the job description file contains 
+the \textit{InputSandbox} attribute whose value is a list of file paths on the WMS-UI machine local disk. 
+The purpose of the introduction of the InputSandbox attribute is to list the files that have to be copied 
+from the WMS-UI to the CE worker node because they are needed for the job execution.
+
+To better understand, let's suppose to have a job that needs for the execution a certain set of files having 
+a small size and available on the submitting machine. Let's also suppose that for performance reasons it is 
+preferable not going through the data transfer services for the staging of these files on 
+the executing node. Then the user can use the InputSandbox attribute to specify the files that have to be 
+copied from the submitting machine to the execution CE. All of them are indeed transferred at job submission 
+time together with the job class-ad to the NS that will store them temporarily on its local disk. 
+The JobWrapper will then perform the staging of these files on the executing node. The size of files to be 
+transferred to the "WMS node" should be small since overfull of WMS node local storage means that no more 
+job of this type can be submitted. 
+
+This mechanism can also be used to copy a job executable available locally on the WMS-UI machine to the 
+executing CE. Indeed in this case the user has to include this file in the InputSandbox list 
+(specifying its absolute path in the file system of the WMS-UI machine) and as Executable attribute value 
+has only to specify the file name. On the contrary, if the executable is already available in the file 
+system of the executing machine, the user has to specify as Executable an absolute path name for this file 
+(if necessary using environment variables). The same argument can be applied to the standard input file 
+that is specified through the StdInput JDL attribute.
+
+Since the InputSandbox expression can consist of a great number of file names, it is admitted the use of 
+wildcards and environment variables to specify the value of this attribute. 
+
+It is important to note that since the gridftp protocol (the protocol used for the InputSanbox files staging) 
+in general doesn't preserve the x flag, the script specified as Executable in the JDL 
+(on which chmod +x is done automatically by the WMS JobWrapper), should perform a chmod +x for all the files 
+needing execution permission, that are transferred within the InputSandbox of the job.
+
+For the standard output and error of the job the user shall instead always specify just file names 
+(without any directory path) through the StdOutput and StdError JDL attributes. To have them copied back on 
+the WMS-UI machine it suffices to list them in the OutputSandbox and use after job completion the glite-job-output 
+command described later in this document.
+
+The list of data specification JDL attributes is completed by the InputData attribute.
+
+InputData refers to data used as input by the job that are not subjected to staging and are stored in one 
+or more storage elements and published in replica catalogues. When the user specifies the InputData attribute 
+then he/she also has to provide the protocol her/his application is able to "speak" for accessing data 
+(DataAccessProtocol attribute). The InputData attribute should contain a list of Logical File Names (LFN) 
+and/or Grid Unique Identifilers (GUID). 
+
+
+The Arguments attribute in the JDL allows the user to specify all the command line arguments needed to start the 
+job. They have to be specified as a single string, e.g. the job sum that is started with:
+
+\smallskip
+{\scriptsize{\verb!$ sum  N1 N2 -out result.out!}}
+\smallskip
+
+is described by: 
+
+\smallskip
+\begin{verbatim}
+Executable = "sum";
+Arguments = "N1 N2 -out result.out";
+\end{verbatim}
+\smallskip
+
+If you want to specify a quoted string inside the Arguments then you have to escape quotes with the  
+( character. E.g. when describing a job like:
+
+\smallskip
+{\scriptsize{\verb!$ grep -i "my name" *.txt!}}
+\smallskip
+
+you will have to specify:
+
+\smallskip
+\begin{verbatim}
+Executable = "/bin/grep";
+Arguments = "-i "my name" *.txt";
+\end{verbatim}
+\smallskip
+
+Analogously, if the job takes as argument a string containing a special character (e.g. the job is the tail 
+command issued on a file whose name contains the quotes character, say file1\&file2), since on the shell line 
+you would have to write:
+ 
+\smallskip
+{\scriptsize{\verb!$ tail -f file1\&file2 !}}
+\smallskip
+
+in the JDL you'll have to write:
+
+\smallskip
+\begin{verbatim}
+Executable = "/usr/bin/tail";
+Arguments = "-f file1\\\&file2";
+\end{verbatim}
+\smallskip
+
+i.e. a $\backslash$ for each special character.
+
+In general, special characters such as \&, |, $>, <$ are only allowed if specified inside a quoted string or 
+preceded by triple $\backslash$.
+The character "`" cannot be specified in the Arguments attribute of the JDL.
+
+The RetryCount attribute allows setting the number of submission retries for a job upon failure due to some 
+grid component (i.e. not to the job itself). RetryCount has to be a positive number and the actual number of 
+submission retries for a job is represented by the minimum value between RetryCount itself and the value of the 
+MaxrRetryCount parameter in the WM configuration file).  It suffices setting 
+RetryCount to 0 to disable job resubmission.
+
+It is important to recall here that the safest way for submitting long-running jobs is to use the proxy renewal 
+feature provided by the WMS. To do this the user should use the myproxy-init command (see section~\ref{security}) 
+before the glite-job-submit. The myproxy-init command registers indeed in a MyProxy server a valid long-term 
+certificate proxy that will be used by WMS to perform a periodic credential renewal for the submitted job. 
+
+When using the myproxy-init command the user has to specify either through the -s option or the MYPROXY\_SERVER 
+environment variable the host name of the MyProxy server where to store the certificate proxy.
+
+To trigger the proxy renewal mechanism, the same MyProxy server address has to be specified in the JDL through 
+the MyProxyServer attribute (this can also be made a default behaviour through the configuration -  see section~\ref{config}). 
+An example of the JDL setting is:
+
+\smallskip
+{\verb!MyProxyServer = "skurut.cesnet.cz";!}
+\smallskip
+
+Note that the port number must not be provided.
+
+Interactive jobs are specified setting the JDL JobType attribute to "Interactive". When an interactive job is 
+submitted, the glite-job-submit command starts a grid console shadow process in the background that listens on a 
+port for the job standard streams. Moreover the glite-job-submit command opens a new window where the incoming 
+job streams are forwarded. The port on which the shadow process listens is assigned by the OS, but can be forced 
+through the ListenerPort attribute in the JDL.
+
+As the command in this case opens a X window, the user should make sure the DISPLAY environment variable is 
+correctly set, a X server is running on the local machine and if she/he is connected to the WMS-UI node from remote 
+machine (e.g. with ssh) enable secure X11 tunneling. 
+
+\medskip
+
+If this is not possible, the user can specify the \verb!--nogui! option that makes the command provide a simple 
+standard non-graphical interaction with the running job.
+
+\medskip
+
+Another option that is reserved for interactive jobs is \verb!--nolisten!: it makes the command forward the job 
+standard streams coming from the WN to named pipes on the WMS-UI machine whose names are returned to the user together 
+with the OS id of the listener process.  This allows the user to interact with the job through her/his own tools. 
+It is important to note that when this option is specified, the WMS-UI has no more control over the launched listener 
+process that has to be killed by the user (using the process id returned by the command) when the job is finished.
+
+For interactive jobs the WMS-UI automatically requires for the job outbound IP connectivity on the WN adding  
+(in AND to the user defined expression) the other.Glue\-Host\-Network\-Adapter\-Outbound\-IP  to the JDL 
+Requirements expression.
+
+Checkpointable jobs are specified setting the JDL JobType attribute to  "Checkpointable". When a checkpointable 
+job is submitted the user can specify the number (or list) of steps in which the job can be logically decomposed 
+and the step to be considered as the initial one. This can be done setting respectively the JDL attributes 
+JobSteps and CurrentStep.  CurrentStep is a mandatory attribute and if not provided by the user, it is set 
+automatically to 0 by the WMS-UI.
+
+\medskip
+
+The \verb!--chkpt! option allows the submission of a checkpointable job specifying as input a checkpoint state 
+generated by a previously submitted job.  This option makes the submitted job start running from the checkpoint 
+state given in input and not from the very beginning. 
+The initial checkpoint states to be used with this option can be retrieved by means of the glite-job-get-chkpt 
+command. A checkpoint state is a JDL file as described in [R3].
+MPI jobs are specified setting the JDL JobType attribute to "MPICH". When a MPI job is submitted the presence 
+of the NodeNumber attribute (it specifies the required number of CPUs) in the JDL is mandatory and the WMS-UI 
+automatically requires the MPICH runtime environment installed on the CE and a number of CPUs at least equal 
+to the required number of nodes. This is done adding (in AND to the user defined expression) the following 
+expression
+
+\smallskip
+\begin{verbatim}
+(other.GlueCEInfoTotalCPUs $>=$ NodeNumber) && 
+ Member(other.GlueHostApplicationSoftwareRunTimeEnvironment,"MPICH")
+\end{verbatim}
+\smallskip
+
+to the the JDL Requirements expression.
+Lastly the --nomsg option makes the command display neither messages nor errors on the standard output. 
+Only the jobId assigned to the job is printed to the user if the command was successful. Otherwise the 
+location of the generated log file containing error messages is printed on the standard output. 
+This option has been provided to make easier use of the glite-job-submit command inside scripts in 
+alternative to the --output option.
+It is important to note that the glite-job-submit is a sort of fire-and-forget command, i.e. it exits 
+successfully once the JDL has been passed to the NS and the InputSandbox files have been transferred. 
+It does not matter about what happens afterwards to the job. Understanding the reason of a job abort can 
+however be accomplished by using the glite-job-status (especially looking at the "Status Reason" field) 
+and glite-job-get-logging-info on the job identifier returned from the submission.
+
+\medskip
+\textbf{Job Description File}
+\smallskip
+
+A job description file contains a description of job characteristics and constraints in a class-ad style. 
+A general description of the class-ad language is provided in document [A5].
+The job description file must be edited by the user to insert relevant information about the job that is 
+later needed by the RB to perform the match-making. Job description file entries are strings having the format 
+attribute = expression and are terminated by the semicolon character. Attribute expressions can span several 
+lines provided the semicolon is put only at the end of the whole expression. Comments must be preceded by a 
+sharp character \#) or have to follow the C++ syntax, i.e a double slash (//) at the beginning of each line or 
+statements begun/ended respectively with "/*" and "*/". 
+
+Being the class-ad an extensible language, it doesn't exist a fixed set of admitted attributes, i.e. the user 
+can insert in the job/DAG description file whatever attribute he believes meaningful to describe her/his requests, 
+anyway only the attributes that can be in some way connected with the ones published by the resources 
+are taken into account by the Matchmaker/RB for the match-making process. Unrelated attributes are simply 
+ignored except when they are used to build the Requirements expression. In the latter case they are indeed 
+evaluated and could affect the match-making result. The attributes taken into account by the RB together with 
+their meaning are described in detail in document ~\cite{jdl} which is the document that has to be 
+followed by the user when writing the JDL description of her/his jobs/DAGs.
+
+There is a small subset of JDL attributes that are compulsory, i.e. that have to be present in a request class-ad 
+before it is sent to the Network Server in order to make possible the performing of the match making and 
+submission. They can be grouped in two categories: some of them must be provided by the user whilst some other, 
+if not provided, are filled by the WMS-UI with configurable default values. 
+
+In particular for the Requirements and Rank attributes, if not present in the job's JDL, the WMS-UI applies default 
+values sepcified in the configuration.
+Requirements is set to \verb!other.GlueCEStateStatus == "Production"!, i.e. the target CE has to be active. 
+The Rank expression is instead set to \verb!- other.GlueCEStateEstimatedResponseTime!, indeed since the greater is 
+the value of Rank the better is considered the match, if no expression for 
+Rank has been provided, then the resources where the jobs waits a shorter time to pass from the SCHEDULED 
+to the RUNNING status are preferred.
+
+A set of built-in classa-ad functions can be used for building the Requirements and Rank expressions (e.g. 
+Member, RegExp, SubStr etc.). These functions are described in ~\cite{jdl-lang}.
+
+MPICH jobs are an exception as they have as default rank \verb!other.GlueCEStateFreeCPUs! meaning that the 
+preferred resources are the ones having the higher number of free CPUs.
+
+The default values for the Requirements and Rank attributes can be set in the 
+\smallskip
+\verb!$GLITE_LOCATION/etc/glite_wmsui_cmd_var.conf! 
+\smallskip
+file or 
+\smallskip
+\verb!$GLITE_LOCATION/etc/<vo name>/glite_wmsui.conf! 
+\smallskip
+file if they are specific to a given VO. See section~\ref{config} for details on how to set these defaults.
+
+As the JDL language is an extensible language, it allows the user to freely include new attributes within the 
+job description. These attributes are ignored by the WMS for the scheduling but are passed-through by the WMS-UI 
+(if their syntax is correct) since they could be relevant for the submitter of for some other component processing 
+the JDL.
+
+However if the job description file contains attributes that are unknown to the WMS, the WMS-UI will print a 
+warning (when used with the --debug option) listing all of them. 
+
+\newpage
+OPTIONS
+\smallskip
+
+\textbf{--help}
+
+displays command usage.
+
+\smallskip
+\textbf{--version}
+
+displays WMS-UI version.
+
+\smallskip
+\textbf{--vo} vo\_name
+
+\begin{itemize}
+\item the default VO from the user proxy (if it contains VOMS extensions),
+\item the VO specified through the --vo or --config-vo options,
+\item the VO specified in the configuration file pointed by the GLITE\-\_WMSUI\-\_CONFIG\-\_VO environment variable,
+\item the VirtualOrganisation attribute in the JDL (if the user proxy contains VOMS extensions this value is 
+overridden  as above),
+\item the default VO specified in the \$GLITE\-\_LOCATION\-/etc\-/<vo name>/glite\-\_wmsui\.conf (DefaultVo 
+field) configuration file.
+\item If none of the listed trials has success an error is returned and the submission is aborted.
+\end{itemize}
+
+\smallskip
+
+\textbf{--resource}  ce\_id
+
+\textbf{-r} ce\_id
+
+if the command is launched with this option, the job-ad sent to the NS contains a line of the type 
+SubmitTo = ce\_id  and the job is submitted by the WMS to the resource identified by ce\_id without going 
+through the match-making process. Standard format for the CEId is:
+
+\smallskip
+{\scriptsize{\verb!<full hostname>:<port number>/jobmanager-<service>-<queue name>!}}
+\smallskip
+
+where $<$service$>$ could be for example lsf, pbs, bqs, condor but can also be a different string as it is 
+freely set by the site administrator when setting the queue. This option cannot be used for DAGs.
+
+Note that when this option is used, the ".BrokerInfo" file is not generated.
+
+\smallskip
+
+\textbf{--input} file\_path
+
+\textbf{-i} input\_file
+
+if this option is specified, the user will be asked to choose a CEId from a list of CEs contained in 
+the file\_path. Once a CEId has been selected the command behaves as explained for the --resource option. 
+If this option is used together with the -noint one and the input file contains more than one CEId, then the 
+first CEId in the list is taken into account for submitting the job. This option cannot be used for DAGs.
+
+\smallskip
+
+\textbf{--config} file\_path
+
+\textbf{-c} file\_path
+
+if the command is launched with this option, the configuration file pointed to by file\_path is used 
+instead of the standard configuration file.
+
+\smallskip
+\textbf{--config-vo} file\_path
+
+if the command is launched with this option, the vo-specific configuration file pointed to by file\_path 
+is used instead of the standard vo-specific configuration file.
+
+\smallskip
+
+\textbf{--output} file\_path
+
+\textbf{-o} file\_path
+
+writes the generated jobId assigned to the submitted job in the file specified by out\_file. out\_file can 
+be either a simple name or an absolute path (on the submitting machine). In the former case the file out\_file 
+is created in the current working directory.
+
+\smallskip
+\textbf{--chkpt}  file\_path
+
+This option can be used only for checkpointable jobs. The state specified as input is a checkpoint state 
+generated by a previously submitted job.  This option makes the submitted job start running from the checkpoint 
+state given in input and not from the very beginning. This option cannot be used for DAGs.
+
+The initial checkpoint states to be used with this option can be retrieved by means of the glite-job-get-chkpt 
+command (see ~\ref{chkpt}).
+
+\smallskip
+
+\textbf{--nogui} 
+
+This option can be used only for interactive jobs. As the command for such jobs opens a X window, the user 
+should make sure a X server is running on the local machine and if she/he is connected to the WMS-UI node from 
+remote machine (e.g. with ssh) enable secure X11 tunneling. If this is not possible, the user can specify 
+the --nogui option that makes the command provide a simple standard non-graphical interaction with the 
+running job.
+
+\smallskip
+
+\textbf{--nolisten}
+
+This option can be used only for interactive jobs. It makes the command forward the job standard streams 
+coming from the WN to named pipes on the WMS-UI machine whose names are returned to the user together with the 
+OS id of the listener process.  This allows the user to interact with the job through her own tools. 
+It is important to note that when this option is specified, the WMS-UI has no more control over the launched 
+listener process that has to be killed by the user (using the process id returned by the command) once the 
+job is finished.
+
+\smallskip
+
+\textbf{--nomsg}
+
+this option makes the command print on the standard output only the jobId generated for the job if 
+submission was successful; the location of the log file containing massages and diagnostics is printed 
+otherwise.
+
+\smallskip
+
+\textbf{--lrms} lrms\_name
+
+this option is only for MPICH jobs and must be used togheter with either --resource or --input option;
+it specifies the type of the lrms of the resource the user is submitting to. When the batch system 
+type of the specified CE resource given is not known, the lrms must be provided while submitting.
+For non-MPICH jobs this option will be ignored.
+
+\smallskip
+
+\textbf{--to} [MM:DD:]hh:mm[:[CC]YY]
+
+A job for which no compatible CEs have been found during the matchmaking phase is hold in the WMS Task 
+Queue for a certain time so that it can be subjected again to matchmaking from time to time until a compatible 
+CE is found.
+The JDL ExpiryTime attribute is an integer representing the date and time (in seconds since epoch) until the 
+job request has to be considered valid by the WMS. 
+This option sets the value for the ExpiryTime attribute to the submitted JDL converting appropriately the 
+absolute timestamp provided as input. It overrides, if present, the current value.
+If the specified value exceeds one day from job submission then it is not taken into account by the WMS.
+
+\smallskip
+
+\textbf{--valid} hours:minutes
+
+\textbf{-v} hours:minutes
+
+A job for which no compatible CEs have been found during the matchmaking phase is hold in the WMS Task
+Queue for a certain time so that it can be subjected again to matchmaking from time to time until a compatible
+CE is found.
+The JDL ExpiryTime attribute is an integer representing the date and time (in seconds since epoch) until the
+job request has to be considered valid by the WMS.
+This option allows to specify the validity in hours and minutes from submission time of the submitted JDL.
+When this option is used the command sets the value for the ExpiryTime attribute converting appropriately the
+relative timestamp provided as input. It overrides, if present, the current value.
+If the specified value exceeds one day from job submission then it is not taken into account by the WMS.
+
+
+\smallskip
+
+\textbf{--noint}
+
+if this option is specified every interactive question to the user is skipped and all warning messages and 
+errors (if occurred) are written to the file glite-job-submit\_$<$UID$>$\_$<$PID$>$\_$<$timestamp$>$.log 
+under the /tmp directory. Log file location is configurable.
+
+\smallskip
+
+\textbf{--debug}
+
+when this option is specified, information about parameters used for the API functions calls inside the 
+command are displayed on the standard output and are written to 
+glite-job-submit\_$<$UID$>$\_$<$PID$>$\_$<$timestamp$>$.log file under the /tmp directory too. 
+Log file location is configurable.
+
+\smallskip
+
+\textbf{--logfile file\_path}
+
+when this option is specified, the command log file is relocated to the location pointed by file\_path
+
+\smallskip
+
+\textbf{jdl\_file}
+
+this is the file containing the JDL describing the job to be submitted. It must be the last argument 
+of the command.
+
+\medskip
+EXIT STATUS
+\smallskip
+
+\textbf{glite-job-submit} exits with a status value of 0 (zero) upon success, and $>$0 (greater than zero) 
+upon failure. 
+
+\medskip
+EXAMPLES
+\medskip
+
+1.{\scriptsize{\verb!> glite-job-submit -vo cms myjob1.jdl! }}
+where myjob1.jdl is as follows:
+\begin{scriptsize}
+\begin{verbatim}
+
+##############################################!
+#                                                 
+# -------- Job description file ----------
+# 	                  
+##############################################!
+[
+  JobType = "Normal" ;
+  Executable     = "$(CMS)/fpacini/exe/sum.exe";
+  InputData      = "lfn:testbed0-00019";
+  
+  DataAccessProtocol = "gridftp";
+  Rank	         = other.GlueCEPolicyMaxCPUTime;
+  Requirements   = other.GlueCEInfoLRMSType  == "Condor"; 
+  InputData = {
+        "lfn:mydatafile1",
+        "lfn:mydatafile2",
+        "guid:135b7b23-4a6a-11d7-87e7-9d101f8c8b70"
+    };
+    StorageIndex = 
+         "http://lxb1434.cern.ch:8080/EGEE/glite-data-/FiremanCatalog";
+    DataAccessProtocol = {"gridftp", "gliteio"};
+ ]
+
+\end{verbatim}
+\end{scriptsize}
+
+Will display something like:
+
+\begin{scriptsize}
+\begin{verbatim}
+
+Selected Virtual Organisation name (from proxy certificate extension): EGEE
+Connecting to host gundam.cnaf.infn.it, port 7772
+Logging to host gundam.cnaf.infn.it, port 9002
+
+
+*********************************************************************************************
+                               JOB SUBMIT OUTCOME
+ The job has been successfully submitted to the Network Server.
+ Use glite-job-status command to check job current status. Your job identifier is:
+
+ - https://gundam.cnaf.infn.it:9000/VBVtU_6a7KZ2D-SLP7UTEA
+
+
+*********************************************************************************************
+
+\end{verbatim}
+\end{scriptsize}
+
+\smallskip
+2.{\scriptsize{\verb!> glite-job-submit --chkpt  /home/test/state10.chkpt myjob2.jdl! }} 
+Submits the checkpointable job described by myjob2.jdl that will start running from the initial state 
+state10.chkpt. 
+
+See also glite-job-list-match~\ref{listmatch}, glite-job-attach~\ref{attach}, glite-job-get-chkpt~\ref{chkpt}.
+
+
+\newpage
+\subsubsection{glite-job-output}
+\label{output}
+
+This command retrieves the job output files (specified by the OutputSandbox attribute of the job-ad) 
+from the RB node and stores them on the submitting machine local disk. When issued for a DAG it retrieves 
+the output sandboxes of all DAG nodes.
+
+\medskip
+SYNOPSIS 
+\smallskip
+
+\textbf{glite-job-output [options] $<$job Id(s)$>$}
+
+\begin{scriptsize}
+\begin{verbatim}
+
+Options:
+   --help
+   --version
+   --input, -i     <file_path>
+   --dir           <directory_path>
+   --config, -c    <file_path>
+   --noint
+   --debug
+   --logfile 	   <file_path>
+
+\end{verbatim}
+\end{scriptsize}
+
+\medskip
+ DESCRIPTION \smallskip
+
+The \textbf{glite-job-output} command can be used to retrieve the output files of a job/DAG that has been 
+submitted through the glite-job-submit command with a job/DAG description file including the OutputSandbox 
+attribute. After the submission, when the job has terminated its execution, the user can download the 
+files generated by the job and temporarily stored on the RB machine as specified by the OutputSandbox 
+attribute, issuing the glite-job-output with as input the Id returned by the glite-job-submit. 
+It is also possible to specify a list of job identifiers when calling this command or an input file containing 
+Ids by means of the --input option. When the --input is used, the user is requested to choose all, one or 
+a subset of the identifiers contained in the input file. 
+
+It is important to note that the OutputSandbox of a submitted job can only be retrieved when the job has reached 
+the Done status indicating that the job has successfully terminated its execution and the OutputSandbox files are 
+ready for retrieval on the RB node. glite-job-output  will always fail for jobs that are not yet in the Done status.
+The user can decide the local directory path on the WMS-UI machine where these files have to be stored by means of 
+the --dir option, otherwise the retrieved files are put in a default location specified in the 
+\$GLITE\_WL\_LOCATION\-/etc\-/glite\_wl\_ui\_cmd\_var.conf configuration file (OutputStorage parameter). 
+In both cases a sub-directory will be added to the path supplied. The name of this sub-directory is the 
+unique string of the jobId identifier (see command glite-job-submit for details on the jobId structure) prefixed 
+by the user login name (value of the LOGNAME environment variable). For a DAG, a further subdirectory is created 
+,inside the one just mentioned, for each DAG node.
+
+If the user wants to use her/his "private" configuration file, this can be done using option --config path\_name. 
+As a consequence the glite-job-output command looks for the file "path\_name" instead of the standard 
+configuration file. If this file does not exist the user is notified with an error message and the command is 
+aborted. 
+
+\medskip
+OPTIONS 
+\smallskip
+
+{\bf--help}
+
+ displays command usage.
+ 
+\smallskip
+{\bf --version}
+
+displays WMS-UI version.
+
+\smallskip
+{\bf --dir directory\_path}
+
+retrieved files (previously listed by the user through the OutputSandbox attribute of the job description file)  
+are stored in the location indicated by directory\_path/$<$login name$>$\_$<$jobId unique string$>$. A further 
+directory named $<$node Id unique string$>$ is created inside the just mentioned dir for each DAG node in case 
+the command is issued for a DAG.  
+
+\smallskip
+
+{\bf --config} file\_path
+
+{\bf -c} file\_path
+
+if the command is launched with this option, the configuration file pointed to by file\_path is used instead 
+of the standard configuration file.
+
+\smallskip
+{\bf --noint}
+
+if this option is specified every interactive question to the user is skipped. All warning messages and errors 
+(if occurred) are written to the file glite-job-output\_$<$UID$>$\_$<$PID$>$\_$<$timestamp$>$.log under the 
+/tmp directory. Location of log file is configurable.
+
+\smallskip
+{\bf --debug}
+
+when this option is specified, information about parameters used for the API functions calls inside the command 
+are displayed on the standard output and are written to 
+glite\_job\_output\_$<$UID$>$\_$<$PID$>$\_$<$timestamp$>$.log file under the /tmp directory too. 
+Location of log file is configurable.
+
+\smallskip
+{\bf --logfile} file\_path
+
+when this option is specified, the command log file is relocated to the location pointed by file\_path
+
+\smallskip
+{\bf jobId}
+
+job identifier returned by glite-job-submit. If a list of oe or more job identifiers is specified, job Ids 
+have to be separated by a blank. Job identifiers must be last argument of the command.
+
+\smallskip
+{\bf --input} file\_path
+{\bf -i} file\_path
+
+this option makes the command return the OutputSandbox files for each jobId contained in the file\_path. 
+This option can't be used if one (or more) jobIds have been already specified. As explained in section~\ref{commonbeh}
+The format of the input file must be as follows: one jobId for each line and comment lines must begin with 
+a "\#" or a "\*" character. 
+
+\medskip
+EXIT STATUS
+\smallskip
+
+{\bf glite-job-output} exits with a status value of 0 (zero) upon success, $>$0 upon failure and $<$0 upon 
+partial failure. An example of partial failure is when more than one job identifiers has been specified and the 
+OuputSandbox could be retrieved only for some of them. 
+
+\medskip
+EXAMPLES 
+\smallskip
+
+Let us consider the following command issued by the user logges as user \emph{mrossi}:
+\begin{scriptsize}
+\begin{verbatim}
+
+> glite-job-output https://ibm139.cnaf.infn.it:9000/CiXMLojKC_iLsvSHfEhqIQ --dir /home/data
+It retrieves the files listed in the OutputSandbox attribute 
+of job identified by 
+https://ibm139.cnaf.infn.it:9000/CiXMLojKC_iLsvSHfEhqIQ  
+from the RB node and stores them locally in 
+/home/data/mrossi_CiXMLojKC_iLsvSHfEhqIQ.
+
+\end{verbatim} 
+\end{scriptsize}
+
+\newpage
+\subsubsection{glite-job-list-match} 
+\label{listmatch}
+
+Returns the list of resources fulfilling job requirements specified in the JDL job description
+
+\medskip
+ SYNOPSIS 
+\smallskip
+ 
+\textbf{glite-job-list-match  [options]  $<$jdl file$>$}
+
+\begin{scriptsize}
+\begin{verbatim}
+
+Options:
+   --help
+   --version   
+   --verbose       
+   --rank          
+   --config, -c    <file_path>
+   --config-vo     <file_path>
+   --vo            <vo_name>
+   --output, -o    <file_path>
+   --noint         
+   --debug         
+   --logfile       <file_path>
+
+\end{verbatim} 
+\end{scriptsize}
+
+\textbf{glite-job-list-match} displays the list of identifiers of the resources on which the user is 
+authorized and satisfying the job requirements included in the job description file. The CE identifiers 
+are returned either on the standard output or in a file according to the chosen command options, and are 
+strings univocally identifying the CEs published in the IS. This command cannot be used for DAG requests.  
+
+The returned CEIds are listed in decreasing order of rank, i.e. the one with the best (greater) rank is 
+in the first place and so on.
+
+The \textbf{--rank} option makes the command also display the rank value for each found CEId.
+
+The \textbf{--vo} option allows the user to specify the Virtual Organisation she/he is currently working 
+for in case she/he is working with non-VOMS credentials.
+
+Indeed, if the user proxy credentials currently available on the WMS-UI contains VOMS extensions specifying 
+one or more VOs, then the default VO from the proxy credentials has precedence over all other possible 
+choiches and is taken as the current working VO.
+
+If the --vo option is not used (and the proxy credentials does not contain extensions), then the 
+VirtualOrganisation attribute in the JDL is considered. If this attribute has not been specified in the JDL, 
+then the default VO specified in the \$GLITE\_LOCATION/\-etc/\-glite\_wmsui\_cmd\_var.conf  
+(DefaultVo field) configuration file is considered. Otherwise an error is returned to the user. 
+
+glite-job-list-match requires a job description file in which job characteristics and requirements are 
+expressed by means of a class-ad. The job description file is first syntactically checked and then used 
+as the main command-line argument to glite-job-list-match. The Network Server is only contacted to find 
+job compatible resources; the job is not submitted. See the glite-job-submit~\ref{submit} command for 
+general rules for building the job description file.
+
+If the user wants to use his "private" configuration, file this can be done using option --config path\_name.
+
+ 
+The option \textbf{--verbose} of the dg-job-list-match command can be used to obtain on the standard output 
+the class-ad sent to the RB generated from the job description.
+
+The \textbf{--output} option makes the command save the list of compatible resources into the specified file. 
+If the provided file name is not an absolute path, then the output file is created in the current working dir.
+
+\medskip
+OPTIONS
+
+\smallskip 
+\textbf{ --help} 
+
+displays command usage.
+
+\smallskip 
+\textbf{ --version}
+
+displays WMS-UI version.
+
+\smallskip 
+\textbf{ --verbose}
+
+\textbf{ -v}
+
+displays on the standard output the job class-ad that is sent to the Network Server generated from the 
+job description file. This differs from the content of the job description file since the WMS-UI adds to it 
+some attributes that cannot be directly inserted by the user (e.g., defaults for Rank and Requirements if 
+not provided, VirtualOrganisation etc).
+
+\smallskip 
+\textbf{ --rank}
+
+displays the "matching" CEIds and the associated ranking values.
+
+\smallskip 
+\textbf{ --vo vo\_name}
+
+This option allows the user to specify the Virtual Organisation she/he is currently working for. 
+
+If the user proxy contains VOMS extensions then the VO specified through this option is overridden by 
+the default VO contained in the proxy (i.e. this option is only useful when working with non-VOMS proxies). 
+The following precedence rule is followed for determining the user's VO:
+
+\begin{itemize}
+\item the default VO from the user proxy (if it contains VOMS extensions),
+\item the VO specified through the --vo or --config-vo options,
+\item the VO specified in the configuration file pointed by the GLITE\_WMSUI\_CONFIG\_VO environment variable,
+\item the VirtualOrganisation attribute in the JDL (if the user proxy contains VOMS extensions this value 
+is overridden  as above),
+\item the default VO specified in the \$GLITE\_LOCATION\-/etc\-/glite\-\_wmsui\-\_cmd\-\_var.conf (DefaultVo field) 
+configuration file.
+\end{itemize}
+
+If none of the listed trials has success an error is returned and the submission is aborted.
+
+\smallskip 
+\textbf{ --config file\_path}
+
+{\bf -c} file\_path
+
+if the command is launched with this option, the configuration file pointed to by file\_path is used instead 
+of the standard configuration file.
+
+\smallskip 
+\textbf{ --config-vo file\_path}
+
+if the command is launched with this option, the vo-specific configuration file pointed to by file\_path is 
+used instead of the standard vo-specific configuration file.
+	
+\smallskip 
+\textbf{ --output file\_path}
+
+{\bf -o} file\_path
+
+returns the CEIds list in the file specified by file\_path. file\_path  can be either a simple name or an absolute 
+path (on the submitting machine). In the former case the file file\_path is created in the current working directory.
+
+	
+\smallskip 
+\textbf{ --noint}
+
+if this option is specified every interactive question to the user is skipped. All warning messages and errors (if any) 
+are written to the file glite-job-list-match $<$UID$>$\_$<$PID$>$\_$<$timestamp$>$.log under the /tmp directory. 
+Location of the log file is configurable.
+
+\smallskip 
+\textbf{ --debug}
+
+when this option is specified, information about the API functions called inside the command are displayed on the 
+standard output and are written to the file glite-job-list-match\_$<$UID$>$\_$<$PID$>$\_$<$timestamp$>$.log under 
+the /tmp directory too. Location of the log file is configurable.
+
+\smallskip 
+\textbf{ --logfile file\_path}
+
+when this option is specified, the command log file is relocated to the location pointed by file\_path
+
+jdl\_file
+
+this is the file containing the classad describing the job to be submitted. It must be the last argument of 
+the command.
+\\
+\medskip
+EXIT STATUS \smallskip
+
+
+{\bf glite-job-list-match} exits with a status value of 0  upon success, and a $>$0 value upon failure. 
+
+\medskip
+EXAMPLES \smallskip
+
+
+Let us consider the following command:
+
+\begin{scriptsize}
+\begin{verbatim}
+> glite-job-list-match myjob.jdl
+where the job description file myjob.jdl looks like:
+
+
+################################   
+#                                                 
+# Sample Job Description File 
+# 	                  
+################################         
+JobType = "Normal";
+Executable   = "sum.exe";
+StdInput    = "data.in";
+InputSandbox = {"/home/fpacini/exe/sum.exe","/home1/data.in"};
+OutputSandbox = {"data.out","sum.err"};
+Rank	       = other.GlueCEPolicyMaxCPUTime;
+Requirements = other.GlueCEInfoLRMSType == "Condor" &&
+               other.GlueHostArchitecturePlatformType=="INTEL" &&
+               other.GlueHostOperatingSystemName == "LINUX" && 
+               other.GlueCEStateFreeCPUs >= 2;
+
+
+\end{verbatim}
+\end{scriptsize}
+
+In this case the job requires CEs being Condor Pools of INTEL LINUX machines with at least 2 free Cpus.  
+Moreover the Rank expression states that queues with higher maximum CPU time allowed for jobs are preferred. 
+
+The response of such a command is something as follows:
+
+\begin{scriptsize}
+\begin{verbatim}
+******************************************************************
+                 Computing Element IDs LIST 
+The following CE(s) matching your job requirements have been found:
+		   *CEId*
+ bbq.mi.infn.it:2119/jobmanager-pbs-dque
+ skurut.cesnet.cz:2119/jobmanager-pbs-wp1
+*******************************************************************
+
+\end{verbatim}
+\end{scriptsize}
+
+See also glite-job-submit~\ref{submit}.
+
+\newpage
+\subsubsection{glite-job-cancel} 
+\label{cancel}
+
+Cancels one or more submitted jobs.
+
+\medskip
+ SYNOPSIS 
+\smallskip
+
+\textbf{glite-job-cancel  [options]  $<$job Id(s)$>$}
+
+\begin{scriptsize}
+\begin{verbatim}
+
+Options:
+   --help
+   --version
+   --all
+   --input, -i     <file_path>
+   --config, -c    <file_path>
+   --config-vo     <file_path>
+   --vo            <vo_name>
+   --output, -o    <file_path>
+   --noint
+   --debug
+   --logfile 	   <file_path>
+
+\end{verbatim}
+\end{scriptsize}
+
+\medskip
+DESCRIPTION 
+\smallskip 
+
+This command cancels a job previously submitted using glite-job-submit. Before cancellation, it prompts the 
+user for confirmation. The cancel request is sent to the Network Server that forwards it to the WM that 
+fulfils it. Note that this command cannot be issued directly on DAG nodes, it has to be issued on the DAG 
+identifier.
+
+glite-job-cancel can remove one or more jobs: the jobs to be removed are identified by their job identifiers 
+(job Ids returned by glite-job-submit) provided as arguments to the command and separated by a blank space. 
+The result of the cancel operation is reported to the user for each specified jobId.
+
+If the --all option is specified, all the jobs owned by the user submitting the command are removed. 
+When the command is launched with the --all option, no jobId can be specified. It has to be remarked that 
+only the owner of the job can remove the job.  When the --all option is specified the WMS-UI queries each LB 
+listed in the vo-specific configuration file \$GLITE\_LOCATION/etc/$<$vo\_name$>$/glite\_wmsui.conf for getting 
+the identifiers of all the jobs owned by the user identified by her/his certificate subject. Afterwards the 
+WMS-UI sends a cancellation request to the NS for each job being in a status for which the cancellation 
+is allowed.
+
+Job states for which cancellation is allowed are:
+\begin{itemize}
+  \item Submitted
+  \item Waiting 
+  \item Ready 
+  \item Scheduled 
+  \item Running
+  \item Unknown
+\end{itemize}
+
+For all the other job states the cancellation request will result in a failure.
+If the user wants to use hes "private" configuration file this could be done using option --config file\_path.
+
+The --input option permits to specify a file (file\_path) that contains the jobIds to be removed. 
+The format of the file must be as follows: one jobId for each line and comment lines must begin 
+with a "\#" or a "\*" character. When using this option the user is interrogated for choosing among 
+all, one or a subset of the listed job identifiers. If the file\_path does not represent an absolute 
+path the file will be searched in the current working directory.
+
+\medskip
+OPTIONS \smallskip
+
+\textbf{ --help}
+displays command usage.
+
+\smallskip 
+\textbf{ --version}
+
+displays WMS-UI version.
+
+\smallskip 
+\textbf{ --all}
+
+cancels all job owned by the user submitting the command. This option can't be used either if one or 
+more Ids have been specified explicitly or with the -input option.
+
+\smallskip 
+\textbf{ --input} file\_path
+
+{\bf -i} file\_path
+
+cancels jobs/DAGs identified by the Ids contained in the file\_path. This option can't be used neither if one or 
+more Ids have been specified nor with the -all option.
+
+\smallskip 
+\textbf{ --config file\_path}
+
+{\bf -c} file\_path
+
+if the command is launched with this option, the configuration file pointed to by file\_path is used instead 
+of the standard configuration file.
+
+\smallskip 
+\textbf{ --config-vo} file\_path
+
+if the command is launched with this option, the vo-specific configuration file pointed to by file\_path 
+is used instead of the standard vo-specific configuration file. This option is allowed only when used 
+together with the --all one.
+
+\smallskip 
+\textbf{ --vo} vo\_name
+
+This option allows the user to specify the Virtual Organisation she/he is currently working for. 
+If the user proxy contains VOMS extensions then the VO specified through this option is overridden by 
+the default VO contained in the proxy (i.e. this option is only useful when working with non-VOMS proxies). 
+The following precedence rule is followed for determining the user's VO:
+
+\begin{itemize}
+\item the default VO from the user proxy (if it contains VOMS extensions),
+\item the VO specified through the --vo or --config-vo options,
+\item the VO specified in the configuration file pointed by the GLITE\_WMSUI\_CONFIG\_VO environment variable,
+\item the VirtualOrganisation attribute in the JDL (if the user proxy contains VOMS extensions this value is 
+overridden  as above),
+\item the default VO specified in the \$GLITE\_LOCATION/etc/glite\_wmsui\_cmd\_var.conf (DefaultVo field) 
+configuration file.
+\end{itemize}
+
+If none of the listed trials has success an error is returned and the submission is aborted. 
+This option is not allowed when one or more jobIds are specified as command arguments.
+
+
+\smallskip 
+\textbf{ --output} file\_path
+{\bf -o} file\_path
+
+writes the cancel results in the file specified by file\_path instead of the standard output. file\_path 
+can be either a simple name or an absolute path (on the submitting machine). In the former case the file 
+file\_path is created in the current working directory.
+
+\smallskip 
+\textbf{ --noint}
+
+if this option is specified every interactive question to the user is skipped. All warning messages and 
+errors (if occurred) are written to the file 
+glite-job-cancel\_$<$UID$>$\_$<$PID$>$\_$<$timestamp$>$.log under the /tmp directory. Location of the 
+log file is configurable.
+
+{\bf --debug}
+
+when this option is specified, information about the API functions called inside the command are displayed 
+on the standard output and are written to the file glite-job-cancel\_$<$UID$>$\_$<$PID$>$\_$<$timestamp$>$.log 
+under the /tmp directory too. Location of the log file is configurable.
+
+\smallskip 
+\textbf{ --logfile file\_path}
+
+when this option is specified, the command log file is relocated to the location pointed by file\_path
+
+\smallskip 
+\textbf{ jobId}
+
+job identifier returned by glite-job-submit. The job identifier list must be the last argument of this command.
+\\  
+\medskip
+EXIT STATUS 
+\smallskip
+
+{\bf glite-job-cancel} exits with a status value 0 if all the specified jobs were cancelled successfully, $>$0 
+if errors occurred for each specified job id  and $<$0 in case of partial failure. An example of partial failure 
+is when more then one job has been specified: some jobs could be successfully removed and some others could be 
+not removed. 
+
+\medskip
+EXAMPLES 
+\smallskip
+
+1.{\scriptsize{\verb!> glite-job-cancel --input joblist.txt!}}
+
+where joblist.txt is a file containing 3 jobIds, displays the following confirmation message:
+
+\begin{scriptsize}
+\begin{verbatim}
+
+Are you sure you want to remove all jobs specified? [y/n]n: y
+
+================ glite-job-cancel Success  ================
+The cancel request for the following job(s) has been 
+successfully submitted to NS: 
+ - https://ibm139.cnaf.infn.it:9000/nUbiIiMFmY1oIusAaWxPhg
+ - https://ibm139.cnaf.infn.it:9000/VtMvhs8z7WGCptt92ZMPIQ
+ - https://ibm139.cnaf.infn.it:9000/yKTKyrdSgHKQ1wwwSocJiw
+============================================================
+
+\end{verbatim}
+\end{scriptsize}
+
+In this case the command exit code is 0.
+
+2.{\scriptsize{\verb!> glite-job-cancel --all --noint!}}
+
+removes all job owned by the user submitting the command.
+
+See also glite-job-submit~\ref{submit}.
+
+\newpage
+\subsubsection{glite-job-status}
+\label{status}
+
+Displays bookkeeping information about submitted jobs/DAGs.
+
+\medskip
+ SYNOPSIS 
+\smallskip
+
+\textbf{glite-job-status  [options]  $<$job Id(s)$>$}
+
+\begin{scriptsize}
+\begin{verbatim}
+
+Options:
+   --help              
+   --version           
+                       
+   --all               
+   --input, -i         <input file>
+   --verbosity         [0|1|2|3]
+   --from              [MM:DD:]hh:mm[:[CC]YY]
+   --to                [MM:DD:]hh:mm[:[CC]YY]
+   --config, -c        <config file>
+   --user-tag          <tag name>=<tag value>
+   --status, -s        <status value>
+   --exclude, -e       <exclude value>
+   --config-vo         <config-vo file>
+   --vo                <vo value>
+   --output, -o        <output file>
+   --noint             
+   --debug             
+   --logfile           <logfile file>
+
+\end{verbatim} 
+\end{scriptsize}
+
+
+\medskip
+DESCRIPTION 
+\smallskip
+ 
+This command prints the status of a job previously submitted using glite-job-submit. The job status request is 
+sent to the LB that provides the requested information. This can be done during the whole job life.
+When issued on a DAG Id the command displays status information for the DAG itself and all its nodes.
+
+glite-job-status can monitor one or more jobs: the jobs to be checked are identified by one or more job 
+identifiers (job Ids returned by glite-job-submit) provided as arguments to the command and separated by a 
+blank space. 
+
+If the --all option is specified, information about all the jobs owned by the user submitting the command is 
+printed on the standard output. When the command is launched with the  --all option, neither can an jobId be 
+specified nor can the  --input option be specified. 
+
+The --input option permits to specify a file (file\_path) that contains the jobIds to monitor. The format of 
+the file must be as follows: one jobId for each line and comment lines have to begin with a "\#" or a "\*" 
+character. When using this option the user is requested for choosing among all, one or a subset of the listed 
+job identifiers. If the file\_path does not represent an absolute path, it will be searched in the current 
+working directory.
+
+If the user wants to use her "private" configuration file, this can be done using option --config file\_path. 
+
+The same applies for the vo-specific configuration file and the --config-vo option. 
+
+The --verbosity option allows setting the detail level of the returned information.  This option can be 
+specified with four values, 0, 1, 2 and 3. The default level of verbosity is 1 unless otherwise specified 
+in the WMS-UI configuration file \$GLITE\_LOCATION/etc/glite\_wmsui\_cmd\_var.conf (\textit{DefaultStatusLevel} parameter).
+
+Hereafter are listed the information displayed according to the verbosity level:
+
+Verbosity equal 0:
+
+\begin{itemize}
+  \item job Id          (the job unique identifier)
+  \item Current Status  (the job current status)
+\end{itemize}
+
+
+Verbosity equal 1:
+
+\begin{itemize}
+  \item job Id 		(the job unique identifier)
+  \item Current Status 	(the job current status)
+  \item exit\_code	(Unix exit code - if applicable)
+  \item Status Reason	(reason for being in this state)
+  \item Reached on 	(date/time when the job entered actual state)
+  \item destination 	(ID of CE where the job has been submitted - if applicable)
+\end{itemize}
+
+With verbosity equal 2 some additional information fields are added such as:
+
+\begin{itemize}
+\item cancelling	(boolean indicating if a cancellation request for the job is in progress)
+\item cancelReason	(Reason of cancel)
+\item ce\_node		(Worker node where the job is executed)  
+\item children\_hist 	(summary -- histogram -- of children job states)
+\item children\_num  	(number of subjobs)          
+\item subjob\_failed    (Subjob failed -- the parent job will fail too)
+\item condorId          (Id within Condor-G)
+\item cpuTime           (Consumed CPU time)
+\item expectUpdate      (Boolean indicating that some logged information has not arrived yet)
+\item expectFrom 	(Sources of the missing information)
+\item jobtype           (Type of the request: 0 = Job, 1 = DAG)
+\item lastUpdateTime	(Last known event of the job)
+\item location          (location Where the job is being processed)
+\item network\_server   (Network server handling the job)   
+\item owner             (certificate subject of Job owner)
+\item resubmitted       (boolean indicating that the job was resubmitted)
+\end{itemize}
+
+Lastly, with verbosity equal 3 there are the following additional fields:
+
+\begin{itemize}
+\item jdl		(User submitted job description)
+\item matched\_jdl	(Full job description after matchmaking)
+\item condor\_jdl    	(ClassAd passed to Condor-G for job submission)
+\item rsl		(Job RSL sent to Globus)
+\item stateEnterTimes   (When all previous states were entered)
+\end{itemize}
+
+Information fields that are not available (i.e. not returned by the LB because not applicable for the given 
+status) are not printed at all to the user.
+
+\medskip
+OPTIONS 
+\smallskip
+
+\smallskip 
+\textbf{ --help} 
+
+displays command usage.
+
+\smallskip 
+\textbf{ --version}
+
+displays WMS-UI version.
+
+\smallskip 
+\textbf{ --all}
+
+displays status information about all job owned by the user submitting the command. This option can't be used 
+either if one or more jobIds have been specified or if the  --input option has been specified. All LBs listed 
+in the vo-specific WMS-UI configuration file \$GLITE\_LOCATION/etc/$<$vo\_name$>$/glite\_wmsui.conf are contacted to 
+fulfil this request.
+
+
+\smallskip 
+\textbf{ --input} input\_file
+
+{\bf -i} input\_file
+
+displays bookkeeping info about jobIds contained in the input\_files. When using this option the user is 
+interrogated for choosing among all, one or a subset of the listed job identifiers. This option can't be used 
+either if one or more jobIds have been specified or if the  --all option has been specified. 
+
+\smallskip 
+\textbf{ --verbosity} verb\_level
+
+{\bf --v} verb\_level 
+
+sets the detail level of information about the job displayed to the user. Possible values for verb\_level are 
+0,1,2 and 3.
+
+
+\smallskip 
+\textbf{ --from} [MM:DD:]hh:mm[:[CC]YY]
+
+  makes the command query LB for jobs that have been submitted (more precisely entered the "Submitted" status)
+  after the specified date/time. If only hours and minutes are specified then the current day is taken into
+  account. If the year is not specified then the current year is taken into account.
+
+
+\smallskip 
+\textbf{ --to} [MM:DD:]hh:mm[:[CC]YY]
+
+  makes the command query LB for jobs that have been submitted (more precisely entered the "Submitted" status)
+  before the specified date/time. If only hours and minutes are specified then the current day is taken into
+  account. If the year is not specified then the current year is taken into account.
+
+
+
+\smallskip 
+\textbf{ --config} file\_path
+
+{\bf -c} file\_path
+
+if the command is launched with this option, the configuration file pointed to by file\_path is used instead 
+of the standard configuration file.
+
+\smallskip 
+\textbf{ --config-vo} file\_path
+
+if the command is launched with this option, the vo-specific configuration file pointed to by file\_path is 
+used instead of the standard vo-specific configuration file. This option is allowed only when used together 
+with the  --all one.
+
+
+\smallskip 
+\textbf{ --user-tag}  tag\_name=tag\_value
+
+  if the command is launched with this option, the WMS-UI returns the status of the jobs that have been submitted with
+  an associated tag named $<$tag name$>$ whose value is $<$tag value$>$
+
+
+\smallskip 
+\textbf{ --status}  status\_value
+
+{\bf -s}  status\_value
+
+  if the command is launched with this option, the WMS-UI returns the status information for all those jobs that are
+  currently in the status specified by $<$status\_value$>$ Possible status values are: SUBMITTED, WAITING, READY,
+  SCHEDULED, RUNNING, DONE, ABORTED, CANCELLED, CLEARED.
+
+
+\smallskip 
+\textbf{ --exclude} status\_value
+
+{\bf -e}       status\_value
+
+  if the command is launched with this option, the WMS-UI returns the status information for all those jobs that are
+  currently in a status different from the one specified by $<$status\_value$>$ Possible status values are: SUBMITTED,
+  WAITING, READY, SCHEDULED, RUNNING, DONE, ABORTED, CANCELLED, CLEARED.
+
+
+\smallskip 
+\textbf{ --vo vo\_name}
+
+This option allows the user to specify the Virtual Organisation she/he is currently working for. 
+
+If the user proxy contains VOMS extensions then the VO specified through this option is overridden by the 
+default VO contained in the proxy (i.e. this option is only useful when working with non-VOMS proxies). 
+The following precedence rule is followed for determining the user's VO:
+\begin{itemize}
+\item the default VO from the user proxy (if it contains VOMS extensions),
+\item the VO specified through the  --vo or  --config-vo options,
+\item the VO specified in the configuration file pointed by the GLITE\_WMSUI\_CONFIG\_VO environment variable,
+\item the VirtualOrganisation attribute in the JDL (if the user proxy contains VOMS extensions this value is 
+overridden  as above),
+\item the default VO specified in the \$GLITE\_LOCATION/etc/glite\_wmsui\_cmd\_var.conf (DefaultVo field) configuration 
+file.
+\end{itemize}
+
+If none of the listed trials has success an error is returned and the submission is aborted. This option is 
+allowed only when used together with the --all one.
+
+
+\smallskip 
+\textbf{ --output file\_path}
+
+{\bf -o} file\_path
+
+writes the bookkeping information in the file specified by file\_path instead of the standard output. file\_path can be either a simple name or an absolute path (on the submitting machine). In the former case the file file\_path is created in the current working directory.
+
+\smallskip 
+\textbf{ --noint}
+
+if this option is specified every interactive question to the user is skipped. All warning messages and errors (if any) are written to the file glite-job-status\_$<$UID$>$\_$<$PID$>$\_$<$timestamp$>$.log under the /tmp directory. Location of log file is configurable.
+
+
+\smallskip 
+\textbf{ --debug}
+
+when this option is specified, information about the API functions called inside the command are displayed on the standard output and are written to the file glite-job
+status\_$<$UID$>$\_$<$PID$>$\_$<$timestamp$>$.log under the /tmp directory too. Location of log file is configurable.
+
+\smallskip 
+\textbf{ --logfile} file\_path
+
+when this option is specified, the command log file is relocated to the location pointed by file\_path
+
+\smallskip 
+\textbf{ jobId}
+
+job identifier returned by glite-job-submit. Job identifiers must always be provided as last arguments of the 
+command.
+
+
+\medskip
+EXIT STATUS
+\smallskip
+
+{\bf glite-job-status} exits with a value of 0 if the status of all the specified jobs is retrieved 
+correctly, $>$0 if errors occurred for each specified job id and $<$0 in case of partial failure. An example 
+of partial failure is when more then one job is specified: status info could be successfully retrieved for 
+some jobs and not retrieved for some others.
+
+\medskip
+EXAMPLES 
+\smallskip
+
+
+\begin{scriptsize}
+\begin{verbatim}
+> glite-job-status -v 1 https://ibm139.cnaf.infn.it:9000/_tO6hdgToYKGCuV68q-gqQ
+
+\end{verbatim}
+\end{scriptsize}
+
+displays the following lines:
+
+\begin{scriptsize}
+\begin{verbatim}
+
+******************************************************
+BOOKKEEPING INFORMATION:
+
+Printing status info for the Job : 
+https://ibm139.cnaf.infn.it:9000/_tO6hdgToYKGCuV68q-gqQ
+
+Current Status: Scheduled 
+Destination:    bbq.mi.infn.it:2119/jobmanager-pbs-dque
+Status Reason:  Job successfully submitted to Globus
+reached on:     Tue May  6 16:14:59 2003
+********************************************************
+>
+
+\end{verbatim}
+\end{scriptsize}
+
+See also glite-job-submit~\ref{submit}
+
+
+
+\newpage
+\subsubsection{glite-job-get-logging-info}
+\label{logging}
+
+Displays logging information about submitted jobs/DAGs.
+
+\medskip
+ SYNOPSIS 
+\smallskip
+
+\textbf{glite-job-logging-info  [options]  $<$job Id(s)$>$}
+
+\begin{scriptsize}
+\begin{verbatim}
+
+Options:
+    --help          
+    --version                    
+    --input, -i     <file_path>        
+    --verbosity, -v [0|1|2|3]
+    --config, -c    <file_path>
+    --output, -o    <file_path>
+    --noint         
+    --debug         
+    --logfile       <file_path>
+
+\end{verbatim} 
+\end{scriptsize}         
+
+\medskip
+ DESCRIPTION \smallskip 
+
+This command queries the LB persistent DB for logging information about jobs previously submitted using 
+glite-job-submit. The job logging information are stored permanently by the LB service and can be retrieved 
+also after the job has terminated its life-cycle, differently from the bookkeeping information that are in 
+some way "consumed" by the user during the job existence (i.e. at a given time only the current status information
+are returned). 
+When issued for a DAG, the glite-job-logging-info command only returns events associated to the DAG. Logging 
+information about the DAG nodes have to be quieried using the individual node identifiers. 
+The glite-job-logging-info request is sent to the LB service that queries the DB and returns the 
+retrieved information. Content of the logging information varies according to the type of the event they 
+are related to. The most common information fields are: 
+
+\begin{itemize}
+  \item Event	          (event type)
+  \item source            (WMS component which generated the event)
+  \item result            (result of the attempt)
+  \item destination       (destination where the job is being transferred to)
+  \item timestamp         (timestamp of event generation)
+\end{itemize}
+
+\smallskip
+
+The  --verbosity option allows setting the detail level of the returned information.  This option can be 
+specified with four values, 0, 1, 2 and 3. The default level of verbosity is 1 unless otherwise specified in 
+the WMS-UI configuration file \$GLITE\_LOCATION/etc/glite\_wmsui\_cmd\_var.conf  (\textit{DefaultLoggingLevel} parameter).
+The information listed above is displayed when the chosen verbosity level is 1. If the command is issued 
+with verbsoity 0 only the events names are displayed (\textit{Event} field above) whilst with 2 as verbosity flag the 
+following additional information is shown:
+
+\begin{itemize}
+  \item host 		  (hostname of the machine where the event was generated)
+  \item dest\_host        (destination hostname)
+  \item dest\_instance    (instance of destination WMS component) 
+  \item user              (identity  -- cert. subj.  --  of the generator)
+  \item dest\_jobid 	  (destination internal jobid)
+  \item node		  (worker node where the executable is run)
+  \item ns                (Network server handling the job)   
+  \item nsubjobs	  (number of subjobs)
+  \item local\_jobid  	  (new jobId assigned by the receiving component)
+  \item queue             (destination queue name)
+  \item status\_code	  (way of job termination/classification of the cancel)
+\end{itemize}
+
+\smallskip
+
+Lastly if the command is issued with verbosity level 3, further information mostly consisting in the 
+job description within the WMS component that has logged the event, is printed to the user:
+
+\begin{itemize}
+  \item jdl         	(job description)
+  \item job		(job description in receiver language)
+  \item descr		(description of current job transformation  -- output of helper)
+  \item classad		(checkpoint state value)
+  \item seqcode		(sequence code assigned to the event)
+  \item level		(logging level -- system, debug, ...)
+\end{itemize}
+
+\smallskip
+
+Data on several jobs can be queried by specifying a list of job identifiers separated by a blank space 
+as arguments of the command. Moreover the --input option permits to specify a file (file\_path) which 
+contains the jobIds whose information are requested. The format of the file must be as follows: one jobId 
+for each line and comment lines have to begin with a "\#" or a "\*" character. When using this option the 
+user is interrogated for choosing among all, one or a subset of the listed job identifiers. 
+If the file\_path does not represent an absolute path, it will be searched in the current working directory.
+
+Each event logged in the LB has an associated log level according to "Universal Format for Logger Messages" 
+(see draft-abela-ulm-05.txt available at \url{http://www-didc.lbl.gov/NetLogger/draft-abela-ulm-05.txt}). 
+Default value for the log level used by WMS components is System, anyway there could be special situations 
+in which problems investigation is needed and additional events are logged with the Debug log level. 
+The --output option can be used to have the retrieved information written in the file identified by 
+file\_path instead of the standard output. file\_path can be either a simple name or an absolute path 
+(on the submitting machine). In the former case the file file\_path is created in the current working 
+directory.
+
+If the user wants to use his "private" configuration file this could be done using option --config file\_path. 
+
+\medskip
+OPTIONS 
+\smallskip
+
+{\bf --help} 
+
+displays command usage.
+
+\smallskip 
+\textbf{ --version}
+displays WMS-UI version.
+
+\smallskip 
+\textbf{ --input file\_path}
+
+{\bf -i} file\_path
+
+retrieves logging info for all Ids contained in the file\_path. This option can't be used  if one or more 
+jobIds have been specified. 
+
+\smallskip 
+\textbf{ --verbosity} verb\_level
+
+{\bf --v} verb\_level 
+
+sets the detail level of information about the job displayed to the user. Possible values for verb\_level are 0,1 
+and 2.
+
+\smallskip 
+\textbf{ --config} file\_path
+
+{\bf -c} file\_path
+
+if the command is launched with this option, the configuration file pointed to by file\_path is used instead 
+of the standard configuration file.
+
+\smallskip 
+\textbf{ --output} file\_path
+
+{\bf -o} file\_path
+
+writes the logging information in the file specified by file\_path instead of the standard output. file\_path 
+can be either a simple name or an absolute path (on the submitting machine). In the former case the file 
+file\_path is created in the current working directory.
+
+\smallskip 
+\textbf{ --noint}
+
+if this option is specified every interactive question to the user is skipped. All warning messages and 
+errors (if occurred) are written to the file glite-job-logging\_$<$UID$>$\_$<$PID$>$\_$<$timestamp$>$.log 
+under the /tmp directory. Location for log file is configurable.
+
+\smallskip 
+\textbf{ --debug}
+
+when this option is specified, information about the API functions called inside the command are displayed on 
+the standard output and are written to the file glite-job-logging\_$<$UID$>$\_$<$PID$>$\_$<$timestamp$>$.log 
+under the /tmp directory too.  Location for log file is configurable.
+
+\smallskip 
+\textbf{ --logfile} file\_path
+
+when this option is specified, the command log file is relocated to the location pointed by file\_path
+
+\smallskip 
+\textbf{ jobId}
+
+job/DAG identifier returned by glite-job-submit. Job identifiers must always be provided as last arguments for 
+this command.
+
+
+\medskip
+EXIT STATUS \smallskip
+
+
+{\bf glite-job-get-logging-info} exits with a value of 0 if the status of all the specified jobs is retrieved 
+correctly, $>$0 if errors occurred for each specified job and $<$0 in case of partial failure. An example of 
+partial failure is when more then one job is specified: some job's logging info could be successfully retrieved 
+and some others could be not retrieved. 
+
+\medskip
+EXAMPLES 
+\smallskip
+
+
+1.{\scriptsize{\verb!> glite-job-logging-info https://ibm139.cnaf.infn.it:9000/GMUJtnNqe6Lq7w7MfOzeQw -output mylog.txt !}}
+
+writes in file mylog.txt in the current working directory logging information about the job identified by https://ibm139.cnaf.infn.it:9000/GMUJtnNqe6Lq7w7MfOzeQw.
+
+2.{\scriptsize{\verb!> glite-job-logging-info -v 1 -input $HOME/myIds.txt!}}
+
+where \$HOME/myjobs.txt contains two job identifiers, displays the following output
+
+\begin{scriptsize}
+\begin{verbatim}
+1 : https://ibm139.cnaf.infn.it:9000/D4S_i25ffAsPnKB3iCqeaA
+2 : https://ibm139.cnaf.infn.it:9000/2qzyCbPWr7pDY3rNh9PuXA
+a : all
+q : quit
+
+Choose one or more glite_jobId(s) in the list - [1-2]all: 2
+
+
+************************************************************
+LOGGING INFORMATION:
+
+Printing info for the Job : https://ibm139.cnaf.infn.it:9000/2qzyCbPWr7pDY3rNh9PuXA
+ 
+        ---
+ Event: RegJob
+- source             =    UserInterface
+- timestamp          =    Wed May 14 10:55:35 2003
+        ---
+ Event: Transfer
+- destination        =    NetworkServer
+- result             =    START
+- source             =    UserInterface
+- timestamp          =    Wed May 14 10:55:36 2003
+        ---
+Event: Transfer
+- destination         =    NetworkServer
+- result              =    OK
+- source              =    UserInterface
+- timestamp           =    Wed May 14 10:55:44 2003
+        ---
+ Event: Accepted
+- source              =    NetworkServer
+- timestamp           =    Wed May 14 10:56:42 2003
+        ---
+ Event: EnQueued
+- result              =    OK
+- source              =    NetworkServer
+- timestamp           =    Wed May 14 10:56:45 2003
+**********************************************************************
+...
+...
+
+\end{verbatim} 
+\end{scriptsize}   
+\smallskip
+
+See also glite-job-submit~\ref{submit}
+
+\newpage
+
+\subsubsection{glite-job-attach}
+\label{attach}
+
+This commands starts an interactive session for a previously submitted interactive job.
+\medskip
+SYNOPSIS 
+\smallskip
+\textbf{glite-job-attach  [options]  $<$job Id$>$}
+\begin{scriptsize}
+\begin{verbatim}
+
+Options:
+   --help          
+   --version                     
+   --port, -p      <port_num>
+   --nogui
+   --nolisten
+   --config, -c    <file_path>
+   --input, -i 	   <file_path>
+   --noint
+   --debug         
+   --logfile       <file_path>
+
+\end{verbatim} 
+\end{scriptsize}
+
+
+\medskip
+DESCRIPTION 
+\smallskip
+
+This command starts a listener process on the WMS-UI machine (glite-wms-grid-console-shadow) that allows attaching to the 
+standard streams of a previously submitted interactive job and displays them on a dedicated window. 
+
+As the command opens a X window, the user should make sure the DISPLAY environment variable is correctly set, 
+a X server is running on the local machine and if she/he is connected to the WMS-UI node from remote machine (e.g. 
+with ssh) enable secure X11 tunneling.
+
+The listener process and the window are started automatically by the glite-job-submit command for interactive 
+jobs, so this command can be used for example in case a problem occurred on the WMS-UI machine that made the 
+interactive session be lost or in case the user needs to follow the job from another machine or another port 
+on the same machine --port option).
+
+This command can only be invoked for interactive jobs.
+
+\medskip
+OPTIONS 
+\smallskip
+
+\textbf{ --help} 
+
+displays command usage.
+
+\smallskip 
+\textbf{ --version}
+
+displays WMS-UI version.
+
+\smallskip 
+\textbf{ --port port\_num}
+
+{\bf -p} port\_num
+
+make sthe command start a listener on the local machine on the specified port and logs these information to 
+the LB associated to the job.
+
+\smallskip 
+\textbf{ --nogui} 
+
+As the glite-job-attach command opens a X window, the user should make sure a X server is running on the 
+local machine and if she/he is connected to the WMS-UI node from remote machine (e.g. with ssh) enable secure X11 
+tunneling. If this is not possible, the user can specify the --nogui option that makes the command provide 
+a simple standard non-graphical interaction with the running job.
+
+\smallskip 
+\textbf{ --nolisten}
+
+This option makes the command forward the job standard streams coming from the WN to named pipes on the WMS-UI 
+machine whose names are returned to the user together with the OS id of the listener process.  This allows the 
+user to interact with the job through her/his own tools. It is important to note that when this option is 
+specified, the WMS-UI has no more control over the launched listener process that has to be killed by the 
+user (using the process id returned by the command) once the job is finished.
+
+\smallskip 
+\textbf{ --config file\_path}
+
+{\bf -c} file\_path
+
+if the command is launched with this option, the configuration file pointed to by file\_path is used instead 
+of the standard configuration file.
+
+\smallskip 
+\textbf{ --input file\_path}
+
+{\bf -i} file\_path
+
+allows the user to attach to one (just one) of the jobIds contained in the file\_path. This option can't be 
+used if one jobIds has been specified.
+
+\smallskip 
+\textbf{ --noint}
+
+if this option is specified every interactive question to the user is skipped. All warning messages and 
+errors (if occurred) are written to the file glite-job-attach\_$<$UID$>$\_$<$PID$>$\_$<$timestamp$>$.log 
+under the /tmp directory. Location for log file is configurable.
+
+{\bf --debug}
+
+when this option is specified, information about the API functions called inside the command are displayed 
+on the standard output and are written to the file glite-job-attach\_$<$UID$>$\_$<$PID$>$\_$<$timestamp$>$.log 
+under the /tmp directory too.  Location for log file is configurable.
+
+\smallskip 
+\textbf{ --logfile} file\_path
+
+when this option is specified, the command log file is relocated to the location pointed by file\_path
+
+jobId
+
+job identifier returned by glite-job-submit. Job identifiers must always be provided as last arguments for 
+this command.
+
+\medskip
+EXIT STATUS 
+\smallskip
+
+
+{\bf glite-job-attach} exits with a value of 0 on success and $>$0 on failure.
+
+\medskip
+EXAMPLES 
+\smallskip
+
+{\scriptsize{\verb!> glite-job-attach https://ibm139.cnaf.infn.it:9000/t3KwW8qhXhkYs-ZfNCFidg!}}
+
+displays the following information message:
+
+\begin{scriptsize}
+\begin{verbatim}
+
+********************************************************
+ JOB ATTACHED:
+ The Interactive Session Listener has been successfully 
+ launched with the following parameters:
+ 
+ Host:                      193.111.146.90
+ Port:                       40713
+ Pid:                        18575
+********************************************************
+
+\end{verbatim}
+\end{scriptsize}
+
+and opens a window allowing interaction with the job through the standard streams.
+
+\newpage
+
+
+\subsubsection{glite-job-get-chkpt}
+\label{chkpt}
+
+This commands retrieves checkpoint states saved by a previously submitted checkpointable job.
+
+\medskip
+ SYNOPSIS 
+\smallskip
+\textbf{glite-job-get-chkpt  [options]  $<$job Id$>$}
+\begin{scriptsize}
+\begin{verbatim}
+
+Options:
+    --help          
+    --version       
+    --cs            <state_num>
+    --config, -c    <file_path>
+    --input, -i     <file_path>
+    --output, -o    <file_path>
+    --noint         
+    --debug         
+    --logfile       <file_path>
+
+\end{verbatim}
+\end{scriptsize}
+
+\medskip
+ DESCRIPTION \smallskip
+
+This commands allows the user to retrieve one or more checkpoint states saved by a previously submitted job. 
+Checkpoint states are retrieved from the LB server and are saved locally into a file in JDL format. 
+The --cs option allows the user to select the checkpoint state she/he wants to be retrieved. Indeed specifying 
+the command with "--cs N"  makes the command retrieve the last but N job checkpoint state. Last saved state is 
+retrieved otherwise.
+The retrieved state is saved in a file in JDL format. The output file path can be set through the --output 
+option of the command.
+This command can be used only for checkpointable jobs.
+
+\medskip
+OPTIONS 
+\smallskip
+
+\textbf{ --help} 
+
+displays command usage.
+
+\smallskip 
+\textbf{ --version}
+
+displays WMS-UI version.
+
+\smallskip 
+\textbf{ --config} file\_path
+
+{\bf -c} file\_path
+
+if the command is launched with this option, the configuration file pointed to by file\_path is used instead 
+of the standard configuration file.
+
+\smallskip 
+\textbf{ --cs} state\_num
+
+if the command is launched with this option then it retrieves the "last but state\_num" state saved by the job. 
+Last saved state is returned if the option is not used (equivalent to state\_num = 0).
+
+\smallskip 
+\textbf{ --input} file\_path
+
+{\bf -i} file\_path
+
+allows the user to select one (just one) of the jobIds contained in the file\_path for retrieval of the 
+saved checkpoint state. This option can't be used if one jobIds has been specified. 
+
+\smallskip 
+\textbf{ --output} file\_path
+
+{\bf -o} file\_path
+
+saves the retrieved state in the file specified by file\_path. file\_path can be either a simple name or 
+an absolute path (on the submitting machine). In the former case the file file\_path is created in the current 
+working directory. If this option is not used the retrieved state is displayed on the standard output.
+
+\smallskip 
+\textbf{ --noint}
+
+if this option is specified every interactive question to the user is skipped. All warning messages and errors 
+(if occurred) are written to the file glite-job-get-chkpt\_$<$UID$>$\_$<$PID$>$\_$<$timestamp$>$.log under the 
+/tmp directory. Location for log file is configurable
+
+\smallskip 
+\textbf{ --debug}
+
+when this option is specified, information about the API functions called inside the command are displayed on 
+the standard output and are written to the file glite-job-attach\_$<$UID$>$\_$<$PID$>$\_$<$timestamp$>$.log under 
+the /tmp directory too.  Location for log file is configurable.
+
+\smallskip 
+\textbf{ --logfile} file\_path
+
+when this option is specified, the command log file is relocated to the location pointed by file\_path
+
+\smallskip 
+\textbf{ jobId}
+
+job identifier returned by glite-job-submit. Job identifiers must always be provided as last arguments for this 
+command.
+
+\medskip
+EXIT STATUS
+\smallskip
+
+{\bf glite-job-get-chkpt} exits with a value of 0 on success and $>$0 on failure.
+
+\medskip
+EXAMPLES 
+\smallskip
+
+The following commands retrieve the last but 3 saved checkpint state of the job and saves it in the file 
+specified by the user :
+
+
+\begin{scriptsize}
+\begin{verbatim}
+
+> glite-job-get-chkpt -o myjob.chk -cs 3 
+https://ibm139.cnaf.infn.it:9000/LNn4rOX17LL30e34hSqGjQ
+======================= glite-job-get-chkpt Success ==================
+ The checkpointable Job state has been successfully retrieved from LB 
+ Server and stored in the file: /home/fpacini/CLI/bin/myjob.chk
+======================================================================
+
+> more /home/fpacini/CLI/bin/myjob.chk
+
+#      Job State Retrieved for 
+#jobId: https://ibm139.cnaf.infn.it:9000/LNn4rOX17LL30e34hSqGjQ
+ [
+  UserData = 
+   [
+    distribution = false; 
+    hsum_filename = 
+	"gsiftp://lxde01.pd.infn.it/tmp/root_test/hsum_lxde04_1200000.root"; 
+    first_event = 1200001
+   ];
+
+\end{verbatim}
+\end{scriptsize}
+
+

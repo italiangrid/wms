@@ -1,0 +1,157 @@
+\hypertarget{classglite_1_1wms_1_1jdl_1_1NodeAd}{
+\section{glite::wms::jdl::Node\-Ad Class Reference}
+\label{classglite_1_1wms_1_1jdl_1_1NodeAd}\index{glite::wms::jdl::NodeAd@{glite::wms::jdl::NodeAd}}
+}
+Provides a representation of the job description in the JDL language.  
+
+
+{\tt \#include $<$Node\-Ad.h$>$}
+
+Inheritance diagram for glite::wms::jdl::Node\-Ad::\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3cm]{classglite_1_1wms_1_1jdl_1_1NodeAd}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{CompactItemize}
+\item 
+\hyperlink{classglite_1_1wms_1_1jdl_1_1NodeAd_a0}{Node\-Ad} (const classad::Class\-Ad \&class\-Ad)
+\item 
+\hyperlink{classglite_1_1wms_1_1jdl_1_1NodeAd_a1}{Node\-Ad} ()
+\item 
+virtual \hyperlink{classglite_1_1wms_1_1jdl_1_1NodeAd_a2}{$\sim$Node\-Ad} ()  throw ()
+\item 
+std::vector$<$ classad::Expr\-Tree $\ast$ $>$ \hyperlink{classglite_1_1wms_1_1jdl_1_1NodeAd_a3}{get\-Remote\-Sandbox} ()
+\item 
+void \hyperlink{classglite_1_1wms_1_1jdl_1_1NodeAd_a4}{add\-User\-Tag} (const std::string \&attr\_\-name, const std::string \&attr\_\-value)
+\end{CompactItemize}
+\subsection*{Protected Member Functions}
+\begin{CompactItemize}
+\item 
+void \hyperlink{classglite_1_1wms_1_1jdl_1_1NodeAd_b0}{check\-Input\-Sandbox} (std::vector$<$ std::string $>$ \&extracted)
+\item 
+void \hyperlink{classglite_1_1wms_1_1jdl_1_1NodeAd_b1}{check\-Specials} ()
+\item 
+void \hyperlink{classglite_1_1wms_1_1jdl_1_1NodeAd_b2}{insert\-Attribute} (const std::string \&attr\_\-name, classad::Expr\-Tree $\ast$val)
+\end{CompactItemize}
+\subsection*{Friends}
+\begin{CompactItemize}
+\item 
+class \hyperlink{classglite_1_1wms_1_1jdl_1_1NodeAd_n0}{Exp\-Dag\-Ad}
+\end{CompactItemize}
+
+
+\subsection{Detailed Description}
+Provides a representation of the job description in the JDL language. 
+
+\begin{Desc}
+\item[Version:]0.1 \end{Desc}
+\begin{Desc}
+\item[Date:]15 April 2002 \end{Desc}
+\begin{Desc}
+\item[Author:]Alessandro Maraschini $<$\href{mailto:alessandro.maraschini@datamat.it}{\tt alessandro.maraschini@datamat.it}$>$ \end{Desc}
+
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1NodeAd_a0}{
+\index{glite::wms::jdl::NodeAd@{glite::wms::jdl::Node\-Ad}!NodeAd@{NodeAd}}
+\index{NodeAd@{NodeAd}!glite::wms::jdl::NodeAd@{glite::wms::jdl::Node\-Ad}}
+\subsubsection[NodeAd]{\setlength{\rightskip}{0pt plus 5cm}glite::wms::jdl::Node\-Ad::Node\-Ad (const classad::Class\-Ad \& {\em class\-Ad})\hspace{0.3cm}{\tt  \mbox{[}inline\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1NodeAd_a0}
+
+
+Constructory by Classad\hypertarget{classglite_1_1wms_1_1jdl_1_1NodeAd_a1}{
+\index{glite::wms::jdl::NodeAd@{glite::wms::jdl::Node\-Ad}!NodeAd@{NodeAd}}
+\index{NodeAd@{NodeAd}!glite::wms::jdl::NodeAd@{glite::wms::jdl::Node\-Ad}}
+\subsubsection[NodeAd]{\setlength{\rightskip}{0pt plus 5cm}glite::wms::jdl::Node\-Ad::Node\-Ad ()\hspace{0.3cm}{\tt  \mbox{[}inline\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1NodeAd_a1}
+
+
+Default constructor\hypertarget{classglite_1_1wms_1_1jdl_1_1NodeAd_a2}{
+\index{glite::wms::jdl::NodeAd@{glite::wms::jdl::Node\-Ad}!~NodeAd@{$\sim$NodeAd}}
+\index{~NodeAd@{$\sim$NodeAd}!glite::wms::jdl::NodeAd@{glite::wms::jdl::Node\-Ad}}
+\subsubsection[$\sim$NodeAd]{\setlength{\rightskip}{0pt plus 5cm}virtual glite::wms::jdl::Node\-Ad::$\sim$\hyperlink{classglite_1_1wms_1_1jdl_1_1NodeAd}{Node\-Ad} ()  throw ()\hspace{0.3cm}{\tt  \mbox{[}virtual\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1NodeAd_a2}
+
+
+Default Destructor 
+
+\subsection{Member Function Documentation}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1NodeAd_a4}{
+\index{glite::wms::jdl::NodeAd@{glite::wms::jdl::Node\-Ad}!addUserTag@{addUserTag}}
+\index{addUserTag@{addUserTag}!glite::wms::jdl::NodeAd@{glite::wms::jdl::Node\-Ad}}
+\subsubsection[addUserTag]{\setlength{\rightskip}{0pt plus 5cm}void glite::wms::jdl::Node\-Ad::add\-User\-Tag (const std::string \& {\em attr\_\-name}, const std::string \& {\em attr\_\-value})}}
+\label{classglite_1_1wms_1_1jdl_1_1NodeAd_a4}
+
+
+Add a User\-Tag to the node \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em attr\_\-name}]the name of the usertag to be added \item[{\em attr\_\-value}]the value for the usertag\end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1NodeAd_b0}{
+\index{glite::wms::jdl::NodeAd@{glite::wms::jdl::Node\-Ad}!checkInputSandbox@{checkInputSandbox}}
+\index{checkInputSandbox@{checkInputSandbox}!glite::wms::jdl::NodeAd@{glite::wms::jdl::Node\-Ad}}
+\subsubsection[checkInputSandbox]{\setlength{\rightskip}{0pt plus 5cm}void glite::wms::jdl::Node\-Ad::check\-Input\-Sandbox (std::vector$<$ std::string $>$ \& {\em extracted})\hspace{0.3cm}{\tt  \mbox{[}protected, virtual\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1NodeAd_b0}
+
+
+Check Input\-Sandbox value. Could be overloaded in order to perform different checks \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em extracted}]a vector listing all the files that have to be extracted i.e. whoose path has to be solved\end{description}
+\end{Desc}
+
+
+Reimplemented from \hyperlink{classglite_1_1wms_1_1jdl_1_1JobAd_b0}{glite::wms::jdl::Job\-Ad}.\hypertarget{classglite_1_1wms_1_1jdl_1_1NodeAd_b1}{
+\index{glite::wms::jdl::NodeAd@{glite::wms::jdl::Node\-Ad}!checkSpecials@{checkSpecials}}
+\index{checkSpecials@{checkSpecials}!glite::wms::jdl::NodeAd@{glite::wms::jdl::Node\-Ad}}
+\subsubsection[checkSpecials]{\setlength{\rightskip}{0pt plus 5cm}void glite::wms::jdl::Node\-Ad::check\-Specials ()\hspace{0.3cm}{\tt  \mbox{[}protected, virtual\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1NodeAd_b1}
+
+
+Perform Special checks for Virtual\-Organisation attribute Notice: for a \hyperlink{classglite_1_1wms_1_1jdl_1_1NodeAd}{Node\-Ad} instance it is not mandatory (as for a \hyperlink{classglite_1_1wms_1_1jdl_1_1JobAd}{Job\-Ad}) 
+
+Reimplemented from \hyperlink{classglite_1_1wms_1_1jdl_1_1JobAd}{glite::wms::jdl::Job\-Ad}.\hypertarget{classglite_1_1wms_1_1jdl_1_1NodeAd_a3}{
+\index{glite::wms::jdl::NodeAd@{glite::wms::jdl::Node\-Ad}!getRemoteSandbox@{getRemoteSandbox}}
+\index{getRemoteSandbox@{getRemoteSandbox}!glite::wms::jdl::NodeAd@{glite::wms::jdl::Node\-Ad}}
+\subsubsection[getRemoteSandbox]{\setlength{\rightskip}{0pt plus 5cm}std::vector$<$classad::Expr\-Tree$\ast$$>$ glite::wms::jdl::Node\-Ad::get\-Remote\-Sandbox ()}}
+\label{classglite_1_1wms_1_1jdl_1_1NodeAd_a3}
+
+
+Retrieve the input\-Sandbox remote files extracted while checking the \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad}{Ad} \begin{Desc}
+\item[Returns:]a vector of all the Expression of remote sandbox i.e. all the \_\-$<$sbx file$>$ linked in the inputsandbox attribute\end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1NodeAd_b2}{
+\index{glite::wms::jdl::NodeAd@{glite::wms::jdl::Node\-Ad}!insertAttribute@{insertAttribute}}
+\index{insertAttribute@{insertAttribute}!glite::wms::jdl::NodeAd@{glite::wms::jdl::Node\-Ad}}
+\subsubsection[insertAttribute]{\setlength{\rightskip}{0pt plus 5cm}void glite::wms::jdl::Node\-Ad::insert\-Attribute (const std::string \& {\em attr\_\-name}, classad::Expr\-Tree $\ast$ {\em val})\hspace{0.3cm}{\tt  \mbox{[}protected, virtual\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1NodeAd_b2}
+
+
+\hyperlink{classglite_1_1wms_1_1jdl_1_1JobAd}{Job\-Ad} overloaded method: used to insert an attribute inside the classad \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em attr\_\-name}]the name of the attribute \item[{\em val}]the value of the inserted attribute as a classad expression\end{description}
+\end{Desc}
+
+
+Reimplemented from \hyperlink{classglite_1_1wms_1_1jdl_1_1JobAd_b2}{glite::wms::jdl::Job\-Ad}.
+
+\subsection{Friends And Related Function Documentation}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1NodeAd_n0}{
+\index{glite::wms::jdl::NodeAd@{glite::wms::jdl::Node\-Ad}!ExpDagAd@{ExpDagAd}}
+\index{ExpDagAd@{ExpDagAd}!glite::wms::jdl::NodeAd@{glite::wms::jdl::Node\-Ad}}
+\subsubsection[ExpDagAd]{\setlength{\rightskip}{0pt plus 5cm}friend class \hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd}{Exp\-Dag\-Ad}\hspace{0.3cm}{\tt  \mbox{[}friend\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1NodeAd_n0}
+
+
+
+
+Reimplemented from \hyperlink{classglite_1_1wms_1_1jdl_1_1JobAd_n1}{glite::wms::jdl::Job\-Ad}.
+
+The documentation for this class was generated from the following file:\begin{CompactItemize}
+\item 
+\hyperlink{NodeAd_8h}{Node\-Ad.h}\end{CompactItemize}

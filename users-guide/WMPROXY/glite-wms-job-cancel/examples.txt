@@ -1,0 +1,17 @@
+<<<ENUM>>>
+<<<ITEM>>> request for canceling only one job:
+<<<VERB>>>
+glite-wms-job-cancel https://wmproxy.glite.it:9000/7O0j4Fequpg7M6SRJ-NvLg
+<<<ENDVERB>>>
+<<<ITEM>>> request for canceling multiple jobs:
+<<<VERB>>>
+glite-wms-job-cancel https://wmproxy.glite.it:9000/7O0j4Fequpg7M6SRJ-NvLg \
+                     https://wmproxy.glite.it:9000/wqikja_-de83jdqd \
+                     https://wmproxy.glite.it:9000/wugrfja-de91jxxd 
+<<<ENDVERB>>>
+<<<ITEM>>> the myids.in input file contains the jobid(s)
+<<<VERB>>>
+glite-wms-job-cancel --input myids.in
+<<<ENDVERB>>>
+<<<ENDENUM>>>
+A message with the result of the operation is displayed on the standard output

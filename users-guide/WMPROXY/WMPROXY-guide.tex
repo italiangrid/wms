@@ -1,0 +1,84 @@
+\documentclass{egee}
+\usepackage{doxygen}
+\usepackage{tabularx}
+
+
+\title{EMI User's Guide}
+\Subtitle{WMS Command Line Interface guide}
+\author{Alessandro Maraschini, Marco Sottilaro, Alvise Dorigo}
+
+\DocIdentifier{EGEE-JRA1-TEC-674643}
+\Date{\today}
+%\Date{April 1, 2011}
+\Activity{JRA1: Middleware Engineering and Integration}
+\DocStatus{}
+\Dissemination{PUBLIC}
+\DocumentLink{https://edms.cern.ch/document/674643}
+
+\Abstract{
+This user's guide explains how to configure and use the client commands for performing job 
+submission and control through the WMS Service included in gLite 3.2.0 or later.
+}
+
+\begin{document}
+
+\input{frontmatter}
+
+\newpage
+
+\tableofcontents
+
+\newpage
+
+\section{Introduction}
+\label{intro}
+\input{intro}
+
+\newpage
+\section{Security}
+\label{security}
+\input{security}
+
+\newpage
+\section{Quick-start Guide}
+\label{quickstart}
+\input{quickstart}
+
+\newpage
+\section{Commandline Configuration}
+\label{cliconf}
+\input{cliconf}
+
+\newpage
+\section{Commandline Reference Guide}
+\label{cli}
+\input{cli}
+
+\newpage
+\section{WMProxy client API Description}
+\label{api}
+\input{api}
+
+\newpage
+\section{Known Problems and Caveats}
+\label{caveats}
+\input{caveats}
+
+
+\newpage
+
+\begin{thebibliography}1
+
+
+\bibitem[R1]{JDL}\emph{JDL Attributes Specification}, EGEE-JRA1-TEC-590869-JDL-Attributes-v0-4 , \\ \url{https://edms.cern.ch/document/590869/1}.
+\bibitem[R2]{LB}\emph{LB Service User's Guide}, EGEE-JRA1-TEC-571273 , \\ \url{https://edms.cern.ch/file/571273/1/LB-guide.pdf}.
+\bibitem[R3]{voms-core}\emph{VOMS User's Guide}, EGEE-JRA1-TEC-571991 , \\ \url{https://edms.cern.ch/file/571991/1/voms-guide.pdf}.
+\bibitem[R4]{WMS}\emph{WMS User's Guide}, EGEE-JRA1-TEC-572489 , \\ \url{https://edms.cern.ch/document/572489/1}.
+\bibitem[R5]{jra1-design}\emph{Design of the EGEE Middleware Grid Services}, EGEE-DJRA1.5-606574-v1.0 , \\ \url{https://edms.cern.ch/document/606574/1.0}.
+\bibitem[R8]{JSDL}\emph{JSDL Attributes Specification}, \\ \url{http://technical.eu-egee.org/index.php?id=725}.
+\end{thebibliography}
+
+\clearpage
+
+\appendix
+\end{document}

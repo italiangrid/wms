@@ -1,0 +1,154 @@
+%\section{Known Problems and Caveats}
+
+\subsection{Submission Failures Analysis}
+
+Analysis of failed job's state can be carried out through the check of the consistency and completeness of the 
+job related events returned by the \textit{glite-job-logging-info} command. A further verification if needed, should be 
+then performed on the retrieved output files produced by the jobs (if any) and through the inspection of the log 
+files ad debugging information traced by the various system components.
+As explained in section~\ref{cli} to get the logging information about a job you need to issue the following command:
+
+\smallskip
+{\scriptsize{\verb!glite-job-logging-info <job Identifier>!}}
+\smallskip
+
+
+Since the output of the command could be copious we advice usage of the -output option too to redirect it 
+to a given file:
+
+\smallskip
+{\scriptsize{\verb!glite-job-logging-info --output <my_file> <job Identifier>!}}
+\smallskip
+
+Augmenting the verbosity allows then to get more detailed information (the job descriptions at the various stages are 
+also included):
+
+\smallskip
+{\scriptsize{\verb!glite-job-logging-info -v 3 --output <my_file> <job Identifier>!}}
+\smallskip
+
+Before using the \textit{glite-job-logging-info} command, it is in some cases useful a check to the \textit{glite-job-status} 
+output that can contain information about the cause of a job failure (e.g. in the "Status Reason" field). 
+As explained in section~\ref{cli} to get the status information about a job you need to issue the following command:
+
+\smallskip
+{\scriptsize{\verb!glite-job-status -v 2 <job Identifier>!}}
+\smallskip
+
+As said at the beginning of this section another way for analysing submission failures is to inspect the standard output 
+and error of the job generated on the Worker Node and retrieved on the WMS-UI machine through the \textit{glite-job-output} 
+command.  A typical example of errors that can be detected in this way is when the users submits a script that in turn 
+tries to start another script or an executable. If e.g. the submitted scripts is like:
+
+
+\smallskip
+\begin{verbatim}
+
+#!/bin/sh
+# Use the coincidence file to compare the measurements
+curdir=`pwd`
+${curdir}/lecture_new_gome_V2_sel1_PT_10
+idl appli.pro
+
+\end{verbatim}
+\smallskip
+
+
+Upon job abortion, the error message received through the OutputSandbox retrieval is:
+
+\smallskip
+{\scriptsize{\verb!./demo_june: /home/eo004/3042/lecture_new_gome_V2_sel1_PT_10: Permission denied!}}
+\smallskip
+
+The reason for this error is that globus-url-copy (used for the InputSanbox files staging) in general doesn't preserve 
+the \emph{x} flag so the script specified as Executable in the JDL (on which chmod +x is done automatically by the 
+JobWrapper), should perform a chmod +x for all the executable files (\textit{lecture\_new\_gome\_V2\_sel1\_PT\_10} in 
+this example) transferred within the InputSandbox of the job.
+
+
+Hereafter is reported a brief description of the job events that can help when investigating a failure as suggested above.
+
+
+\subsubsection{Job Event Types}
+
+Hereafter is reported the list of job event types that could be returned to the user by the 
+\textit{glite-job-logging-info} command. They are organized in several categories:
+
+\smallskip
+
+Events concerning a job transfer between components:
+\begin{itemize}
+ 	\item \textbf{JobTransfer}	A component generates this event when it tries to transfer a job to some 
+other component via network interface (protocol). This event contains the identification of the receiver and 
+possibly the job description expressed in the language accepted by the receiver. The result of the transfer, i.e. 
+success or failure, as seen by the sender is also included.
+ 	\item \textbf{JobAccepted}	A component generates this event when it receives a job from another WMS 
+component. This event contains also the locally assigned job identifier.
+ 	\item \textbf{JobRefused}	Receiving component could not accept the job, the reason being a part of the event.
+ 	\item \textbf{JobEnqueue}	The job is inserted into a queue, e.g., the queue holding the job after it is 
+received by Network Server and before it is processed by Workload Manager.
+ 	\item \textbf{JobDequeue}	The job is removed from queue.
+ 	\item \textbf{HelperCall}	Helper component is called during the job processing. The type-specific data include 
+the name of called Helper, whether the logging component is called or calling one, and optionally parameters passed to the H
+elper.
+ 	\item \textbf{HelperReturn}	Call to Helper returned.
+ 	
+\end{itemize}
+\smallskip
+
+Events concerning a job state change during processing within a component:
+
+\begin{itemize}
+ 	\item \textbf{JobAbort}	The job processing is stopped by WMS due to error condition, the event contains the reason 
+for abort.
+ 	\item \textbf{JobRun}		The job is started on a CE.
+ 	\item \textbf{JobDone}	Job has exited, has been successfully canceled or is considered to be in terminal state 
+by Condor-C.
+ 	\item \textbf{JobResub}	The result of resubmission decision after the job has failed.
+ 	\item \textbf{JobCleared}	The user has successfully retrieved the job results, e.g. the output files specified 
+in the output sandbox, or the job results has been deleted due to time limit.
+ 	\item \textbf{JobCancel}	Cancel operation has been attempted on the job.
+ 	\item \textbf{JobPurge}	The job was purged from bookkeeping server's database. This event is stored only in a 
+logging server..
+
+\end{itemize}
+\smallskip
+
+Events associated with the Workload Manager or Helper modules:
+
+\begin{itemize}
+ 	\item \textbf{JobMatch}	An appropriate match between a job and a Computing Element has been found. The event 
+contains the identifier of the selected CE.
+ 	\item \textbf{JobPending}	A match between a job and a suitable Computing Element was not found, so the 
+job is kept pending by the WM. The event contains the reason why no match was found.
+
+\end{itemize}
+\smallskip
+
+Events used to store special information in logging and bookkeeping services:
+
+\begin{itemize}
+ 	\item \textbf{JobRegister}	Logged by job creator (User Interface) in order to register the job with 
+bookkeeping server.
+ 	\item \textbf{JobChkpt}	An application-specific checkpoint was created (logged by checkpointing API). Checkpoint 
+tag and Class-Ad strings should be included.
+ 	\item \textbf{JobListener}	Used by WMS-UI to store listener network port information for interactive jobs. 
+Listener port number, hostname and service name (multiple ports can be advertised) are included.
+ 	\item \textbf{JobCurJdl}	This optional event can be used to report Class-Ad describing the current state of 
+job processing (output from Helper modules). More details on job event types can be found in ~\cite{lb}.
+\end{itemize}
+
+\medskip
+\subsection{Job Resubmission and RetryCount}
+
+It is important to note that there are particular cases, as for example temporary network outages in the proximity of 
+the CE, that can make the WMS "think" the job has failed (no way currently to distinguish such situations by means of 
+error reporting from the underlying components) and hence trigger job resubmission whilst the job is running on the WN. 
+This can cause having one or even more copies of the same job running on different CEs since until the network is down 
+the WMS is not able to kill the original job.
+Due to above mentioned possibility (although should occur very rarely) it is advisable for jobs performing sensitive 
+operations (e.g. committing data into a DB) to disable the WMS re-submission feature. This can be easily done on a per-job 
+basis setting to 0 the value of the RetryCount attribute in the job description and on a "per-session" basis setting to 0 
+the value of the RetryCount parameter in the WMS-UI configuration.
+
+

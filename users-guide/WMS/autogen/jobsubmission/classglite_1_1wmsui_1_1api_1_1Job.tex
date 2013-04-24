@@ -1,0 +1,413 @@
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Job}{
+\section{glite::wmsui::api::Job Class Reference}
+\label{classglite_1_1wmsui_1_1api_1_1Job}\index{glite::wmsui::api::Job@{glite::wmsui::api::Job}}
+}
+{\tt \#include $<$Job.h$>$}
+
+\subsection*{Constructors/Destructor}
+\begin{CompactItemize}
+\item 
+\hyperlink{classglite_1_1wmsui_1_1api_1_1Job_z15_0}{Job} ()
+\item 
+\hyperlink{classglite_1_1wmsui_1_1api_1_1Job_z15_1}{Job} (const glite::wmsutils::jobid::Job\-Id \&id)
+\item 
+\hyperlink{classglite_1_1wmsui_1_1api_1_1Job_z15_2}{Job} (const glite::wms::jdl::Job\-Ad \&ad)
+\item 
+\hyperlink{classglite_1_1wmsui_1_1api_1_1Job_z15_3}{Job} (const \hyperlink{classglite_1_1wmsui_1_1api_1_1Job}{Job} \&job)
+\item 
+\hyperlink{classglite_1_1wmsui_1_1api_1_1Job_z15_4}{$\sim$Job} ()
+\item 
+void \hyperlink{classglite_1_1wmsui_1_1api_1_1Job_z15_5}{operator=} (const \hyperlink{classglite_1_1wmsui_1_1api_1_1Job}{Job} \&job)
+\item 
+void \hyperlink{classglite_1_1wmsui_1_1api_1_1Job_z15_6}{initialise} ()
+\end{CompactItemize}
+\subsection*{Public Member Functions}
+\begin{Indent}{\bf Get/Set Methods}\par
+\begin{CompactItemize}
+\item 
+glite::wmsutils::jobid::Job\-Id $\ast$ \hyperlink{classglite_1_1wmsui_1_1api_1_1Job_z17_0}{get\-Job\-Id} ()
+\item 
+glite::wms::jdl::Job\-Ad $\ast$ \hyperlink{classglite_1_1wmsui_1_1api_1_1Job_z17_1}{get\-Job\-Ad} ()
+\item 
+void \hyperlink{classglite_1_1wmsui_1_1api_1_1Job_z17_2}{set\-Cred\-Path} (const std::string cp)
+\item 
+void \hyperlink{classglite_1_1wmsui_1_1api_1_1Job_z17_3}{unset\-Cred\-Path} ()
+\item 
+void \hyperlink{classglite_1_1wmsui_1_1api_1_1Job_z17_4}{set\-Logger\-Level} (int level)
+\item 
+void \hyperlink{classglite_1_1wmsui_1_1api_1_1Job_z17_5}{set\-Job\-Ad} (const glite::wms::jdl::Job\-Ad \&ad)
+\item 
+void \hyperlink{classglite_1_1wmsui_1_1api_1_1Job_z17_6}{set\-Job\-Id} (const glite::wmsutils::jobid::Job\-Id \&id)
+\item 
+void \hyperlink{classglite_1_1wmsui_1_1api_1_1Job_z17_7}{retrieve\-Job\-Ad} ()
+\item 
+\hyperlink{namespaceglite_1_1wmsui_1_1api_a31}{j\-Type} \hyperlink{classglite_1_1wmsui_1_1api_1_1Job_z17_8}{get\-Type} ()
+\end{CompactItemize}
+\end{Indent}
+\begin{Indent}{\bf Job Special Action Methods}\par
+\begin{CompactItemize}
+\item 
+glite::wms::checkpointing::Job\-State \hyperlink{classglite_1_1wmsui_1_1api_1_1Job_z19_0}{get\-State} (unsigned int step=0)
+\item 
+int \hyperlink{classglite_1_1wmsui_1_1api_1_1Job_z19_1}{attach} (\hyperlink{classglite_1_1wmsui_1_1api_1_1Listener}{Listener} $\ast$ls, int port=0)
+\end{CompactItemize}
+\end{Indent}
+\begin{Indent}{\bf LB retrieve info Methods}\par
+\begin{CompactItemize}
+\item 
+\hyperlink{namespaceglite_1_1wmsui_1_1api_a24}{Status} \hyperlink{classglite_1_1wmsui_1_1api_1_1Job_z21_0}{get\-Status} (bool ad=true)
+\item 
+\hyperlink{namespaceglite_1_1wmsui_1_1api_a23}{Events} \hyperlink{classglite_1_1wmsui_1_1api_1_1Job_z21_1}{get\-Log\-Info} ()
+\end{CompactItemize}
+\end{Indent}
+\begin{Indent}{\bf Job NS require operation Methods}\par
+\begin{CompactItemize}
+\item 
+void \hyperlink{classglite_1_1wmsui_1_1api_1_1Job_z23_0}{submit} (const std::string \&n\-SHost, int ns\-Port, const std::string \&lb\-Host, int lb\-Port,const std::string \&ce\_\-id=\char`\"{}\char`\"{})
+\item 
+void \hyperlink{classglite_1_1wmsui_1_1api_1_1Job_z23_1}{submit} (const std::string \&ns\-Host, int ns\-Port, const std::string \&lb\-Host, int lb\-Port, glite::wms::checkpointing::Job\-State $\ast$state, \hyperlink{classglite_1_1wmsui_1_1api_1_1Listener}{Listener} $\ast$ls, const std::string \&ce\_\-id=\char`\"{}\char`\"{})
+\item 
+std::vector$<$ std::pair$<$ std::string, double $>$ $>$ \hyperlink{classglite_1_1wmsui_1_1api_1_1Job_z23_2}{list\-Matching\-CE} (const std::string \&host, int port)
+\item 
+glite::wms::common::utilities::Result\-Code \hyperlink{classglite_1_1wmsui_1_1api_1_1Job_z23_3}{cancel} ()
+\item 
+void \hyperlink{classglite_1_1wmsui_1_1api_1_1Job_z23_4}{get\-Output} (const std::string \&dir\_\-path)
+\end{CompactItemize}
+\end{Indent}
+\subsection*{Static Public Member Functions}
+\begin{Indent}{\bf Static Methods}\par
+\begin{CompactItemize}
+\item 
+glite::wmsutils::jobid::Job\-Id $\ast$ \hyperlink{classglite_1_1wmsui_1_1api_1_1Job_z25_0}{submit} (const std::string \&ns\-Host, int ns\-Port, const std::string \&lb\-Host, int lb\-Port, const std::string \&executable, const std::string \&std\-Output, const std::string \&std\-Err, const std::string \&output\-Dir=\char`\"{}/tmp\char`\"{}, const std::string \&ce\_\-id=\char`\"{}\char`\"{}, int timeout=10, int time\_\-interval=60)
+\end{CompactItemize}
+\end{Indent}
+\subsection*{Friends}
+\begin{CompactItemize}
+\item 
+class \hyperlink{classglite_1_1wmsui_1_1api_1_1Job_n0}{Job\-Collection}
+\end{CompactItemize}
+
+
+\subsection{Detailed Description}
+Allow controlling the job and perform several operations. 
+
+The \hyperlink{classglite_1_1wmsui_1_1api_1_1Job}{Job} class provides methods that allow controlling the job during its lifetime. The allowed operations are: \begin{itemize}
+\item Submitting the job to a network server \item Check NS for possible matching Computer Elements \item Cancelling the job during its life-cycle \item Retrieving status information from LB server \item Retrieving Events logging information from LB server \item Retrieving the output sandbox files \end{itemize}
+Also some special features are provided: \begin{itemize}
+\item Attaching an interactive job to a shadow listener \item Retrieving a submitted State information from a checkpointable \hyperlink{classglite_1_1wmsui_1_1api_1_1Job}{Job} \item Submitting a checkpointable \hyperlink{classglite_1_1wmsui_1_1api_1_1Job}{Job} starting from a specified State \end{itemize}
+
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Job_z15_0}{
+\index{glite::wmsui::api::Job@{glite::wmsui::api::Job}!Job@{Job}}
+\index{Job@{Job}!glite::wmsui::api::Job@{glite::wmsui::api::Job}}
+\subsubsection[Job]{\setlength{\rightskip}{0pt plus 5cm}glite::wmsui::api::Job::Job ()}}
+\label{classglite_1_1wmsui_1_1api_1_1Job_z15_0}
+
+
+Instantiates an empty \hyperlink{classglite_1_1wmsui_1_1api_1_1Job}{Job} object \hypertarget{classglite_1_1wmsui_1_1api_1_1Job_z15_1}{
+\index{glite::wmsui::api::Job@{glite::wmsui::api::Job}!Job@{Job}}
+\index{Job@{Job}!glite::wmsui::api::Job@{glite::wmsui::api::Job}}
+\subsubsection[Job]{\setlength{\rightskip}{0pt plus 5cm}glite::wmsui::api::Job::Job (const glite::wmsutils::jobid::Job\-Id \& {\em id})}}
+\label{classglite_1_1wmsui_1_1api_1_1Job_z15_1}
+
+
+Instantiates an \hyperlink{classglite_1_1wmsui_1_1api_1_1Job}{Job} object with a Job\-Id \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em id}]a Job\-Id instance \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Exceptions:]
+\begin{description}
+\item[{\em Job\-Operation\-Exception}]If the Job\-Id is empty \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Job_z15_2}{
+\index{glite::wmsui::api::Job@{glite::wmsui::api::Job}!Job@{Job}}
+\index{Job@{Job}!glite::wmsui::api::Job@{glite::wmsui::api::Job}}
+\subsubsection[Job]{\setlength{\rightskip}{0pt plus 5cm}glite::wmsui::api::Job::Job (const glite::wms::jdl::Job\-Ad \& {\em ad})}}
+\label{classglite_1_1wmsui_1_1api_1_1Job_z15_2}
+
+
+Instantiates an \hyperlink{classglite_1_1wmsui_1_1api_1_1Job}{Job} object with a Job\-Ad \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em ad}]a Job\-Ad instance \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Exceptions:]
+\begin{description}
+\item[{\em Job\-Operation\-Exception}]If the Job\-Ad is empty \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Job_z15_3}{
+\index{glite::wmsui::api::Job@{glite::wmsui::api::Job}!Job@{Job}}
+\index{Job@{Job}!glite::wmsui::api::Job@{glite::wmsui::api::Job}}
+\subsubsection[Job]{\setlength{\rightskip}{0pt plus 5cm}glite::wmsui::api::Job::Job (const \hyperlink{classglite_1_1wmsui_1_1api_1_1Job}{Job} \& {\em job})}}
+\label{classglite_1_1wmsui_1_1api_1_1Job_z15_3}
+
+
+Copy constructor \hypertarget{classglite_1_1wmsui_1_1api_1_1Job_z15_4}{
+\index{glite::wmsui::api::Job@{glite::wmsui::api::Job}!~Job@{$\sim$Job}}
+\index{~Job@{$\sim$Job}!glite::wmsui::api::Job@{glite::wmsui::api::Job}}
+\subsubsection[$\sim$Job]{\setlength{\rightskip}{0pt plus 5cm}glite::wmsui::api::Job::$\sim$\hyperlink{classglite_1_1wmsui_1_1api_1_1Job}{Job} ()}}
+\label{classglite_1_1wmsui_1_1api_1_1Job_z15_4}
+
+
+destructor 
+
+\subsection{Member Function Documentation}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Job_z19_1}{
+\index{glite::wmsui::api::Job@{glite::wmsui::api::Job}!attach@{attach}}
+\index{attach@{attach}!glite::wmsui::api::Job@{glite::wmsui::api::Job}}
+\subsubsection[attach]{\setlength{\rightskip}{0pt plus 5cm}int glite::wmsui::api::Job::attach (\hyperlink{classglite_1_1wmsui_1_1api_1_1Listener}{Listener} $\ast$ {\em ls}, int {\em port} = 0)}}
+\label{classglite_1_1wmsui_1_1api_1_1Job_z19_1}
+
+
+Attach the job to a new listener (if possible) and log new information to LB \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em port}]the local machine port to be forced as listener \item[{\em ls}]A pointer to a \hyperlink{classglite_1_1wmsui_1_1api_1_1Listener}{Listener} interface implementation which manages input/output/error streams \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]the pid corresponding to the launched listener process id (in a new window) \end{Desc}
+\begin{Desc}
+\item[Exceptions:]
+\begin{description}
+\item[{\em Job\-Operation\-Exception}]The Operation required is not allowed for the \hyperlink{classglite_1_1wmsui_1_1api_1_1Job}{Job} \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Job_z23_3}{
+\index{glite::wmsui::api::Job@{glite::wmsui::api::Job}!cancel@{cancel}}
+\index{cancel@{cancel}!glite::wmsui::api::Job@{glite::wmsui::api::Job}}
+\subsubsection[cancel]{\setlength{\rightskip}{0pt plus 5cm}glite::wms::common::utilities::Result\-Code glite::wmsui::api::Job::cancel ()}}
+\label{classglite_1_1wmsui_1_1api_1_1Job_z23_3}
+
+
+Cancel the job from the Network Server \begin{Desc}
+\item[Returns:]The Result of the operation \end{Desc}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Job_z17_1}{
+\index{glite::wmsui::api::Job@{glite::wmsui::api::Job}!getJobAd@{getJobAd}}
+\index{getJobAd@{getJobAd}!glite::wmsui::api::Job@{glite::wmsui::api::Job}}
+\subsubsection[getJobAd]{\setlength{\rightskip}{0pt plus 5cm}glite::wms::jdl::Job\-Ad$\ast$ glite::wmsui::api::Job::get\-Job\-Ad ()}}
+\label{classglite_1_1wmsui_1_1api_1_1Job_z17_1}
+
+
+Get the Job\-Ad instance \begin{Desc}
+\item[Returns:]a pointer to the Job\-Ad intance \end{Desc}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Job_z17_0}{
+\index{glite::wmsui::api::Job@{glite::wmsui::api::Job}!getJobId@{getJobId}}
+\index{getJobId@{getJobId}!glite::wmsui::api::Job@{glite::wmsui::api::Job}}
+\subsubsection[getJobId]{\setlength{\rightskip}{0pt plus 5cm}glite::wmsutils::jobid::Job\-Id$\ast$ glite::wmsui::api::Job::get\-Job\-Id ()}}
+\label{classglite_1_1wmsui_1_1api_1_1Job_z17_0}
+
+
+Get the Job\-Id instance \begin{Desc}
+\item[Returns:]a pointer to the Job\-Id intance \end{Desc}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Job_z21_1}{
+\index{glite::wmsui::api::Job@{glite::wmsui::api::Job}!getLogInfo@{getLogInfo}}
+\index{getLogInfo@{getLogInfo}!glite::wmsui::api::Job@{glite::wmsui::api::Job}}
+\subsubsection[getLogInfo]{\setlength{\rightskip}{0pt plus 5cm}\hyperlink{namespaceglite_1_1wmsui_1_1api_a23}{Events} glite::wmsui::api::Job::get\-Log\-Info ()}}
+\label{classglite_1_1wmsui_1_1api_1_1Job_z21_1}
+
+
+Retrieve the bookkeeping information of the job \begin{Desc}
+\item[Returns:]all the events logged during the job life \end{Desc}
+\begin{Desc}
+\item[See also:]glite::lb::Event class documentation \end{Desc}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Job_z23_4}{
+\index{glite::wmsui::api::Job@{glite::wmsui::api::Job}!getOutput@{getOutput}}
+\index{getOutput@{getOutput}!glite::wmsui::api::Job@{glite::wmsui::api::Job}}
+\subsubsection[getOutput]{\setlength{\rightskip}{0pt plus 5cm}void glite::wmsui::api::Job::get\-Output (const std::string \& {\em dir\_\-path})}}
+\label{classglite_1_1wmsui_1_1api_1_1Job_z23_4}
+
+
+Retrieve output files of a submitted job ( Success Done status has to be reached) \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em dir\_\-path}]the path where to copy the Output\-Sandbox files (throws exception if it does not exist) \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Job_z19_0}{
+\index{glite::wmsui::api::Job@{glite::wmsui::api::Job}!getState@{getState}}
+\index{getState@{getState}!glite::wmsui::api::Job@{glite::wmsui::api::Job}}
+\subsubsection[getState]{\setlength{\rightskip}{0pt plus 5cm}glite::wms::checkpointing::Job\-State glite::wmsui::api::Job::get\-State (unsigned int {\em step} = 0)}}
+\label{classglite_1_1wmsui_1_1api_1_1Job_z19_0}
+
+
+Allow to retrieve back the state of a \hyperlink{classglite_1_1wmsui_1_1api_1_1Job}{Job} in the specified step (default value is last reached step, 1 means lust but one ect etc...) \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em step}]an positive integer number representing the Job\-State step we want to retrieve: step= 0 (default): last State of the job. step=1: last but one. step=2: last but two... etc etc \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]the statue of the job in the specified step \end{Desc}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Job_z21_0}{
+\index{glite::wmsui::api::Job@{glite::wmsui::api::Job}!getStatus@{getStatus}}
+\index{getStatus@{getStatus}!glite::wmsui::api::Job@{glite::wmsui::api::Job}}
+\subsubsection[getStatus]{\setlength{\rightskip}{0pt plus 5cm}\hyperlink{namespaceglite_1_1wmsui_1_1api_a24}{Status} glite::wmsui::api::Job::get\-Status (bool {\em ad} = true)}}
+\label{classglite_1_1wmsui_1_1api_1_1Job_z21_0}
+
+
+Retrieve the status of the job \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em ad}]if set to false only basic info are retrieved \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]the status of the job \end{Desc}
+\begin{Desc}
+\item[See also:]glite::lb::Job\-Status class documentation \end{Desc}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Job_z17_8}{
+\index{glite::wmsui::api::Job@{glite::wmsui::api::Job}!getType@{getType}}
+\index{getType@{getType}!glite::wmsui::api::Job@{glite::wmsui::api::Job}}
+\subsubsection[getType]{\setlength{\rightskip}{0pt plus 5cm}\hyperlink{namespaceglite_1_1wmsui_1_1api_a31}{j\-Type} glite::wmsui::api::Job::get\-Type ()\hspace{0.3cm}{\tt  \mbox{[}inline\mbox{]}}}}
+\label{classglite_1_1wmsui_1_1api_1_1Job_z17_8}
+
+
+returns the type of the job \_\-job\-Type \begin{Desc}
+\item[Returns:]the type of the job \end{Desc}
+\begin{Desc}
+\item[See also:]\hyperlink{namespaceglite_1_1wmsui_1_1api_a31}{j\-Type}\end{Desc}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Job_z15_6}{
+\index{glite::wmsui::api::Job@{glite::wmsui::api::Job}!initialise@{initialise}}
+\index{initialise@{initialise}!glite::wmsui::api::Job@{glite::wmsui::api::Job}}
+\subsubsection[initialise]{\setlength{\rightskip}{0pt plus 5cm}void glite::wmsui::api::Job::initialise ()\hspace{0.3cm}{\tt  \mbox{[}static\mbox{]}}}}
+\label{classglite_1_1wmsui_1_1api_1_1Job_z15_6}
+
+
+Static Open ssl initialisation, called before any operation Prepare the\hypertarget{classglite_1_1wmsui_1_1api_1_1Job_z23_2}{
+\index{glite::wmsui::api::Job@{glite::wmsui::api::Job}!listMatchingCE@{listMatchingCE}}
+\index{listMatchingCE@{listMatchingCE}!glite::wmsui::api::Job@{glite::wmsui::api::Job}}
+\subsubsection[listMatchingCE]{\setlength{\rightskip}{0pt plus 5cm}std::vector$<$std::pair $<$std::string , double$>$ $>$ glite::wmsui::api::Job::list\-Matching\-CE (const std::string \& {\em host}, int {\em port})}}
+\label{classglite_1_1wmsui_1_1api_1_1Job_z23_2}
+
+
+Look for matching Computing Element available resources \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em host}]The Network server host name \item[{\em port}]the Network server port number \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]all the Computing Elemets that match with the given JDL togheter with their rank \end{Desc}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Job_z15_5}{
+\index{glite::wmsui::api::Job@{glite::wmsui::api::Job}!operator=@{operator=}}
+\index{operator=@{operator=}!glite::wmsui::api::Job@{glite::wmsui::api::Job}}
+\subsubsection[operator=]{\setlength{\rightskip}{0pt plus 5cm}void glite::wmsui::api::Job::operator= (const \hyperlink{classglite_1_1wmsui_1_1api_1_1Job}{Job} \& {\em job})}}
+\label{classglite_1_1wmsui_1_1api_1_1Job_z15_5}
+
+
+Assignment operator \hypertarget{classglite_1_1wmsui_1_1api_1_1Job_z17_7}{
+\index{glite::wmsui::api::Job@{glite::wmsui::api::Job}!retrieveJobAd@{retrieveJobAd}}
+\index{retrieveJobAd@{retrieveJobAd}!glite::wmsui::api::Job@{glite::wmsui::api::Job}}
+\subsubsection[retrieveJobAd]{\setlength{\rightskip}{0pt plus 5cm}void glite::wmsui::api::Job::retrieve\-Job\-Ad ()}}
+\label{classglite_1_1wmsui_1_1api_1_1Job_z17_7}
+
+
+Set the Job\-Ad member attribute of the \hyperlink{classglite_1_1wmsui_1_1api_1_1Job}{Job} instance to the job description got from the LB \hypertarget{classglite_1_1wmsui_1_1api_1_1Job_z17_2}{
+\index{glite::wmsui::api::Job@{glite::wmsui::api::Job}!setCredPath@{setCredPath}}
+\index{setCredPath@{setCredPath}!glite::wmsui::api::Job@{glite::wmsui::api::Job}}
+\subsubsection[setCredPath]{\setlength{\rightskip}{0pt plus 5cm}void glite::wmsui::api::Job::set\-Cred\-Path (const std::string {\em cp})}}
+\label{classglite_1_1wmsui_1_1api_1_1Job_z17_2}
+
+
+Set a different Proxy certificate from the default one \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em cp}]The full path of the proxy certificate file to be set \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Job_z17_5}{
+\index{glite::wmsui::api::Job@{glite::wmsui::api::Job}!setJobAd@{setJobAd}}
+\index{setJobAd@{setJobAd}!glite::wmsui::api::Job@{glite::wmsui::api::Job}}
+\subsubsection[setJobAd]{\setlength{\rightskip}{0pt plus 5cm}void glite::wmsui::api::Job::set\-Job\-Ad (const glite::wms::jdl::Job\-Ad \& {\em ad})}}
+\label{classglite_1_1wmsui_1_1api_1_1Job_z17_5}
+
+
+set the Job\-Ad instance \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em ad}]the Job\-Ad Instance to be set \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Job_z17_6}{
+\index{glite::wmsui::api::Job@{glite::wmsui::api::Job}!setJobId@{setJobId}}
+\index{setJobId@{setJobId}!glite::wmsui::api::Job@{glite::wmsui::api::Job}}
+\subsubsection[setJobId]{\setlength{\rightskip}{0pt plus 5cm}void glite::wmsui::api::Job::set\-Job\-Id (const glite::wmsutils::jobid::Job\-Id \& {\em id})}}
+\label{classglite_1_1wmsui_1_1api_1_1Job_z17_6}
+
+
+set the Job\-Id instance \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em id}]the Job\-Id Instance to be set \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Job_z17_4}{
+\index{glite::wmsui::api::Job@{glite::wmsui::api::Job}!setLoggerLevel@{setLoggerLevel}}
+\index{setLoggerLevel@{setLoggerLevel}!glite::wmsui::api::Job@{glite::wmsui::api::Job}}
+\subsubsection[setLoggerLevel]{\setlength{\rightskip}{0pt plus 5cm}void glite::wmsui::api::Job::set\-Logger\-Level (int {\em level})}}
+\label{classglite_1_1wmsui_1_1api_1_1Job_z17_4}
+
+
+Se the verbosity level for NS debug \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em level}]default value = 0 (no verbosity), max value = 6 (dreadful verbosity, print screen) \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Job_z25_0}{
+\index{glite::wmsui::api::Job@{glite::wmsui::api::Job}!submit@{submit}}
+\index{submit@{submit}!glite::wmsui::api::Job@{glite::wmsui::api::Job}}
+\subsubsection[submit]{\setlength{\rightskip}{0pt plus 5cm}glite::wmsutils::jobid::Job\-Id$\ast$ glite::wmsui::api::Job::submit (const std::string \& {\em ns\-Host}, int {\em ns\-Port}, const std::string \& {\em lb\-Host}, int {\em lb\-Port}, const std::string \& {\em executable}, const std::string \& {\em std\-Output}, const std::string \& {\em std\-Err}, const std::string \& {\em output\-Dir} = \char`\"{}/tmp\char`\"{}, const std::string \& {\em ce\_\-id} = \char`\"{}\char`\"{}, int {\em timeout} = 10, int {\em time\_\-interval} = 60)\hspace{0.3cm}{\tt  \mbox{[}static\mbox{]}}}}
+\label{classglite_1_1wmsui_1_1api_1_1Job_z25_0}
+
+
+Submits and get the output of a simple \hyperlink{classglite_1_1wmsui_1_1api_1_1Job}{Job} once it's ready. once the job has been submitted, a cycle of status retrieval is done untill the status code is reached. Then the output files are retrieved and stored in the specified output directory \begin{Desc}
+\item[Returns:]The Job\-Id pointer to the submitted job \end{Desc}
+\begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em ns\-Host}]The Network Server host name \item[{\em ns\-Port}]The Network Server port value \item[{\em lb\-Host}]The LB host name \item[{\em lb\-Port}]The LB port value \item[{\em executable}]The value of the Executable JDL attribute \item[{\em std\-Output}]The value of the standard Output JDL attribute \item[{\em std\-Err}]The value of the standard Error JDL attribute \item[{\em ce\_\-id}]The Computing Element Identificator where to perform the jo \item[{\em output\-Dir}]the directory where to retrieve the output files from the job once it is ready \item[{\em time\_\-interval}]amount of time to wait before perform next check \item[{\em timeout}]lentgh of status cycle retrieval. Each 30 seconds a get\-Status is called for timeout times \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Job_z23_1}{
+\index{glite::wmsui::api::Job@{glite::wmsui::api::Job}!submit@{submit}}
+\index{submit@{submit}!glite::wmsui::api::Job@{glite::wmsui::api::Job}}
+\subsubsection[submit]{\setlength{\rightskip}{0pt plus 5cm}void glite::wmsui::api::Job::submit (const std::string \& {\em ns\-Host}, int {\em ns\-Port}, const std::string \& {\em lb\-Host}, int {\em lb\-Port}, glite::wms::checkpointing::Job\-State $\ast$ {\em state}, \hyperlink{classglite_1_1wmsui_1_1api_1_1Listener}{Listener} $\ast$ {\em ls}, const std::string \& {\em ce\_\-id} = \char`\"{}\char`\"{})}}
+\label{classglite_1_1wmsui_1_1api_1_1Job_z23_1}
+
+
+Submit the job to the Network Server starting from an intermediate step specified in the Job\-State \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em state}]the step where to begin the submission (only for Checkpointable jobs) \item[{\em ls}]a \hyperlink{classglite_1_1wmsui_1_1api_1_1Listener}{Listener} implementation which will perform the job interaction (only for Interactive jobs) \item[{\em ns\-Host}]The Network Server host name \item[{\em ns\-Port}]The Network Server port value \item[{\em lb\-Host}]The LB host name \item[{\em ce\_\-id}]the specific atddress of the resource where the job has to be executed \item[{\em lb\-Port}]The LB port value \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Job_z23_0}{
+\index{glite::wmsui::api::Job@{glite::wmsui::api::Job}!submit@{submit}}
+\index{submit@{submit}!glite::wmsui::api::Job@{glite::wmsui::api::Job}}
+\subsubsection[submit]{\setlength{\rightskip}{0pt plus 5cm}void glite::wmsui::api::Job::submit (const std::string \& {\em n\-SHost}, int {\em ns\-Port}, const std::string \& {\em lb\-Host}, int {\em lb\-Port}, const std::string \& {\em ce\_\-id} = \char`\"{}\char`\"{})}}
+\label{classglite_1_1wmsui_1_1api_1_1Job_z23_0}
+
+
+Submit the job to the Network Server \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em ns\-Host}]The Network Server host name \item[{\em ns\-Port}]The Network Server port value \item[{\em lb\-Host}]The LB host name \item[{\em lb\-Port}]The LB port value \item[{\em ce\_\-id}]the specific atddress of the resource where the job has to be executed \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Job_z17_3}{
+\index{glite::wmsui::api::Job@{glite::wmsui::api::Job}!unsetCredPath@{unsetCredPath}}
+\index{unsetCredPath@{unsetCredPath}!glite::wmsui::api::Job@{glite::wmsui::api::Job}}
+\subsubsection[unsetCredPath]{\setlength{\rightskip}{0pt plus 5cm}void glite::wmsui::api::Job::unset\-Cred\-Path ()}}
+\label{classglite_1_1wmsui_1_1api_1_1Job_z17_3}
+
+
+Set the Proxy certificate as default 
+
+\subsection{Friends And Related Function Documentation}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Job_n0}{
+\index{glite::wmsui::api::Job@{glite::wmsui::api::Job}!JobCollection@{JobCollection}}
+\index{JobCollection@{JobCollection}!glite::wmsui::api::Job@{glite::wmsui::api::Job}}
+\subsubsection[JobCollection]{\setlength{\rightskip}{0pt plus 5cm}friend class \hyperlink{classglite_1_1wmsui_1_1api_1_1JobCollection}{Job\-Collection}\hspace{0.3cm}{\tt  \mbox{[}friend\mbox{]}}}}
+\label{classglite_1_1wmsui_1_1api_1_1Job_n0}
+
+
+\hyperlink{classglite_1_1wmsui_1_1api_1_1JobCollection}{Job\-Collection} has full access to all \hyperlink{classglite_1_1wmsui_1_1api_1_1Job}{Job} private members 
+
+The documentation for this class was generated from the following file:\begin{CompactItemize}
+\item 
+\hyperlink{Job_8h}{Job.h}\end{CompactItemize}

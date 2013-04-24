@@ -1,0 +1,7 @@
+glite-wms-job-cancel cancels a job previously submitted using glite-wms-job-submit. 
+Before cancellation, it prompts the user for confirmation. 
+The cancel request is sent to the WMProxy that forwards it to the WM that fulfills it. 
+glite-wms-job-cancel can remove one or more jobs: the jobs to be removed are 
+identified by their job identifiers (jobIds returned by glite-wms-job-submit) 
+provided as arguments to the command and separated by a blank space. 
+The result of the cancel operation is reported to the user for each specified jobId.

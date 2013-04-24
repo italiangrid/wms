@@ -1,0 +1,35 @@
+<<<ENUM>>>
+<<<ITEM>>> Display information for the proxy delegated to the WMProxy service with the specified identifier:
+<<<VERB>>>
+glite-wms-job-info -d <delegationid>
+<<<ENDVERB>>>
+
+<<<ITEM>>> Display information for the proxy delegated with a previously submitted Job:
+<<<VERB>>>
+glite-wms-job-info -p <JobId>
+<<<ENDVERB>>>
+
+<<<ITEM>>> Display the submission string registered to LB server for a previously submitted Job:
+<<<VERB>>>
+glite-wms-job-info --jdl <JobId> -o <OutputFile>
+<<<ENDVERB>>>
+
+<<<ITEM>>> Display the original submission string sent to the WMProxy service for a previously submitted Job
+<<<VERB>>>
+glite-wms-job-info -j <JobId>
+<<<ENDVERB>>>
+
+<<<ITEM>>> Send the request to the WMProxy service whose URL is specified with the -e option
+<<<VERB>>>
+glite-wms-job-info -d <delegationid> -e \
+                   https://wmproxy.glite.it:7443/glite_wms_wmproxy_server
+<<<ENDVERB>>>
+
+<<<ITEM>>> Store into a file the submission string registered to LB server for a previously submitted Job:
+<<<VERB>>>
+glite-wms-job-info --jdl <JobId> -o <OutputFile>
+<<<ENDVERB>>>
+<<<ENDENUM>>>
+
+When --endpoint (-e) is not specified, the search of an available WMProxy service is performed according to the modality
+reported in the description of the --endpoint option.

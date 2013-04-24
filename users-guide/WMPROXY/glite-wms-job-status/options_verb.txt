@@ -1,0 +1,18 @@
+options:
+        --version
+        --help
+        --config, -c     <configfile>
+        --vo <voname>
+        --debug
+        --logfile        <filepath>
+        --noint
+        --input, -i      <filepath>
+        --output, -o     <filepath>
+        --all
+        --verbosity, -v  <level>
+        --from           <[MM:DD:]hh:mm[:[CC]YY]>
+        --to             <[MM:DD:]hh:mm[:[CC]YY]>
+        --user-tag       <tag name>=<tag value>
+        --status, -s     <status code>
+        --exclude, -e    <status code>
+        --nonodes

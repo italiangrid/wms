@@ -1,0 +1,291 @@
+\hypertarget{classglite_1_1wmsui_1_1api_1_1JobCollection}{
+\section{glite::wmsui::api::Job\-Collection Class Reference}
+\label{classglite_1_1wmsui_1_1api_1_1JobCollection}\index{glite::wmsui::api::JobCollection@{glite::wmsui::api::JobCollection}}
+}
+Container class for \hyperlink{classglite_1_1wmsui_1_1api_1_1Job}{Job} objects.  
+
+
+{\tt \#include $<$Job\-Collection.h$>$}
+
+\subsection*{Public Member Functions}
+\begin{Indent}{\bf Constructors/Destructor}\par
+\begin{CompactItemize}
+\item 
+virtual \hyperlink{classglite_1_1wmsui_1_1api_1_1JobCollection_z1_0}{$\sim$Job\-Collection} ()
+\item 
+\hyperlink{classglite_1_1wmsui_1_1api_1_1JobCollection_z1_1}{Job\-Collection} ()
+\item 
+\hyperlink{classglite_1_1wmsui_1_1api_1_1JobCollection_z1_2}{Job\-Collection} (const \hyperlink{classglite_1_1wmsui_1_1api_1_1Job}{Job} \&job, unsigned int n)
+\item 
+\hyperlink{classglite_1_1wmsui_1_1api_1_1JobCollection_z1_3}{Job\-Collection} (const std::vector$<$ \hyperlink{classglite_1_1wmsui_1_1api_1_1Job}{Job} $>$ \&jobs)
+\end{CompactItemize}
+\end{Indent}
+\begin{Indent}{\bf Jobs insertion/remotion handling}\par
+\begin{CompactItemize}
+\item 
+bool \hyperlink{classglite_1_1wmsui_1_1api_1_1JobCollection_z3_0}{empty} ()
+\item 
+unsigned int \hyperlink{classglite_1_1wmsui_1_1api_1_1JobCollection_z3_1}{size} ()
+\item 
+void \hyperlink{classglite_1_1wmsui_1_1api_1_1JobCollection_z3_2}{insert} (const \hyperlink{classglite_1_1wmsui_1_1api_1_1Job}{Job} \&job)
+\item 
+void \hyperlink{classglite_1_1wmsui_1_1api_1_1JobCollection_z3_3}{remove} (const \hyperlink{classglite_1_1wmsui_1_1api_1_1Job}{Job} \&job)
+\item 
+void \hyperlink{classglite_1_1wmsui_1_1api_1_1JobCollection_z3_4}{clear} ()
+\item 
+void \hyperlink{classglite_1_1wmsui_1_1api_1_1JobCollection_z3_5}{set\-Logger\-Level} (int level)
+\item 
+void \hyperlink{classglite_1_1wmsui_1_1api_1_1JobCollection_z3_6}{set\-Cred\-Path} (const std::string cp)
+\item 
+void \hyperlink{classglite_1_1wmsui_1_1api_1_1JobCollection_z3_7}{unset\-Cred\-Path} ()
+\item 
+void \hyperlink{classglite_1_1wmsui_1_1api_1_1JobCollection_z3_8}{set\-Max\-Thread\-Number} (unsigned int max\-Thread)
+\end{CompactItemize}
+\end{Indent}
+\begin{Indent}{\bf Iteration action}\par
+\begin{CompactItemize}
+\item 
+std::vector$<$ \hyperlink{classglite_1_1wmsui_1_1api_1_1Job}{Job} $>$::iterator \hyperlink{classglite_1_1wmsui_1_1api_1_1JobCollection_z5_0}{begin} ()
+\item 
+std::vector$<$ \hyperlink{classglite_1_1wmsui_1_1api_1_1Job}{Job} $>$::iterator \hyperlink{classglite_1_1wmsui_1_1api_1_1JobCollection_z5_1}{end} ()
+\end{CompactItemize}
+\end{Indent}
+\begin{Indent}{\bf Operation}\par
+\begin{CompactItemize}
+\item 
+\hyperlink{structglite_1_1wmsui_1_1api_1_1CollectionResult}{Collection\-Result} \hyperlink{classglite_1_1wmsui_1_1api_1_1JobCollection_z7_0}{submit} (const std::string \&ns\_\-host, int ns\_\-port, std::vector$<$ std::pair$<$ std::string, int $>$ $>$ lb\-Addrs, const std::string \&ce\_\-id=\char`\"{}\char`\"{})
+\item 
+\hyperlink{structglite_1_1wmsui_1_1api_1_1CollectionResult}{Collection\-Result} \hyperlink{classglite_1_1wmsui_1_1api_1_1JobCollection_z7_1}{cancel} ()
+\item 
+\hyperlink{structglite_1_1wmsui_1_1api_1_1CollectionResult}{Collection\-Result} \hyperlink{classglite_1_1wmsui_1_1api_1_1JobCollection_z7_2}{get\-Status} ()
+\item 
+\hyperlink{structglite_1_1wmsui_1_1api_1_1CollectionResult}{Collection\-Result} \hyperlink{classglite_1_1wmsui_1_1api_1_1JobCollection_z7_3}{get\-Output} (const std::string \&dir\_\-path)
+\end{CompactItemize}
+\end{Indent}
+
+
+\subsection{Detailed Description}
+Container class for \hyperlink{classglite_1_1wmsui_1_1api_1_1Job}{Job} objects. 
+
+The \hyperlink{classglite_1_1wmsui_1_1api_1_1JobCollection}{Job\-Collection} Class is a container class for \hyperlink{classglite_1_1wmsui_1_1api_1_1Job}{Job} objects . A \hyperlink{classglite_1_1wmsui_1_1api_1_1JobCollection}{Job\-Collection} has the main purpose of allowing the execution of collective operations on sets of independent jobs. The \hyperlink{classglite_1_1wmsui_1_1api_1_1JobCollection}{Job\-Collection} class is just a logical container, and both not yet submitted and already submitted jobs can be inserted in it. A job collection is somehow orthogonal wrt a job cluster being a set of dependent jobs (e.g. all jobs spawned by the same father process). The allowed operations are: \begin{itemize}
+\item Submitting a collection of jobs to a network server \item Cancelling a collection of jobs \item Retrieving jobs status information from LB server \item Retrieving the output sandbox files from a collection of jobs \end{itemize}
+
+
+\begin{Desc}
+\item[Version:]0.1 \end{Desc}
+\begin{Desc}
+\item[Date:]15 April 2002 \end{Desc}
+\begin{Desc}
+\item[Author:]Alessandro Maraschini $<$\href{mailto:alessandro.maraschini@datamat.it}{\tt alessandro.maraschini@datamat.it}$>$ \end{Desc}
+
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1JobCollection_z1_0}{
+\index{glite::wmsui::api::JobCollection@{glite::wmsui::api::Job\-Collection}!~JobCollection@{$\sim$JobCollection}}
+\index{~JobCollection@{$\sim$JobCollection}!glite::wmsui::api::JobCollection@{glite::wmsui::api::Job\-Collection}}
+\subsubsection[$\sim$JobCollection]{\setlength{\rightskip}{0pt plus 5cm}virtual glite::wmsui::api::Job\-Collection::$\sim$\hyperlink{classglite_1_1wmsui_1_1api_1_1JobCollection}{Job\-Collection} ()\hspace{0.3cm}{\tt  \mbox{[}inline, virtual\mbox{]}}}}
+\label{classglite_1_1wmsui_1_1api_1_1JobCollection_z1_0}
+
+
+Destructor \hypertarget{classglite_1_1wmsui_1_1api_1_1JobCollection_z1_1}{
+\index{glite::wmsui::api::JobCollection@{glite::wmsui::api::Job\-Collection}!JobCollection@{JobCollection}}
+\index{JobCollection@{JobCollection}!glite::wmsui::api::JobCollection@{glite::wmsui::api::Job\-Collection}}
+\subsubsection[JobCollection]{\setlength{\rightskip}{0pt plus 5cm}glite::wmsui::api::Job\-Collection::Job\-Collection ()}}
+\label{classglite_1_1wmsui_1_1api_1_1JobCollection_z1_1}
+
+
+Instantiates an empty \hyperlink{classglite_1_1wmsui_1_1api_1_1JobCollection}{Job\-Collection} object \hypertarget{classglite_1_1wmsui_1_1api_1_1JobCollection_z1_2}{
+\index{glite::wmsui::api::JobCollection@{glite::wmsui::api::Job\-Collection}!JobCollection@{JobCollection}}
+\index{JobCollection@{JobCollection}!glite::wmsui::api::JobCollection@{glite::wmsui::api::Job\-Collection}}
+\subsubsection[JobCollection]{\setlength{\rightskip}{0pt plus 5cm}glite::wmsui::api::Job\-Collection::Job\-Collection (const \hyperlink{classglite_1_1wmsui_1_1api_1_1Job}{Job} \& {\em job}, unsigned int {\em n})}}
+\label{classglite_1_1wmsui_1_1api_1_1JobCollection_z1_2}
+
+
+Instantiates a collection with n copies of a job (the \hyperlink{classglite_1_1wmsui_1_1api_1_1Job}{Job} has to be of JOB\_\-\_\-AD type) \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em job}]the source \hyperlink{classglite_1_1wmsui_1_1api_1_1Job}{Job} (of JOB\_\-TYPE) instancies \item[{\em n}]the number of copies to be filled in the collection \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1JobCollection_z1_3}{
+\index{glite::wmsui::api::JobCollection@{glite::wmsui::api::Job\-Collection}!JobCollection@{JobCollection}}
+\index{JobCollection@{JobCollection}!glite::wmsui::api::JobCollection@{glite::wmsui::api::Job\-Collection}}
+\subsubsection[JobCollection]{\setlength{\rightskip}{0pt plus 5cm}glite::wmsui::api::Job\-Collection::Job\-Collection (const std::vector$<$ \hyperlink{classglite_1_1wmsui_1_1api_1_1Job}{Job} $>$ \& {\em jobs})}}
+\label{classglite_1_1wmsui_1_1api_1_1JobCollection_z1_3}
+
+
+Instantiates a \hyperlink{classglite_1_1wmsui_1_1api_1_1JobCollection}{Job\-Collection} object from a vector of \hyperlink{classglite_1_1wmsui_1_1api_1_1Job}{Job} \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em jobs}]the vector of \hyperlink{classglite_1_1wmsui_1_1api_1_1Job}{Job} instances that have to be inserted\end{description}
+\end{Desc}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1JobCollection_z5_0}{
+\index{glite::wmsui::api::JobCollection@{glite::wmsui::api::Job\-Collection}!begin@{begin}}
+\index{begin@{begin}!glite::wmsui::api::JobCollection@{glite::wmsui::api::Job\-Collection}}
+\subsubsection[begin]{\setlength{\rightskip}{0pt plus 5cm}std::vector$<$\hyperlink{classglite_1_1wmsui_1_1api_1_1Job}{Job}$>$::iterator glite::wmsui::api::Job\-Collection::begin ()\hspace{0.3cm}{\tt  \mbox{[}inline\mbox{]}}}}
+\label{classglite_1_1wmsui_1_1api_1_1JobCollection_z5_0}
+
+
+\begin{Desc}
+\item[Returns:]an iterator pointing to the beginning of the collection \end{Desc}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1JobCollection_z7_1}{
+\index{glite::wmsui::api::JobCollection@{glite::wmsui::api::Job\-Collection}!cancel@{cancel}}
+\index{cancel@{cancel}!glite::wmsui::api::JobCollection@{glite::wmsui::api::Job\-Collection}}
+\subsubsection[cancel]{\setlength{\rightskip}{0pt plus 5cm}\hyperlink{structglite_1_1wmsui_1_1api_1_1CollectionResult}{Collection\-Result} glite::wmsui::api::Job\-Collection::cancel ()}}
+\label{classglite_1_1wmsui_1_1api_1_1JobCollection_z7_1}
+
+
+Cancel the job from the NS Cancel all the jobs belonging to the collection. A job can be cancelled only when it is not yet finished \begin{Desc}
+\item[Returns:]a Job\-Collection::Collection\-Result instance$\ast$ \end{Desc}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1JobCollection_z3_4}{
+\index{glite::wmsui::api::JobCollection@{glite::wmsui::api::Job\-Collection}!clear@{clear}}
+\index{clear@{clear}!glite::wmsui::api::JobCollection@{glite::wmsui::api::Job\-Collection}}
+\subsubsection[clear]{\setlength{\rightskip}{0pt plus 5cm}void glite::wmsui::api::Job\-Collection::clear ()\hspace{0.3cm}{\tt  \mbox{[}inline\mbox{]}}}}
+\label{classglite_1_1wmsui_1_1api_1_1JobCollection_z3_4}
+
+
+Deletes all elements from the collection. \hypertarget{classglite_1_1wmsui_1_1api_1_1JobCollection_z3_0}{
+\index{glite::wmsui::api::JobCollection@{glite::wmsui::api::Job\-Collection}!empty@{empty}}
+\index{empty@{empty}!glite::wmsui::api::JobCollection@{glite::wmsui::api::Job\-Collection}}
+\subsubsection[empty]{\setlength{\rightskip}{0pt plus 5cm}bool glite::wmsui::api::Job\-Collection::empty ()\hspace{0.3cm}{\tt  \mbox{[}inline\mbox{]}}}}
+\label{classglite_1_1wmsui_1_1api_1_1JobCollection_z3_0}
+
+
+Check the size of the collection \begin{Desc}
+\item[Returns:]True if the collection's size is 0 \end{Desc}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1JobCollection_z5_1}{
+\index{glite::wmsui::api::JobCollection@{glite::wmsui::api::Job\-Collection}!end@{end}}
+\index{end@{end}!glite::wmsui::api::JobCollection@{glite::wmsui::api::Job\-Collection}}
+\subsubsection[end]{\setlength{\rightskip}{0pt plus 5cm}std::vector$<$\hyperlink{classglite_1_1wmsui_1_1api_1_1Job}{Job}$>$::iterator glite::wmsui::api::Job\-Collection::end ()\hspace{0.3cm}{\tt  \mbox{[}inline\mbox{]}}}}
+\label{classglite_1_1wmsui_1_1api_1_1JobCollection_z5_1}
+
+
+\begin{Desc}
+\item[Returns:]an iterator pointing to the end of the collection. \end{Desc}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1JobCollection_z7_3}{
+\index{glite::wmsui::api::JobCollection@{glite::wmsui::api::Job\-Collection}!getOutput@{getOutput}}
+\index{getOutput@{getOutput}!glite::wmsui::api::JobCollection@{glite::wmsui::api::Job\-Collection}}
+\subsubsection[getOutput]{\setlength{\rightskip}{0pt plus 5cm}\hyperlink{structglite_1_1wmsui_1_1api_1_1CollectionResult}{Collection\-Result} glite::wmsui::api::Job\-Collection::get\-Output (const std::string \& {\em dir\_\-path})}}
+\label{classglite_1_1wmsui_1_1api_1_1JobCollection_z7_3}
+
+
+Get the output files of the jobs \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em dir\_\-path}]the path where to retrieve the Output\-Sandbox files \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]a Job\-Collection::Collection\-Result instance \end{Desc}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1JobCollection_z7_2}{
+\index{glite::wmsui::api::JobCollection@{glite::wmsui::api::Job\-Collection}!getStatus@{getStatus}}
+\index{getStatus@{getStatus}!glite::wmsui::api::JobCollection@{glite::wmsui::api::Job\-Collection}}
+\subsubsection[getStatus]{\setlength{\rightskip}{0pt plus 5cm}\hyperlink{structglite_1_1wmsui_1_1api_1_1CollectionResult}{Collection\-Result} glite::wmsui::api::Job\-Collection::get\-Status ()}}
+\label{classglite_1_1wmsui_1_1api_1_1JobCollection_z7_2}
+
+
+Retrieve the status information from the LB \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em status\-Vector}]A vector that will be filled with LB status information for each job \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]a \hyperlink{structglite_1_1wmsui_1_1api_1_1CollectionResult}{Collection\-Result} instance \end{Desc}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1JobCollection_z3_2}{
+\index{glite::wmsui::api::JobCollection@{glite::wmsui::api::Job\-Collection}!insert@{insert}}
+\index{insert@{insert}!glite::wmsui::api::JobCollection@{glite::wmsui::api::Job\-Collection}}
+\subsubsection[insert]{\setlength{\rightskip}{0pt plus 5cm}void glite::wmsui::api::Job\-Collection::insert (const \hyperlink{classglite_1_1wmsui_1_1api_1_1Job}{Job} \& {\em job})}}
+\label{classglite_1_1wmsui_1_1api_1_1JobCollection_z3_2}
+
+
+Insert a new \hyperlink{classglite_1_1wmsui_1_1api_1_1Job}{Job} to the collection \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em job}]tht \hyperlink{classglite_1_1wmsui_1_1api_1_1Job}{Job} instance that has to be inserted \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1JobCollection_z3_3}{
+\index{glite::wmsui::api::JobCollection@{glite::wmsui::api::Job\-Collection}!remove@{remove}}
+\index{remove@{remove}!glite::wmsui::api::JobCollection@{glite::wmsui::api::Job\-Collection}}
+\subsubsection[remove]{\setlength{\rightskip}{0pt plus 5cm}void glite::wmsui::api::Job\-Collection::remove (const \hyperlink{classglite_1_1wmsui_1_1api_1_1Job}{Job} \& {\em job})}}
+\label{classglite_1_1wmsui_1_1api_1_1JobCollection_z3_3}
+
+
+Remove a specified \hyperlink{classglite_1_1wmsui_1_1api_1_1Job}{Job} from the collection Delete the specified job from the collection (if the id has been set) Delete the last occurrence of the job from the collection (if the ad has not been set) \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em job}]the \hyperlink{classglite_1_1wmsui_1_1api_1_1Job}{Job} that has to be removed \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1JobCollection_z3_6}{
+\index{glite::wmsui::api::JobCollection@{glite::wmsui::api::Job\-Collection}!setCredPath@{setCredPath}}
+\index{setCredPath@{setCredPath}!glite::wmsui::api::JobCollection@{glite::wmsui::api::Job\-Collection}}
+\subsubsection[setCredPath]{\setlength{\rightskip}{0pt plus 5cm}void glite::wmsui::api::Job\-Collection::set\-Cred\-Path (const std::string {\em cp})}}
+\label{classglite_1_1wmsui_1_1api_1_1JobCollection_z3_6}
+
+
+Set a different Proxy certificate from the default one \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em cp}]The full path of the proxy certificate file to be set \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1JobCollection_z3_5}{
+\index{glite::wmsui::api::JobCollection@{glite::wmsui::api::Job\-Collection}!setLoggerLevel@{setLoggerLevel}}
+\index{setLoggerLevel@{setLoggerLevel}!glite::wmsui::api::JobCollection@{glite::wmsui::api::Job\-Collection}}
+\subsubsection[setLoggerLevel]{\setlength{\rightskip}{0pt plus 5cm}void glite::wmsui::api::Job\-Collection::set\-Logger\-Level (int {\em level})}}
+\label{classglite_1_1wmsui_1_1api_1_1JobCollection_z3_5}
+
+
+Se the verbosity level for NS debug default value = 0 (no verbosity) max value = 6 (dreadful verbosity, print screen) \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em level}]NS verbosity (0-6)\end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1JobCollection_z3_8}{
+\index{glite::wmsui::api::JobCollection@{glite::wmsui::api::Job\-Collection}!setMaxThreadNumber@{setMaxThreadNumber}}
+\index{setMaxThreadNumber@{setMaxThreadNumber}!glite::wmsui::api::JobCollection@{glite::wmsui::api::Job\-Collection}}
+\subsubsection[setMaxThreadNumber]{\setlength{\rightskip}{0pt plus 5cm}void glite::wmsui::api::Job\-Collection::set\-Max\-Thread\-Number (unsigned int {\em max\-Thread})\hspace{0.3cm}{\tt  \mbox{[}inline\mbox{]}}}}
+\label{classglite_1_1wmsui_1_1api_1_1JobCollection_z3_8}
+
+
+This method is used to override the MAX\_\-THREAD\_\-NUMBER macro variable \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em max\-Thread}]the max number or simultaneous threads allowed (unless the -DWITHOUT\_\-THREAD option is specified while compiling) \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1JobCollection_z3_1}{
+\index{glite::wmsui::api::JobCollection@{glite::wmsui::api::Job\-Collection}!size@{size}}
+\index{size@{size}!glite::wmsui::api::JobCollection@{glite::wmsui::api::Job\-Collection}}
+\subsubsection[size]{\setlength{\rightskip}{0pt plus 5cm}unsigned int glite::wmsui::api::Job\-Collection::size ()\hspace{0.3cm}{\tt  \mbox{[}inline\mbox{]}}}}
+\label{classglite_1_1wmsui_1_1api_1_1JobCollection_z3_1}
+
+
+\begin{Desc}
+\item[Returns:]the lenght of the inserted Jobs \end{Desc}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1JobCollection_z7_0}{
+\index{glite::wmsui::api::JobCollection@{glite::wmsui::api::Job\-Collection}!submit@{submit}}
+\index{submit@{submit}!glite::wmsui::api::JobCollection@{glite::wmsui::api::Job\-Collection}}
+\subsubsection[submit]{\setlength{\rightskip}{0pt plus 5cm}\hyperlink{structglite_1_1wmsui_1_1api_1_1CollectionResult}{Collection\-Result} glite::wmsui::api::Job\-Collection::submit (const std::string \& {\em ns\_\-host}, int {\em ns\_\-port}, std::vector$<$ std::pair$<$ std::string, int $>$ $>$ {\em lb\-Addrs}, const std::string \& {\em ce\_\-id} = \char`\"{}\char`\"{})}}
+\label{classglite_1_1wmsui_1_1api_1_1JobCollection_z7_0}
+
+
+Submit method. \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em ns\_\-host}]The Network Server host name \item[{\em ns\_\-port}]the Network Server port value \item[{\em lb\-Addrs}]a vector containing all the LB knonw by the user. The LB for each job is selected randomly \item[{\em ce\_\-id}]The Computing Element Identificator where to perform the job \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]a Job\-Collection::Collection\-Result instance \end{Desc}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1JobCollection_z3_7}{
+\index{glite::wmsui::api::JobCollection@{glite::wmsui::api::Job\-Collection}!unsetCredPath@{unsetCredPath}}
+\index{unsetCredPath@{unsetCredPath}!glite::wmsui::api::JobCollection@{glite::wmsui::api::Job\-Collection}}
+\subsubsection[unsetCredPath]{\setlength{\rightskip}{0pt plus 5cm}void glite::wmsui::api::Job\-Collection::unset\-Cred\-Path ()}}
+\label{classglite_1_1wmsui_1_1api_1_1JobCollection_z3_7}
+
+
+Set the Proxy certificate as default 
+
+The documentation for this class was generated from the following file:\begin{CompactItemize}
+\item 
+\hyperlink{JobCollection_8h}{Job\-Collection.h}\end{CompactItemize}

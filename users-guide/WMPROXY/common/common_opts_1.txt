@@ -1,0 +1,40 @@
+<<<OPT>>>--version
+
+displays WMProxy client and servers version numbers.
+If the --endpoint option is specified only this service is contacted to retrieve its version. If it is not used, the endpoint contacted is that one specified with GLITE<<<USC>>>WMS<<<USC>>>WMPROXY<<<USC>>>ENDPOINT environment variable. If the option is not specified and the environment variable is not set, all servers listed in the WMProxyEndPoints attribute of the user configuration file are contacted. For each of these service, the returned result will be displayed on the standard output (the version numbers in case of success; otherwise the error message).
+<<<ENDOPT>>>
+
+<<<OPT>>>--help
+
+displays command usage
+<<<ENDOPT>>>
+
+<<<OPT>>>--config, -c <configfile>
+
+if the command is launched with this option, the configuration file pointed by <configfile> is used. This option is meaningless when used together with --vo option
+<<<ENDOPT>>>
+
+<<<OPT>>>--vo <voname>
+
+this option allows the user to specify the Virtual Organization she/he is currently working for.
+If the user proxy contains VOMS extensions then the VO specified through this option is overridden by the
+default VO contained in the proxy (i.e. this option is only useful when working with non-VOMS proxies).
+This option is meaningless when used together with --config-vo option.
+<<<ENDOPT>>>
+
+<<<OPT>>>--debug
+
+when this option is specified, debugging information is displayed on the standard output and written also either into the default log file:
+<<<NEWLINE>>>
+
+<<<VERB>>>
+glite-wms-job-<command_name>_<uid>_<pid>_<time>.log
+<<<ENDVERB>>>
+<<<NEWLINE>>>
+located under the /var/tmp  directory or in the log file specified with --logfile option.
+<<<ENDOPT>>>
+
+<<<OPT>>>--logfile <filepath>
+
+When this option is specified, a command log file (whose pathname is <filepath> ) is created.
+<<<ENDOPT>>>

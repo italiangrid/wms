@@ -1,0 +1,20 @@
+%\subsection{Interactions with other Services}
+
+All WMS components described in section~\ref{arch} interact with the LB for logging information about the 
+jobs they are handling and for querying information about them when needed.
+Moreover during the matchmaking phase the Resource Broker interacts with the Data Management Catalogs through 
+the StorageIndex interface to resolve the locations of existing file names specified in the JDL Inputdata list, 
+so that the submitted job would run on worker node, close to the used files.
+
+The WMS service also interacts with VOMS indirectly as it reads information about VO, groups and capabilities 
+(Fully Qualified Attribute Names ~\cite{voms-core}) from the user's proxy credentials issued by VOMS to enforce 
+user authentication and authorization.
+The MyProxy service is contacted by the Proxy Renewal component of the WMS to renew automatically the 
+credentials associated to long lived jobs.
+
+Last but not least the WMS interacts with the CEs for submitting jobs (this goes through CondorC) and for receiving 
+synchronous/asynchronous notifications about resource status and characteristics.
+There could be configurations in which the WMS also interacts with the BDII to collect information about the whole 
+resource pool available for a given VO. 
+
+

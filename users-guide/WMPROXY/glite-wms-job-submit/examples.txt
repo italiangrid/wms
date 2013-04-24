@@ -1,0 +1,52 @@
+Upon successful submission, this command returns the identifier (JobId) assigned to the job
+
+<<<ENUM>>>
+<<<ITEM>>> submission with automatic credential delegation:
+<<<VERB>>>
+<<<NEWLINE>>>
+glite-wms-job-submit -a ./job.jdl
+<<<ENDVERB>>>
+
+<<<ITEM>>> submission with a proxy previously delegated with "exID" id-string; request for displays CE rank numbers:
+<<<VERB>>>
+<<<NEWLINE>>>
+glite-wms-job-submit -d exID  ./job.jdl
+<<<ENDVERB>>>
+
+<<<ITEM>>> sends the request to the WMProxy service whose URL is specified with the -e option  (where a proxy has been previously delegated with "exID" id-string)
+<<<VERB>>>
+<<<NEWLINE>>>
+glite-wms-job-submit -d exID \
+                     -e https://wmproxy.glite.it:7443/glite_wms_wmproxy_server \
+                     ./job.jdl
+<<<ENDVERB>>>
+
+<<<ITEM>>> saves the returned JobId in a file:
+<<<VERB>>>
+<<<NEWLINE>>>
+glite-wms-job-submit -a --output jobid.out ./job.jdl
+<<<ENDVERB>>>
+
+<<<ITEM>>> submits a collection whose JDL files are located in <<<DOLLAR>>>HOME/collection<<<USC>>>ex:
+<<<VERB>>>
+<<<NEWLINE>>>
+glite-wms-job-submit -d exID --collection <<<DOLLAR>>>HOME/collection<<<USC>>>ex
+<<<ENDVERB>>>
+
+<<<ITEM>>> forces the submission to the resource specified with the -r option:
+<<<VERB>>>
+<<<NEWLINE>>>
+glite-wms-job-submit -d exID -r lxb1111.glite.it:2119/blah-lsf-jra1_low \
+                     ./job.jdl
+<<<ENDVERB>>>
+
+<<<ITEM>>> forces the submission of the DAG (the parent and all child nodes) to the resource specified with the --nodes-resources option:
+<<<VERB>>>
+<<<NEWLINE>>>
+glite-wms-job-submit -d exID \
+                     --nodes-resources lxb1111.glite.it:2119/blah-lsf-jra1_low \
+                     ./dag.jdl
+<<<ENDVERB>>>
+<<<ENDENUM>>>
+<<<NEWLINE>>>
+When --endpoint (-e) is not specified, the search of an available WMProxy service is performed according to the modality reported in the description of the --endpoint option.

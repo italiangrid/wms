@@ -1,0 +1,27 @@
+<<<ENUM>>>
+<<<ITEM>>> delegates the user credential with "exID" identifier :
+<<<VERB>>>
+glite-wms-job-delegate -d exID
+<<<ENDVERB>>>
+
+<<<ITEM>>> delegates the user  credential with "exID" identifier  to the WMProxy service specified with the -e option:
+<<<VERB>>>
+glite-wms-job-delegate -d exID \
+                       -e https://wmproxy.glite.it:7443/glite_wms_wmproxy_server
+<<<ENDVERB>>>
+
+<<<ITEM>>> delegates the user credential automatically generating the id string :
+<<<VERB>>>
+glite-wms-job-delegate -a
+<<<ENDVERB>>>
+
+<<<ITEM>>> delegates the user credential to the WMProxy service specified with the -e option automatically generating the id string  :
+<<<VERB>>>
+glite-wms-job-delegate -a \
+                       -e https://wmproxy.glite.it:7443/glite_wms_wmproxy_server
+<<<ENDVERB>>>
+
+<<<ENDENUM>>>
+
+When --endpoint (-e) is not specified, the search of an available WMProxy service is performed according to the modality reported in the
+description of the --endpoint option.

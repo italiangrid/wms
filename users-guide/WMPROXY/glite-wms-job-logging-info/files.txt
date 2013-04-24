@@ -1,0 +1,60 @@
+
+The path \verb /etc must contain the following UI configuration files:
+<<<ITEMIZE>>>
+<<<ITEM>>> <<<INLINEVERB>>>glite_wmsui_cmd_var.conf<<<ENDINLINEVERB>>>
+<<<ITEM>>> <<<INLINEVERB>>>glite_wmsui_cmd_err.conf<<<ENDINLINEVERB>>>
+<<<ITEM>>> <<<INLINEVERB>>>glite_wmsui_cmd_help.conf<<<ENDINLINEVERB>>>
+<<<ENDITEMIZE>>>
+
+<<<INLINEVERB>>>glite_wmsui_cmd_var.conf<<<ENDINLINEVERB>>> will contain custom configuration default values.
+A different configuration file may be specified either by using the --config option or by setting 
+the GLITE<<<USC>>>WMSUI<<<USC>>>COMMANDS<<<USC>>>CONFIG environment variable. 
+Here follows a possible example:
+<<<VERB>>>
+  [
+    RetryCount = 3 ;
+    ErrorStorage= "/tmp" ;
+    OutputStorage="/tmp";
+    ListenerStorage = "/tmp" ;
+    LoggingTimeout = 30 ;
+    LoggingSyncTimeout = 30 ;
+    NSLoggerLevel = 0;
+    DefaultStatusLevel = 1 ;
+    DefaultLogInfoLevel = 1;
+  ]
+<<<ENDVERB>>>
+
+<<<INLINEVERB>>>glite_wmsui_cmd_err.conf<<<ENDINLINEVERB>>> will contain UI exception mapping 
+between error codes and error messages (no relocation possible)
+
+<<<INLINEVERB>>>glite_wmsui_cmd_help.conf<<<ENDINLINEVERB>>> will contain UI long-help information (no relocation possible)
+
+
+<<<INLINEVERB>>><voName>/glite_wmsui.conf<<<ENDINLINEVERB>>>: The user interface configuration file; 
+the standard path location is \verb /etc/glite-wms : 
+
+here follows a possible example:
+<<<VERB>>>
+  [
+    JdlDefaultAttributes = [
+      virtualorganisation="infngrid";
+      requirements = other.GlueCEStateStatus == "Production";
+      retryCount = 3;
+      rank = -other.GlueCEStateEstimatedResponseTime;
+      MyProxyServer="myproxy.cern.ch";
+    ];
+    
+    DelegationId = "luca";
+    ErrorStorage="\${GLITE\_LOCATION\_LOG}";
+    OutputStorage="/tmp";
+    ListenerStorage="\${GLITE\_LOCATION\_TMP}";
+    WMProxyEndPoints = {"https://ghemon.cnaf.infn.it:7443/glite\_wms\_wmproxy\_server"};
+    LBAddress = "ghemon.cnaf.infn.it:9000";
+    LBServiceDiscoveryType ="org.glite.lb.server";
+    WMProxyServiceDiscoveryType="org.glite.wms.wmproxy";
+  ]
+<<<ENDVERB>>>
+
+<<<INLINEVERB>>>/tmp/x509up_u<uid><<<ENDINLINEVERB>>>: A valid X509 user proxy; 
+use the X509<<<USC>>>USER<<<USC>>>PROXY environment variable to override the default location
+<<<NEWLINE>>>

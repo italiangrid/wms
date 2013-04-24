@@ -1,0 +1,6 @@
+This command prints the status of a job previously submitted using glite-wms-job-submit.
+The job status request is sent to the LB that provides the requested information.
+This can be done during the whole job life.
+glite-wms-job-status can monitor one or more jobs: the jobs to be checked are identified by one or more job 
+identifiers (jobIds returned by glite-wms-job-submit) provided as arguments to the command and 
+separated by a blank space.

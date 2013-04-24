@@ -1,0 +1,397 @@
+\hypertarget{classglite_1_1wms_1_1jdl_1_1JdlAttributeList}{
+\section{glite::wms::jdl::Jdl\-Attribute\-List Class Reference}
+\label{classglite_1_1wms_1_1jdl_1_1JdlAttributeList}\index{glite::wms::jdl::JdlAttributeList@{glite::wms::jdl::JdlAttributeList}}
+}
+{\tt \#include $<$Jdl\-Attribute\-List.h$>$}
+
+\subsection*{Check Methods}
+\begin{CompactItemize}
+\item 
+enum \hyperlink{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_z25_0}{Attr} \{ \par
+\hyperlink{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_z25_0w0}{JOBTYPE\_\-MPICH\_\-REQ\_\-RTE}, 
+\hyperlink{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_z25_0w1}{JOBTYPE\_\-MPICH\_\-REQ\_\-CPU}, 
+\hyperlink{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_z25_0w2}{JOBTYPE\_\-MPICH\_\-RANK\_\-FREE}, 
+\hyperlink{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_z25_0w3}{REQ\_\-DEFAULT}, 
+\par
+\hyperlink{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_z25_0w4}{RANK\_\-DEFAULT}, 
+\hyperlink{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_z25_0w5}{MAX\_\-ATTR}
+ \}
+\item 
+void \hyperlink{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_z25_1}{check\-Int} (const std::string \&attr\_\-name, int attr\_\-value)
+\item 
+void \hyperlink{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_z25_2}{check\-Double} (const std::string \&attr\_\-name, const double \&attr\_\-value)
+\item 
+void \hyperlink{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_z25_3}{check\-Bool} (const std::string \&attr\_\-name, const bool \&attr\_\-value)
+\item 
+void \hyperlink{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_z25_4}{check\-String} (const std::string \&attr\_\-name, const std::string \&attr\_\-value)
+\item 
+void \hyperlink{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_z25_5}{check\-Ad} (const std::string \&attr\_\-name, classad::Class\-Ad $\ast$attr\_\-value)
+\item 
+void \hyperlink{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_z25_6}{check\-Expr} (const std::string \&attr\_\-name, const std::string \&attr\_\-value)
+\item 
+void \hyperlink{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_z25_7}{set\-Default} (\hyperlink{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_z25_0}{Attr} attr\_\-name, const std::string \&attr\_\-value)
+\item 
+class \hyperlink{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_z25_17}{Job\-Ad}
+\end{CompactItemize}
+\subsection*{Public Types}
+\subsection*{Public Member Functions}
+\begin{CompactItemize}
+\item 
+\hyperlink{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_a0}{Jdl\-Attribute\-List} ()
+\item 
+virtual \hyperlink{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_a1}{$\sim$Jdl\-Attribute\-List} ()  throw ()
+\item 
+bool \hyperlink{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_a2}{find\-Bool} (const std::string \&attr\_\-name)
+\item 
+bool \hyperlink{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_a3}{find\-Int} (const std::string \&attr\_\-name)
+\item 
+bool \hyperlink{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_a4}{find\-String} (const std::string \&attr\_\-name)
+\item 
+bool \hyperlink{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_a5}{find\-Double} (const std::string \&attr\_\-name)
+\item 
+bool \hyperlink{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_a6}{find\-Ad} (const std::string \&attr\_\-name)
+\item 
+bool \hyperlink{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_a7}{find\-List} (const std::string \&attr\_\-name)
+\item 
+bool \hyperlink{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_a8}{find\-Expr} (const std::string \&attr\_\-name)
+\item 
+bool \hyperlink{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_a9}{find\-Check} (const std::string \&attr\_\-name)
+\item 
+bool \hyperlink{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_a10}{find\-Attribute} (const std::string \&attr\_\-name)
+\item 
+bool \hyperlink{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_a11}{find\-Attr} (const std::string \&attr\_\-name, std::vector$<$ std::string $>$ values) const 
+\end{CompactItemize}
+
+
+\subsection{Detailed Description}
+\hyperlink{classglite_1_1wms_1_1jdl_1_1JobAd}{Job\-Ad} Manipulation attribute class This class allow the user to know the names of all Jobad attributes and it is used principally by \hyperlink{classglite_1_1wms_1_1jdl_1_1JobAd}{Job\-Ad} in order to perform the requested checks needed ro prepare for submission 
+
+
+
+\subsection{Member Enumeration Documentation}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_z25_0}{
+\index{glite::wms::jdl::JdlAttributeList@{glite::wms::jdl::Jdl\-Attribute\-List}!Attr@{Attr}}
+\index{Attr@{Attr}!glite::wms::jdl::JdlAttributeList@{glite::wms::jdl::Jdl\-Attribute\-List}}
+\subsubsection[Attr]{\setlength{\rightskip}{0pt plus 5cm}enum \hyperlink{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_z25_0}{glite::wms::jdl::Jdl\-Attribute\-List::Attr}}}
+\label{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_z25_0}
+
+
+Defatul attribute list \begin{Desc}
+\item[Enumeration values: ]\par
+\begin{description}
+\index{JOBTYPE_MPICH_REQ_RTE@{JOBTYPE\_\-MPICH\_\-REQ\_\-RTE}!glite::wms::jdl::JdlAttributeList@{glite::wms::jdl::JdlAttributeList}}\index{glite::wms::jdl::JdlAttributeList@{glite::wms::jdl::JdlAttributeList}!JOBTYPE_MPICH_REQ_RTE@{JOBTYPE\_\-MPICH\_\-REQ\_\-RTE}}\item[{\em 
+\hypertarget{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_z25_0w0}{
+JOBTYPE\_\-MPICH\_\-REQ\_\-RTE}
+\label{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_z25_0w0}
+}]\index{JOBTYPE_MPICH_REQ_CPU@{JOBTYPE\_\-MPICH\_\-REQ\_\-CPU}!glite::wms::jdl::JdlAttributeList@{glite::wms::jdl::JdlAttributeList}}\index{glite::wms::jdl::JdlAttributeList@{glite::wms::jdl::JdlAttributeList}!JOBTYPE_MPICH_REQ_CPU@{JOBTYPE\_\-MPICH\_\-REQ\_\-CPU}}\item[{\em 
+\hypertarget{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_z25_0w1}{
+JOBTYPE\_\-MPICH\_\-REQ\_\-CPU}
+\label{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_z25_0w1}
+}]\index{JOBTYPE_MPICH_RANK_FREE@{JOBTYPE\_\-MPICH\_\-RANK\_\-FREE}!glite::wms::jdl::JdlAttributeList@{glite::wms::jdl::JdlAttributeList}}\index{glite::wms::jdl::JdlAttributeList@{glite::wms::jdl::JdlAttributeList}!JOBTYPE_MPICH_RANK_FREE@{JOBTYPE\_\-MPICH\_\-RANK\_\-FREE}}\item[{\em 
+\hypertarget{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_z25_0w2}{
+JOBTYPE\_\-MPICH\_\-RANK\_\-FREE}
+\label{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_z25_0w2}
+}]\index{REQ_DEFAULT@{REQ\_\-DEFAULT}!glite::wms::jdl::JdlAttributeList@{glite::wms::jdl::JdlAttributeList}}\index{glite::wms::jdl::JdlAttributeList@{glite::wms::jdl::JdlAttributeList}!REQ_DEFAULT@{REQ\_\-DEFAULT}}\item[{\em 
+\hypertarget{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_z25_0w3}{
+REQ\_\-DEFAULT}
+\label{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_z25_0w3}
+}]\index{RANK_DEFAULT@{RANK\_\-DEFAULT}!glite::wms::jdl::JdlAttributeList@{glite::wms::jdl::JdlAttributeList}}\index{glite::wms::jdl::JdlAttributeList@{glite::wms::jdl::JdlAttributeList}!RANK_DEFAULT@{RANK\_\-DEFAULT}}\item[{\em 
+\hypertarget{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_z25_0w4}{
+RANK\_\-DEFAULT}
+\label{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_z25_0w4}
+}]\index{MAX_ATTR@{MAX\_\-ATTR}!glite::wms::jdl::JdlAttributeList@{glite::wms::jdl::JdlAttributeList}}\index{glite::wms::jdl::JdlAttributeList@{glite::wms::jdl::JdlAttributeList}!MAX_ATTR@{MAX\_\-ATTR}}\item[{\em 
+\hypertarget{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_z25_0w5}{
+MAX\_\-ATTR}
+\label{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_z25_0w5}
+}]\end{description}
+\end{Desc}
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_a0}{
+\index{glite::wms::jdl::JdlAttributeList@{glite::wms::jdl::Jdl\-Attribute\-List}!JdlAttributeList@{JdlAttributeList}}
+\index{JdlAttributeList@{JdlAttributeList}!glite::wms::jdl::JdlAttributeList@{glite::wms::jdl::Jdl\-Attribute\-List}}
+\subsubsection[JdlAttributeList]{\setlength{\rightskip}{0pt plus 5cm}glite::wms::jdl::Jdl\-Attribute\-List::Jdl\-Attribute\-List ()}}
+\label{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_a0}
+
+
+\hypertarget{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_a1}{
+\index{glite::wms::jdl::JdlAttributeList@{glite::wms::jdl::Jdl\-Attribute\-List}!~JdlAttributeList@{$\sim$JdlAttributeList}}
+\index{~JdlAttributeList@{$\sim$JdlAttributeList}!glite::wms::jdl::JdlAttributeList@{glite::wms::jdl::Jdl\-Attribute\-List}}
+\subsubsection[$\sim$JdlAttributeList]{\setlength{\rightskip}{0pt plus 5cm}virtual glite::wms::jdl::Jdl\-Attribute\-List::$\sim$\hyperlink{classglite_1_1wms_1_1jdl_1_1JdlAttributeList}{Jdl\-Attribute\-List} ()  throw ()\hspace{0.3cm}{\tt  \mbox{[}inline, virtual\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_a1}
+
+
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_z25_5}{
+\index{glite::wms::jdl::JdlAttributeList@{glite::wms::jdl::Jdl\-Attribute\-List}!checkAd@{checkAd}}
+\index{checkAd@{checkAd}!glite::wms::jdl::JdlAttributeList@{glite::wms::jdl::Jdl\-Attribute\-List}}
+\subsubsection[checkAd]{\setlength{\rightskip}{0pt plus 5cm}void glite::wms::jdl::Jdl\-Attribute\-List::check\-Ad (const std::string \& {\em attr\_\-name}, classad::Class\-Ad $\ast$ {\em attr\_\-value})}}
+\label{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_z25_5}
+
+
+Check if the couple attribute/value is admitted \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em attr\_\-name}]- the name of the attribute \item[{\em attr\_\-value}]- the value of the attribute \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Exceptions:]
+\begin{description}
+\item[{\em Ad\-Mismatch\-Exception}]- The type of value is not allowed for the specified attribute name \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_z25_3}{
+\index{glite::wms::jdl::JdlAttributeList@{glite::wms::jdl::Jdl\-Attribute\-List}!checkBool@{checkBool}}
+\index{checkBool@{checkBool}!glite::wms::jdl::JdlAttributeList@{glite::wms::jdl::Jdl\-Attribute\-List}}
+\subsubsection[checkBool]{\setlength{\rightskip}{0pt plus 5cm}void glite::wms::jdl::Jdl\-Attribute\-List::check\-Bool (const std::string \& {\em attr\_\-name}, const bool \& {\em attr\_\-value})}}
+\label{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_z25_3}
+
+
+Check if the couple attribute/value is admitted \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em attr\_\-name}]- the name of the attribute \item[{\em attr\_\-value}]- the value of the attribute \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Exceptions:]
+\begin{description}
+\item[{\em Ad\-Mismatch\-Exception}]- The type of value is not allowed for the specified attribute name \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_z25_2}{
+\index{glite::wms::jdl::JdlAttributeList@{glite::wms::jdl::Jdl\-Attribute\-List}!checkDouble@{checkDouble}}
+\index{checkDouble@{checkDouble}!glite::wms::jdl::JdlAttributeList@{glite::wms::jdl::Jdl\-Attribute\-List}}
+\subsubsection[checkDouble]{\setlength{\rightskip}{0pt plus 5cm}void glite::wms::jdl::Jdl\-Attribute\-List::check\-Double (const std::string \& {\em attr\_\-name}, const double \& {\em attr\_\-value})}}
+\label{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_z25_2}
+
+
+Check if the couple attribute/value is admitted \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em attr\_\-name}]- the name of the attribute \item[{\em attr\_\-value}]- the value of the attribute \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Exceptions:]
+\begin{description}
+\item[{\em Ad\-Mismatch\-Exception}]- The type of value is not allowed for the specified attribute name \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_z25_6}{
+\index{glite::wms::jdl::JdlAttributeList@{glite::wms::jdl::Jdl\-Attribute\-List}!checkExpr@{checkExpr}}
+\index{checkExpr@{checkExpr}!glite::wms::jdl::JdlAttributeList@{glite::wms::jdl::Jdl\-Attribute\-List}}
+\subsubsection[checkExpr]{\setlength{\rightskip}{0pt plus 5cm}void glite::wms::jdl::Jdl\-Attribute\-List::check\-Expr (const std::string \& {\em attr\_\-name}, const std::string \& {\em attr\_\-value})}}
+\label{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_z25_6}
+
+
+Check if the couple attribute/value is admitted \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em attr\_\-name}]- the name of the attribute \item[{\em attr\_\-value}]- the value of the attribute \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Exceptions:]
+\begin{description}
+\item[{\em Ad\-Mismatch\-Exception}]- The type of value is not allowed for the specified attribute name \item[{\em Ad\-Format\-Exception}]- The type of value is not allowed for the specified attribute name \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_z25_1}{
+\index{glite::wms::jdl::JdlAttributeList@{glite::wms::jdl::Jdl\-Attribute\-List}!checkInt@{checkInt}}
+\index{checkInt@{checkInt}!glite::wms::jdl::JdlAttributeList@{glite::wms::jdl::Jdl\-Attribute\-List}}
+\subsubsection[checkInt]{\setlength{\rightskip}{0pt plus 5cm}void glite::wms::jdl::Jdl\-Attribute\-List::check\-Int (const std::string \& {\em attr\_\-name}, int {\em attr\_\-value})}}
+\label{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_z25_1}
+
+
+Check if the couple attribute/value is admitted \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em attr\_\-name}]- the name of the attribute \item[{\em attr\_\-value}]- the value of the attribute \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Exceptions:]
+\begin{description}
+\item[{\em Ad\-Mismatch\-Exception}]- The type of value is not allowed for the specified attribute name \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_z25_4}{
+\index{glite::wms::jdl::JdlAttributeList@{glite::wms::jdl::Jdl\-Attribute\-List}!checkString@{checkString}}
+\index{checkString@{checkString}!glite::wms::jdl::JdlAttributeList@{glite::wms::jdl::Jdl\-Attribute\-List}}
+\subsubsection[checkString]{\setlength{\rightskip}{0pt plus 5cm}void glite::wms::jdl::Jdl\-Attribute\-List::check\-String (const std::string \& {\em attr\_\-name}, const std::string \& {\em attr\_\-value})}}
+\label{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_z25_4}
+
+
+Check if the couple attribute/value is admitted \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em attr\_\-name}]- the name of the attribute \item[{\em attr\_\-value}]- the value of the attribute \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Exceptions:]
+\begin{description}
+\item[{\em Ad\-Mismatch\-Exception}]- The type of value is not allowed for the specified attribute name \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_a6}{
+\index{glite::wms::jdl::JdlAttributeList@{glite::wms::jdl::Jdl\-Attribute\-List}!findAd@{findAd}}
+\index{findAd@{findAd}!glite::wms::jdl::JdlAttributeList@{glite::wms::jdl::Jdl\-Attribute\-List}}
+\subsubsection[findAd]{\setlength{\rightskip}{0pt plus 5cm}bool glite::wms::jdl::Jdl\-Attribute\-List::find\-Ad (const std::string \& {\em attr\_\-name})\hspace{0.3cm}{\tt  \mbox{[}inline\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_a6}
+
+
+Find the specified attribute among \hyperlink{classglite_1_1wms_1_1jdl_1_1Ad}{Ad} values \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em attr\_\-name}]the name of the attribute to be found \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]true if found, false otherwise \end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_a11}{
+\index{glite::wms::jdl::JdlAttributeList@{glite::wms::jdl::Jdl\-Attribute\-List}!findAttr@{findAttr}}
+\index{findAttr@{findAttr}!glite::wms::jdl::JdlAttributeList@{glite::wms::jdl::Jdl\-Attribute\-List}}
+\subsubsection[findAttr]{\setlength{\rightskip}{0pt plus 5cm}bool glite::wms::jdl::Jdl\-Attribute\-List::find\-Attr (const std::string \& {\em attr\_\-name}, std::vector$<$ std::string $>$ {\em values}) const}}
+\label{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_a11}
+
+
+Find the specified attribute among all known values \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em attr\_\-name}]the name of the attribute to be found \item[{\em the}]set of values to be looked up to \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]true if found, false otherwise \end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_a10}{
+\index{glite::wms::jdl::JdlAttributeList@{glite::wms::jdl::Jdl\-Attribute\-List}!findAttribute@{findAttribute}}
+\index{findAttribute@{findAttribute}!glite::wms::jdl::JdlAttributeList@{glite::wms::jdl::Jdl\-Attribute\-List}}
+\subsubsection[findAttribute]{\setlength{\rightskip}{0pt plus 5cm}bool glite::wms::jdl::Jdl\-Attribute\-List::find\-Attribute (const std::string \& {\em attr\_\-name})}}
+\label{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_a10}
+
+
+Find the specified attribute among all known values \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em attr\_\-name}]the name of the attribute to be found \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]true if found, false otherwise \end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_a2}{
+\index{glite::wms::jdl::JdlAttributeList@{glite::wms::jdl::Jdl\-Attribute\-List}!findBool@{findBool}}
+\index{findBool@{findBool}!glite::wms::jdl::JdlAttributeList@{glite::wms::jdl::Jdl\-Attribute\-List}}
+\subsubsection[findBool]{\setlength{\rightskip}{0pt plus 5cm}bool glite::wms::jdl::Jdl\-Attribute\-List::find\-Bool (const std::string \& {\em attr\_\-name})\hspace{0.3cm}{\tt  \mbox{[}inline\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_a2}
+
+
+Find the specified attribute among boolean values \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em attr\_\-name}]the name of the attribute to be found \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]true if found, false otherwise \end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_a9}{
+\index{glite::wms::jdl::JdlAttributeList@{glite::wms::jdl::Jdl\-Attribute\-List}!findCheck@{findCheck}}
+\index{findCheck@{findCheck}!glite::wms::jdl::JdlAttributeList@{glite::wms::jdl::Jdl\-Attribute\-List}}
+\subsubsection[findCheck]{\setlength{\rightskip}{0pt plus 5cm}bool glite::wms::jdl::Jdl\-Attribute\-List::find\-Check (const std::string \& {\em attr\_\-name})\hspace{0.3cm}{\tt  \mbox{[}inline\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_a9}
+
+
+Find the specified attribute among to-be-checked values \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em attr\_\-name}]the name of the attribute to be found \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]true if found, false otherwise \end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_a5}{
+\index{glite::wms::jdl::JdlAttributeList@{glite::wms::jdl::Jdl\-Attribute\-List}!findDouble@{findDouble}}
+\index{findDouble@{findDouble}!glite::wms::jdl::JdlAttributeList@{glite::wms::jdl::Jdl\-Attribute\-List}}
+\subsubsection[findDouble]{\setlength{\rightskip}{0pt plus 5cm}bool glite::wms::jdl::Jdl\-Attribute\-List::find\-Double (const std::string \& {\em attr\_\-name})\hspace{0.3cm}{\tt  \mbox{[}inline\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_a5}
+
+
+Find the specified attribute among double values \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em attr\_\-name}]the name of the attribute to be found \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]true if found, false otherwise \end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_a8}{
+\index{glite::wms::jdl::JdlAttributeList@{glite::wms::jdl::Jdl\-Attribute\-List}!findExpr@{findExpr}}
+\index{findExpr@{findExpr}!glite::wms::jdl::JdlAttributeList@{glite::wms::jdl::Jdl\-Attribute\-List}}
+\subsubsection[findExpr]{\setlength{\rightskip}{0pt plus 5cm}bool glite::wms::jdl::Jdl\-Attribute\-List::find\-Expr (const std::string \& {\em attr\_\-name})\hspace{0.3cm}{\tt  \mbox{[}inline\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_a8}
+
+
+Find the specified attribute among expression values \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em attr\_\-name}]the name of the attribute to be found \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]true if found, false otherwise \end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_a3}{
+\index{glite::wms::jdl::JdlAttributeList@{glite::wms::jdl::Jdl\-Attribute\-List}!findInt@{findInt}}
+\index{findInt@{findInt}!glite::wms::jdl::JdlAttributeList@{glite::wms::jdl::Jdl\-Attribute\-List}}
+\subsubsection[findInt]{\setlength{\rightskip}{0pt plus 5cm}bool glite::wms::jdl::Jdl\-Attribute\-List::find\-Int (const std::string \& {\em attr\_\-name})\hspace{0.3cm}{\tt  \mbox{[}inline\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_a3}
+
+
+Find the specified attribute among integer values \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em attr\_\-name}]the name of the attribute to be found \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]true if found, false otherwise \end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_a7}{
+\index{glite::wms::jdl::JdlAttributeList@{glite::wms::jdl::Jdl\-Attribute\-List}!findList@{findList}}
+\index{findList@{findList}!glite::wms::jdl::JdlAttributeList@{glite::wms::jdl::Jdl\-Attribute\-List}}
+\subsubsection[findList]{\setlength{\rightskip}{0pt plus 5cm}bool glite::wms::jdl::Jdl\-Attribute\-List::find\-List (const std::string \& {\em attr\_\-name})\hspace{0.3cm}{\tt  \mbox{[}inline\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_a7}
+
+
+Find the specified attribute among list values \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em attr\_\-name}]the name of the attribute to be found \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]true if found, false otherwise \end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_a4}{
+\index{glite::wms::jdl::JdlAttributeList@{glite::wms::jdl::Jdl\-Attribute\-List}!findString@{findString}}
+\index{findString@{findString}!glite::wms::jdl::JdlAttributeList@{glite::wms::jdl::Jdl\-Attribute\-List}}
+\subsubsection[findString]{\setlength{\rightskip}{0pt plus 5cm}bool glite::wms::jdl::Jdl\-Attribute\-List::find\-String (const std::string \& {\em attr\_\-name})\hspace{0.3cm}{\tt  \mbox{[}inline\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_a4}
+
+
+Find the specified attribute among string values \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em attr\_\-name}]the name of the attribute to be found \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]true if found, false otherwise \end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_z25_7}{
+\index{glite::wms::jdl::JdlAttributeList@{glite::wms::jdl::Jdl\-Attribute\-List}!setDefault@{setDefault}}
+\index{setDefault@{setDefault}!glite::wms::jdl::JdlAttributeList@{glite::wms::jdl::Jdl\-Attribute\-List}}
+\subsubsection[setDefault]{\setlength{\rightskip}{0pt plus 5cm}void glite::wms::jdl::Jdl\-Attribute\-List::set\-Default (\hyperlink{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_z25_0}{Attr} {\em attr\_\-name}, const std::string \& {\em attr\_\-value})}}
+\label{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_z25_7}
+
+
+Set the value for a default attribute \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em attr\_\-name}]the attribute to be set \item[{\em attr\_\-value}]the string representation of the value to be set \end{description}
+\end{Desc}
+
+
+\subsection{Friends And Related Function Documentation}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_z25_17}{
+\index{glite::wms::jdl::JdlAttributeList@{glite::wms::jdl::Jdl\-Attribute\-List}!JobAd@{JobAd}}
+\index{JobAd@{JobAd}!glite::wms::jdl::JdlAttributeList@{glite::wms::jdl::Jdl\-Attribute\-List}}
+\subsubsection[JobAd]{\setlength{\rightskip}{0pt plus 5cm}friend class \hyperlink{classglite_1_1wms_1_1jdl_1_1JobAd}{Job\-Ad}\hspace{0.3cm}{\tt  \mbox{[}friend\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1JdlAttributeList_z25_17}
+
+
+
+
+The documentation for this class was generated from the following file:\begin{CompactItemize}
+\item 
+\hyperlink{JdlAttributeList_8h}{Jdl\-Attribute\-List.h}\end{CompactItemize}

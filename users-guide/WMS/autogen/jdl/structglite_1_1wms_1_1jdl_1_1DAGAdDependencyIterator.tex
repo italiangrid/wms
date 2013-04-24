@@ -1,0 +1,203 @@
+\hypertarget{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator}{
+\section{glite::wms::jdl::DAGAd\-Dependency\-Iterator Struct Reference}
+\label{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator}\index{glite::wms::jdl::DAGAdDependencyIterator@{glite::wms::jdl::DAGAdDependencyIterator}}
+}
+{\tt \#include $<$DAGAd.h$>$}
+
+\subsection*{Public Types}
+\begin{CompactItemize}
+\item 
+typedef \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGAdNodeIterator}{DAGAd\-Node\-Iterator} \hyperlink{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_w0}{node\_\-iterator}
+\item 
+typedef classad::Expr\-List::iterator \hyperlink{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_w1}{Iterator}
+\end{CompactItemize}
+\subsection*{Public Member Functions}
+\begin{CompactItemize}
+\item 
+bool \hyperlink{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_a0}{is\_\-good} () const 
+\item 
+void \hyperlink{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_a1}{set\_\-value} ()
+\item 
+\hyperlink{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_a2}{DAGAd\-Dependency\-Iterator} (classad::Class\-Ad const $\ast$dag=0, bool begin=false)
+\item 
+\hyperlink{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator}{DAGAd\-Dependency\-Iterator} \& \hyperlink{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_a3}{operator++} ()
+\item 
+\hyperlink{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator}{DAGAd\-Dependency\-Iterator} \hyperlink{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_a4}{operator++} (int)
+\item 
+reference \hyperlink{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_a5}{operator $\ast$} () const 
+\item 
+pointer \hyperlink{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_a6}{operator $\rightarrow$ } () const 
+\end{CompactItemize}
+\subsection*{Static Public Member Functions}
+\begin{CompactItemize}
+\item 
+classad::Expr\-List $\ast$ \hyperlink{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_e0}{parents} (classad::Expr\-Tree $\ast$dep)
+\item 
+classad::Expr\-List $\ast$ \hyperlink{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_e1}{children} (classad::Expr\-Tree $\ast$dep)
+\end{CompactItemize}
+\subsection*{Public Attributes}
+\begin{CompactItemize}
+\item 
+classad::Class\-Ad const $\ast$ \hyperlink{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_o0}{m\_\-dag}
+\item 
+\hyperlink{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_w1}{Iterator} \hyperlink{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_o1}{m\_\-dep}
+\item 
+\hyperlink{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_w1}{Iterator} \hyperlink{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_o2}{m\_\-dep\_\-end}
+\item 
+\hyperlink{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_w1}{Iterator} \hyperlink{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_o3}{m\_\-parent}
+\item 
+\hyperlink{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_w1}{Iterator} \hyperlink{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_o4}{m\_\-child}
+\item 
+value\_\-type \hyperlink{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_o5}{m\_\-value}
+\end{CompactItemize}
+\subsection*{Friends}
+\begin{CompactItemize}
+\item 
+bool \hyperlink{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_n0}{operator==} (\hyperlink{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator}{DAGAd\-Dependency\-Iterator} const \&lhs, \hyperlink{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator}{DAGAd\-Dependency\-Iterator} const \&rhs)
+\end{CompactItemize}
+
+
+\subsection{Member Typedef Documentation}
+\hypertarget{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_w1}{
+\index{glite::wms::jdl::DAGAdDependencyIterator@{glite::wms::jdl::DAGAd\-Dependency\-Iterator}!Iterator@{Iterator}}
+\index{Iterator@{Iterator}!glite::wms::jdl::DAGAdDependencyIterator@{glite::wms::jdl::DAGAd\-Dependency\-Iterator}}
+\subsubsection[Iterator]{\setlength{\rightskip}{0pt plus 5cm}typedef classad::Expr\-List::iterator \hyperlink{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_w1}{glite::wms::jdl::DAGAd\-Dependency\-Iterator::Iterator}}}
+\label{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_w1}
+
+
+\hypertarget{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_w0}{
+\index{glite::wms::jdl::DAGAdDependencyIterator@{glite::wms::jdl::DAGAd\-Dependency\-Iterator}!node_iterator@{node\_\-iterator}}
+\index{node_iterator@{node\_\-iterator}!glite::wms::jdl::DAGAdDependencyIterator@{glite::wms::jdl::DAGAd\-Dependency\-Iterator}}
+\subsubsection[node\_\-iterator]{\setlength{\rightskip}{0pt plus 5cm}typedef \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGAdNodeIterator}{DAGAd\-Node\-Iterator} \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGAdNodeIterator}{glite::wms::jdl::DAGAd\-Dependency\-Iterator::node\_\-iterator}}}
+\label{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_w0}
+
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_a2}{
+\index{glite::wms::jdl::DAGAdDependencyIterator@{glite::wms::jdl::DAGAd\-Dependency\-Iterator}!DAGAdDependencyIterator@{DAGAdDependencyIterator}}
+\index{DAGAdDependencyIterator@{DAGAdDependencyIterator}!glite::wms::jdl::DAGAdDependencyIterator@{glite::wms::jdl::DAGAd\-Dependency\-Iterator}}
+\subsubsection[DAGAdDependencyIterator]{\setlength{\rightskip}{0pt plus 5cm}glite::wms::jdl::DAGAd\-Dependency\-Iterator::DAGAd\-Dependency\-Iterator (classad::Class\-Ad const $\ast$ {\em dag} = 0, bool {\em begin} = false)}}
+\label{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_a2}
+
+
+
+
+\subsection{Member Function Documentation}
+\hypertarget{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_e1}{
+\index{glite::wms::jdl::DAGAdDependencyIterator@{glite::wms::jdl::DAGAd\-Dependency\-Iterator}!children@{children}}
+\index{children@{children}!glite::wms::jdl::DAGAdDependencyIterator@{glite::wms::jdl::DAGAd\-Dependency\-Iterator}}
+\subsubsection[children]{\setlength{\rightskip}{0pt plus 5cm}classad::Expr\-List$\ast$ glite::wms::jdl::DAGAd\-Dependency\-Iterator::children (classad::Expr\-Tree $\ast$ {\em dep})\hspace{0.3cm}{\tt  \mbox{[}inline, static\mbox{]}}}}
+\label{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_e1}
+
+
+\hypertarget{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_a0}{
+\index{glite::wms::jdl::DAGAdDependencyIterator@{glite::wms::jdl::DAGAd\-Dependency\-Iterator}!is_good@{is\_\-good}}
+\index{is_good@{is\_\-good}!glite::wms::jdl::DAGAdDependencyIterator@{glite::wms::jdl::DAGAd\-Dependency\-Iterator}}
+\subsubsection[is\_\-good]{\setlength{\rightskip}{0pt plus 5cm}bool glite::wms::jdl::DAGAd\-Dependency\-Iterator::is\_\-good () const\hspace{0.3cm}{\tt  \mbox{[}inline\mbox{]}}}}
+\label{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_a0}
+
+
+\hypertarget{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_a5}{
+\index{glite::wms::jdl::DAGAdDependencyIterator@{glite::wms::jdl::DAGAd\-Dependency\-Iterator}!operator *@{operator $\ast$}}
+\index{operator *@{operator $\ast$}!glite::wms::jdl::DAGAdDependencyIterator@{glite::wms::jdl::DAGAd\-Dependency\-Iterator}}
+\subsubsection[operator $\ast$]{\setlength{\rightskip}{0pt plus 5cm}reference glite::wms::jdl::DAGAd\-Dependency\-Iterator::operator $\ast$ () const\hspace{0.3cm}{\tt  \mbox{[}inline\mbox{]}}}}
+\label{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_a5}
+
+
+\hypertarget{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_a4}{
+\index{glite::wms::jdl::DAGAdDependencyIterator@{glite::wms::jdl::DAGAd\-Dependency\-Iterator}!operator++@{operator++}}
+\index{operator++@{operator++}!glite::wms::jdl::DAGAdDependencyIterator@{glite::wms::jdl::DAGAd\-Dependency\-Iterator}}
+\subsubsection[operator++]{\setlength{\rightskip}{0pt plus 5cm}\hyperlink{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator}{DAGAd\-Dependency\-Iterator} glite::wms::jdl::DAGAd\-Dependency\-Iterator::operator++ (int)}}
+\label{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_a4}
+
+
+\hypertarget{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_a3}{
+\index{glite::wms::jdl::DAGAdDependencyIterator@{glite::wms::jdl::DAGAd\-Dependency\-Iterator}!operator++@{operator++}}
+\index{operator++@{operator++}!glite::wms::jdl::DAGAdDependencyIterator@{glite::wms::jdl::DAGAd\-Dependency\-Iterator}}
+\subsubsection[operator++]{\setlength{\rightskip}{0pt plus 5cm}\hyperlink{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator}{DAGAd\-Dependency\-Iterator}\& glite::wms::jdl::DAGAd\-Dependency\-Iterator::operator++ ()}}
+\label{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_a3}
+
+
+\hypertarget{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_a6}{
+\index{glite::wms::jdl::DAGAdDependencyIterator@{glite::wms::jdl::DAGAd\-Dependency\-Iterator}!operator->@{operator-$>$}}
+\index{operator->@{operator-$>$}!glite::wms::jdl::DAGAdDependencyIterator@{glite::wms::jdl::DAGAd\-Dependency\-Iterator}}
+\subsubsection[operator-$>$]{\setlength{\rightskip}{0pt plus 5cm}pointer glite::wms::jdl::DAGAd\-Dependency\-Iterator::operator $\rightarrow$  () const\hspace{0.3cm}{\tt  \mbox{[}inline\mbox{]}}}}
+\label{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_a6}
+
+
+\hypertarget{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_e0}{
+\index{glite::wms::jdl::DAGAdDependencyIterator@{glite::wms::jdl::DAGAd\-Dependency\-Iterator}!parents@{parents}}
+\index{parents@{parents}!glite::wms::jdl::DAGAdDependencyIterator@{glite::wms::jdl::DAGAd\-Dependency\-Iterator}}
+\subsubsection[parents]{\setlength{\rightskip}{0pt plus 5cm}classad::Expr\-List$\ast$ glite::wms::jdl::DAGAd\-Dependency\-Iterator::parents (classad::Expr\-Tree $\ast$ {\em dep})\hspace{0.3cm}{\tt  \mbox{[}inline, static\mbox{]}}}}
+\label{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_e0}
+
+
+\hypertarget{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_a1}{
+\index{glite::wms::jdl::DAGAdDependencyIterator@{glite::wms::jdl::DAGAd\-Dependency\-Iterator}!set_value@{set\_\-value}}
+\index{set_value@{set\_\-value}!glite::wms::jdl::DAGAdDependencyIterator@{glite::wms::jdl::DAGAd\-Dependency\-Iterator}}
+\subsubsection[set\_\-value]{\setlength{\rightskip}{0pt plus 5cm}void glite::wms::jdl::DAGAd\-Dependency\-Iterator::set\_\-value ()}}
+\label{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_a1}
+
+
+
+
+\subsection{Friends And Related Function Documentation}
+\hypertarget{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_n0}{
+\index{glite::wms::jdl::DAGAdDependencyIterator@{glite::wms::jdl::DAGAd\-Dependency\-Iterator}!operator==@{operator==}}
+\index{operator==@{operator==}!glite::wms::jdl::DAGAdDependencyIterator@{glite::wms::jdl::DAGAd\-Dependency\-Iterator}}
+\subsubsection[operator==]{\setlength{\rightskip}{0pt plus 5cm}bool operator== (\hyperlink{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator}{DAGAd\-Dependency\-Iterator} const \& {\em lhs}, \hyperlink{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator}{DAGAd\-Dependency\-Iterator} const \& {\em rhs})\hspace{0.3cm}{\tt  \mbox{[}friend\mbox{]}}}}
+\label{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_n0}
+
+
+
+
+\subsection{Member Data Documentation}
+\hypertarget{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_o4}{
+\index{glite::wms::jdl::DAGAdDependencyIterator@{glite::wms::jdl::DAGAd\-Dependency\-Iterator}!m_child@{m\_\-child}}
+\index{m_child@{m\_\-child}!glite::wms::jdl::DAGAdDependencyIterator@{glite::wms::jdl::DAGAd\-Dependency\-Iterator}}
+\subsubsection[m\_\-child]{\setlength{\rightskip}{0pt plus 5cm}\hyperlink{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_w1}{Iterator} \hyperlink{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_o4}{glite::wms::jdl::DAGAd\-Dependency\-Iterator::m\_\-child}}}
+\label{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_o4}
+
+
+\hypertarget{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_o0}{
+\index{glite::wms::jdl::DAGAdDependencyIterator@{glite::wms::jdl::DAGAd\-Dependency\-Iterator}!m_dag@{m\_\-dag}}
+\index{m_dag@{m\_\-dag}!glite::wms::jdl::DAGAdDependencyIterator@{glite::wms::jdl::DAGAd\-Dependency\-Iterator}}
+\subsubsection[m\_\-dag]{\setlength{\rightskip}{0pt plus 5cm}classad::Class\-Ad const$\ast$ \hyperlink{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_o0}{glite::wms::jdl::DAGAd\-Dependency\-Iterator::m\_\-dag}}}
+\label{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_o0}
+
+
+\hypertarget{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_o1}{
+\index{glite::wms::jdl::DAGAdDependencyIterator@{glite::wms::jdl::DAGAd\-Dependency\-Iterator}!m_dep@{m\_\-dep}}
+\index{m_dep@{m\_\-dep}!glite::wms::jdl::DAGAdDependencyIterator@{glite::wms::jdl::DAGAd\-Dependency\-Iterator}}
+\subsubsection[m\_\-dep]{\setlength{\rightskip}{0pt plus 5cm}\hyperlink{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_w1}{Iterator} \hyperlink{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_o1}{glite::wms::jdl::DAGAd\-Dependency\-Iterator::m\_\-dep}}}
+\label{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_o1}
+
+
+\hypertarget{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_o2}{
+\index{glite::wms::jdl::DAGAdDependencyIterator@{glite::wms::jdl::DAGAd\-Dependency\-Iterator}!m_dep_end@{m\_\-dep\_\-end}}
+\index{m_dep_end@{m\_\-dep\_\-end}!glite::wms::jdl::DAGAdDependencyIterator@{glite::wms::jdl::DAGAd\-Dependency\-Iterator}}
+\subsubsection[m\_\-dep\_\-end]{\setlength{\rightskip}{0pt plus 5cm}\hyperlink{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_w1}{Iterator} \hyperlink{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_o2}{glite::wms::jdl::DAGAd\-Dependency\-Iterator::m\_\-dep\_\-end}}}
+\label{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_o2}
+
+
+\hypertarget{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_o3}{
+\index{glite::wms::jdl::DAGAdDependencyIterator@{glite::wms::jdl::DAGAd\-Dependency\-Iterator}!m_parent@{m\_\-parent}}
+\index{m_parent@{m\_\-parent}!glite::wms::jdl::DAGAdDependencyIterator@{glite::wms::jdl::DAGAd\-Dependency\-Iterator}}
+\subsubsection[m\_\-parent]{\setlength{\rightskip}{0pt plus 5cm}\hyperlink{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_w1}{Iterator} \hyperlink{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_o3}{glite::wms::jdl::DAGAd\-Dependency\-Iterator::m\_\-parent}}}
+\label{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_o3}
+
+
+\hypertarget{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_o5}{
+\index{glite::wms::jdl::DAGAdDependencyIterator@{glite::wms::jdl::DAGAd\-Dependency\-Iterator}!m_value@{m\_\-value}}
+\index{m_value@{m\_\-value}!glite::wms::jdl::DAGAdDependencyIterator@{glite::wms::jdl::DAGAd\-Dependency\-Iterator}}
+\subsubsection[m\_\-value]{\setlength{\rightskip}{0pt plus 5cm}value\_\-type \hyperlink{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_o5}{glite::wms::jdl::DAGAd\-Dependency\-Iterator::m\_\-value}}}
+\label{structglite_1_1wms_1_1jdl_1_1DAGAdDependencyIterator_o5}
+
+
+
+
+The documentation for this struct was generated from the following file:\begin{CompactItemize}
+\item 
+\hyperlink{DAGAd_8h}{DAGAd.h}\end{CompactItemize}

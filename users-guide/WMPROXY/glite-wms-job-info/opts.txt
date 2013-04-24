@@ -1,0 +1,68 @@
+<<<OPT>>>--noint
+
+if this option is specified, every interactive question to the user is skipped and the operation is continued 
+(when possible)
+<<<ENDOPT>>>
+
+
+<<<OPT>>>--input, -i <filepath>
+
+Allow the user to select the desired job among the ones contained in the file located in <filepath>. 
+This option cannot be used if the jobId has been specified. A job has to be selected specifying 
+the numbers associated to the job identifier
+<<<ENDOPT>>>
+
+
+<<<OPT>>>--delegationid, -d <idstring>
+
+if this option is specified, the user proxy associated to the id delegated previously will be displayed.
+<<<ENDOPT>>>
+
+
+<<<OPT>>>--proxy, -p <JobID>
+
+Retrieves and displays information for the proxy delegated with the specified JobId: 
+the WMProxy service where the job was submitted is contacted and asked for needed information.
+<<<ENDOPT>>>
+
+
+<<<OPT>>>---jdl <jobid>
+
+Retrieves and displays the JDL registered to the LB service for the specified JobId: 
+the WMProxy service where the job was submitted is contacted and asked for needed information.
+This option is only available from glite version >= 3.1.
+<<<ENDOPT>>>
+
+
+<<<OPT>>>--jdl-original, -j <jobid>
+
+Retrieves and displays the original JDL submitted by the user to the WMProxy service. 
+This information might be quite different from the registered JDL, mostly for parametric and collection of jobs.
+This option is only available from glite version >= 3.1.
+<<<ENDOPT>>>
+
+
+<<<OPT>>>--endpoint, -e <serviceURL>
+
+when this option is specified, the operations are performed contacting the WMProxy 
+service represented by the given <serviceURL>. If it is not used, the endpoint contacted is that one 
+specified by the GLITE<<<USC>>>WMS<<<USC>>>WMPROXY<<<USC>>>ENDPOINT environment variable. 
+If both this option is not specified 
+and the environment variable is not set, the service request will be sent to one of the endpoints listed 
+in the WMProxyEndPoints attribute in the user configuration file (randomly chosen among the URLs of the 
+attribute list). If the chosen service is not available, a succession of attempts are performed on the 
+other specified services until the connection with one of these endpoints can be established or all 
+services have been contacted without success. In this latter case the operation can not be obviously 
+performed and the execution of the command is stopped with an error message.
+<<<ENDOPT>>>
+
+
+<<<OPT>>>--output, -o <filename>
+
+Stores the retrieved information into the specified file instead of the standard output. 
+The specified file path can be either a simple name or an absolute path (on the submitting machine). 
+In the former case the file <filepath> is created in the current working directory.
+This option is only available from glite version >= 3.1.
+<<<ENDOPT>>>
+
+

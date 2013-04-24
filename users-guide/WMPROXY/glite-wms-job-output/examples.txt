@@ -1,0 +1,30 @@
+<<<ENUM>>>
+<<<ITEM>>> 
+<<<VERB>>>glite-wms-job-output https://wmproxy.glite.it:9000/7O0j4Fequpg7M6SRJ-NvLg
+<<<ENDVERB>>> 
+
+if the operation succeeds, the <<<INLINEVERB>>>/tmp/<jobId-UniqueString><<<ENDINLINEVERB>>>  directory contains the retrieved files
+
+<<<ITEM>>>
+<<<VERB>>>
+glite-wms-job-output --dir $HOME/my_dir \
+                     https://wmproxy.glite.it:9000/7O0j4Fequpg7M6SRJ-NvLg
+<<<ENDVERB>>>
+
+if the operation succeeds, the <<<DOLLAR>>>HOME/my<<<USC>>>dir directory contains the retrieved files
+
+<<<ITEM>>> request for output of multiple jobs:
+<<<VERB>>>
+glite-wms-job-output https://wmproxy.glite.it:9000/7O0j4Fequpg7M6SRJ-NvLg \
+                     https://wmproxy.glite.it:9000/wqikja_-de83jdqd \
+                     https://wmproxy.glite.it:9000/jdh_wpwkd134ywhq6p
+<<<ENDVERB>>>
+
+if the operation succeeds, each <<<INLINEVERB>>>/tmp/<jobId-UniqueString><<<ENDINLINEVERB>>> directory contains the retrieved files for the corresponding job
+
+<<<ITEM>>> the myids.in input file contains the jobid(s)
+<<<VERB>>>
+glite-wms-job-output --input myids.in
+<<<ENDVERB>>>
+if the operation succeeds, each <<<INLINEVERB>>>/tmp/<jobId-UniqueString><<<ENDINLINEVERB>>> directory contains the retrieved files for the corresponding job
+<<<ENDENUM>>>

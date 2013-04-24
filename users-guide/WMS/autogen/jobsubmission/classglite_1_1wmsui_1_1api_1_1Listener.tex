@@ -1,0 +1,40 @@
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Listener}{
+\section{glite::wmsui::api::Listener Class Reference}
+\label{classglite_1_1wmsui_1_1api_1_1Listener}\index{glite::wmsui::api::Listener@{glite::wmsui::api::Listener}}
+}
+{\tt \#include $<$Listener.h$>$}
+
+\subsection*{Public Member Functions}
+\begin{CompactItemize}
+\item 
+virtual void \hyperlink{classglite_1_1wmsui_1_1api_1_1Listener_a0}{run} (\hyperlink{classglite_1_1wmsui_1_1api_1_1Shadow}{Shadow} $\ast$shadow) const=0
+\end{CompactItemize}
+
+
+\subsection{Detailed Description}
+The listener interface is used in order to manage the interaction of interactive jobs. 
+
+Depending on how it is implemented, the task of the implemented class should be: \begin{itemize}
+\item Reading the output of the job inside the output named pipe \item Prompt the output message to the user (by using a swing window or simply to the std output) \item Catch the standard input from the user and write it to the input name pipe \end{itemize}
+
+
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classglite_1_1wmsui_1_1api_1_1Listener_a0}{
+\index{glite::wmsui::api::Listener@{glite::wmsui::api::Listener}!run@{run}}
+\index{run@{run}!glite::wmsui::api::Listener@{glite::wmsui::api::Listener}}
+\subsubsection[run]{\setlength{\rightskip}{0pt plus 5cm}virtual void glite::wmsui::api::Listener::run (\hyperlink{classglite_1_1wmsui_1_1api_1_1Shadow}{Shadow} $\ast$ {\em shadow}) const\hspace{0.3cm}{\tt  \mbox{[}pure virtual\mbox{]}}}}
+\label{classglite_1_1wmsui_1_1api_1_1Listener_a0}
+
+
+This Method is called once the shadow has been successfully launched and the \hyperlink{classglite_1_1wmsui_1_1api_1_1Job}{Job} is ready to perform the interactive console \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em shadow}]the \hyperlink{classglite_1_1wmsui_1_1api_1_1Shadow}{Shadow} pointer that stores all the information needed to perform a console interactivity\end{description}
+\end{Desc}
+
+
+The documentation for this class was generated from the following file:\begin{CompactItemize}
+\item 
+\hyperlink{Listener_8h}{Listener.h}\end{CompactItemize}

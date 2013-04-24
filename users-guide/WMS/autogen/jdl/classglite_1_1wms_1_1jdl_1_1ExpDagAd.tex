@@ -1,0 +1,487 @@
+\hypertarget{classglite_1_1wms_1_1jdl_1_1ExpDagAd}{
+\section{glite::wms::jdl::Exp\-Dag\-Ad Class Reference}
+\label{classglite_1_1wms_1_1jdl_1_1ExpDagAd}\index{glite::wms::jdl::ExpDagAd@{glite::wms::jdl::ExpDagAd}}
+}
+Provides a representation of the job description in the JDL language.  
+
+
+{\tt \#include $<$Exp\-Dag\-Ad.h$>$}
+
+\subsection*{Public Types}
+\begin{CompactItemize}
+\item 
+enum \hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd_w10}{attribute} \{ \par
+\hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd_w10w0}{EDG\_\-JOBID}, 
+\hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd_w10w1}{VIRTUAL\_\-ORGANISATION}, 
+\hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd_w10w2}{MYPROXY\_\-SERVER}, 
+\hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd_w10w3}{SEQUENCE\_\-CODE}, 
+\par
+\hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd_w10w4}{ISB\_\-DEST\_\-URI}
+ \}
+\item 
+enum \hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd_w11}{level} \{ \par
+\hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd_w11w5}{CURRENT}, 
+\hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd_w11w6}{SUBMISSION}, 
+\hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd_w11w7}{NO\_\-NODES}, 
+\hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd_w11w8}{MULTI\_\-LINES}, 
+\par
+\hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd_w11w9}{RESTORED}
+ \}
+\end{CompactItemize}
+\subsection*{Public Member Functions}
+\begin{CompactItemize}
+\item 
+\hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a0}{Exp\-Dag\-Ad} (const std::string \&\hyperlink{classjdl}{jdl})
+\item 
+\hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a1}{Exp\-Dag\-Ad} (std::ifstream \&jdl\_\-in)
+\item 
+\hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a2}{Exp\-Dag\-Ad} (const \hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd}{Exp\-Dag\-Ad} \&dag)
+\item 
+\hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a3}{Exp\-Dag\-Ad} (\hyperlink{classglite_1_1wms_1_1jdl_1_1DAGAd}{DAGAd} $\ast$ad)
+\item 
+virtual \hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a4}{$\sim$Exp\-Dag\-Ad} ()  throw ()
+\item 
+std::string \hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a5}{to\-String} (\hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd_w11}{level} lev=CURRENT)
+\item 
+bool \hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a6}{has\-Attribute} (const std::string \&attr\_\-name)
+\item 
+std::vector$<$ std::string $>$ \hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a7}{get\-Submission\-Strings} ()
+\item 
+bool \hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a8}{has\-Node\-Attribute} (const glite::wmsutils::jobid::Job\-Id \&node, const std::string \&attr\_\-name)
+\item 
+void \hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a9}{set\-Node\-Attribute} (const std::string \&node, const std::string \&attr\_\-name, const std::string \&attr\_\-value)
+\item 
+void \hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a10}{set\-Node\-Attribute} (const glite::wmsutils::jobid::Job\-Id \&node, const std::string \&attr\_\-name, const std::string \&attr\_\-value)
+\item 
+std::string \hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a11}{get\-Node\-Attribute} (const std::string \&node, const std::string \&attr\_\-name)
+\item 
+void \hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a12}{del\-Node\-Attribute} (const std::string \&node, const std::string \&attr\_\-name)
+\item 
+\hyperlink{structglite_1_1wms_1_1jdl_1_1JobIdStruct}{Job\-Id\-Struct} \hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a13}{get\-Job\-Id\-Struct} ()
+\item 
+std::vector$<$ std::pair$<$ std::string, classad::Expr\-Tree $\ast$ $>$ $>$ \hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a14}{get\-Sub\-Attributes} (const std::string \&attr\_\-name)
+\item 
+std::string \hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a15}{get\-Attribute} (\hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd_w10}{attribute} attr\_\-name)
+\item 
+std::size\_\-t \hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a16}{size} ()
+\item 
+bool \hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a17}{remove\-Attribute} (\hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd_w10}{attribute} attr\_\-name)
+\item 
+void \hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a18}{set\-Attribute} (\hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd_w10}{attribute} attr\_\-name, const std::string \&attr\_\-value)
+\item 
+\hyperlink{structglite_1_1wms_1_1jdl_1_1JobIdStruct}{Job\-Id\-Struct} \hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a19}{set\-Job\-Ids} (const std::vector$<$ std::string $>$ \&jobids)
+\item 
+void \hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a20}{expand} ()
+\item 
+std::string \hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a21}{show\-Dependencies} ()
+\item 
+const std::string \hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a22}{get\-Default\-Rank} ()
+\item 
+const std::string \hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a23}{get\-Default\-Req} ()
+\item 
+void \hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a24}{set\-Default\-Rank} (const std::string \&attr\_\-value)
+\item 
+void \hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a25}{set\-Default\-Req} (const std::string \&attr\_\-value)
+\item 
+void \hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a26}{set\-Default\-Values} (bool val)
+\end{CompactItemize}
+\subsection*{Protected Attributes}
+\begin{CompactItemize}
+\item 
+\hyperlink{classglite_1_1wms_1_1jdl_1_1DAGAd}{glite::wms::jdl::DAGAd} $\ast$ \hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd_p0}{dagad}
+\end{CompactItemize}
+
+
+\subsection{Detailed Description}
+Provides a representation of the job description in the JDL language. 
+
+Provide a Userinterface-friendly utilisation for Dag\-Ad class for the WMS environment The user is able to create , modify and check a Dag\-Ad in order to prepare it to the submission and to perform other simple operations
+
+\begin{Desc}
+\item[Version:]0.1 \end{Desc}
+\begin{Desc}
+\item[Date:]18 7 2003 \end{Desc}
+\begin{Desc}
+\item[Author:]Alessandro Maraschini $<$\href{mailto:alessandro.maraschini@datamat.it}{\tt alessandro.maraschini@datamat.it}$>$ \end{Desc}
+
+
+
+
+\subsection{Member Enumeration Documentation}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1ExpDagAd_w10}{
+\index{glite::wms::jdl::ExpDagAd@{glite::wms::jdl::Exp\-Dag\-Ad}!attribute@{attribute}}
+\index{attribute@{attribute}!glite::wms::jdl::ExpDagAd@{glite::wms::jdl::Exp\-Dag\-Ad}}
+\subsubsection[attribute]{\setlength{\rightskip}{0pt plus 5cm}enum \hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd_w10}{glite::wms::jdl::Exp\-Dag\-Ad::attribute}}}
+\label{classglite_1_1wms_1_1jdl_1_1ExpDagAd_w10}
+
+
+Possible attribute to be set/get/removed from instance$\ast$ \begin{Desc}
+\item[Enumeration values: ]\par
+\begin{description}
+\index{EDG_JOBID@{EDG\_\-JOBID}!glite::wms::jdl::ExpDagAd@{glite::wms::jdl::ExpDagAd}}\index{glite::wms::jdl::ExpDagAd@{glite::wms::jdl::ExpDagAd}!EDG_JOBID@{EDG\_\-JOBID}}\item[{\em 
+\hypertarget{classglite_1_1wms_1_1jdl_1_1ExpDagAd_w10w0}{
+EDG\_\-JOBID}
+\label{classglite_1_1wms_1_1jdl_1_1ExpDagAd_w10w0}
+}]identifier of the Job \index{VIRTUAL_ORGANISATION@{VIRTUAL\_\-ORGANISATION}!glite::wms::jdl::ExpDagAd@{glite::wms::jdl::ExpDagAd}}\index{glite::wms::jdl::ExpDagAd@{glite::wms::jdl::ExpDagAd}!VIRTUAL_ORGANISATION@{VIRTUAL\_\-ORGANISATION}}\item[{\em 
+\hypertarget{classglite_1_1wms_1_1jdl_1_1ExpDagAd_w10w1}{
+VIRTUAL\_\-ORGANISATION}
+\label{classglite_1_1wms_1_1jdl_1_1ExpDagAd_w10w1}
+}]Virtual Organisation related to the user \index{MYPROXY_SERVER@{MYPROXY\_\-SERVER}!glite::wms::jdl::ExpDagAd@{glite::wms::jdl::ExpDagAd}}\index{glite::wms::jdl::ExpDagAd@{glite::wms::jdl::ExpDagAd}!MYPROXY_SERVER@{MYPROXY\_\-SERVER}}\item[{\em 
+\hypertarget{classglite_1_1wms_1_1jdl_1_1ExpDagAd_w10w2}{
+MYPROXY\_\-SERVER}
+\label{classglite_1_1wms_1_1jdl_1_1ExpDagAd_w10w2}
+}]certificate stored with My\-Proxy \index{SEQUENCE_CODE@{SEQUENCE\_\-CODE}!glite::wms::jdl::ExpDagAd@{glite::wms::jdl::ExpDagAd}}\index{glite::wms::jdl::ExpDagAd@{glite::wms::jdl::ExpDagAd}!SEQUENCE_CODE@{SEQUENCE\_\-CODE}}\item[{\em 
+\hypertarget{classglite_1_1wms_1_1jdl_1_1ExpDagAd_w10w3}{
+SEQUENCE\_\-CODE}
+\label{classglite_1_1wms_1_1jdl_1_1ExpDagAd_w10w3}
+}]Sequence code provided by LB \index{ISB_DEST_URI@{ISB\_\-DEST\_\-URI}!glite::wms::jdl::ExpDagAd@{glite::wms::jdl::ExpDagAd}}\index{glite::wms::jdl::ExpDagAd@{glite::wms::jdl::ExpDagAd}!ISB_DEST_URI@{ISB\_\-DEST\_\-URI}}\item[{\em 
+\hypertarget{classglite_1_1wms_1_1jdl_1_1ExpDagAd_w10w4}{
+ISB\_\-DEST\_\-URI}
+\label{classglite_1_1wms_1_1jdl_1_1ExpDagAd_w10w4}
+}]Input\-Sandbox common path where job files are stored \end{description}
+\end{Desc}
+
+\hypertarget{classglite_1_1wms_1_1jdl_1_1ExpDagAd_w11}{
+\index{glite::wms::jdl::ExpDagAd@{glite::wms::jdl::Exp\-Dag\-Ad}!level@{level}}
+\index{level@{level}!glite::wms::jdl::ExpDagAd@{glite::wms::jdl::Exp\-Dag\-Ad}}
+\subsubsection[level]{\setlength{\rightskip}{0pt plus 5cm}enum \hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd_w11}{glite::wms::jdl::Exp\-Dag\-Ad::level}}}
+\label{classglite_1_1wms_1_1jdl_1_1ExpDagAd_w11}
+
+
+\begin{Desc}
+\item[Enumeration values: ]\par
+\begin{description}
+\index{CURRENT@{CURRENT}!glite::wms::jdl::ExpDagAd@{glite::wms::jdl::ExpDagAd}}\index{glite::wms::jdl::ExpDagAd@{glite::wms::jdl::ExpDagAd}!CURRENT@{CURRENT}}\item[{\em 
+\hypertarget{classglite_1_1wms_1_1jdl_1_1ExpDagAd_w11w5}{
+CURRENT}
+\label{classglite_1_1wms_1_1jdl_1_1ExpDagAd_w11w5}
+}]Representation up-to-date \index{SUBMISSION@{SUBMISSION}!glite::wms::jdl::ExpDagAd@{glite::wms::jdl::ExpDagAd}}\index{glite::wms::jdl::ExpDagAd@{glite::wms::jdl::ExpDagAd}!SUBMISSION@{SUBMISSION}}\item[{\em 
+\hypertarget{classglite_1_1wms_1_1jdl_1_1ExpDagAd_w11w6}{
+SUBMISSION}
+\label{classglite_1_1wms_1_1jdl_1_1ExpDagAd_w11w6}
+}]Representation ready for submission (all checks performed) \index{NO_NODES@{NO\_\-NODES}!glite::wms::jdl::ExpDagAd@{glite::wms::jdl::ExpDagAd}}\index{glite::wms::jdl::ExpDagAd@{glite::wms::jdl::ExpDagAd}!NO_NODES@{NO\_\-NODES}}\item[{\em 
+\hypertarget{classglite_1_1wms_1_1jdl_1_1ExpDagAd_w11w7}{
+NO\_\-NODES}
+\label{classglite_1_1wms_1_1jdl_1_1ExpDagAd_w11w7}
+}]No information about nodes(attribute hidden) \index{MULTI_LINES@{MULTI\_\-LINES}!glite::wms::jdl::ExpDagAd@{glite::wms::jdl::ExpDagAd}}\index{glite::wms::jdl::ExpDagAd@{glite::wms::jdl::ExpDagAd}!MULTI_LINES@{MULTI\_\-LINES}}\item[{\em 
+\hypertarget{classglite_1_1wms_1_1jdl_1_1ExpDagAd_w11w8}{
+MULTI\_\-LINES}
+\label{classglite_1_1wms_1_1jdl_1_1ExpDagAd_w11w8}
+}]One attribute per line representation \index{RESTORED@{RESTORED}!glite::wms::jdl::ExpDagAd@{glite::wms::jdl::ExpDagAd}}\index{glite::wms::jdl::ExpDagAd@{glite::wms::jdl::ExpDagAd}!RESTORED@{RESTORED}}\item[{\em 
+\hypertarget{classglite_1_1wms_1_1jdl_1_1ExpDagAd_w11w9}{
+RESTORED}
+\label{classglite_1_1wms_1_1jdl_1_1ExpDagAd_w11w9}
+}]Deprecated \end{description}
+\end{Desc}
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a0}{
+\index{glite::wms::jdl::ExpDagAd@{glite::wms::jdl::Exp\-Dag\-Ad}!ExpDagAd@{ExpDagAd}}
+\index{ExpDagAd@{ExpDagAd}!glite::wms::jdl::ExpDagAd@{glite::wms::jdl::Exp\-Dag\-Ad}}
+\subsubsection[ExpDagAd]{\setlength{\rightskip}{0pt plus 5cm}glite::wms::jdl::Exp\-Dag\-Ad::Exp\-Dag\-Ad (const std::string \& {\em jdl})}}
+\label{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a0}
+
+
+Constructor from String \hypertarget{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a1}{
+\index{glite::wms::jdl::ExpDagAd@{glite::wms::jdl::Exp\-Dag\-Ad}!ExpDagAd@{ExpDagAd}}
+\index{ExpDagAd@{ExpDagAd}!glite::wms::jdl::ExpDagAd@{glite::wms::jdl::Exp\-Dag\-Ad}}
+\subsubsection[ExpDagAd]{\setlength{\rightskip}{0pt plus 5cm}glite::wms::jdl::Exp\-Dag\-Ad::Exp\-Dag\-Ad (std::ifstream \& {\em jdl\_\-in})}}
+\label{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a1}
+
+
+Constructor from Stream \hypertarget{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a2}{
+\index{glite::wms::jdl::ExpDagAd@{glite::wms::jdl::Exp\-Dag\-Ad}!ExpDagAd@{ExpDagAd}}
+\index{ExpDagAd@{ExpDagAd}!glite::wms::jdl::ExpDagAd@{glite::wms::jdl::Exp\-Dag\-Ad}}
+\subsubsection[ExpDagAd]{\setlength{\rightskip}{0pt plus 5cm}glite::wms::jdl::Exp\-Dag\-Ad::Exp\-Dag\-Ad (const \hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd}{Exp\-Dag\-Ad} \& {\em dag})}}
+\label{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a2}
+
+
+Constructor Copy \hypertarget{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a3}{
+\index{glite::wms::jdl::ExpDagAd@{glite::wms::jdl::Exp\-Dag\-Ad}!ExpDagAd@{ExpDagAd}}
+\index{ExpDagAd@{ExpDagAd}!glite::wms::jdl::ExpDagAd@{glite::wms::jdl::Exp\-Dag\-Ad}}
+\subsubsection[ExpDagAd]{\setlength{\rightskip}{0pt plus 5cm}glite::wms::jdl::Exp\-Dag\-Ad::Exp\-Dag\-Ad (\hyperlink{classglite_1_1wms_1_1jdl_1_1DAGAd}{DAGAd} $\ast$ {\em ad})\hspace{0.3cm}{\tt  \mbox{[}inline\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a3}
+
+
+Constructor from Class\-Ad \hypertarget{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a4}{
+\index{glite::wms::jdl::ExpDagAd@{glite::wms::jdl::Exp\-Dag\-Ad}!~ExpDagAd@{$\sim$ExpDagAd}}
+\index{~ExpDagAd@{$\sim$ExpDagAd}!glite::wms::jdl::ExpDagAd@{glite::wms::jdl::Exp\-Dag\-Ad}}
+\subsubsection[$\sim$ExpDagAd]{\setlength{\rightskip}{0pt plus 5cm}virtual glite::wms::jdl::Exp\-Dag\-Ad::$\sim$\hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd}{Exp\-Dag\-Ad} ()  throw ()\hspace{0.3cm}{\tt  \mbox{[}virtual\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a4}
+
+
+destructor 
+
+\subsection{Member Function Documentation}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a12}{
+\index{glite::wms::jdl::ExpDagAd@{glite::wms::jdl::Exp\-Dag\-Ad}!delNodeAttribute@{delNodeAttribute}}
+\index{delNodeAttribute@{delNodeAttribute}!glite::wms::jdl::ExpDagAd@{glite::wms::jdl::Exp\-Dag\-Ad}}
+\subsubsection[delNodeAttribute]{\setlength{\rightskip}{0pt plus 5cm}void glite::wms::jdl::Exp\-Dag\-Ad::del\-Node\-Attribute (const std::string \& {\em node}, const std::string \& {\em attr\_\-name})}}
+\label{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a12}
+
+
+Remove (if present) the attribute from the specified nde \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em node}]the name of the node to be looked for \item[{\em attr\_\-name}]the name of the attributeto be retrieved \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a20}{
+\index{glite::wms::jdl::ExpDagAd@{glite::wms::jdl::Exp\-Dag\-Ad}!expand@{expand}}
+\index{expand@{expand}!glite::wms::jdl::ExpDagAd@{glite::wms::jdl::Exp\-Dag\-Ad}}
+\subsubsection[expand]{\setlength{\rightskip}{0pt plus 5cm}void glite::wms::jdl::Exp\-Dag\-Ad::expand ()}}
+\label{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a20}
+
+
+Expand the \char`\"{}nodes\char`\"{} attribute into a vector of Job\-Ads \hypertarget{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a15}{
+\index{glite::wms::jdl::ExpDagAd@{glite::wms::jdl::Exp\-Dag\-Ad}!getAttribute@{getAttribute}}
+\index{getAttribute@{getAttribute}!glite::wms::jdl::ExpDagAd@{glite::wms::jdl::Exp\-Dag\-Ad}}
+\subsubsection[getAttribute]{\setlength{\rightskip}{0pt plus 5cm}std::string glite::wms::jdl::Exp\-Dag\-Ad::get\-Attribute (\hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd_w10}{attribute} {\em attr\_\-name})}}
+\label{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a15}
+
+
+Retrieve the value of an attribute in the Dag\-Ad \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em attr\_\-name}]the name of the attribute to be retrieved \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]the string representation of the value \end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a22}{
+\index{glite::wms::jdl::ExpDagAd@{glite::wms::jdl::Exp\-Dag\-Ad}!getDefaultRank@{getDefaultRank}}
+\index{getDefaultRank@{getDefaultRank}!glite::wms::jdl::ExpDagAd@{glite::wms::jdl::Exp\-Dag\-Ad}}
+\subsubsection[getDefaultRank]{\setlength{\rightskip}{0pt plus 5cm}const std::string glite::wms::jdl::Exp\-Dag\-Ad::get\-Default\-Rank ()}}
+\label{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a22}
+
+
+Retrieve the default Rank value as set by the user \begin{Desc}
+\item[Returns:]default rank string representation (or empty string if not set) \end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a23}{
+\index{glite::wms::jdl::ExpDagAd@{glite::wms::jdl::Exp\-Dag\-Ad}!getDefaultReq@{getDefaultReq}}
+\index{getDefaultReq@{getDefaultReq}!glite::wms::jdl::ExpDagAd@{glite::wms::jdl::Exp\-Dag\-Ad}}
+\subsubsection[getDefaultReq]{\setlength{\rightskip}{0pt plus 5cm}const std::string glite::wms::jdl::Exp\-Dag\-Ad::get\-Default\-Req ()}}
+\label{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a23}
+
+
+Retrieve the default Requrirements value as set by the user \begin{Desc}
+\item[Returns:]default requirements string representation (or empty string if not set) \end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a13}{
+\index{glite::wms::jdl::ExpDagAd@{glite::wms::jdl::Exp\-Dag\-Ad}!getJobIdStruct@{getJobIdStruct}}
+\index{getJobIdStruct@{getJobIdStruct}!glite::wms::jdl::ExpDagAd@{glite::wms::jdl::Exp\-Dag\-Ad}}
+\subsubsection[getJobIdStruct]{\setlength{\rightskip}{0pt plus 5cm}\hyperlink{structglite_1_1wms_1_1jdl_1_1JobIdStruct}{Job\-Id\-Struct} glite::wms::jdl::Exp\-Dag\-Ad::get\-Job\-Id\-Struct ()}}
+\label{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a13}
+
+
+Retrieve the structure of the Dag\-Ad as in the current position. The first item is the Dag itself which has no node (NULL) and which contains all its children info inside \begin{Desc}
+\item[Returns:]the Job\-Id structure of the Dag\-Ad. \end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a11}{
+\index{glite::wms::jdl::ExpDagAd@{glite::wms::jdl::Exp\-Dag\-Ad}!getNodeAttribute@{getNodeAttribute}}
+\index{getNodeAttribute@{getNodeAttribute}!glite::wms::jdl::ExpDagAd@{glite::wms::jdl::Exp\-Dag\-Ad}}
+\subsubsection[getNodeAttribute]{\setlength{\rightskip}{0pt plus 5cm}std::string glite::wms::jdl::Exp\-Dag\-Ad::get\-Node\-Attribute (const std::string \& {\em node}, const std::string \& {\em attr\_\-name})}}
+\label{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a11}
+
+
+Retrieve (if present) the string value for the specified attribute \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em node}]the name of the node to be looked for \item[{\em attr\_\-name}]the name of the attributeto be retrieved \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]the value of the specified string attribute \end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a14}{
+\index{glite::wms::jdl::ExpDagAd@{glite::wms::jdl::Exp\-Dag\-Ad}!getSubAttributes@{getSubAttributes}}
+\index{getSubAttributes@{getSubAttributes}!glite::wms::jdl::ExpDagAd@{glite::wms::jdl::Exp\-Dag\-Ad}}
+\subsubsection[getSubAttributes]{\setlength{\rightskip}{0pt plus 5cm}std::vector$<$ std::pair$<$ std::string , classad::Expr\-Tree$\ast$ $>$ $>$ glite::wms::jdl::Exp\-Dag\-Ad::get\-Sub\-Attributes (const std::string \& {\em attr\_\-name})}}
+\label{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a14}
+
+
+Retrieve the Dag\-Ad nodes values of a specified attribute \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em attr\_\-name}]the name of the attribute to be retrieved \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]a vector of pairs. Each pair contain the string representation of the jobid and a deep copy of the Expression representing the value of attr\_\-name for this sub-job \end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a7}{
+\index{glite::wms::jdl::ExpDagAd@{glite::wms::jdl::Exp\-Dag\-Ad}!getSubmissionStrings@{getSubmissionStrings}}
+\index{getSubmissionStrings@{getSubmissionStrings}!glite::wms::jdl::ExpDagAd@{glite::wms::jdl::Exp\-Dag\-Ad}}
+\subsubsection[getSubmissionStrings]{\setlength{\rightskip}{0pt plus 5cm}std::vector$<$std::string$>$ glite::wms::jdl::Exp\-Dag\-Ad::get\-Submission\-Strings ()}}
+\label{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a7}
+
+
+Check the node of the Dag\-Ad and retrieve their submission strings \begin{Desc}
+\item[Returns:]a vector of Dag\-Ad node's submission strings \end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a6}{
+\index{glite::wms::jdl::ExpDagAd@{glite::wms::jdl::Exp\-Dag\-Ad}!hasAttribute@{hasAttribute}}
+\index{hasAttribute@{hasAttribute}!glite::wms::jdl::ExpDagAd@{glite::wms::jdl::Exp\-Dag\-Ad}}
+\subsubsection[hasAttribute]{\setlength{\rightskip}{0pt plus 5cm}bool glite::wms::jdl::Exp\-Dag\-Ad::has\-Attribute (const std::string \& {\em attr\_\-name})}}
+\label{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a6}
+
+
+Check if an attribute is present inside the Dag\-Ad \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em attr\_\-name}]the name of the attribute to be looked for \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]true if the attribute is prensent, false otherwise \end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a8}{
+\index{glite::wms::jdl::ExpDagAd@{glite::wms::jdl::Exp\-Dag\-Ad}!hasNodeAttribute@{hasNodeAttribute}}
+\index{hasNodeAttribute@{hasNodeAttribute}!glite::wms::jdl::ExpDagAd@{glite::wms::jdl::Exp\-Dag\-Ad}}
+\subsubsection[hasNodeAttribute]{\setlength{\rightskip}{0pt plus 5cm}bool glite::wms::jdl::Exp\-Dag\-Ad::has\-Node\-Attribute (const glite::wmsutils::jobid::Job\-Id \& {\em node}, const std::string \& {\em attr\_\-name})}}
+\label{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a8}
+
+
+Check wheter the attribute has been already specified for the jobid \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em node}]the jobid of the node to be modified \item[{\em attr\_\-name}]the name of the attribute to be inserted \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a17}{
+\index{glite::wms::jdl::ExpDagAd@{glite::wms::jdl::Exp\-Dag\-Ad}!removeAttribute@{removeAttribute}}
+\index{removeAttribute@{removeAttribute}!glite::wms::jdl::ExpDagAd@{glite::wms::jdl::Exp\-Dag\-Ad}}
+\subsubsection[removeAttribute]{\setlength{\rightskip}{0pt plus 5cm}bool glite::wms::jdl::Exp\-Dag\-Ad::remove\-Attribute (\hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd_w10}{attribute} {\em attr\_\-name})}}
+\label{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a17}
+
+
+delete an attribue from the Dag\-Ad \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em attr\_\-name}]the name of the attribute to be removed \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]true if attribute successfully removed \end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a18}{
+\index{glite::wms::jdl::ExpDagAd@{glite::wms::jdl::Exp\-Dag\-Ad}!setAttribute@{setAttribute}}
+\index{setAttribute@{setAttribute}!glite::wms::jdl::ExpDagAd@{glite::wms::jdl::Exp\-Dag\-Ad}}
+\subsubsection[setAttribute]{\setlength{\rightskip}{0pt plus 5cm}void glite::wms::jdl::Exp\-Dag\-Ad::set\-Attribute (\hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd_w10}{attribute} {\em attr\_\-name}, const std::string \& {\em attr\_\-value})}}
+\label{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a18}
+
+
+Set the value of an attribute in the Dag\-Ad \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em attr\_\-name}]the name of the attribute to be set \item[{\em attr\_\-value}]the attribute of the value to be set \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a24}{
+\index{glite::wms::jdl::ExpDagAd@{glite::wms::jdl::Exp\-Dag\-Ad}!setDefaultRank@{setDefaultRank}}
+\index{setDefaultRank@{setDefaultRank}!glite::wms::jdl::ExpDagAd@{glite::wms::jdl::Exp\-Dag\-Ad}}
+\subsubsection[setDefaultRank]{\setlength{\rightskip}{0pt plus 5cm}void glite::wms::jdl::Exp\-Dag\-Ad::set\-Default\-Rank (const std::string \& {\em attr\_\-value})}}
+\label{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a24}
+
+
+Set the default value for Rank attribute (take in consideration if not specified in JDL) \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em attr\_\-value}]the value to be set to the default rank\end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a25}{
+\index{glite::wms::jdl::ExpDagAd@{glite::wms::jdl::Exp\-Dag\-Ad}!setDefaultReq@{setDefaultReq}}
+\index{setDefaultReq@{setDefaultReq}!glite::wms::jdl::ExpDagAd@{glite::wms::jdl::Exp\-Dag\-Ad}}
+\subsubsection[setDefaultReq]{\setlength{\rightskip}{0pt plus 5cm}void glite::wms::jdl::Exp\-Dag\-Ad::set\-Default\-Req (const std::string \& {\em attr\_\-value})}}
+\label{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a25}
+
+
+Set the default value for Requirements attribute (take in consideration if not specified in JDL) \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em attr\_\-value}]the value to be set to the default requirements\end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a26}{
+\index{glite::wms::jdl::ExpDagAd@{glite::wms::jdl::Exp\-Dag\-Ad}!setDefaultValues@{setDefaultValues}}
+\index{setDefaultValues@{setDefaultValues}!glite::wms::jdl::ExpDagAd@{glite::wms::jdl::Exp\-Dag\-Ad}}
+\subsubsection[setDefaultValues]{\setlength{\rightskip}{0pt plus 5cm}void glite::wms::jdl::Exp\-Dag\-Ad::set\-Default\-Values (bool {\em val})\hspace{0.3cm}{\tt  \mbox{[}inline\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a26}
+
+
+Set the default values for UI manipulation such as: user\-Tag UI node name \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em val}]whether to set (true) or not (false) such values while submitting \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a19}{
+\index{glite::wms::jdl::ExpDagAd@{glite::wms::jdl::Exp\-Dag\-Ad}!setJobIds@{setJobIds}}
+\index{setJobIds@{setJobIds}!glite::wms::jdl::ExpDagAd@{glite::wms::jdl::Exp\-Dag\-Ad}}
+\subsubsection[setJobIds]{\setlength{\rightskip}{0pt plus 5cm}\hyperlink{structglite_1_1wms_1_1jdl_1_1JobIdStruct}{Job\-Id\-Struct} glite::wms::jdl::Exp\-Dag\-Ad::set\-Job\-Ids (const std::vector$<$ std::string $>$ \& {\em jobids})}}
+\label{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a19}
+
+
+Set the node's Job\-Ids of the dag\-Ad \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em a}]vector of job ids representation \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]the Job\-Id structure of the Dag\-Ad. \end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a10}{
+\index{glite::wms::jdl::ExpDagAd@{glite::wms::jdl::Exp\-Dag\-Ad}!setNodeAttribute@{setNodeAttribute}}
+\index{setNodeAttribute@{setNodeAttribute}!glite::wms::jdl::ExpDagAd@{glite::wms::jdl::Exp\-Dag\-Ad}}
+\subsubsection[setNodeAttribute]{\setlength{\rightskip}{0pt plus 5cm}void glite::wms::jdl::Exp\-Dag\-Ad::set\-Node\-Attribute (const glite::wmsutils::jobid::Job\-Id \& {\em node}, const std::string \& {\em attr\_\-name}, const std::string \& {\em attr\_\-value})}}
+\label{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a10}
+
+
+Set the couple attribute = value for the specified node inside the classad \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em node}]the jobid of the node to be modified \item[{\em attr\_\-name}]the name of the attribute to be inserted \item[{\em attr\_\-value}]the value of the string attribute to be inserted for the specified attribute \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a9}{
+\index{glite::wms::jdl::ExpDagAd@{glite::wms::jdl::Exp\-Dag\-Ad}!setNodeAttribute@{setNodeAttribute}}
+\index{setNodeAttribute@{setNodeAttribute}!glite::wms::jdl::ExpDagAd@{glite::wms::jdl::Exp\-Dag\-Ad}}
+\subsubsection[setNodeAttribute]{\setlength{\rightskip}{0pt plus 5cm}void glite::wms::jdl::Exp\-Dag\-Ad::set\-Node\-Attribute (const std::string \& {\em node}, const std::string \& {\em attr\_\-name}, const std::string \& {\em attr\_\-value})}}
+\label{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a9}
+
+
+Set the couple attribute = value for the specified node inside the classad \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em node}]the name of the node to be modified \item[{\em attr\_\-name}]the name of the attribute to be inserted \item[{\em attr\_\-value}]the value of the string attribute to be inserted for the specified attribute \end{description}
+\end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a21}{
+\index{glite::wms::jdl::ExpDagAd@{glite::wms::jdl::Exp\-Dag\-Ad}!showDependencies@{showDependencies}}
+\index{showDependencies@{showDependencies}!glite::wms::jdl::ExpDagAd@{glite::wms::jdl::Exp\-Dag\-Ad}}
+\subsubsection[showDependencies]{\setlength{\rightskip}{0pt plus 5cm}std::string glite::wms::jdl::Exp\-Dag\-Ad::show\-Dependencies ()}}
+\label{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a21}
+
+
+Represent dependency by a formatted string \begin{Desc}
+\item[Returns:]dependency representation \end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a16}{
+\index{glite::wms::jdl::ExpDagAd@{glite::wms::jdl::Exp\-Dag\-Ad}!size@{size}}
+\index{size@{size}!glite::wms::jdl::ExpDagAd@{glite::wms::jdl::Exp\-Dag\-Ad}}
+\subsubsection[size]{\setlength{\rightskip}{0pt plus 5cm}std::size\_\-t glite::wms::jdl::Exp\-Dag\-Ad::size ()}}
+\label{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a16}
+
+
+Dag\-Ad dimension retrieval \begin{Desc}
+\item[Returns:]the number of the sub-job belonging to the Dag\-Ad \end{Desc}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a5}{
+\index{glite::wms::jdl::ExpDagAd@{glite::wms::jdl::Exp\-Dag\-Ad}!toString@{toString}}
+\index{toString@{toString}!glite::wms::jdl::ExpDagAd@{glite::wms::jdl::Exp\-Dag\-Ad}}
+\subsubsection[toString]{\setlength{\rightskip}{0pt plus 5cm}std::string glite::wms::jdl::Exp\-Dag\-Ad::to\-String (\hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd_w11}{level} {\em lev} = CURRENT)}}
+\label{classglite_1_1wms_1_1jdl_1_1ExpDagAd_a5}
+
+
+Return the string representation of the Dag\-Ad \begin{Desc}
+\item[Returns:]the \hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd}{Exp\-Dag\-Ad} with the requested level string representation \end{Desc}
+\begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em lev}]one of the allowed level \end{description}
+\end{Desc}
+
+
+\subsection{Member Data Documentation}
+\hypertarget{classglite_1_1wms_1_1jdl_1_1ExpDagAd_p0}{
+\index{glite::wms::jdl::ExpDagAd@{glite::wms::jdl::Exp\-Dag\-Ad}!dagad@{dagad}}
+\index{dagad@{dagad}!glite::wms::jdl::ExpDagAd@{glite::wms::jdl::Exp\-Dag\-Ad}}
+\subsubsection[dagad]{\setlength{\rightskip}{0pt plus 5cm}\hyperlink{classglite_1_1wms_1_1jdl_1_1DAGAd}{glite::wms::jdl::DAGAd}$\ast$ \hyperlink{classglite_1_1wms_1_1jdl_1_1ExpDagAd_p0}{glite::wms::jdl::Exp\-Dag\-Ad::dagad}\hspace{0.3cm}{\tt  \mbox{[}protected\mbox{]}}}}
+\label{classglite_1_1wms_1_1jdl_1_1ExpDagAd_p0}
+
+
+Internal \hyperlink{classglite_1_1wms_1_1jdl_1_1DAGAd}{DAGAd} instance 
+
+The documentation for this class was generated from the following file:\begin{CompactItemize}
+\item 
+\hyperlink{ExpDagAd_8h}{Exp\-Dag\-Ad.h}\end{CompactItemize}

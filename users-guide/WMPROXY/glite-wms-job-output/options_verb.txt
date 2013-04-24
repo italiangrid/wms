@@ -1,0 +1,16 @@
+options:
+        --version
+        --help
+        --config, -c  <configfile>
+        --vo <voname>
+        --debug
+        --logfile     <filepath>
+        --noint
+        --input, -i   <filepath>
+        --dir         <directorypath>
+        --nosubdir
+        --nopurge
+        --proto       <protocol>
+        --list-only
+        --json
+        --pretty-print

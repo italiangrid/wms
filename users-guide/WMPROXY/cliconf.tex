@@ -1,0 +1,191 @@
+%\subsection{Commandline Configuration}
+
+This section provides a detailed description of the WMProxy client commands configuration files, describing
+where they are supposed to be stored, which attributes they may contain, and which is the meaning of each attribute.
+It is basically the same configuration file (i.e. same structure and same set of admitted attributes) that can be 
+located in multiple, different locations thus assuming slightly different meanings.  
+Eventually is reported an example of a configuration file.
+
+
+\subsection{Configuration Files}
+\label{wmpconf}
+
+Configuration of the WMProxy client commands is accomplished via two possible
+configuration files:
+
+
+\begin{enumerate}
+
+\item
+A VO-specific configuration file named \verb glite\_wmsui.conf , that is looked for in the directory {\verb /etc/glite-wms/<VO\_name\_lowercase>/ }
+
+\item
+A user-specific configuration file that is looked for in the following order:
+
+\begin{itemize}
+
+
+\item
+The file specified with the -{}-config  option made available by each WMProxy client command.
+
+\item
+\$HOME/.glite/<VO name-lowercase>/glite\_wms.conf otherwise.
+VO name must be specified by either using a proxy credential issued by VOMS ~\cite{voms-core} or specifying the -{}-vo  option of the WMProxy client commands.
+For those commands taking as input a JDL description (i.e. glite-wms-job-submit and glite-wms-job-list-match), the VO name can be read inside the JDL (VirtualOrganisation attribute) if not specified elsewhere.
+
+\end{itemize}
+
+
+\end{enumerate}
+
+
+Each of the above mentioned files is a classad containing definitions for the set of supported 
+attributes (see Sect.~\ref{confattr}).
+
+
+Please note that:
+\begin{itemize}
+
+\item If the same attribute is defined in more than a configuration file, the
+definition in the user-specific configuration file (if any) is considered.
+%Likewise the definitions in the VO-specific configuration file
+%have higher priority than the ones specified in the general
+%configuration file.
+
+\item At least one configuration file must be present on the client machine, in the above listed locations: 
+this is enough for the commands to work.
+\item All non-mandatory attributes for which no default value is mentioned below are simply ignored by the commands.
+\item All string attributes set to empty string will be ignored by the commands
+(therefore possible previously found values will not be taken into account): this is the way a user has for 'disabling' 
+features 'enabled' in the general or VO-specific configuration files (e.g. MyProxyServer, HLRLocation, JobProvenance etc.)   
+
+\end{itemize}
+
+
+
+\subsection{Configuration Attributes}
+\label{confattr}
+
+
+Here below are listed together, with a brief description, the attributes that can be specified in the 
+configuration files; note that some of them must be inserted inside the JdlDefaultAttributes section (indicated by an asterisk before the
+attribute name in the following list) as shown in the example at page (\pageref{cliconfex}):
+
+
+\begin{itemize}
+
+\item
+\textbf{ErrorStorage}: the path where error and debug log files are stored.
+The default is \verb /var/tmp .
+
+\item
+\textbf{OutputStorage}: the path where to copy retrieved job output and perusal files.
+This attribute is only read by glite-wms-job-output and glite-wms-job-perusal.
+The default is \verb /tmp .
+
+\item
+\textbf{ListenerStorage}: the path where to create listener input/output pipes when submitting an interactive job.
+The default is \verb /tmp .
+
+\item
+$^*$\textbf{VirtualOrganisation}: the value of the Virtual Organization the file is related to.
+This attribute is mandatory.
+
+
+\item
+$^*$\textbf{Rank}: the default value for Rank attribute, if not specified in the JDL being submitted.
+This attribute is only read by glite-wms-job-submit and glite-wms-job-list-match.
+
+
+\item
+$^*$\textbf{Requirements}: the default value for Requirements attribute, if not specified in the JDL being submitted.
+Notice that when original job's JDL already contains this attribute, the final requirements will be a logical AND 
+between the two expressions. This attribute is only read by glite-wms-job-submit and glite-wms-job-list-match.
+
+
+\item
+$^*$\textbf{RetryCount}: the default value of RetryCount attribute, if not specified in the JDL being submitted.
+This attribute is only read by glite-wms-job-submit and glite-wms-job-list-match.
+The default value is 3.
+
+\item
+$^*$\textbf{ShallowRetryCount}:the default value of ShallowRetryCount attribute, if not specified in the JDL being submitted.
+This attribute is only read by glite-wms-job-submit and glite-wms-job-list-match.
+The default value is 3.
+
+\item
+\textbf{WMProxyEndPoints}: the WMProxy Service endpoint where to send requests. 
+Multiple service endpoints can be specified through this attribute by means of a list of strings. In this case
+the glite-wms-job-submit and glite-wms-job-list-match commands choose the endpoint randomly in the list.  
+This attribute is mandatory.
+
+
+\item
+$^*$\textbf{MyProxyServer}: the default value of MyProxyServer attribute (i.e. the address of the MyProxy server), if 
+not specified in the JDL being submitted. The presence of this attribute activates the proxy renewal support 
+in the WMS: if needed, the job user proxy will be renewed by WMS via the MyProxy server during job execution.
+
+
+\item
+\textbf{HLRLocation}: the default value of HLRLocation attribute (i.e. the address of the HLR for the given VO in the format 
+<hostname >:<port>:<X509contact string>), if not specified in the JDL being submitted.
+HLR is the service responsible for managing the economic transactions and the accounts of user and resources.
+The presence of this attribute enables accounting for the submitted job.
+
+
+\item
+$^*$\textbf{JobProvenance}: the default value of  JobProvenance attribute (i.e. the address of the JobProvenance server), 
+if not specified in the JDL being submitted. The presence of this attribute activates Job Provenance support: 
+WMS will upload job sandbox files on the specified server.
+
+\item
+$^*$\textbf{PerusalFileEnable}: Determines, for the job being submitted, whether the job file perusal support has to be 
+enabled or not. This attribute is only read by glite-wms-job-submit.
+The default is \emph{false}.
+
+\item
+$^*$\textbf{AllowZippedISB}: When set to true, makes the glite-wms-job-submit command upload the job's input sandbox files to 
+the WMProxy service node through a single tar-zipped file. This attribute is only read by glite-wms-job-submit.
+The default is \emph{false}.
+
+
+
+\end{itemize}
+%\newpage
+
+
+
+\subsection{Configuration File Example}
+\label{confex}
+
+This is an example of a WMProxy client configuration file:
+\label{cliconfex}
+\begin{verbatim}
+
+[
+  JdlDefaultAttributes = [
+	
+    virtualorganisation="dteam";
+    RetryCount = 3;
+    ShallowRetryCount = 5;
+    rank =-other.GlueCEStateEstimatedResponseTime;
+    requirements = other.GlueCEStateStatus == "Production";
+    MyProxyServer="myproxy.cern.ch";
+    JobProvenance = "skurut.ics.muni.cz:8901";
+    PerusalFileEnable = true ;
+    AllowZippedISB    = true ;
+  ];
+        
+    ErrorStorage="/var/log";
+    OutputStorage="/tmp";
+    ListenerStorage="/tmp";
+    WMProxyEndPoints = {
+        "https://cream-44.pd.infn.it:7443/glite_wms_wmproxy_server",
+        "https://devel09.cnaf.infn.it:7443/glite_wms_wmproxy_server"
+    };
+
+    HLRLocation = "skurut.ics.muni.cz:8901";
+]
+
+
+\end{verbatim}

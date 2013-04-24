@@ -1,0 +1,6 @@
+<<<INLINEVERB>>>voName/glite_wms.conf<<<ENDINLINEVERB>>>: The user configuration file. The standard 
+path location is \verb /etc/glite-wms . 
+<<<NEWLINE>>>
+<<<INLINEVERB>>>/tmp/x509up_u<uid><<<ENDINLINEVERB>>>: A valid X509 user proxy; 
+use the X509<<<USC>>>USER<<<USC>>>PROXY environment variable to override the default location
+<<<NEWLINE>>>
