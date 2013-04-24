@@ -4,7 +4,10 @@ This File will learn you how to generate the Wmproxy guide PDF document
 1) Set the ENV variable:    TEXINPUTS=:..:autogen// to run TeX on this document.
 Files in autogen// come from Doxygen and similar tools. They should not be edited by hand.
 
-2) Issue the following command:   pdflatex WMPROXY-guide
+2) Issue the following commands:
+   - ./createdoc.sh (from bash)
+   - pdflatex WMPROXY-guide
+
 If prompted to question such as:
 	l.160 \geometry{centering,includeheadfoot}
 	?
