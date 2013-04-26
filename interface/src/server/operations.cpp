@@ -381,7 +381,13 @@ getOutputFileList(getOutputFileListResponse& getOutputFileList_response,
          // switching to the host proxy if the user proxy expired
          if ( timeleft <= 1) {
             string hostProxy = configuration::Configuration::instance()->common()->host_proxy_file();
-            wmplogger.setUserProxy(hostProxy); // throws
+            try {
+               wmplogger.setUserProxy(hostProxy); // throws
+            } catch (glite::wmsutils::exception::Exception& ex) {
+               throw JobOperationException(__FILE__, __LINE__, "getOutputFileList()",
+                  wmputilities::WMS_OPERATION_NOT_ALLOWED,
+                  "neither user nor service certificates are valid, cannot log CLEAR event, halting");
+            }
          } else {
             wmplogger.setUserProxy(userProxyJob); // throws
          }
@@ -392,7 +398,7 @@ getOutputFileList(getOutputFileListResponse& getOutputFileList_response,
             string msg = "getOutputFileList operation not allowed for dag or collection type";
             edglog(error)<<msg<<": "<<jobid.toString()<<endl;
             throw JobOperationException(__FILE__, __LINE__, "getOutputFileList()",
-                                        wmputilities::WMS_OPERATION_NOT_ALLOWED, msg);
+                  wmputilities::WMS_OPERATION_NOT_ALLOWED, msg);
          }
          // getOutputFileList allowed when:
          // STATUS is eithr Done (yet done_code!= FAILED) or Aborted
@@ -400,9 +406,9 @@ getOutputFileList(getOutputFileListResponse& getOutputFileList_response,
                &&(status.getValInt(JobStatus::DONE_CODE) == JobStatus::DONE_CODE_FAILED))
                || ((status.status != JobStatus::DONE) && (status.status != JobStatus::ABORTED))) {
             edglog(error)<<
-                         "Job current status doesn't allow getOutputFileList operation"<<endl;
+                  "Job current status doesn't allow getOutputFileList operation"<<endl;
             throw JobOperationException(__FILE__, __LINE__,
-                                        "getOutputFileList()", wmputilities::WMS_OPERATION_NOT_ALLOWED,
+                  "getOutputFileList()", wmputilities::WMS_OPERATION_NOT_ALLOWED,
                                         "Job current status doesn't allow getOutputFileList operation");
          }
       }  // else ...... If MARADONA file is found, output files are definitely present on WMS
