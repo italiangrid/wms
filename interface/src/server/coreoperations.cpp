@@ -1933,7 +1933,7 @@ jobStart(jobStartResponse& jobStart_response, const string& job_id, struct soap 
    tempad.fromFile(jdlpath);
    std::string a(tempad.toString());
    submit(tempad.toString(), jid.get(), ai.uid_, ai.gid_, wmplogger);
-   //unlink(delegatedproxy.c_str());
+   // never delete the delegated proxy here
 
    GLITE_STACK_CATCH();
 }
@@ -2038,7 +2038,7 @@ jobSubmit(struct ns1__jobSubmitResponse& response,
 
    edglog(debug)<<"UID GID:"<< ai.uid_<< endl;
    submit(reginfo.second, jid.get(), ai.uid_, ai.gid_, wmplogger, true);
-   //unlink(delegatedproxy.c_str()); // what if proxyrenewal
+   // never delete the delegated proxy here
    GLITE_STACK_CATCH();
 }
 
@@ -2406,7 +2406,7 @@ listmatch(jobListMatchResponse& jobListMatch_response, const string& jdl,
              &jobListMatch_response);
 
       result = jobListMatch_response.CEIdAndRankList->file->size();
-      unlink(delegatedproxy.c_str());
+      // never delete the delegated proxy here
    } else {
       edglog(error)<<"Operation permitted only for normal job"<<endl;
       throw JobOperationException(__FILE__, __LINE__,
