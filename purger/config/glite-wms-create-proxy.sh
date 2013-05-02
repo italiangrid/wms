@@ -28,10 +28,9 @@ writable() {
  [[ -w ${1} ]]
 }
 
-
 create_proxy()
 {
-   proxy=`"${GLOBUS_LOCATION}/bin/grid-proxy-init" -q \
+   proxy=`"/usr/bin/grid-proxy-init" -q \
      -cert $GLITE_HOST_CERT \
      -key  $GLITE_HOST_KEY \
      -hours 24 \
