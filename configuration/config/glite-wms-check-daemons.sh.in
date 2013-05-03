@@ -65,12 +65,12 @@ if [ -f ${SCRIPT_LOCATION}/${WMS_PREFIX}-ice ]; then
 fi
 
 
-if [ -f ${SCRIPT_LOCATION}/${WMS_PREFIX}-ice ]; then
- ${SCRIPT_LOCATION}/${WMS_PREFIX}-ice status >/dev/null
-if [ $? -eq 1 ]; then
- ${SCRIPT_LOCATION}/${WMS_PREFIX}-ice restart
-fi
-fi
+#if [ -f ${SCRIPT_LOCATION}/${WMS_PREFIX}-ice ]; then
+# ${SCRIPT_LOCATION}/${WMS_PREFIX}-ice status >/dev/null
+#if [ $? -eq 1 ]; then
+# ${SCRIPT_LOCATION}/${WMS_PREFIX}-ice restart
+#fi
+#fi
 
 
 if [ -f ${SCRIPT_LOCATION}/${WMS_PREFIX}-wm ]; then
