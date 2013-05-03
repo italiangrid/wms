@@ -73,7 +73,7 @@ for source distribution)
   ADD_CUSTOM_TARGET (MOCK @echo trying to build in the mock environment)
 
   ADD_CUSTOM_COMMAND(TARGET MOCK
-    COMMAND mock ARGS -r ${MOCKCFG} rpmbuild/SRPMS/glite-wms-server-${PVER}-${AGE}.${OS}.src.rpm
+    COMMAND mock ARGS --resultdir ${PREFIX}/mockresult -r ${MOCKCFG} rpmbuild/SRPMS/glite-wms-server-${PVER}-${AGE}.${OS}.src.rpm
   )
   
   ADD_CUSTOM_COMMAND(TARGET RPM
@@ -223,6 +223,7 @@ find_file(CHRPATH "chrpath"
 find_file(HTTPD "httpd.h"
 	  PATHS "/usr/include/httpd")
 
+if( "${DEPS}" STREQUAL "yes")
 IF( NOT(HTTPD AND CHRPATH AND RPMBUILD AND LIBTAR AND LDAP AND CLASSAD_FOUND AND
 WMSUTILS_CLASSADS_FOUND AND OKPYTHON AND OK_C_COMPILER AND OK_CXX_COMPILER AND 
 WMSUTILS_JOBMAN_EXCEPTION_FOUND AND
@@ -388,6 +389,7 @@ GRIDSITE_OPENSSL_FOUND AND
 LIBXML_FOUND AND
 CREAM_CLIENT_UTIL_FOUND AND
 CREAM_CLIENT_SOAP_FOUND AND Boost_FOUND))
+endif( "${DEPS}" STREQUAL "yes")
 
 add_definitions( -Wall -pipe -DHAVE_STRINGSTREAM=1 -Wno-deprecated)
 

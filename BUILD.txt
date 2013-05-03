@@ -1,7 +1,7 @@
 To build the software you need cmake to be installed.
 type
 
-cmake . -DPREFIX=<your_preferred_path> -DOS=<sl5|sl6> [-DMOCKCFG=<mock_cfg_file>] [-DPVER=<software_version>] [-DAGE=<age_number>]
+cmake . -DPREFIX=<your_preferred_path> -DOS=<sl5|sl6> [-DMOCKCFG=<mock_cfg_file>] [-DPVER=<software_version>] [-DAGE=<age_number>] [-DDEPS="yes"]
 
 Square brackets express optional switches.
 
@@ -18,6 +18,9 @@ dorigoa@sl5-64 11:22:11 ~/wms>cmake . -DPREFIX=`pwd`/stage -DOS=sl5 -DMOCKCFG=em
 Please note that for the moment OS can assume only the two values "sl5" and
 "sl6" (no need to specify the architecture, because only 64bit is supported).
 Debian build will come soon.
+
+If you want that cmake installs missing dependencies for you (by yum
+invocation... see below) you must use the option -DDEPS="yes" .
 
 The very first cmake's output could be something like this:
 
