@@ -34,7 +34,7 @@ if(NOT DEFINED PVER)
 endif(NOT DEFINED PVER)
 
 if(NOT DEFINED PREFIX)
-    message(WARNING " Undefined prefix, selected /usr/local")
+    message(WARNING " Undefined PREFIX, selected /tmp")
     set(PREFIX "/tmp/")
 endif(NOT DEFINED PREFIX)
 
@@ -139,8 +139,8 @@ set(SBINDIR "sbin")
 
 set(LIBEXEC "libexec")
 
-set(ENV{PKG_CONFIG_PATH}
-"${PREFIX}/usr/lib/pkgconfig/:${PREFIX}/stage/usr/lib64/pkgconfig/:$ENV{PKG_CONFIG_PATH}")
+#set(ENV{PKG_CONFIG_PATH}
+#"${PREFIX}/usr/lib/pkgconfig/:${PREFIX}/stage/usr/lib64/pkgconfig/:$ENV{PKG_CONFIG_PATH}")
 
 if(DEFINED ADDITIONAL_PKG_CONFIG_PATH)
   set(ENV{PKG_CONFIG_PATH}
