@@ -39,7 +39,6 @@ if(NOT DEFINED PREFIX)
 endif(NOT DEFINED PREFIX)
 
 if(PREFIX MATCHES "^/.*")
-  message(WARNING " PREFIX starting with /")
   set(CMAKE_INSTALL_PREFIX "${PREFIX}")
 else(PREFIX MATCHES "^/.*")
   set(PREFIX "$ENV{PWD}/${PREFIX}") 
