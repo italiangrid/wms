@@ -1273,6 +1273,8 @@ untarFile(const string& file, const string& untar_starting_path,
                                    "untarFile()", WMS_FILE_SYSTEM_ERROR, "Unable to untar ISB file"
                                    "\n(please contact server administrator)");
       }
+      edglog(debug) << "ISB file " << file << " untar-ed; removing it..." << endl;
+      ::unlink(file.c_str());
 
    } else {
       edglog(critical)<<"Unable to untar ISB file, file does not exist: "
