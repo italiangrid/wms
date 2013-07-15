@@ -287,6 +287,7 @@ WorkloadManager/EnableIsmIiGlue20Purchasing = false
 WorkloadManager/BrokerLib = "libglite_wms_helper_broker_ism.so.0"
 WorkloadManager/IiGlueLib = "libglite_wms_ism_ii_purchaser.so.0"
 WorkloadManagerProxy/ArgusAuthz = ${UseArgus} 
+WorkloadManagerProxy/Wms_Pepc_ResourceId = "${WMS_PEPC_RESOURCEID}"
 WorkloadManagerProxy/ArgusPepdEndpoints = {${endpoints}}
 WorkloadManagerProxy/SandboxStagingPath = "\${WMS_LOCATION_VAR}/SandboxDir"
 WorkloadManagerProxy/LogFile = "\${WMS_LOCATION_LOG}/wmproxy.log"

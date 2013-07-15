@@ -605,10 +605,15 @@ WMPAuthorizer::authorize()
             boost::tuple<bool, xacml_decision_t, uid_t, gid_t> ans;
             //boost::replace_all(userdn_, "/", ","); // MUST be RFC 2253 compliant
             //userdn_ = userdn_.substr(1, userdn_.size() - 1);
-            ans = argus_authZ(
+            std::string resourceID = configuration::Configuration::instance()->wp()->wms_pepc_resourceid( );
+            if(resourceID.empty())
+              resourceID = wmputilities::getEndpoint();
+            edglog(debug) << "Argus authZ using resourceID " << resourceID << endl;
+
+	    ans = argus_authZ(
                   endpoints,
                   fqans_,
-                  wmputilities::getEndpoint(),
+                  resourceID,//wmputilities::getEndpoint(),
                   action_,
                   userdn_,
                   userproxypath_);
