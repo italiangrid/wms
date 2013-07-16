@@ -78,3 +78,11 @@ GLITE_LB_TYPE=proxy
 # Variable used to specify if ARGUS should be used as AuthZ mechanism
 USE_ARGUS=no
 WMS_PEPC_RESOURCEID=https://${WMS_HOST}:7443/glite_wms_wmproxy_server
+
+#TEMPORARY WORKAROUND for http://ggus.eu/tech/ticket_show.php?ticket=88630
+#We install custom emi-condor 7.8.8 but then the spool folder changed location so we must create it
+#for condor to start successfully
+#config_condor_wms_pre () {
+  mkdir -p /var/condor/spool
+  mkdir -p /var/condor/config
+#}
