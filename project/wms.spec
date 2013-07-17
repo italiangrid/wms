@@ -9,7 +9,7 @@ Group: Applications/Internet
 BuildArch: %{_arch}
 Requires: glite-yaim-core, glite-yaim-lb, glite-px-proxyrenewal,httpd,gridsite-apache,mod_fcgid,mod_ssl,gsoap,
 Requires: glite-info-provider-service,glite-initscript-globus-gridftp,glite-jobid-api-c,glite-lb-client,voms,gridsite,
-Requires: glite-wms-utils-exception,boost,c-ares,argus-pep-api-c,lcmaps-without-gsi,
+Requires: glite-wms-utils-exception,boost,c-ares,argus-pep-api-c,lcmaps-without-gsi,argus-gsi-pep-callout
 Requires: glite-wms-utils-classad,classads,globus-ftp-client,globus-ftp-control,globus-common,globus-ftp-client
 Requires: glite-lbjp-common-gsoap-plugin,lcmaps,fcgi,globus-gss-assist,globus-io,glite-jdl-api-cpp
 Requires: globus-gram-protocol,condor-emi,openldap,log4cpp,glite-ce-cream-client-api-c,globus-gridftp-server-progs
