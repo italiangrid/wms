@@ -165,13 +165,15 @@ WMP2WM::submit(const string& jdl, const string& jdlpath)
    try {
       f_forward(*m_jobdir, command_str);
       wmpeventlogger->logEvent(eventlogger::WMPEventLogger::LOG_ENQUEUE_OK, "",
-                               true, true, filelist_global.c_str(), regjdl.c_str());
+//                               true, true, filelist_global.c_str(), regjdl.c_str());
+                               true, true, filelist_global.c_str(), jdl.c_str());
       edglog(debug)<<"LB Logged jdl/path: "<<jdl<<endl;
       edglog(debug)<<"Submit EnQueued OK"<<endl;
    } catch (exception& e) {
       // LogEnQueued FAIL if exception occurs
       wmpeventlogger->logEvent(eventlogger::WMPEventLogger::LOG_ENQUEUE_FAIL,
-                               e.what(), true, true, "", regjdl.c_str());
+//                               e.what(), true, true, "", regjdl.c_str());
+                               e.what(), true, true, "", jdl.c_str());
       edglog(critical)<<"Submit EnQueued FAIL"<< e.what() << endl;
    }
    edglog(debug)<<"Submit Forwarded"<<endl;
