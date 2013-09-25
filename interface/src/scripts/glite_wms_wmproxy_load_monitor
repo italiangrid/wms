@@ -23,6 +23,7 @@ $SIG{'QUIT'} = 'IGNORE';
 
 require Getopt::Long;
 
+$ENV{PATH} = '/bin:/usr/bin:/sbin:/usr/sbin';
 @envir=`. /etc/profile.d/grid-env.sh; set`;
 foreach my $env(@envir){
         my ($key,$value)=split('=',$env);
@@ -32,6 +33,8 @@ foreach my $env(@envir){
         $ENV{$key}=$value;
 }
 
+$ENV{PATH} = '/bin:/usr/bin:/sbin:/usr/sbin';
+$ENV{IFS} = ' \n';
 $glitewmsdir=`printenv GLITE_WMS_LOCATION|head -n 1`;
 chomp $glitewmsdir;
 $glitewmsdir='/usr' unless($glitewmsdir);
@@ -151,36 +154,54 @@ $oper='Default' if(!defined $operations{$oper});
 
 #######Functions##########
 
+sub get_confitem{
+    my $data = shift;
+    $data = `${glitewmsdir}/bin/glite-wms-get-configuration $data`;
+    if ($data =~ /^([-\@\/\w.]*)$/) {
+        return $1;                     
+    } else {
+        die "unexpected character in $data";        
+    }
+}
+
 sub read_conf{
 
-	$wms_inputtype= `${glitewmsdir}/bin/glite-wms-get-configuration Workloadmanager.DispatcherType`;
+#	$wms_inputtype= `${glitewmsdir}/bin/glite-wms-get-configuration Workloadmanager.DispatcherType`;
+	$wms_inputtype= get_confitem('Workloadmanager.DispatcherType');
 	chomp($wms_inputtype);
 	if(!$wms_inputtype){
 		$wms_inputtype='filelist';
 	}
-        $wms_input= `${glitewmsdir}/bin/glite-wms-get-configuration Workloadmanager.Input`;
+#        $wms_input= `${glitewmsdir}/bin/glite-wms-get-configuration Workloadmanager.Input`;
+	$wms_input= get_confitem('Workloadmanager.Input');
         chomp($wms_input);
 
-	$jc_inputtype= `${glitewmsdir}/bin/glite-wms-get-configuration JobController.InputType`;
+#	$jc_inputtype= `${glitewmsdir}/bin/glite-wms-get-configuration JobController.InputType`;
+	$jc_inputtype= get_confitem('JobController.InputType');
         chomp($jc_inputtype);
         if(!$jc_inputtype){
                 $jc_inputtype='filelist';
         }
-        $jc_input= `${glitewmsdir}/bin/glite-wms-get-configuration JobController.Input`;
+#        $jc_input= `${glitewmsdir}/bin/glite-wms-get-configuration JobController.Input`;
+	$jc_input= get_confitem('JobController.Input');
         chomp($jc_input);
 
-        $ice_inputtype= `${glitewmsdir}/bin/glite-wms-get-configuration ICE.InputType`;
+#        $ice_inputtype= `${glitewmsdir}/bin/glite-wms-get-configuration ICE.InputType`;
+	$ice_inputtype= get_confitem('ICE.InputType');
         chomp($ice_inputtype);
         if(!$ice_inputtype){
                 $ice_inputtype='filelist';
         }
-        $ice_input= `${glitewmsdir}/bin/glite-wms-get-configuration ICE.Input`;
+#        $ice_input= `${glitewmsdir}/bin/glite-wms-get-configuration ICE.Input`;
+	$ice_input= get_confitem('ICE.Input');
         chomp($ice_input);
 	
-	$wmp_sand=`${glitewmsdir}/bin/glite-wms-get-configuration WorkloadManagerProxy.SandboxStagingPath`;
+#	$wmp_sand=`${glitewmsdir}/bin/glite-wms-get-configuration WorkloadManagerProxy.SandboxStagingPath`;
+	$wmp_sand=get_confitem('WorkloadManagerProxy.SandboxStagingPath');
         chomp($wmp_sand);
 	
-	$ns_sand=`${glitewmsdir}/bin/glite-wms-get-configuration NetworkServer.SandboxStagingPath`;
+#	$ns_sand=`${glitewmsdir}/bin/glite-wms-get-configuration NetworkServer.SandboxStagingPath`;
+	$ns_sand=get_confitem('NetworkServer.SandboxStagingPath');
         chomp($ns_sand);
 
 }
