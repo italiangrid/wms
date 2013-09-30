@@ -838,7 +838,33 @@ lb_log(boost::function<int(edg_wll_Context)> log_f, ContextPtr user_context)
       } else {
         return true;
       }
-    } else {
+    } else {  // if (lb_error == EDG_WLL_ERROR_GSS) { // try with the host proxy
+
+      // get the sequence code
+      std::string host_x509_proxy(get_host_x509_proxy());
+      char* c_sequence_code = edg_wll_GetSequenceCode(user_context.get());
+      if (!c_sequence_code) {
+        break;
+      }
+      std::string sequence_code(c_sequence_code);
+      free(c_sequence_code);
+
+      // get the jobid
+      glite_jobid_t c_jobid;
+      int e = edg_wll_GetLoggingJob(user_context.get(), &c_jobid);
+      if (e) {
+        break;
+      }
+      jobid::JobId jobid(c_jobid);
+      glite_jobid_free(c_jobid);
+
+      // create the host context
+      ContextPtr host_context(
+        create_context(jobid, host_x509_proxy, sequence_code)
+      );
+      if (!host_context) {
+        break;
+      }
 
       if (!is_retryable(lb_error)) {
         Error("LB log failed (" << lb_error << ')');
@@ -850,9 +876,10 @@ lb_log(boost::function<int(edg_wll_Context)> log_f, ContextPtr user_context)
         one_minute << " seconds"
       );
       ::sleep(one_minute);
+      lb_error = log_f(host_context.get());
 
     } // !EDG_WLL_ERROR_GSS
-  }
+  } // for (int i = 0; i < retries && lb_error; ++i) {
 
   if (lb_error) {
     return false;
