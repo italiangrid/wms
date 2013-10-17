@@ -54,7 +54,7 @@ case "$1" in
       RETVAL=$?
       if [ $RETVAL -eq 0 ]; then
         echo "ok"
-        chmod -R 700 ${WMS_LOCATION_VAR}
+        chmod -R 700 ${WMS_LOCATION_LOG}
       else
         echo "failure"
       RETVAL=1
