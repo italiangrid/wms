@@ -54,8 +54,7 @@ case "$1" in
       RETVAL=$?
       if [ $RETVAL -eq 0 ]; then
         echo "ok"
-        chmod -R o-rwx ${WMS_LOCATION_VAR}
-        chmod -R o-rx ${WMS_LOCATION_VAR}/SandboxDir
+        chmod -R 700 ${WMS_LOCATION_VAR}
       else
         echo "failure"
       RETVAL=1
