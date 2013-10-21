@@ -38,7 +38,6 @@ ret_code=0
 
 start()
 {
-    chmod 600 ${WMS_LOCATION_VAR}/ice/persist_dir/*.betterproxy >& /dev/null
     conf_file=glite_wms.conf
     GET_CONF=${WMS_LOCATION_BIN}/glite-wms-get-configuration
     if [ -f ${GET_CONF} ]; then
@@ -78,6 +77,23 @@ start()
         sleep 1
         if running; then
             echo "ok"
+	    chmod 600 ${WMS_LOCATION_VAR}/ice/persist_dir/*.betterproxy >& /dev/null
+#  	  logfiles=(`egrep -i 'logfile' /etc/glite-wms/glite_wms.conf |grep -v max|awk -F"=" '{print \$2}'|sed 's/\"//g'|sed 's/;//g'`)
+#	    for (( i = 0 ; i < ${#logfiles[@]} ; i++ ))
+#	    do
+#	      eval "chmod 600 ${logfiles[$i]} 2>&1 1>&/dev/null"
+#	    done
+#	    chmod 600 ${WMS_LOCATION_LOG}/create_proxy.log 2>&1 1>&/dev/null
+#	    chmod 600 ${WMS_LOCATION_LOG}/glite-wms-purgeStorage.log 2>&1 1>&/dev/null
+#	    chmod 600 ${WMS_LOCATION_LOG}/glite-wms-wmproxy-purge-proxycache.log 2>&1 1>&/dev/null
+#	    chmod 600 ${WMS_LOCATION_LOG}/glite-wms-wmproxy-purge-proxycache-keys.log 2>&1 1>&/dev/null
+#	    chmod 600 ${WMS_LOCATION_LOG}/glite-wms-wmproxy.restart.cron.log 2>&1 1>&/dev/null
+#	icelogfile=`cat /etc/glite-wms/glite_wms.conf | awk '{if(/ICE/) wmp=1}{if(/logfile/ && wmp==1) {print $0; wmp=0}}'|awk -F"=" '{print $2}'|sed 's+\"++g'|sed 's+;++g'|sed 's+{++'|sed 's+}++'`
+	icelogfile=`cat /etc/glite-wms/glite_wms.conf | awk '{if(/ICE/) wmp=1}{if($0 ~ /logfile/ && $0 !~ /max_logfile_size/ && $0 !~ /max_logfile_rotations/ && wmp==1) {print $0; wmp=0}}'|awk -F"=" '{print $2}'|sed 's+\"++g'|sed 's+;++g'|sed 's+{++'|sed 's+}++'`
+        eval "touch ${icelogfile}"
+        eval "chown ${GLITE_USER}:${GLITE_USER} ${icelogfile}"
+        eval "chmod 600 $icelogfile*"
+
         else
             echo "failure"
             ret_code=1

@@ -102,6 +102,17 @@ check_input() # first parameter is the input, second is the input type
 
 start()
 {
+#    logfiles=(`egrep -i 'logfile' /etc/glite-wms/glite_wms.conf |grep -v max|awk -F"=" '{print \$2}'|sed 's/\"//g'|sed 's/;//g'`)
+#    for (( i = 0 ; i < ${#logfiles[@]} ; i++ ))
+#    do 
+#      eval "chmod 600 ${logfiles[$i]} 2>&1 1>&/dev/null"
+#    done
+#    chmod 600 ${WMS_LOCATION_LOG}/create_proxy.log  2>&1 1>&/dev/null
+#    chmod 600 ${WMS_LOCATION_LOG}/glite-wms-purgeStorage.log 2>&1 1>&/dev/null
+#    chmod 600 ${WMS_LOCATION_LOG}/glite-wms-wmproxy-purge-proxycache.log 2>&1 1>&/dev/null
+#    chmod 600 ${WMS_LOCATION_LOG}/glite-wms-wmproxy-purge-proxycache-keys.log 2>&1 1>&/dev/null
+#    chmod 600 ${WMS_LOCATION_LOG}/glite-wms-wmproxy.restart.cron.log 2>&1 1>&/dev/null
+
     conf_file=glite_wms.conf
     parse_attribute=WorkloadManager
     . ${WMS_LOCATION_LIBEXEC}/glite-wms-parse-configuration.sh ${conf_file} ${parse_attribute}
@@ -152,6 +163,12 @@ start()
           echo "ok"
         fi
         echo $pid > ${pid_file}
+#        wmlogfile=`cat /etc/glite-wms/glite_wms.conf | awk '{if(/WorkloadManager/) wmp=1}{if(/LogFile/ && wmp==1) {print $0; wmp=0}}'|awk -F"=" '{print $2}'|sed 's+\"++g'|sed 's+;++g'|sed 's+{++'|sed 's+}++'`
+	wmlogfile=`cat /etc/glite-wms/glite_wms.conf | awk '{if($0 ~ /WorkloadManager/ && $0 !~ /WorkloadManagerProxy/) wmp=1}{if(/LogFile/ && wmp==1) {print $0; wmp=0}}'|awk -F"=" '{print $2}'|sed 's+\"++g'|sed 's+;++g'|sed 's+{++'|sed 's+}++'`
+        eval "touch ${wmlogfile}"
+        eval "chown ${GLITE_USER}:${GLITE_USER} ${wmlogfile}"
+	# "*" is for old rotated logfile that could have old wrong perms
+        eval "chmod 600 $wmlogfile*"
       fi
     fi
 }

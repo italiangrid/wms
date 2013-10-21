@@ -54,7 +54,22 @@ case "$1" in
       RETVAL=$?
       if [ $RETVAL -eq 0 ]; then
         echo "ok"
-        chmod -R 700 ${WMS_LOCATION_LOG}
+        wmplogfile=`cat /etc/glite-wms/glite_wms.conf | awk '{if(/WorkloadManagerProxy/) wmp=1}{if(/LogFile/ && wmp==1) {print $0; wmp=0}}'|awk -F"=" '{print $2}'|sed 's+\"++g'|sed 's+;++g'|sed 's+{++'|sed 's+}++'`
+        eval "touch ${wmplogfile}"
+        eval "chown ${GLITE_USER}:${GLITE_USER} ${wmplogfile}"
+        eval "chmod 600 $wmplogfile*"
+
+	chmod 600 ${WMS_LOCATION_LOG}/create_proxy.log 2>&1 1>&/dev/null
+	chmod 600 ${WMS_LOCATION_LOG}/glite-wms-purgeStorage.log 2>&1 1>&/dev/null
+	chmod 600 ${WMS_LOCATION_LOG}/glite-wms-wmproxy-purge-proxycache.log 2>&1 1>&/dev/null
+	chmod 600 ${WMS_LOCATION_LOG}/glite-wms-wmproxy-purge-proxycache-keys.log 2>&1 1>&/dev/null
+	chmod 600 ${WMS_LOCATION_LOG}/glite-wms-wmproxy.restart.cron.log 2>&1 1>&/dev/null
+#	This is needed because the old rotated log files could be with wrong perm
+#	Also note that argus is not set in the glite_wms.conf, but in the code
+#	then the following paths are "hard-coded"
+	chmod 600 /var/log/glite/argus.log* 2>&1 1>&/dev/null
+	chmod 600 ${WMS_LOCATION_LOG}/argus.log* 2>&1 1>&/dev/null
+	chmod 600 ${WMS_LOCATION_LOG}/httpd-wmproxy*.log* 2>&1 1>&/dev/null
       else
         echo "failure"
       RETVAL=1

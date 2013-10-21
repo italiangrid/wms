@@ -72,6 +72,17 @@ do_failure()
 
 start()
 {   
+#    logfiles=(`egrep -i 'logfile' /etc/glite-wms/glite_wms.conf |grep -v max|awk -F"=" '{print \$2}'|sed 's/\"//g'|sed 's/;//g'`)
+#    for (( i = 0 ; i < ${#logfiles[@]} ; i++ ))
+#    do 
+#      eval "chmod 600 ${logfiles[$i]} 2>&1 1>&/dev/null"
+#    done
+#    chmod 600 ${WMS_LOCATION_LOG}/create_proxy.log 2>&1 1>&/dev/null
+#    chmod 600 ${WMS_LOCATION_LOG}/glite-wms-purgeStorage.log 2>&1 1>&/dev/null
+#    chmod 600 ${WMS_LOCATION_LOG}/glite-wms-wmproxy-purge-proxycache.log 2>&1 1>&/dev/null
+#    chmod 600 ${WMS_LOCATION_LOG}/glite-wms-wmproxy-purge-proxycache-keys.log 2>&1 1>&/dev/null
+#    chmod 600 ${WMS_LOCATION_LOG}/glite-wms-wmproxy.restart.cron.log 2>&1 1>&/dev/null
+
     wm_input=`${WMS_LOCATION_BIN}/glite-wms-get-configuration WorkloadManager.input`
     if [ -z ${wm_input} ]; then
       do_failure "Please set Input parameter in ${CONFIGURATION_FILE} - WM section"
@@ -98,6 +109,10 @@ start()
     elif [ ${SCRIPT_UID} -eq 0 ]; then
 	echo `pidofproc ${LOGMONITOR}` > /var/run/${MONITORBASE}.pid
     fi
+    lmlogfile=`cat /etc/glite-wms/glite_wms.conf | awk '{if(/LogMonitor/) wmp=1}{if(/LogFile/ && wmp==1) {print $0; wmp=0}}'|awk -F"=" '{print $2}'|sed 's+\"++g'|sed 's+;++g'|sed 's+{++'|sed 's+}++'`
+    eval "touch ${lmlogfile}"
+    eval "chown ${GLITE_USER}:${GLITE_USER} ${lmlogfile}"
+    eval "chmod 600 $lmlogfile*"
 }
 
 reload()

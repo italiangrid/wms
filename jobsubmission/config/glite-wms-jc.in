@@ -95,6 +95,17 @@ remove_lockfile()
 
 start()
 {
+#    logfiles=(`egrep -i 'logfile' /etc/glite-wms/glite_wms.conf |grep -v max|awk -F"=" '{print \$2}'|sed 's/\"//g'|sed 's/;//g'`)
+#    for (( i = 0 ; i < ${#logfiles[@]} ; i++ ))
+#    do 
+#      eval "chmod 600 ${logfiles[$i]} 2>&1 1>&/dev/null"
+#    done
+#    chmod 600 ${WMS_LOCATION_LOG}/create_proxy.log 2>&1 1>&/dev/null
+#    chmod 600 ${WMS_LOCATION_LOG}/glite-wms-purgeStorage.log 2>&1 1>&/dev/null
+#    chmod 600 ${WMS_LOCATION_LOG}/glite-wms-wmproxy-purge-proxycache.log 2>&1 1>&/dev/null
+#    chmod 600 ${WMS_LOCATION_LOG}/glite-wms-wmproxy-purge-proxycache-keys.log 2>&1 1>&/dev/null
+#    chmod 600 ${WMS_LOCATION_LOG}/glite-wms-wmproxy.restart.cron.log 2>&1 1>&/dev/null
+
   input=`${WMS_LOCATION_BIN}/glite-wms-get-configuration JobController.input`
     if [ -z ${input} ]; then
       do_failure "Please set Input parameter in ${CONFIGURATION_FILE} - JC section"
@@ -134,6 +145,10 @@ start()
       echo `pidofproc ${CONDOR_MASTER}` > /var/run/${MASTERBASE}.pid
     fi
   fi
+  jclogfile=`cat /etc/glite-wms/glite_wms.conf | awk '{if(/JobController/) wmp=1}{if(/LogFile/ && wmp==1) {print $0; wmp=0}}'|awk -F"=" '{print $2}'|sed 's+\"++g'|sed 's+;++g'|sed 's+{++'|sed 's+}++'`
+  eval "touch ${jclogfile}"
+  eval "chown ${GLITE_USER}:${GLITE_USER} ${jclogfile}"
+  eval "chmod 600 $jclogfile*"
 }
 
 reload()
