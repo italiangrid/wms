@@ -115,11 +115,11 @@ void CreamProxyMethod::execute( int ntries ) // can throw anything
 	  if(what.find( "Connection timed out", 0 ) != string::npos ) {
 	    // do like in the case of SOAP timeout
             ///CREAM_SAFE_LOG( m_log_dev->errorStream()
-                            edglog(error)<< method_name << "Connection timed out to CREAM: \""
+                            edglog(error)<< "Connection timed out to CREAM: \""
                             << ex.what()
                             << "\" on try " << retry_count << "/" << ntries
                             << ". Blacklisting endpoint [" 
-			    << m_service << "] and giving up."
+			    << m_service << "] and giving up.";
                            //);
                 m_blacklist->blacklist_endpoint( m_service );
 		if (IceConfManager::instance()->getConfiguration()->ice()->fail_job_blacklisted_ce()) {

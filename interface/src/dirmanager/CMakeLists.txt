@@ -17,7 +17,7 @@ add_definitions( ${LIBTAR_CFLAGS} -DALLOW_COMMAND_LINE_OVERRIDE )
 link_directories(${PREFIX}/usr/${LIBDIR})
 
 add_executable(glite_wms_wmproxy_dirmanager
-  glite-wms-wmproxy-dirmanager.c
+  glite-wms-wmproxy-dirmanager.cpp
 )
 
 target_link_libraries(glite_wms_wmproxy_dirmanager
