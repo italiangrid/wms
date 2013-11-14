@@ -10,6 +10,7 @@ include_directories(
   ${GLOBUS_GSSAPI_INCLUDE_DIRS}
   ${ARGUSPEP_INCLUDE_DIRS}
   ${LCMAPS_INCLUDE_DIRS}
+  ${Boost_INCLUDE_DIRS}
   )
 
 add_definitions( ${LIBTAR_CFLAGS} -DALLOW_COMMAND_LINE_OVERRIDE )
@@ -21,6 +22,8 @@ add_executable(glite_wms_wmproxy_dirmanager
 )
 
 target_link_libraries(glite_wms_wmproxy_dirmanager
+  ${Boost_LIBRARY_DIRS}
+  ${Boost_LIBRARIES}
   ${LIBTAR_LDFLAGS}
   -ltar
   -lz
